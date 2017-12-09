@@ -1,4 +1,6 @@
-markdown: kramdown
-theme: jekyll-theme-slate
 title: "Телеконтроль"
 description: "Оперативный информационно-управляющий комплекс"
+
+permalink: /scada/:title/
+
+theme: jekyll-theme-slate
