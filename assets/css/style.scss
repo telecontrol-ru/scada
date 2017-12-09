@@ -5,15 +5,33 @@
 
 .toc {
   ul {
+    background: #212121;
     list-style-type: none;
     margin: 0;
-    padding: 0;
-    width: 25%;
-    position: fixed;
     overflow: auto;
+    padding: 0;
+    position: fixed;
+    width: 20%;
+  }
+
+  li a {
+    color: #fff;
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+
+  li a.active {
+    background: #fff;
+    color: #212121;
+  }
+
+  li a.hover:not(.active) {
+    background: #555;
+    color: #212121;
   }
 }
 
 .inner {
-  margin-left: 25%;
+  margin-left: 20%;
 }
