@@ -24,12 +24,13 @@
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
+      <section id="navigation">
+        {% include nav.html %}
+      </section>
       <section id="main_content" class="inner">
         {{ content }}
       </section>
     </div>
-
-    {% include nav.html %}
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
