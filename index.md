@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Назначение
+title: Introduction
 ---
 
 ## Назначение
