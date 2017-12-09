@@ -22,8 +22,12 @@
   }
 
   li a.active {
-    background: #fff;
+    background: #f2f2f2;
     color: #212121;
+  }
+
+  li a.hover {
+    font-weight: normal;
   }
 
   li a.hover:not(.active) {
