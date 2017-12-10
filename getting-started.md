@@ -4,6 +4,10 @@ permalink: /getting-started/
 ---
 
 # Начало работы
+{:.no_toc}
+
+* TOC
+{:toc}
 
 ## Настройка Брандмауэра Windows
 
