@@ -29,7 +29,7 @@ permalink: /development/
 
 ## Конфигурирование пользователей
 
-![](img/users.jpg)
+![](./img/users.jpg)
 
 ### Смена пароля
 
