@@ -3,6 +3,10 @@
 
 @import "{{ site.theme }}";
 
+a.hover {
+  font-weight: normal;
+}
+
 .toc {
   ul {
     background: #212121;
@@ -24,10 +28,6 @@
   li a.active {
     background: #f2f2f2;
     color: #212121;
-  }
-
-  li a.hover {
-    font-weight: normal;
   }
 
   li a.hover:not(.active) {
