@@ -21,7 +21,7 @@ permalink: /getting-started
 
 ## Установка ActiveXeme
 
-Графический клиент использует для отображения мнемосхем [компонент ActiveXeme](http://swman.ru/content/blogcategory/21/49/), который можно [загрузить](http://swman.ru/download/520/ActivesXeme_5.20.101_setup.exe) с сайта компании МОДУС.
+Графический клиент использует для отображения мнемосхем компонент [ActiveXeme](http://swman.ru/content/blogcategory/21/49/), который можно [загрузить](http://swman.ru/download/520/ActivesXeme_5.20.101_setup.exe) с сайта компании МОДУС.
 
 
 ## Подключение аппаратного ключа
