@@ -4,6 +4,8 @@
   url: /getting-started
 - title: Архитектура
   url: /architecture
+- title: Сервер
+  url: /server
 - title: Графический клиент
   url: /client
 - title: Проектирование
