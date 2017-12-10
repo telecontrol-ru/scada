@@ -3,7 +3,7 @@ layout: default
 permalink: /client/display
 ---
 
-# График
+# Мнемосхема
 {:.no_toc}
 
 * TOC

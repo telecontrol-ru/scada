@@ -12,5 +12,7 @@
   url: /client/graph
 - title: Клиент - Мнемосхема
   url: /client/display
+- title: Клиент - Таблица
+  url: /client/graph
 - title: Проектирование
   url: /development
