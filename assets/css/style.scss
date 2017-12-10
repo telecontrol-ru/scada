@@ -7,8 +7,10 @@
   ul {
     background: #212121;
     list-style-type: none;
+    height: 100%;
     margin: 0;
     overflow: auto;
+    position: fixed;
     padding: 0;
     width: 20%;
   }
@@ -42,4 +44,8 @@
 #main_content {
   padding-left: 20px;
   padding-top: 20px;
+}
+
+#main_content_wrap {
+  border-top: 0;
 }
