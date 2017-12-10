@@ -1,10 +1,10 @@
 - title: Назначение
-  url: index.md
+  url: /
 - title: Начало работы
-  url: getting-started.md
+  url: /getting-started
 - title: Архитектура
-  url: architecture.md
+  url: /architecture
 - title: Графический клиент
-  url: client.md
+  url: /client
 - title: Проектирование
-  url: development.md
+  url: /development

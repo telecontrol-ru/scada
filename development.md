@@ -1,3 +1,8 @@
+---
+layout: default
+permalink: /development
+---
+
 # Проектирование
 
 Подготовка проекта.
