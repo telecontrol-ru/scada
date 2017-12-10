@@ -1,6 +1,6 @@
 ---
 layout: default
-permalink: /client/
+permalink: /client
 ---
 
 # Графический клиент
@@ -237,7 +237,7 @@ permalink: /client/
 
 ![](img/iec-61850-model.png)
 
-Смотрите [отображение модели МЭК-61850](architecture.md/#iec-61850) и [проектирование](development.md/#iec-61850) в Клиенте.
+Смотрите [отображение модели МЭК-61850](architecture#iec-61850) и [проектирование](development#iec-61850) в Клиенте.
 
 
 ## Панель событий
