@@ -30,7 +30,7 @@
     font-weight: normal;
   }
 
-  li a.hover:not(a.active) {
+  li a.hover:not(.active) {
     background: #555;
     color: #212121;
   }
