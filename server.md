@@ -49,7 +49,7 @@ permalink: /server
 - `freq` - частота изменений в день;
 - `depth` - глубина (в днях).
 
-Либо, при известном объеме доступного дискового пространства, можно вычислить максимальную глубину в днях: `depth = size * 10000 / freq / depth`.
+Либо, при известном объеме доступного дискового пространства, можно вычислить максимальную глубину в днях: `depth = size * 10000 / freq`.
 
 ### Командная строка SQLite
 
@@ -65,9 +65,9 @@ sqlite> pragma page_size;
 sqlite> .tables
 events      timed_data
 sqlite> .schema events
-CREATE TABLE events(time INTEGER, change_mask INTEGER, severity INTEGER, item_id
- INTEGER, user_id INTEGER, value FLOAT, qualifier INTEGER, message TEXT, ack_id 
-INTEGER, ack_time INTEGER, ack_user_id INTEGER);
+CREATE TABLE events(time INTEGER, change_mask INTEGER, severity INTEGER,
+item_id INTEGER, user_id INTEGER, value FLOAT, qualifier INTEGER,
+message TEXT, ack_id INTEGER, ack_time INTEGER, ack_user_id INTEGER);
 CREATE UNIQUE INDEX events_ack_index ON events(ack_id);
 CREATE INDEX events_time_index ON events(time);
 sqlite> select count(*) from events;
