@@ -7,10 +7,9 @@
   ul {
     background: #212121;
     list-style-type: none;
-    height: 100%;
     margin: 0;
     overflow: auto;
-    position: fixed;
+    position: absolute;
     padding: 0;
     width: 20%;
   }
@@ -31,7 +30,7 @@
     font-weight: normal;
   }
 
-  li a.hover:not(.active) {
+  li a.hover:not(a.active) {
     background: #555;
     color: #212121;
   }
