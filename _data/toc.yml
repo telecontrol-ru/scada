@@ -1,12 +1,16 @@
 - title: Назначение
-  url: 
+  url: /
 - title: Начало работы
   url: /getting-started
 - title: Архитектура
   url: /architecture
 - title: Сервер
   url: /server
-- title: Графический клиент
+- title: Клиент
   url: /client
+- title: Клиент - График
+  url: /client/graph
+- title: Клиент - Мнемосхема
+  url: /client/display
 - title: Проектирование
   url: /development
