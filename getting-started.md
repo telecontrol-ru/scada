@@ -26,7 +26,7 @@ permalink: /getting-started
 
 ## Установка аппаратного ключа
 
-Сервер требует аппаратный ключ HASP или GUARDANT для своей работы. Драйверы ключей [HASP](https://sentinelcustomer.gemalto.com/sentinelsupport/) и [GUARDANT](https://www.guardant.ru/support/download/drivers/) могут быть с сайтов производителей.
+Сервер требует аппаратный ключ HASP или Guardant для своей работы. Драйверы ключей [HASP](https://sentinelcustomer.gemalto.com/sentinelsupport/) и [Guardant](https://www.guardant.ru/support/download/drivers/) могут быть загружены с сайтов производителей.
 
 При отсутствии ключа работа сервера останавливается через 2 часа после запуска.
 
