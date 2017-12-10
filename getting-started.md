@@ -1,6 +1,6 @@
 ---
 layout: default
-permalink: /getting-started
+permalink: /getting-started/
 ---
 
 # Начало работы

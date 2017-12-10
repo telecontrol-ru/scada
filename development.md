@@ -1,6 +1,6 @@
 ---
 layout: default
-permalink: /development
+permalink: /development/
 ---
 
 # Проектирование

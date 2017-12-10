@@ -1,6 +1,6 @@
 ---
 layout: default
-permalink: /client
+permalink: /client/
 ---
 
 # Графический клиент

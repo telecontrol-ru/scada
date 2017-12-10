@@ -1,6 +1,6 @@
 ---
 layout: default
-permalink: /architecture
+permalink: /architecture/
 ---
 
 # Архитектура
