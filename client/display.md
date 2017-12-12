@@ -11,4 +11,6 @@ permalink: /client/display
 
 Для отображения мнемосхем используются электронные схемы [ActiveXeme](http://swman.ru/content/blogcategory/21/49/).
 
+![](display.png)
+
 ## [](#goto-object)Переход на схему для выделенного объекта
