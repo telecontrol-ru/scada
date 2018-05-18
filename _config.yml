@@ -1,3 +1,5 @@
 title: "Телеконтроль"
 description: "Оперативный информационно-управляющий комплекс"
 theme: jekyll-theme-slate
+gems:
+  - jekyll-relative-links
