@@ -16,3 +16,5 @@
   url: /client/table
 - title: Проектирование
   url: /development
+- title: История изменений
+  url: /changes
