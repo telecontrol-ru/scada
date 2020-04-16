@@ -30,6 +30,39 @@ permalink: /server
 
 *ВНИМАНИЕ*: В следующих версиях ОИК поддержка формата GigaBASE будет прекращена. Воспользуйтесь инструкцией для [миграции](#migration) БД в формат SQLite.
 
+### [](#migration)Миграция конфигурационной БД
+
+Для изменения формата конфигурационной БД используйте утилиту администрирования `admin.exe`, находящуюся в папке `%ProgramFiles(x86)%\Telecontrol SCADA\bin`.
+
+```batch
+"%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
+  --source-driver=source-driver ^
+  --source="source-configuration-dir" ^
+  --source-driver=source-driver ^
+  --target="target-configuration-dir"
+```
+
+Обозначения:
+- `source-driver` - тип исходной базы данных;
+- `source-configuration-dir` - папка исходной базы GigaBASE;
+- `target-driver` - тип новой базы данных;
+- `target-configuration-dir` - папка новой конфигурации SQLite.
+
+Пример миграции БД GigaBASE в SQLite:
+
+```batch
+cd "%ProgramData%\Telecontrol\SCADA Server"
+"%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
+  --source-driver=GigaBASE ^
+  --source="configuration" ^
+  --target-driver=SQLite ^
+  --target="configuration-sqlite"
+rename configuration configuration-gigabase
+rename configuration-sqlite configuration
+```
+
+После обновления БД в файле `server.json` измените параметр `configuration/driver` на `SQLite`.
+
 ## [](#history)Исторические БД
 
 Для хранения событий аудита и последних значений объектов используется системная историческая БД.
@@ -104,36 +137,3 @@ CREATE INDEX events_time_index ON events(time);
 sqlite> select count(*) from events;
 86
 ```
-
-### [](#migration)Миграция конфигурационной БД
-
-Для изменения формата конфигурационной БД используйте утилиту администрирования `admin.exe`, находящуюся в папке `%ProgramFiles(x86)%\Telecontrol SCADA\bin`.
-
-```batch
-"%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
-  --source-driver=source-driver ^
-  --source="source-configuration-dir" ^
-  --source-driver=source-driver ^
-  --target="target-configuration-dir"
-```
-
-Обозначения:
-- `source-driver` - тип исходной базы данных;
-- `source-configuration-dir` - папка исходной базы GigaBASE;
-- `target-driver` - тип новой базы данных;
-- `target-configuration-dir` - папка новой конфигурации SQLite.
-
-Пример миграции БД GigaBASE в SQLite:
-
-```batch
-cd "%ProgramData%\Telecontrol\SCADA Server"
-"%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
-  --source-driver=GigaBASE ^
-  --source="configuration" ^
-  --target-driver=SQLite ^
-  --target="configuration-sqlite"
-rename configuration configuration-gigabase
-rename configuration-sqlite configuration
-```
-
-В файле `server.json` измените параметр `configuration/driver` на `SQLite`.
