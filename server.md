@@ -130,7 +130,7 @@ cd "%ProgramData%\Telecontrol\SCADA Server"
 "%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
   --source-driver=GigaBASE ^
   --source="configuration" ^
-  --target-driver=Sqlite ^
+  --target-driver=SQLite ^
   --target="configuration-sqlite"
 rename configuration configuration-gigabase
 rename configuration-sqlite configuration
