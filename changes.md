@@ -1,5 +1,13 @@
 # История изменений
 
+## 2.0.59
+
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.0.59.msi)
+
+### Исправления
+
+1. Для МЭК-61850-104 при использовании траспорта UDP поддерживаются устройства, отправляющие датаграммы из нескольких сообщений МЭК.
+
 ## 2.0.58
 
 [Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.0.58.msi)
