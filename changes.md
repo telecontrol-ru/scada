@@ -1,5 +1,15 @@
 # История изменений
 
+## 2.1.4
+
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.4.msi)
+
+### Исправления
+
+1. Сервер: Исправление создания корневых объектов, таких как направления устройств.
+
+1. Сервер: Исправление запуска опроса устройств MODBUS.
+
 ## 2.1.3
 
 [Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.3.msi)
