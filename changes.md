@@ -1,8 +1,16 @@
 # История изменений
 
+## 2.2.0
+
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.2.0.msi)
+
+1. Сервер: Добавлена серверная файловая система. При новой установке включается автоматически. Для включения на существующих установках потребуется установить параметр `filesystem.enabled` в значение `true` в файле `%ProgramData%\Telecontrol\SCADA Server\Configuration\server.json`.
+
+1. Клиент: Добавлена панель серверной файловой системы. Панель доступна из меню Данные. 
+
 ## 2.1.8
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.8.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.8.msi)
 
 1. Сервер: Исправлена ошибка в сообщении "Осталось x минут до завершения сервера" при извлечении USB-ключа.
 
@@ -12,7 +20,7 @@
 
 ## 2.1.7
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.7.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.7.msi)
 
 ### Исправления
 
@@ -30,7 +38,7 @@
 
 ## 2.1.3
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.3.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.3.msi)
 
 ### Исправления
 
@@ -44,7 +52,7 @@
 
 ## 2.1.1
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.1.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.1.msi)
 
 ### Новые функции
 
@@ -66,7 +74,7 @@
 
 В этой версии очищена устаревшая функциональность.
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.1.0.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.0.msi)
 
 ### Новые функции
 
@@ -88,7 +96,7 @@
 
 ## 2.0.59
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.0.59.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.59.msi)
 
 ### Исправления
 
@@ -96,7 +104,7 @@
 
 ## 2.0.58
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.0.58.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.58.msi)
 
 ### Новые функции
 
@@ -110,9 +118,9 @@
 
 ## 2.0.57
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.0.57.msi)
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.57.msi)
 
-[Установка под Linux](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada-2.0.57.tar.gz)
+[Установка под Linux](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.57.tar.gz)
 
 ### Новые функции
 
