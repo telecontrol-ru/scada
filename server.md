@@ -41,7 +41,7 @@ admin export --source-driver=GigaBASE "--source=c:\ProgramData\Telecontrol\SCADA
 Для использования новой конфигурации нужно обновить параметры сервера. Откройте файл `server.json` находящийся в папке `c:\ProgramData\Telecontrol\SCADA Server` и измените параметр `configuration.driver` с `GigaBASE` на `SQLite`. Если такой параметр отсутствует, его нужно добавить.
 
 `server.json`:
-```
+```json
     // Конфигурационная база данных.
     "configuration": {
         // Драйвер конфигурационной базы данных: "GigaBASE" или "SQLite".
