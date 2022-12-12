@@ -26,38 +26,35 @@ permalink: /server
 
 Поддерживаются БД в формате [SQLite](https://www.sqlite.org/index.html).
 
-### [](#migration)Миграция конфигурационной БД
+### [](#migration)Миграция конфигурационной БД GigaBASE
 
-Для изменения формата конфигурационной БД используйте утилиту администрирования `admin.exe`, находящуюся в папке `%ProgramFiles(x86)%\Telecontrol SCADA\bin`.
+Поддержка GigaBASE была удалена начиная с версии 2.1. Для импорта старых конфигураций GigaBASE используйте утилиту администрации версии 2.0.
 
-```batch
-"%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
-  --source-driver=source-driver ^
-  --source="source-configuration-dir" ^
-  --source-driver=source-driver ^
-  --target="target-configuration-dir"
-```
-
-Обозначения:
-- `source-driver` - тип исходной базы данных;
-- `source-configuration-dir` - папка исходной базы GigaBASE;
-- `target-driver` - тип новой базы данных;
-- `target-configuration-dir` - папка новой конфигурации SQLite.
-
-Пример миграции БД GigaBASE в SQLite:
+Для загрузки архива нажмите [эту ссылку](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-admin-2.0.60.1997.zip). Распакуйте архив ZIP и запустите из распакованной директории:
 
 ```batch
-cd "%ProgramData%\Telecontrol\SCADA Server"
-"%ProgramFiles(x86)%\Telecontrol SCADA\bin\admin.exe" export ^
-  --source-driver=GigaBASE ^
-  --source="configuration" ^
-  --target-driver=SQLite ^
-  --target="configuration-sqlite"
-rename configuration configuration-gigabase
-rename configuration-sqlite configuration
+admin export --source-driver=GigaBASE "--source=c:\ProgramData\Telecontrol\SCADA Server\Configuration" --target-driver=SQLite "--target=c:\ProgramData\Telecontrol\SCADA Server\Configuration"
 ```
 
-После обновления БД в файле `server.json` измените параметр `configuration/driver` на `SQLite`.
+Эта команда создаст файл конфигурации SQLite `configuration.sqlite3` в директории `c:\ProgramData\Telecontrol\SCADA Server\Configuration`. Все содержимое старой конфигурации будет импортировано в новую конфигурацию.
+
+Для использования новой конфигурации нужно обновить параметры сервера. Откройте файл `server.json` находящийся в папке `c:\ProgramData\Telecontrol\SCADA Server` и измените параметр `configuration.driver` с `GigaBASE` на `SQLite`. Если такой параметр отсутствует, его нужно добавить.
+
+`server.json`:
+```
+    // Конфигурационная база данных.
+    "configuration": {
+        // Драйвер конфигурационной базы данных: "GigaBASE" или "SQLite".
+        // Если значение не задано или пустое, используется "GigaBASE".
+        // БЫЛО: "driver": "GigaBASE",
+        // СТАЛО:
+        "driver": "SQLite",
+
+        // Папка конфигурационной базы данных.
+        // Если значение не задано или пустое, используется "${DIR_EXE}".
+        "dir": "${DIR_PARAM}/Configuration"
+    },
+```
 
 ## [](#history)Исторические БД
 
@@ -142,33 +139,3 @@ sqlite> select count(*) from events;
 Серверная файловая система позволяет хранить файлы мнемосхем на сервере. Таким образом, доступ к мнемосхемам будет предоставлен всем пользователям, избавляя их он необходимости ручной синхронизации при обновлении файлов.
 
 Серверная файловая система включается автоматически при новой установке ОИК. Для включения на существующих установках потребуется установить параметр `filesystem.enabled` в значение `true` в файле `%ProgramData%\Telecontrol\SCADA Server\Configuration\server.json`.
-
-## Импорт конфигурации GigaBASE
-
-Поддержка GigaBASE была удалена начиная с версии 2.1. Для импорта старых конфигураций GigaBASE используйте утилиту администрации версии 2.0.
-
-Для загрузки архива нажмите [эту ссылку](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-admin-2.0.60.1997.zip). Распакуйте архив ZIP и запустите из распакованной директории:
-
-```batch
-admin export --source-driver=GigaBASE "--source=c:\ProgramData\Telecontrol\SCADA Server\Configuration" --target-driver=SQLite "--target=c:\ProgramData\Telecontrol\SCADA Server\Configuration"
-```
-
-Эта команда создаст файл конфигурации SQLite `configuration.sqlite3` в директории `c:\ProgramData\Telecontrol\SCADA Server\Configuration`. Все содержимое старой конфигурации будет импортировано в новую конфигурацию.
-
-Для использования новой конфигурации нужно обновить параметры сервера. Откройте файл `server.json` находящийся в папке `c:\ProgramData\Telecontrol\SCADA Server` и измените параметр `configuration.driver` с `GigaBASE` на `SQLite`. Если такой параметр отсутствует, его нужно добавить.
-
-`server.json`:
-```
-    // Конфигурационная база данных.
-    "configuration": {
-        // Драйвер конфигурационной базы данных: "GigaBASE" или "SQLite".
-        // Если значение не задано или пустое, используется "GigaBASE".
-        // БЫЛО: "driver": "GigaBASE",
-        // СТАЛО:
-        "driver": "SQLite",
-
-        // Папка конфигурационной базы данных.
-        // Если значение не задано или пустое, используется "${DIR_EXE}".
-        "dir": "${DIR_PARAM}/Configuration"
-    },
-```
