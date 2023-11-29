@@ -1,5 +1,11 @@
 # История изменений
 
+## 2.4.0
+
+[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.4.0.msi)
+
+1. Добавлено опциональное архивирование логов устройства. Логи устройства, доступные из окна наблюдения, могут быть автоматически сохранены в исторической БД. Сохраненные логи будут отображены в окне наблюдения. Функция включается заданием параметра устройства Архив событий.
+
 ## 2.2.0
 
 [Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.2.0.msi)
