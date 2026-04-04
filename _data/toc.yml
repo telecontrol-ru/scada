@@ -8,49 +8,51 @@
   url: /protocols
 - title: Сервер
   url: /server
-- title: Клиент — Обзор
+- title: Клиент
   url: /client
-- title: Клиент — График
-  url: /client/graph
-- title: Клиент — Мнемосхема
-  url: /client/display
-- title: Клиент — Таблица
-  url: /client/table
-- title: Клиент — Сводка
-  url: /client/summary
-- title: Клиент — Данные
-  url: /client/data
-- title: Клиент — Журнал событий
-  url: /client/events
-- title: Клиент — Наблюдение
-  url: /client/device-watch
-- title: Клиент — Метрики устройств
-  url: /client/device-metrics
-- title: Клиент — Отладчик
-  url: /client/debugger
-- title: Клиент — Пользовательская таблица
-  url: /client/sheet
-- title: Клиент — Портфели
-  url: /client/portfolio
-- title: Клиент — Экспорт и импорт
-  url: /client/export
-- title: Клиент — Печать
-  url: /client/print
-- title: Клиент — Веб-интерфейс
-  url: /client/web
-- title: Проектирование — Обзор
+  children:
+    - title: График
+      url: /client/graph
+    - title: Мнемосхема
+      url: /client/display
+    - title: Таблица
+      url: /client/table
+    - title: Сводка
+      url: /client/summary
+    - title: Данные
+      url: /client/data
+    - title: Журнал событий
+      url: /client/events
+    - title: Наблюдение
+      url: /client/device-watch
+    - title: Метрики устройств
+      url: /client/device-metrics
+    - title: Отладчик
+      url: /client/debugger
+    - title: Пользовательская таблица
+      url: /client/sheet
+    - title: Портфели
+      url: /client/portfolio
+    - title: Экспорт и импорт
+      url: /client/export
+    - title: Печать
+      url: /client/print
+    - title: Веб-интерфейс
+      url: /client/web
+- title: Проектирование
   url: /development
-- title: Проектирование — Пользователи
-  url: /dev/users
-- title: Проектирование — Оборудование
-  url: /dev/devices
-- title: Проектирование — Объекты данных
-  url: /dev/data-items
-- title: Проектирование — Схемы
-  url: /dev/displays
-- title: Проектирование — Excel
-  url: /dev/excel
-- title: Проектирование — Серверные файлы
-  url: /dev/server-files
+  children:
+    - title: Пользователи
+      url: /dev/users
+    - title: Оборудование
+      url: /dev/devices
+    - title: Объекты данных
+      url: /dev/data-items
+    - title: Схемы
+      url: /dev/displays
+    - title: Excel
+      url: /dev/excel
+    - title: Серверные файлы
+      url: /dev/server-files
 - title: История изменений
   url: /changes
