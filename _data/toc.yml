@@ -4,27 +4,53 @@
   url: /getting-started
 - title: Архитектура
   url: /architecture
+- title: Протоколы
+  url: /protocols
 - title: Сервер
   url: /server
-- title: Клиент
+- title: Клиент — Обзор
   url: /client
-- title: Клиент - График
+- title: Клиент — График
   url: /client/graph
-- title: Клиент - Мнемосхема
+- title: Клиент — Мнемосхема
   url: /client/display
-- title: Клиент - Таблица
+- title: Клиент — Таблица
   url: /client/table
-- title: Клиент - Пользовательская таблица
+- title: Клиент — Сводка
+  url: /client/summary
+- title: Клиент — Данные
+  url: /client/data
+- title: Клиент — Журнал событий
+  url: /client/events
+- title: Клиент — Наблюдение
+  url: /client/device-watch
+- title: Клиент — Метрики устройств
+  url: /client/device-metrics
+- title: Клиент — Отладчик
+  url: /client/debugger
+- title: Клиент — Пользовательская таблица
   url: /client/sheet
-- title: Клиент - Портфели
+- title: Клиент — Портфели
   url: /client/portfolio
-- title: Клиент - Экспорт и импорт
+- title: Клиент — Экспорт и импорт
   url: /client/export
-- title: Клиент - Печать
+- title: Клиент — Печать
   url: /client/print
-- title: Клиент - Веб-интерфейс
+- title: Клиент — Веб-интерфейс
   url: /client/web
-- title: Проектирование
+- title: Проектирование — Обзор
   url: /development
+- title: Проектирование — Пользователи
+  url: /dev/users
+- title: Проектирование — Оборудование
+  url: /dev/devices
+- title: Проектирование — Объекты данных
+  url: /dev/data-items
+- title: Проектирование — Схемы
+  url: /dev/displays
+- title: Проектирование — Excel
+  url: /dev/excel
+- title: Проектирование — Серверные файлы
+  url: /dev/server-files
 - title: История изменений
   url: /changes
