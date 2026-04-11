@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Таблица
+nav_order: 3
+parent: Клиент
 permalink: /client/table
 ---
 

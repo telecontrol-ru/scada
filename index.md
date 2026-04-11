@@ -1,5 +1,6 @@
 ---
-layout: default
+title: Назначение
+nav_order: 1
 ---
 
 # Назначение

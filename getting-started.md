@@ -1,5 +1,6 @@
 ---
-layout: default
+title: Начало работы
+nav_order: 2
 permalink: /getting-started
 ---
 

@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Серверные файлы
+nav_order: 6
+parent: Проектирование
 permalink: /dev/server-files
 ---
 

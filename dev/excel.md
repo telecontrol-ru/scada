@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Excel
+nav_order: 5
+parent: Проектирование
 permalink: /dev/excel
 ---
 

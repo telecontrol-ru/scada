@@ -1,5 +1,7 @@
 ---
-layout: default
+title: График
+nav_order: 1
+parent: Клиент
 permalink: /client/graph
 ---
 

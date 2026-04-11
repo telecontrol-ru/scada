@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Веб-интерфейс
+nav_order: 14
+parent: Клиент
 permalink: /client/web
 ---
 

@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Наблюдение
+nav_order: 7
+parent: Клиент
 permalink: /client/device-watch
 ---
 

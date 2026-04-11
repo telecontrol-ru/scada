@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Объекты данных
+nav_order: 3
+parent: Проектирование
 permalink: /dev/data-items
 ---
 

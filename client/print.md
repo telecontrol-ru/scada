@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Печать
+nav_order: 13
+parent: Клиент
 permalink: /client/print
 ---
 

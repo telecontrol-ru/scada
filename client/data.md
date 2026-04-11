@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Данные
+nav_order: 5
+parent: Клиент
 permalink: /client/data
 ---
 

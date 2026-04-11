@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Сводка
+nav_order: 4
+parent: Клиент
 permalink: /client/summary
 ---
 

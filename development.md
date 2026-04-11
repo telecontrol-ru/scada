@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Проектирование
+nav_order: 8
+has_children: true
 permalink: /development
 ---
 

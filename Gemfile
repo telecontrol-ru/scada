@@ -25,4 +25,8 @@ gem "github-pages", group: :jekyll_plugins
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'jekyll-relative-links'
+group :jekyll_plugins do
+  gem 'jekyll-relative-links'
+  gem 'jekyll-remote-theme'
+  gem 'jekyll-seo-tag'
+end

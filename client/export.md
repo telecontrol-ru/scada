@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Экспорт и импорт
+nav_order: 12
+parent: Клиент
 permalink: /client/export
 ---
 

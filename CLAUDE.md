@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the documentation site for Telecontrol SCADA (ОИК Телеконтроль), a Russian-language industrial control system. The site is built with Jekyll and hosted on GitHub Pages using the `jekyll-theme-slate` theme.
+This is the documentation site for Telecontrol SCADA (ОИК Телеконтроль), a Russian-language industrial control system. The site is built with Jekyll and hosted on GitHub Pages using the [Just the Docs](https://just-the-docs.com) theme via `jekyll-remote-theme`.
 
 All documentation content is written in Russian.
 
@@ -17,15 +17,41 @@ bundle exec jekyll serve # Serve locally (default: http://localhost:4000)
 
 ## Site Structure
 
-- **Content pages**: Markdown files at the root and in `client/` — each corresponds to a documentation page
-- **Navigation**: Defined in `_data/toc.yml` — add entries here when creating new pages
-- **Layout**: Single layout in `_layouts/default.html` with a left sidebar TOC (`_includes/toc.html`)
-- **Styling**: Custom SCSS in `assets/css/style.scss` extending the Slate theme; left 20% is the fixed TOC sidebar
-- **Images**: Stored in `img/` (root-level screenshots) and `client/` (client-specific images)
+- **Content pages**: Markdown files at the root, in `client/`, and in `dev/` — each corresponds to a documentation page.
+- **Navigation**: Driven by per-page front matter (`title`, `nav_order`, `parent`, `has_children`). Just the Docs builds the sidebar from this; there is no separate TOC data file.
+- **Theme**: `remote_theme: just-the-docs/just-the-docs` in `_config.yml`. No custom layouts or includes — the theme provides them.
+- **Images**: Stored in `img/` (root-level screenshots) and `client/` (client-specific images).
+
+## Front Matter Conventions
+
+Each page must have:
+
+```yaml
+---
+title: <Russian display title shown in nav and as <h1>>
+nav_order: <integer ordering within its level>
+permalink: /<url-path>           # optional but recommended
+---
+```
+
+For pages with children, add `has_children: true`. Child pages reference their parent by title:
+
+```yaml
+---
+title: График
+nav_order: 1
+parent: Клиент
+permalink: /client/graph
+---
+```
 
 ## Key Conventions
 
-- Pages use `layout: default` in front matter
-- Internal links use Jekyll relative links (`jekyll-relative-links` plugin) — link to filenames without extensions (e.g., `[Архитектура](architecture)`)
-- The TOC sidebar is auto-generated from `_data/toc.yml`; page order there determines navigation order
-- Images are referenced with relative paths (e.g., `![](img/structure.png)`)
+- Internal links use Jekyll relative links (`jekyll-relative-links` plugin) — link to filenames without extensions (e.g., `[Архитектура](architecture)`).
+- Mark page-level `<h1>` with `{:.no_toc}` and use `* TOC \n {:toc}` if you want an in-page TOC; Just the Docs also exposes its own auto-generated TOC in the right rail.
+- Images are referenced with relative paths (e.g., `![](img/structure.png)`).
+- When adding a new page, include the front matter above and pick a `nav_order` consistent with neighbors. No central registry file to update.
+
+## Search
+
+Client-side search via Lunr is enabled in `_config.yml`. The tokenizer is configured to split on whitespace and punctuation so Cyrillic queries work.

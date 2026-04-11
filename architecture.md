@@ -1,5 +1,6 @@
 ---
-layout: default
+title: Архитектура
+nav_order: 3
 permalink: /architecture
 ---
 

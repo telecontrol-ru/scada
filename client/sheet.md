@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Пользовательская таблица
+nav_order: 10
+parent: Клиент
 permalink: /client/sheet
 ---
 

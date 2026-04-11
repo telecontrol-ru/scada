@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Метрики устройств
+nav_order: 8
+parent: Клиент
 permalink: /client/device-metrics
 ---
 

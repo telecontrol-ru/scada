@@ -1,5 +1,48 @@
 title: "Телеконтроль"
 description: "Оперативный информационно-управляющий комплекс"
-theme: jekyll-theme-slate
-gems:
+
+remote_theme: just-the-docs/just-the-docs
+
+plugins:
+  - jekyll-remote-theme
   - jekyll-relative-links
+  - jekyll-seo-tag
+
+# --- Just the Docs configuration ---
+
+# Color scheme: 'light', 'dark', or use the in-page toggle.
+color_scheme: light
+
+# Anchor links on every heading.
+heading_anchors: true
+
+# Client-side search via Lunr.
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 3
+  preview_words_before: 4
+  preview_words_after: 4
+  tokenizer_separator: /[\s\-,;:/\(\)]+/
+  rel_url: true
+  button: false
+
+# "Edit this page on GitHub" footer link.
+gh_edit_link: true
+gh_edit_link_text: "Править на GitHub"
+gh_edit_repository: "https://github.com/telecontrol-ru/scada"
+gh_edit_branch: "master"
+gh_edit_view_mode: "tree"
+
+# Top-right aux link.
+aux_links:
+  "GitHub":
+    - "https://github.com/telecontrol-ru/scada"
+aux_links_new_tab: true
+
+# Footer
+footer_content: '<a href="mailto:mail@telecontrol.ru">ООО &laquo;Телеконтроль&raquo;</a>'
+
+# "Back to top" link at the bottom of each page.
+back_to_top: true
+back_to_top_text: "Наверх"

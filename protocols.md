@@ -1,5 +1,6 @@
 ---
-layout: default
+title: Протоколы
+nav_order: 5
 permalink: /protocols
 ---
 

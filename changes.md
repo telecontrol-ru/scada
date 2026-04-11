@@ -1,5 +1,6 @@
 ---
-layout: default
+title: История изменений
+nav_order: 9
 permalink: /changes
 ---
 

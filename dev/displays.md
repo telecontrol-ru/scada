@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Схемы
+nav_order: 4
+parent: Проектирование
 permalink: /dev/displays
 ---
 

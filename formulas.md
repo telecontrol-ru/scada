@@ -1,5 +1,6 @@
 ---
-layout: default
+title: Формулы
+nav_order: 4
 permalink: /formulas
 ---
 

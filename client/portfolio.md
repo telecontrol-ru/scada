@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Портфели
+nav_order: 11
+parent: Клиент
 permalink: /client/portfolio
 ---
 

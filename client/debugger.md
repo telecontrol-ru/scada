@@ -1,5 +1,7 @@
 ---
-layout: default
+title: Отладчик
+nav_order: 9
+parent: Клиент
 permalink: /client/debugger
 ---
 
