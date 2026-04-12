@@ -28,7 +28,7 @@ with `auto-`, add the matching entry to
 | File | Tag | Referenced from | Notes |
 |---|---|---|---|
 | `MODBUS_func.png` | `manual-diagram` | `protocols.md` | Modbus function-code table, hand-drawn. |
-| `client-login.png` | `auto-view` | `getting-started.md` | Login dialog shown at startup. |
+| `client-login.png` | `auto-dialog` | `getting-started.md` | `LoginDialog` modal shown at startup; rendered by the dialog pipeline. |
 | `client-retransmission.png` | `auto-view` | `client.md` | `Transmission` window type. |
 | `client-window.png` | `auto-view` | `client.md` | Full main window; already produced by `CaptureMainWindow`. |
 | `control-confirm.jpg` | `obsolete` | — | Superseded by `t{s,i}-remote-control-confirm.png`. |
@@ -46,7 +46,7 @@ with `auto-`, add the matching entry to
 | `graph-cursor.jpg` | `auto-view` | `client/graph.md` | `Graph` window with cursor; generator already emits `graph.png`. |
 | `iec-60870-5-transport.png` | `manual-diagram` | `dev/devices.md` | IEC 60870-5 transport stack diagram. |
 | `iec-61850-model.png` | `manual-diagram` | `client.md` | IEC 61850 object model diagram. |
-| `limits-chart.png` | `auto-view` | `architecture.md` | Limits visualised on a chart — needs `LimitsChart` window. |
+| `limits-chart.png` | `auto-view` | `architecture.md` | Graph with limit lines drawn; blocked on the fixture exposing `AnalogItemType_LimitLo/Hi/LoLo/HiHi` on a graphed node. |
 | `limits.png` | `auto-dialog` | `architecture.md`, `client.md` | `LimitDialog` modal. |
 | `login.png` | `obsolete` | — | Superseded by `client-login.png`. |
 | `menu-copy-object.png` | `auto-menu` | `dev/data-items.md` | Context menu: copy object. |
@@ -90,8 +90,8 @@ with `auto-`, add the matching entry to
 
 | Tag | Count |
 |---|---|
-| `auto-view` | 6 |
-| `auto-dialog` | 14 |
+| `auto-view` | 5 |
+| `auto-dialog` | 15 |
 | `auto-menu` | 15 |
 | `auto-state` | 5 |
 | `manual-diagram` | 4 |
