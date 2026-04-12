@@ -55,3 +55,49 @@ permalink: /client/graph
 ## Search
 
 Client-side search via Lunr is enabled in `_config.yml`. The tokenizer is configured to split on whitespace and punctuation so Cyrillic queries work.
+
+## Screenshots under `img/`
+
+Most images under `img/` are produced by an offline screenshot generator
+that lives in the scada-client repo (`client/app/screenshot_generator.cpp`).
+Every file in `img/` is tagged in [`img/MANIFEST.md`](img/MANIFEST.md)
+with one of:
+
+- `auto-view` — main-window view; generator renders it via a
+  `WindowInfo` registered with the controller registry.
+- `auto-dialog` — modal dialog rendered by the generator's dialog
+  pipeline.
+- `auto-menu` — right-click / popup menu rendered from the command
+  registries.
+- `auto-state` — device / node state capture (online, offline, …).
+- `manual-diagram` — hand-drawn architecture or protocol diagram.
+- `manual-modus` — Modus schematic; depends on the ActiveX runtime the
+  offline fixture doesn't have.
+- `manual-os` — OS-level screenshot (e.g. Windows firewall).
+- `obsolete` — no longer referenced from any page; removal candidate.
+
+### Regenerating auto images
+
+From a scada-client checkout:
+
+```batch
+cmake --build --preset release-dev -t screenshot_generator
+set SCREENSHOT_OUT_DIR=<path to scada-docs>\img
+<scada build>\bin\RelWithDebInfo\screenshot_generator.exe
+```
+
+Then `git diff img/` in scada-docs to review the changes before
+committing.
+
+### Adding a new image
+
+1. Decide whether the image can be auto-generated. If yes, add a row to
+   `img/MANIFEST.md` with the right `auto-*` tag, then extend
+   `client/app/screenshot_data.json` in scada-client (see the
+   "Regenerating the doc screenshots" subsection of
+   `client/docs/design.md` for the JSON schema).
+2. If it has to be hand-captured (`manual-*`), still add a row to
+   `MANIFEST.md` so future editors don't assume it's auto.
+3. Reference it from the right markdown page with a relative path
+   (`![](img/foo.png)` from root pages, `![](../img/foo.png)` from
+   `client/` or `dev/` pages).
