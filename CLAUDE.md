@@ -80,11 +80,13 @@ with one of:
 
 From a scada-client checkout:
 
-```batch
-cmake --build --preset release-dev -t screenshot_generator
-set SCREENSHOT_OUT_DIR=<path to scada-docs>\img
-<scada build>\bin\RelWithDebInfo\screenshot_generator.exe
+```shell
+cmd.exe /c "cd /d C:\tc\scada && cmake --build --preset release-dev --target screenshot_generator"
+cmd.exe /c C:\tc\scada\client\update_scada_docs_screenshots.cmd
 ```
+
+For now the script updates only the current approved rollout subset:
+`client-retransmission.png` and `users.png`.
 
 Then `git diff img/` in scada-docs to review the changes before
 committing.

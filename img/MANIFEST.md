@@ -102,3 +102,10 @@ with `auto-`, add the matching entry to
 Everything tagged `manual-*` stays hand-maintained. Everything tagged
 `obsolete` is a removal candidate — leave the file in place until the
 replacement is committed.
+
+## Current generator-owned subset
+
+The first `scada-docs` refresh workflow intentionally publishes only
+`client-retransmission.png` and `users.png`. The rest of the `auto-*`
+inventory stays generator-capable but is not part of the initial docs
+refresh batch yet.
