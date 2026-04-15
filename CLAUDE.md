@@ -61,7 +61,7 @@ Client-side search via Lunr is enabled in `_config.yml`. The tokenizer is config
 Most images under `img/` are produced by an offline screenshot generator
 that lives in the scada-client repo (`client/app/screenshot_generator.cpp`).
 Every file in `img/` is tagged in
-`../client/docs/image_manifest.json`
+`../client/docs/screenshots/image_manifest.json`
 with one of:
 
 - `auto-view` — main-window view; generator renders it via a
@@ -96,7 +96,7 @@ committing.
 ### Adding a new image
 
 1. Decide whether the image can be auto-generated. If yes, add an entry to
-   `../client/docs/image_manifest.json` with the right `auto-*` tag,
+   `../client/docs/screenshots/image_manifest.json` with the right `auto-*` tag,
    then extend
    `client/app/screenshot_data.json` in scada-client (see the
    "Regenerating the doc screenshots" subsection of
