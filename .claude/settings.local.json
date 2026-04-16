@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"^|\" \"C:/tc/scada/scada-docs\"/**/*.md)",
+      "Bash(grep:*)",
+      "Bash(wc -l /c/tc/scada/scada-docs/*.md /c/tc/scada/scada-docs/client/*.md)",
+      "Bash(mv client/display.png img/display.png)",
+      "Bash(mv client/graph-cursor.jpg img/graph-cursor.jpg)",
+      "Bash(mv client/login.png img/login.png)",
+      "Bash(ls:*)",
+      "Bash(git -C /c/tc/scada log --oneline 37ca49a..b801303)",
+      "Bash(git -C /c/tc/scada log --oneline b801303..f3b5a57)",
+      "Bash(git -C /c/tc/scada log --oneline f3b5a57..a33854c)",
+      "Bash(git -C /c/tc/scada log --oneline a33854c..d6a872b)",
+      "Bash(git -C /c/tc/scada diff --submodule=log d6a872b..cecdc7e)",
+      "Bash(git -C /c/tc/scada diff --submodule=log df6f8d7..4cd8259)",
+      "Bash(git -C /c/tc/scada diff --submodule=log 4cd8259..5118d45)",
+      "Bash(git -C /c/tc/scada diff --submodule=log 5118d45..fe3cd1d)",
+      "Bash(git -C /c/tc/scada status --short)",
+      "Bash(git:*)"
+    ]
+  }
+}

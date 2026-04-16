@@ -82,11 +82,10 @@ with one of:
 From a scada-client checkout:
 
 ```shell
-cmd.exe /c "cd /d C:\tc\scada && cmake --build --preset release-dev --target screenshot_generator"
-cmd.exe /c C:\tc\scada\client\update_scada_docs_screenshots.cmd
+cmd.exe /c "cd /d C:\tc\scada && cmake --workflow --preset update-screenshots-dev"
 ```
 
-For now the script updates only the current approved rollout subset:
+For now the workflow updates only the current approved rollout subset:
 `client-login.png`, `client-retransmission.png`, `graph-cursor.png`,
 and `users.png`.
 
