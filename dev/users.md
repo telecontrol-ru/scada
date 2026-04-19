@@ -2,7 +2,7 @@
 title: Пользователи
 nav_order: 1
 parent: Проектирование
-permalink: /dev/users
+permalink: /dev/users/
 ---
 
 # Конфигурирование пользователей

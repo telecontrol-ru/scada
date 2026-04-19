@@ -2,7 +2,7 @@
 title: Портфели
 nav_order: 11
 parent: Клиент
-permalink: /client/portfolio
+permalink: /client/portfolio/
 ---
 
 # Портфели

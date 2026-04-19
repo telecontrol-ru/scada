@@ -1,7 +1,7 @@
 ---
 title: Сервер
 nav_order: 6
-permalink: /server
+permalink: /server/
 ---
 
 # Сервер

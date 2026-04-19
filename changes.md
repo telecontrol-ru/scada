@@ -1,7 +1,7 @@
 ---
 title: История изменений
 nav_order: 9
-permalink: /changes
+permalink: /changes/
 ---
 
 # История изменений

@@ -2,7 +2,7 @@
 title: Данные
 nav_order: 5
 parent: Клиент
-permalink: /client/data
+permalink: /client/data/
 ---
 
 # Данные

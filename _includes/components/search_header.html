@@ -1,0 +1,21 @@
+{%- assign search_placeholder = '' -%}
+{%- assign page_is_en = false -%}
+{%- if page.path == 'en/index.md' or page.path contains 'en/' or page.dir == '/en' or page.dir contains '/en/' -%}
+  {%- assign page_is_en = true -%}
+{%- endif -%}
+{%- if page_is_en -%}
+  {%- assign search_placeholder = 'Search ' | append: site.title -%}
+{%- else -%}
+  {%- assign search_placeholder = 'Поиск ' | append: site.title -%}
+{%- endif -%}
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="{{ search_placeholder }}" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">{{ search_placeholder }}</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>

@@ -1,0 +1,42 @@
+{%- assign current_is_en = false -%}
+{%- if include.nav_lang == 'en' -%}
+  {%- assign current_is_en = true -%}
+{%- endif -%}
+
+{%- assign nav_pages = "" | split: "" -%}
+{%- for nav_page in site.html_pages -%}
+  {%- if nav_page.title != nil and nav_page.nav_exclude != true and nav_page.name != 'CLAUDE.md' and nav_page.name != 'tasks.md' -%}
+    {%- assign nav_page_is_en = false -%}
+    {%- if nav_page.url == '/en/' or nav_page.url contains '/en/' -%}
+      {%- assign nav_page_is_en = true -%}
+    {%- endif -%}
+    {%- if nav_page_is_en == current_is_en -%}
+      {%- assign nav_pages = nav_pages | push: nav_page -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<nav aria-label="Main" id="site-nav" class="site-nav">
+  {% assign pages_top_size = nav_pages
+        | where_exp:"item", "item.parent == nil"
+        | size %}
+  {% if pages_top_size > 0 %}
+    {% include components/nav/pages.html pages=nav_pages %}
+  {% endif %}
+  {%- if site.nav_external_links -%}
+    <ul class="nav-list">
+      {%- for node in site.nav_external_links -%}
+        <li class="nav-list-item external">
+          <a href="{{ node.url | absolute_url }}" class="nav-list-link external"
+            {% if node.opens_in_new_tab or node.opens_in_new_tab == nil and site.nav_external_links_new_tab %}
+              target="_blank" rel="noopener noreferrer"
+            {% endif %}
+          >
+            {{ node.title }}
+            {% unless node.hide_icon %}<svg viewBox="0 0 24 24" aria-labelledby="svg-external-link-title"><use xlink:href="#svg-external-link"></use></svg>{% endunless %}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</nav>

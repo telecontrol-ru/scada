@@ -1,7 +1,7 @@
 ---
 title: Формулы
 nav_order: 4
-permalink: /formulas
+permalink: /formulas/
 ---
 
 # Формулы

@@ -2,7 +2,7 @@
 title: Оборудование
 nav_order: 2
 parent: Проектирование
-permalink: /dev/devices
+permalink: /dev/devices/
 ---
 
 # Конфигурирование оборудования

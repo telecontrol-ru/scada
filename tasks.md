@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Documentation tasks
 
 Gaps between the published user docs at

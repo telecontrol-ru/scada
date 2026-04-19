@@ -2,7 +2,7 @@
 title: Серверные файлы
 nav_order: 6
 parent: Проектирование
-permalink: /dev/server-files
+permalink: /dev/server-files/
 ---
 
 # Серверные файлы

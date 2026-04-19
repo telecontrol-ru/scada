@@ -1,7 +1,7 @@
 ---
 title: Архитектура
 nav_order: 3
-permalink: /architecture
+permalink: /architecture/
 ---
 
 # Архитектура

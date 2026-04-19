@@ -1,7 +1,7 @@
 ---
 title: Протоколы
 nav_order: 5
-permalink: /protocols
+permalink: /protocols/
 ---
 
 # Поддерживаемые протоколы

@@ -2,7 +2,7 @@
 title: Таблица
 nav_order: 3
 parent: Клиент
-permalink: /client/table
+permalink: /client/table/
 ---
 
 # Таблица

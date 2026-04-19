@@ -2,7 +2,7 @@
 title: Excel
 nav_order: 5
 parent: Проектирование
-permalink: /dev/excel
+permalink: /dev/excel/
 ---
 
 # Редактирование конфигурации в MS Excel

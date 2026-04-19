@@ -2,7 +2,7 @@
 title: Экспорт и импорт
 nav_order: 12
 parent: Клиент
-permalink: /client/export
+permalink: /client/export/
 ---
 
 # Экспорт и импорт

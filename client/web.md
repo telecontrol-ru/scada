@@ -2,7 +2,7 @@
 title: Веб-интерфейс
 nav_order: 14
 parent: Клиент
-permalink: /client/web
+permalink: /client/web/
 ---
 
 # Веб-интерфейс

@@ -2,7 +2,7 @@
 title: Мнемосхема
 nav_order: 2
 parent: Клиент
-permalink: /client/display
+permalink: /client/display/
 ---
 
 # Мнемосхема

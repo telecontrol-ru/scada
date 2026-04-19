@@ -2,7 +2,7 @@
 title: Объекты данных
 nav_order: 3
 parent: Проектирование
-permalink: /dev/data-items
+permalink: /dev/data-items/
 ---
 
 # Конфигурирование объектов данных

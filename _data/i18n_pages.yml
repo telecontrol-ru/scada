@@ -1,0 +1,86 @@
+- ru: /
+  en: /en/
+
+- ru: /getting-started/
+  en: /en/getting-started/
+
+- ru: /architecture/
+  en: /en/architecture/
+
+- ru: /formulas/
+  en: /en/formulas/
+
+- ru: /client/
+  en: /en/client/
+
+- ru: /client/graph/
+  en: /en/client/graph/
+
+- ru: /client/table/
+  en: /en/client/table/
+
+- ru: /client/summary/
+  en: /en/client/summary/
+
+- ru: /client/data/
+  en: /en/client/data/
+
+- ru: /client/sheet/
+  en: /en/client/sheet/
+
+- ru: /client/events/
+  en: /en/client/events/
+
+- ru: /client/display/
+  en: /en/client/display/
+
+- ru: /client/device-watch/
+  en: /en/client/device-watch/
+
+- ru: /client/device-metrics/
+  en: /en/client/device-metrics/
+
+- ru: /client/debugger/
+  en: /en/client/debugger/
+
+- ru: /client/export/
+  en: /en/client/export/
+
+- ru: /client/portfolio/
+  en: /en/client/portfolio/
+
+- ru: /client/print/
+  en: /en/client/print/
+
+- ru: /client/web/
+  en: /en/client/web/
+
+- ru: /protocols/
+  en: /en/protocols/
+
+- ru: /server/
+  en: /en/server/
+
+- ru: /development/
+  en: /en/development/
+
+- ru: /dev/users/
+  en: /en/dev/users/
+
+- ru: /dev/devices/
+  en: /en/dev/devices/
+
+- ru: /dev/data-items/
+  en: /en/dev/data-items/
+
+- ru: /dev/displays/
+  en: /en/dev/displays/
+
+- ru: /dev/excel/
+  en: /en/dev/excel/
+
+- ru: /dev/server-files/
+  en: /en/dev/server-files/
+
+- ru: /changes/
+  en: /en/changes/

@@ -1,0 +1,31 @@
+{% assign pair = nil %}
+{% for item in site.data.i18n_pages %}
+  {% if item.ru == page.url or item.en == page.url %}
+    {% assign pair = item %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% assign is_en = false %}
+{% if pair and pair.en == page.url %}
+  {% assign is_en = true %}
+{% elsif page.url == '/en/' or page.url contains '/en/' %}
+  {% assign is_en = true %}
+{% endif %}
+
+<div style="margin-bottom:1rem;padding:0.75rem 1rem;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-size:0.95rem;">
+  {% if pair %}
+    <strong>Language:</strong>
+    {% if is_en %}
+      <strong>English</strong> |
+      <a href="{{ pair.ru | relative_url }}">Русский</a>
+    {% else %}
+      <a href="{{ pair.en | relative_url }}">English</a> |
+      <strong>Русский</strong>
+    {% endif %}
+  {% elsif is_en %}
+    <strong>Language:</strong> <strong>English</strong> | Русский version is not published for this page yet.
+  {% else %}
+    <strong>Language:</strong> <strong>Русский</strong> | English version is in progress for this page.
+  {% endif %}
+</div>

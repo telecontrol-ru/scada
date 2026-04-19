@@ -2,7 +2,7 @@
 title: Наблюдение
 nav_order: 7
 parent: Клиент
-permalink: /client/device-watch
+permalink: /client/device-watch/
 ---
 
 # Наблюдение
