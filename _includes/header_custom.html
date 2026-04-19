@@ -18,9 +18,9 @@
     <strong>Language:</strong>
     {% if is_en %}
       <strong>English</strong> |
-      <a href="{{ pair.ru | relative_url }}">Русский</a>
+      <a href="{{ pair.ru | relative_url }}" onclick="try{localStorage.setItem('scada-docs-lang','ru')}catch(e){}">Русский</a>
     {% else %}
-      <a href="{{ pair.en | relative_url }}">English</a> |
+      <a href="{{ pair.en | relative_url }}" onclick="try{localStorage.setItem('scada-docs-lang','en')}catch(e){}">English</a> |
       <strong>Русский</strong>
     {% endif %}
   {% elsif is_en %}
@@ -29,3 +29,44 @@
     <strong>Language:</strong> <strong>Русский</strong> | English version is in progress for this page.
   {% endif %}
 </div>
+
+{% if page.url == '/' %}
+<script>
+  (function () {
+    try {
+      var pref = localStorage.getItem('scada-docs-lang');
+      if (pref === 'ru') return;
+      if (pref === 'en') {
+        window.location.replace('{{ "/en/" | relative_url }}');
+        return;
+      }
+
+      var langs = navigator.languages || [navigator.language || navigator.userLanguage || ''];
+      for (var i = 0; i < langs.length; i++) {
+        var lang = String(langs[i] || '').toLowerCase();
+        if (lang.indexOf('en') === 0) {
+          window.location.replace('{{ "/en/" | relative_url }}');
+          return;
+        }
+        if (lang.indexOf('ru') === 0) {
+          return;
+        }
+      }
+    } catch (e) {
+      // Ignore storage or browser access errors and stay on the RU landing page.
+    }
+  })();
+</script>
+{% elsif page.url == '/en/' %}
+<script>
+  (function () {
+    try {
+      if (localStorage.getItem('scada-docs-lang') !== 'en') {
+        localStorage.setItem('scada-docs-lang', 'en');
+      }
+    } catch (e) {
+      // Ignore storage errors.
+    }
+  })();
+</script>
+{% endif %}
