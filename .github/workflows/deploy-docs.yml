@@ -35,10 +35,13 @@ jobs:
         run: ruby scripts/validate_en_links.rb
 
       - name: Configure GitHub Pages
+        id: pages
         uses: actions/configure-pages@v5
 
       - name: Build Jekyll site
-        run: bundle exec jekyll build --destination ./_site
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --destination ./_site
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
