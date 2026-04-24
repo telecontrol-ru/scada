@@ -6,10 +6,10 @@ nav_exclude: true
 
 Gaps between the published user docs at
 <https://telecontrol-ru.github.io/scada/> and the use cases /
-functional requirements declared in the client design document at
-[`client/docs/design.md`](https://github.com/alexsmn/scada-client/blob/main/docs/design.md).
+functional requirements declared in the client requirements document at
+[`client/docs/requirements.md`](https://github.com/alexsmn/scada-client/blob/main/docs/requirements.md).
 
-Each entry below names the design-doc identifier (UC-* / FR-*), the
+Each entry below names the requirements-doc identifier (UC-* / FR-*), the
 existing docs file if any, and the gap in one or two sentences.
 **Note:** these are *documentation* tasks, not feature work — the
 features themselves already exist in the client.
@@ -127,7 +127,7 @@ Explain which views and which menu commands are gated on
 
 ## View types missing dedicated pages
 
-The design doc lists ~20 reusable view types in FR-9. Twelve of them
+The requirements doc lists ~20 reusable view types in FR-9. Twelve of them
 have docs today; the rest do not. Each needs at least a short feature
 page on the operator side (some already have engineer-side docs under
 `dev/`).
@@ -214,7 +214,7 @@ users see at a glance what works in the web client and what doesn't.
 
 ## Out of scope (no user docs needed)
 
-These design-doc requirements are intentionally internal and do
+These requirements-doc items are intentionally internal and do
 **not** need user-facing documentation:
 
 - **FR-21** Offline screenshot generator. Developer / CI tooling.
@@ -222,4 +222,4 @@ These design-doc requirements are intentionally internal and do
   to the client and the operations team's monitoring stack.
 - All non-functional requirements (NFR-1..11) — architecture and
   implementation details, covered in
-  [`client/docs/design.md`](https://github.com/alexsmn/scada-client/blob/main/docs/design.md).
+  [`client/docs/requirements.md`](https://github.com/alexsmn/scada-client/blob/main/docs/requirements.md).
