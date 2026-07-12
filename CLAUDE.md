@@ -115,10 +115,11 @@ Client-side search via Lunr is enabled in `_config.yml`. The tokenizer is config
 ## Screenshots under `img/`
 
 Most images under `img/` are produced by an offline screenshot generator
-that lives in the scada-client repo (`client/app/screenshot_generator.cpp`).
-Every file in `img/` is tagged in
-`../client/docs/screenshots/image_manifest.json`
-with one of:
+that lives in the scada repo (`client/tools/screenshot_generator/`; its
+authoritative design/workflow doc is `client/docs/screenshots.md` there).
+Every file in `img/` is tagged in the manifest
+`client/docs/screenshots/image_manifest.json` of the scada checkout
+(usually a sibling of this repo) with one of:
 
 - `auto-view` — main-window view; generator renders it via a
   `WindowInfo` registered with the controller registry.
@@ -133,17 +134,25 @@ with one of:
 - `manual-os` — OS-level screenshot (e.g. Windows firewall).
 - `obsolete` — no longer referenced from any page; removal candidate.
 
+Manifest conventions: `referenced_from` lists the **Russian (canonical)
+pages only** — `en/` mirrors are implied by `_data/i18n_pages.yml`; an
+entry with `"published": false` is generated but not yet used by any
+manual page, so it is not expected in `img/`.
+
 ### Regenerating auto images
 
-From a scada-client checkout:
+From a scada checkout on the Windows dev box:
 
 ```shell
 cmd.exe /c "cd /d C:\tc\scada && cmake --workflow --preset update-screenshots-dev"
 ```
 
-For now the workflow updates only the current approved rollout subset:
+That workflow rebuilds the generator, regenerates the local gallery, and
+copies the manifest's `current_generator_owned_subset` — currently
 `client-login.png`, `client-retransmission.png`, `graph-cursor.png`,
-and `users.png`.
+`users.png` — into this repo's `img/` (the scada build's
+`SCADA_DOCS_IMG_DIR` cache variable must point at it; the default is
+`<scada>/scada-docs/img`).
 
 Then `git diff img/` in scada-docs to review the changes before
 committing.
@@ -151,14 +160,21 @@ committing.
 ### Adding a new image
 
 1. Decide whether the image can be auto-generated. If yes, add an entry to
-   `../client/docs/screenshots/image_manifest.json` with the right `auto-*` tag,
-   then extend
-   `client/app/screenshot_data.json` in scada-client (see the
-   "Regenerating the doc screenshots" subsection of
-   `client/docs/design.md` for the JSON schema).
+   the manifest with the right `auto-*` tag, then extend
+   `client/tools/screenshot_generator/screenshot_data.json` in the scada
+   repo (`client/docs/screenshots.md` there documents the JSON schema and
+   the step-by-step flow per capture kind).
 2. If it has to be hand-captured (`manual-*`), still add an entry there
    so future editors don't assume it's auto.
 3. Reference it from the right markdown page:
    - Russian root pages can use `![](img/foo.png)`
    - Russian `client/` or `dev/` pages can use `![](../img/foo.png)`
    - English pages should use `![]({{ '/img/foo.png' | relative_url }})`
+4. Validate manifest ↔ `img/` ↔ page consistency from the scada checkout:
+
+   ```shell
+   python3 client/docs/screenshots/validate_image_manifest.py --docs-repo <this repo>
+   ```
+
+   Run it after adding, retagging, or deleting any image, and after moving
+   an image reference between pages.
