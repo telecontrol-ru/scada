@@ -68,8 +68,9 @@ current session and the window is active.</dd>
 </dl>
 
 In addition, values and timestamps in all tables render in a monospace font —
-digits stay aligned and do not shift as values update — and a "Quality"
-column with a textual quality flag appears next to the value.
+digits stay aligned and do not shift as values update — and two columns appear
+next to the value: "Quality" with a textual quality flag, and "Trend" with a
+mini-graph of the value over the last hour, updating live.
 
 ## [](#inspector)Inspector
 
