@@ -38,9 +38,15 @@ few events.
 Rows can be reordered with `Ctrl+Up` and `Ctrl+Down`, or with the
 context-menu commands.
 
+In the [experimental interface]({{ '/en/client/workbench/' | relative_url }}#table-toolbar) the window
+gains a toolbar above the grid with these same commands, a "Quality" column,
+and monospace rendering of values and timestamps.
+
 ## Context menu
 
-The row context menu includes:
+The row context menu includes the following commands. Commands that do not
+apply to the current selection (for example *Delete* or *Move* with no row
+selected) are greyed out:
 
 <dl>
 
