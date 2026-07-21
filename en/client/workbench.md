@@ -135,8 +135,10 @@ journal does not duplicate it with its historical copy.
 ![]({{ '/img/transmission-rules.png' | relative_url }})
 
 The transmission window (a device's "signal → address" rule list) renders in
-the workbench theme, and selecting a rule fills the Transmission-rule panel
-on the right:
+the workbench theme. A destination rail on the left lists every
+retransmission destination device with its rule count; picking a destination
+switches the table to its rules, and the count updates as rules are added or
+removed. Selecting a rule fills the Transmission-rule panel on the right:
 
 ![]({{ '/img/transmission-rule.png' | relative_url }})
 
