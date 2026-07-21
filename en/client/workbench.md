@@ -61,6 +61,18 @@ components.</dd>
 
 </dl>
 
+## [](#overview)The Overview landing page
+
+![]({{ '/img/workbench-overview.png' | relative_url }})
+
+A fresh profile (no saved pages) opens on the Overview page — the
+operator's working screen: a dominant trend on top (about two thirds of
+the screen) with the active-alarm table under it (the event journal in
+current mode, unacknowledged events only). The severity summary stays
+visible in the top-bar tiles throughout. The trend is empty until the
+operator adds signals to it; the page layout is saved in the profile as a
+regular page.
+
 ## [](#palette)Command palette
 
 ![]({{ '/img/command-palette.png' | relative_url }})
