@@ -169,7 +169,10 @@ shows the event card in the Inspector: the source and its address, the
 severity (band name and number), the message, the event time and the
 acknowledgement state ("— pending —" while unacknowledged). The *Acknowledge*
 button runs the journal's own acknowledge command and is disabled for
-already-acknowledged events.
+already-acknowledged events. The *To graph* button opens a graph of the
+event's source, so you can jump from an alarm message straight to the
+signal's trend. The button is disabled when the event's source could not be
+resolved.
 
 ## Translation status
 
