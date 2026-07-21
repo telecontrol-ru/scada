@@ -38,7 +38,8 @@ The workbench regions:
   connection, and the server address and version.
 
 The dark theme is the default; light and high-contrast variants are available
-(`Ux/Theme`). Values and timestamps in all tables render in a monospace font.
+(`Ux/Theme`). Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
+change, period selection, object creation, About — follow the same theme.
 
 ## Enabling it
 
