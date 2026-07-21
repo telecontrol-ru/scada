@@ -130,6 +130,20 @@ reads as an alarm surface:
 A live alarm that also appears in the read history shows as one row — the
 journal does not duplicate it with its historical copy.
 
+## [](#transmission)Transmission rules
+
+![]({{ '/img/transmission-rules.png' | relative_url }})
+
+The transmission window (a device's "signal → address" rule list) renders in
+the workbench theme, and selecting a rule fills the Transmission-rule panel
+on the right:
+
+![]({{ '/img/transmission-rule.png' | relative_url }})
+
+The panel shows the source signal (with its TS/TI type tag), the destination
+device, the protocol and the address (IOA); the address is editable behind
+Revert/Apply when a write path is available.
+
 ## [](#inspector)Inspector
 
 ![]({{ '/img/inspector-panel.png' | relative_url }})
@@ -161,5 +175,5 @@ already-acknowledged events.
 
 This English page matches the Russian page content as of the description of
 the experimental workbench: the shell walkthrough, enabling, the command
-palette, the Table toolbar, the event journal's alarm surface, and the
-Inspector.
+palette, the Table toolbar, the event journal's alarm surface, the
+transmission rules, and the Inspector.
