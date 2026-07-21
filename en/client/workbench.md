@@ -12,18 +12,40 @@ permalink: /en/client/workbench/
 {:toc}
 
 The client ships an experimental interface variant — an "operator
-workbench": a dark colour scheme (dark / light / high-contrast variants), one
-shared palette for severity and quality colours, a section rail on the left, a
-context strip with alarm indicators on top, a command palette (*Ctrl+K*) and
-an Inspector panel on the right. The experimental interface is **off by
-default** and does not change the familiar client look; it is still under
-active development and its elements may change.
+workbench". The experimental interface is **off by default** and does not
+change the familiar client look; it is still under active development and its
+elements may change.
+
+![]({{ '/img/workbench-window.png' | relative_url }})
+
+The workbench regions:
+
+- **Section rail** (left) — switches between the overview, alarms, trends,
+  substations and tables; the Alarms section carries an unacknowledged-events
+  badge.
+- **Context strip** (top) — the search/command field and the state
+  indicators: severity tiles ("Critical N", "Warning N", "Unacknowledged N",
+  highlighted while alarms are active; with more than ten unacknowledged
+  alarms the counters give way to a single "Alarm flood" indicator), the user
+  and role, the connection state and the server version.
+- **Object explorer** — the object tree with a "Filter" field and quality
+  dots: green — good, amber — uncertain, red — bad.
+- **Workspace tabs** — the open windows (journal, tables, graphs, schematic
+  displays) as editor-style tabs.
+- **Right-hand panels** — Inspector, Device diagnostics, Access rights,
+  Transmission rule; they fill from the current selection.
+- **Status strip** (bottom) — the event summary, the user and role, the
+  connection, and the server address and version.
+
+The dark theme is the default; light and high-contrast variants are available
+(`Ux/Theme`). Values and timestamps in all tables render in a monospace font.
 
 ## Enabling it
 
-The experimental interface is enabled with the `Ux/Experimental` application
-setting (QSettings; there is no settings-dialog item yet) or the
-`SCADA_UX_EXPERIMENTAL` environment variable. Additional settings:
+The experimental interface is enabled with the *Settings → Experimental UX*
+menu item (a client restart is required), the `Ux/Experimental` application
+setting (QSettings), or the `SCADA_UX_EXPERIMENTAL` environment variable.
+Additional settings:
 
 <dl>
 
@@ -37,6 +59,15 @@ the global stylesheet — for configurations with embedded, style-sensitive
 components.</dd>
 
 </dl>
+
+## [](#palette)Command palette
+
+![]({{ '/img/command-palette.png' | relative_url }})
+
+*Ctrl+K* (or clicking the search field in the context strip) opens the command
+palette: an input line filtering as you type, every registered command and
+window-open action, plus signal search by name — a chosen signal opens in a
+table. *Enter* runs the selected entry.
 
 ## [](#table-toolbar)Table: the toolbar
 
@@ -72,6 +103,28 @@ digits stay aligned and do not shift as values update — and two columns appear
 next to the value: "Quality" with a textual quality flag, and "Trend" with a
 mini-graph of the value over the last hour, updating live.
 
+## [](#journal)Event journal as an alarm surface
+
+![]({{ '/img/events-alarm-surface.png' | relative_url }})
+
+In the experimental interface the [event journal]({{ '/en/client/events/' | relative_url }})
+reads as an alarm surface:
+
+- **Pending dot** — the leading column marks every unacknowledged row with a
+  severity-coloured dot (red — critical, amber — warning), and such a row's
+  "Acknowledge Time" cell reads "— pending —". The dot stays out of exports
+  and printouts — it is display chrome, not part of the record.
+- **Named severity** — the "Severity" column names the alarm band next to the
+  number ("Critical 80", "Warning 60").
+- **Footer strip** — below the journal, a summary of the displayed
+  unacknowledged events ("Unacknowledged: N · highest: Critical 80"; a quiet
+  journal reads "No unacknowledged events") and an *Acknowledge All* button
+  running the same command as the context menu. The button is disabled when
+  there is nothing to acknowledge.
+
+A live alarm that also appears in the read history shows as one row — the
+journal does not duplicate it with its historical copy.
+
 ## [](#inspector)Inspector
 
 ![]({{ '/img/inspector-panel.png' | relative_url }})
@@ -92,6 +145,7 @@ schematic display selects it in the Inspector as well.
 
 ## Translation status
 
-This English page matches the Russian page content as of the initial
-description of the experimental workbench (enabling, the Table toolbar,
-the Inspector).
+This English page matches the Russian page content as of the description of
+the experimental workbench: the shell walkthrough, enabling, the command
+palette, the Table toolbar, the event journal's alarm surface, and the
+Inspector.

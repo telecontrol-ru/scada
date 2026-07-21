@@ -16,6 +16,10 @@ selected context in a dedicated log window.
 
 ![]({{ '/img/menu-events-log.png' | relative_url }})
 
+In the [experimental interface]({{ '/en/client/workbench/' | relative_url }}#journal)
+the journal gains alarm chrome: a leading pending dot, named severities, a
+footer summary of the unacknowledged events, and an *Acknowledge All* button.
+
 From related views such as [tables]({{ '/en/client/table/' | relative_url }})
 and [graphs]({{ '/en/client/graph/' | relative_url }}), the user can
 open the event journal for the currently selected object. The journal is the
