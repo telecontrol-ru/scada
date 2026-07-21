@@ -144,6 +144,15 @@ Selecting a table row — including a formula row — fills the Inspector; the
 value keeps updating while the row stays selected. Clicking an element on a
 schematic display selects it in the Inspector as well.
 
+![]({{ '/img/inspector-event.png' | relative_url }})
+
+Selecting a row in the [event journal]({{ '/en/client/events/' | relative_url }})
+shows the event card in the Inspector: the source and its address, the
+severity (band name and number), the message, the event time and the
+acknowledgement state ("— pending —" while unacknowledged). The *Acknowledge*
+button runs the journal's own acknowledge command and is disabled for
+already-acknowledged events.
+
 ## Translation status
 
 This English page matches the Russian page content as of the description of
