@@ -66,9 +66,14 @@ components.</dd>
 ![]({{ '/img/workbench-overview.png' | relative_url }})
 
 A fresh profile (no saved pages) opens on the Overview page — the
-operator's working screen: a dominant trend on top (about two thirds of
-the screen) with the active-alarm table under it (the event journal in
-current mode, unacknowledged events only). The severity summary stays
+operator's working screen: the sidebar with the object tree on the left, a
+dominant trend on top (about two thirds of the screen) with the
+active-alarm table under it (the event journal in current mode,
+unacknowledged events only), and the Inspector on the right.
+
+The sidebar hosts several panes: "Objects" (the object tree with its filter
+and quality dots), "Favorites" and "Portfolio". The tabs along the bottom of
+the panel switch between them; "Objects" is the one open by default. The severity summary stays
 visible in the top-bar tiles throughout. The trend is empty until the
 operator adds signals to it; the page layout is saved in the profile as a
 regular page.
