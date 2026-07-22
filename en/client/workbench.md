@@ -73,6 +73,16 @@ Commands that are unavailable outright (without the Control privilege, for
 example) are not listed in the menu at all; for a selected object the
 [Inspector](#inspector) shows that reason instead.
 
+## [](#login)Signing in
+
+![]({{ '/img/workbench-login.png' | relative_url }})
+
+Under the experimental interface the sign-in window gains a header with the
+product mark and name, and a "Connecting to:" line below the fields showing
+which server and protocol the client is about to use. The line follows the
+fields as you change them, which helps avoid signing in to the wrong server.
+The fields themselves and the sign-in flow are unchanged.
+
 ## [](#overview)The Overview landing page
 
 ![]({{ '/img/workbench-overview.png' | relative_url }})
