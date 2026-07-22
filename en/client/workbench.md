@@ -150,9 +150,13 @@ mini-graph of the value over the last hour, updating live.
 In the experimental interface the [event journal]({{ '/en/client/events/' | relative_url }})
 reads as an alarm surface:
 
+- **Row colour is severity.** An alarm row is coloured by its severity (red —
+  critical, amber — warning); routine events stay unfilled so the eye is drawn
+  only to alarms. Acknowledging does not change the row's colour.
 - **Pending dot** — the leading column marks every unacknowledged row with a
-  severity-coloured dot (red — critical, amber — warning), and such a row's
-  "Acknowledge Time" cell reads "— pending —". The dot stays out of exports
+  dot, and such a row's "Acknowledge Time" cell reads "— pending —". The dot
+  carries the acknowledgement state and the row colour carries the severity,
+  so a pending critical alarm still reads red. The dot stays out of exports
   and printouts — it is display chrome, not part of the record.
 - **Named severity** — the "Severity" column names the alarm band next to the
   number ("Critical 800", "Warning 600").
