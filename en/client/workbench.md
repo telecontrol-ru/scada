@@ -145,13 +145,13 @@ reads as an alarm surface:
   "Acknowledge Time" cell reads "— pending —". The dot stays out of exports
   and printouts — it is display chrome, not part of the record.
 - **Named severity** — the "Severity" column names the alarm band next to the
-  number ("Critical 80", "Warning 60").
+  number ("Critical 800", "Warning 600").
 - **Areas sidebar** — to the left of the journal, "All areas" and the
   top-level object areas; an area with unacknowledged events carries their
   count. Selecting an area filters the journal to it; the other areas keep
   their counts meanwhile.
 - **Footer strip** — below the journal, a summary of the displayed
-  unacknowledged events ("Unacknowledged: N · highest: Critical 80"; a quiet
+  unacknowledged events ("Unacknowledged: N · highest: Critical 800"; a quiet
   journal reads "No unacknowledged events") and an *Acknowledge All* button
   running the same command as the context menu. The button is disabled when
   there is nothing to acknowledge.
