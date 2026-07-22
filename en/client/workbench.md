@@ -61,6 +61,18 @@ components.</dd>
 
 </dl>
 
+## [](#menu-reasons)Why a command is unavailable
+
+When a context-menu command is disabled, hovering it shows a tooltip with
+the reason — "The signal has no output channel" for *Control…*, say, or
+"Nothing is waiting to be acknowledged" for *Acknowledge All*. That makes
+it clear whether the command is blocked by the object's state or simply
+does not apply to the current selection.
+
+Commands that are unavailable outright (without the Control privilege, for
+example) are not listed in the menu at all; for a selected object the
+[Inspector](#inspector) shows that reason instead.
+
 ## [](#overview)The Overview landing page
 
 ![]({{ '/img/workbench-overview.png' | relative_url }})
