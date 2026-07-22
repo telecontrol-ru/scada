@@ -168,9 +168,14 @@ selection:
 - the object's name and its address — a node identifier or a formula;
 - the current value in large type with its quality flag ("Good" / "Bad");
 - the time of the last update;
-- a *Control…* button that opens the two-stage command confirmation. The
-  button is disabled when the object is not commandable — for example, for a
-  computed expression.
+- the signal's limits — every configured band ("HiHi", "Hi", "Lo", "LoLo").
+  The band the current value has crossed is coloured and labelled, so it is
+  clear which limit tripped. The section is hidden for signals that configure
+  no limits;
+- a *Control…* button that opens the two-stage command confirmation. When
+  control is unavailable, the reason appears under the button: the object
+  cannot be controlled (a computed expression or a folder, for example), the
+  signal has no output channel, or the session lacks the Control privilege.
 
 Selecting a table row — including a formula row — fills the Inspector; the
 value keeps updating while the row stays selected. Clicking an element on a
