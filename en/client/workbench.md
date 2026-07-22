@@ -224,6 +224,11 @@ event's source, so you can jump from an alarm message straight to the
 signal's trend. The button is disabled when the event's source could not be
 resolved.
 
+Below that, the "History" section shows the event's own lifecycle: when it
+was raised, when the server received it (that row appears only when delivery
+lagged, so the gap shows the delay) and when it was acknowledged. For a
+pending event the last row — "Awaiting acknowledgement" — carries no time.
+
 ## Translation status
 
 This English page matches the Russian page content as of the description of
