@@ -189,6 +189,16 @@ The panel shows the source signal (with its TS/TI type tag), the destination
 device, the protocol and the address (IOA); the address is editable behind
 Revert/Apply when a write path is available.
 
+## [](#display)Schematic display
+
+![]({{ '/img/substation-display.png' | relative_url }})
+
+Under the experimental interface the schematic (single-line) display window
+gains a toolbar (a "Live" indicator, zoom / fit / 100% / export) and two bay
+strips below it: "Measurements" — the selected signals' values with their
+update times — and "Recent events" — the active (unacknowledged) alarms with
+their severity, time, object and message. The diagram geometry is unchanged.
+
 ## [](#inspector)Inspector
 
 ![]({{ '/img/inspector-panel.png' | relative_url }})
