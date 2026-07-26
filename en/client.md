@@ -124,6 +124,31 @@ When control confirmation is enabled in `Settings`, each telecontrol or
 teleadjustment action must be confirmed before execution. The client
 also indicates when control is blocked.
 
+### Two-stage control
+
+When an object has [two-stage control]({{ '/en/dev/data-items/' | relative_url }})
+enabled, the command reaches the device in two stages, as defined by
+IEC 60870-5 (SELECT/EXECUTE):
+
+1. **Select.** The client sends a select command. The device reserves its
+   output for the requested value but switches nothing yet.
+2. **Operator confirmation.** The prompt is shown only after the select
+   succeeds, which is why it states that the device is already armed. It
+   reviews the object's present reading against the commanded value and warns
+   that the action cannot be undone remotely:
+
+   ![]({{ '/img/control-select-confirm.png' | relative_url }})
+
+3. **Execute.** Answering yes sends the execute command, and the device
+   switches the circuit it already reserved.
+
+Answering no sends a cancel, so the selection is released at once instead of
+staying armed until the device's own select timeout expires. Drivers that do
+not implement cancel reject it; that rejection is not surfaced to the
+operator, because the selection lapses on the device timeout regardless.
+
+One-stage control is a single value write and uses neither stage.
+
 Manual input is intended for cases where a data item must temporarily
 override telemetry from field devices. If blocking is enabled for the
 object, incoming telemetry is ignored and the manual value takes
