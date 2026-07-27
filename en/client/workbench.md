@@ -23,19 +23,22 @@ The workbench regions:
 - **Section rail** (left) — switches between the overview, alarms, trends,
   substations and tables; the Alarms section carries an unacknowledged-events
   badge.
-- **Context strip** (top) — the search/command field and the state
-  indicators: severity tiles ("Critical N", "Warning N", "Unacknowledged N",
+- **Context strip** (top) — the search/command field and the alarm state:
+  severity tiles ("Critical N", "Warning N", "Unacknowledged N",
   highlighted while alarms are active; with more than ten unacknowledged
-  alarms the counters give way to a single "Alarm flood" indicator), the user
-  and role, the connection state and the server version.
+  alarms the counters give way to a single "Alarm flood" indicator). The user,
+  the connection state and the server address are not shown here — they appear
+  in the status strip only.
 - **Object explorer** — the object tree with a "Filter" field and quality
   dots: green — good, amber — uncertain, red — bad.
 - **Workspace tabs** — the open windows (journal, tables, graphs, schematic
   displays) as editor-style tabs.
 - **Right-hand panels** — Inspector, Device diagnostics, Access rights,
   Transmission rule; they fill from the current selection.
-- **Status strip** (bottom) — the event summary, the user and role, the
-  connection, and the server address and version.
+- **Status strip** (bottom) — the event summary, the minimum severity, the
+  highest active severity, the user and role, the connection state, the server
+  round-trip time, and the server address and version. This is the only place
+  the user and the connection details are shown.
 
 The dark theme is the default; light and high-contrast variants are available
 (`Ux/Theme`). Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
