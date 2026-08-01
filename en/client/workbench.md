@@ -40,27 +40,65 @@ The workbench regions:
   round-trip time, and the server address and version. This is the only place
   the user and the connection details are shown.
 
-The dark theme is the default; light and high-contrast variants are available
-(`Ux/Theme`). Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
+By default the appearance follows the operating system; dark, light and
+high-contrast variants are also available (*Settings → Colour scheme*).
+Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
 change, period selection, object creation, About — follow the same theme.
 
 ## Enabling it
 
-The experimental interface is enabled with the *Settings → Experimental UX*
-menu item (a client restart is required), the `Ux/Experimental` application
-setting (QSettings), or the `SCADA_UX_EXPERIMENTAL` environment variable.
-Additional settings:
+The experimental interface is chosen from the *Settings → Colour scheme*
+menu — next to *Style*, and behaving the same way: the choice applies
+immediately, with no dialog and no restart.
+
+![](../../img/colour-scheme-menu.png)
 
 <dl>
 
+<dt>Classic</dt>
+<dd>The client's ordinary look: the operating system's appearance, with the
+experimental interface off. The default.</dd>
+
+<dt>Follow system</dt>
+<dd>The experimental interface in whichever appearance — light or dark — the
+operating system is set to. A desktop appearance switch applies
+immediately.</dd>
+
+<dt>Dark, Light, High contrast</dt>
+<dd>The experimental interface in an explicitly chosen appearance. Such a
+choice does not follow the operating system.</dd>
+
+</dl>
+
+The choice is saved when the client exits and restored on the next start.
+
+**Colours change immediately, the layout after a restart.** Switching between
+appearances (from dark to light, say) applies in full. Crossing between
+Classic and any experimental-interface appearance also changes what the
+workbench contains — the activity bar, the context bar and the Inspector —
+and that is built when the client starts. The client says so when you cross
+that boundary.
+
+### Additional settings
+
+The menu choice is kept in the application settings (QSettings), which can
+also be set in advance — when rolling the client out to many machines, say.
+
+<dl>
+
+<dt>Ux/Experimental</dt>
+<dd>Whether the experimental interface is on. Corresponds to choosing anything
+other than Classic.</dd>
+
 <dt>Ux/Theme</dt>
-<dd>Theme variant: <code>dark</code> (default), <code>light</code>,
-<code>hc</code> (high contrast).</dd>
+<dd>Appearance variant: <code>system</code> (default, follows the OS),
+<code>dark</code>, <code>light</code>, <code>hc</code> (high contrast).
+Mirrors the menu choice.</dd>
 
 <dt>Ux/StyleSheet</dt>
 <dd>When <code>false</code>, theming is limited to the colour palette, without
 the global stylesheet — for configurations with embedded, style-sensitive
-components.</dd>
+components. Not exposed in the menu.</dd>
 
 </dl>
 
