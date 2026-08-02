@@ -173,8 +173,9 @@ that boundary.
 
 ### Additional settings
 
-The menu choice is kept in the application settings (QSettings), which can
-also be set in advance — when rolling the client out to many machines, say.
+The choice made in the [settings dialog](#settings-dialog) is kept in the
+application settings (QSettings), which can also be set in advance — when
+rolling the client out to many machines, say.
 
 <dl>
 
@@ -185,12 +186,12 @@ other than Classic.</dd>
 <dt>Ux/Theme</dt>
 <dd>Appearance variant: <code>system</code> (default, follows the OS),
 <code>dark</code>, <code>light</code>, <code>hc</code> (high contrast).
-Mirrors the menu choice.</dd>
+Mirrors the Colour scheme list in the dialog.</dd>
 
 <dt>Ux/StyleSheet</dt>
 <dd>When <code>false</code>, theming is limited to the colour palette, without
 the global stylesheet — for configurations with embedded, style-sensitive
-components. Not exposed in the menu.</dd>
+components. Not exposed in the dialog.</dd>
 
 </dl>
 
