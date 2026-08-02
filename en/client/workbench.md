@@ -351,3 +351,14 @@ is:
 - **someone else's** (an administrator reset) — the current-password field is
   not shown: the server does not check it, so asking for it would be
   misleading.
+
+### [](#audit-log)Audit log
+
+The Audit log window is the event journal narrowed to audit events: who did
+what to accounts, passwords and role membership. Both successful and refused
+operations are recorded — a log showing only what succeeded cannot answer who
+*tried*.
+
+The window is available to administrators only. It carries no acknowledgement
+controls: an audit entry records what happened, and there is nothing in it to
+acknowledge.
