@@ -20,15 +20,10 @@ elements may change.
 
 The workbench regions:
 
-- **Section rail** (left) — two groups separated by a divider. The top group
-  selects the **sidebar mode**: Objects (the object tree and portfolios),
-  Devices (the hardware tree), Files (files and favourites) and Nodes
-  (administrators only). A mode changes only what fills the sidebar — it never
-  opens a tab and never changes the page. The bottom group lists the profile's
-  **pages** as numbered buttons, with the page title in the tooltip: click a
-  number to switch, "+" to create one, drag to reorder, and right-click for
-  Rename / Delete / New. The unacknowledged-events count lives in the context
-  strip.
+- **Section rail** (left) — three zones: the **sidebar modes**, the profile's
+  **pages** on their own band, and the **pinned commands** at the foot.
+  Described [below](#activity-bar). The unacknowledged-events count lives in
+  the context strip.
 - **Context strip** (top) — the search/command field and the alarm state:
   severity tiles ("Critical N", "Warning N", "Unacknowledged N",
   highlighted while alarms are active; with more than ten unacknowledged
@@ -54,17 +49,101 @@ can suspend a client whose window is not visible, which halts data and events,
 not only the display. A separate event reports when the server answers again.
 
 By default the appearance follows the operating system; dark, light and
-high-contrast variants are also available (*Settings → Colour scheme*).
+high-contrast variants are also available
+(*Settings → Settings… → Colour scheme*).
 Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
 change, period selection, object creation, About — follow the same theme.
 
+## [](#activity-bar)The section rail
+
+A narrow strip down the left edge of the window, in three zones. It **never
+opens a workspace tab** — each zone answers a different level of navigation.
+
+![](../../img/workbench-activity-rail.png)
+
+<dl>
+
+<dt>Sidebar modes (top)</dt>
+<dd>Select <b>what the sidebar shows</b>: Objects (the object tree and
+portfolios), Devices (the hardware tree), Files (files and favourites), Nodes
+(the address space) and Administration (the administrator's section list). A
+mode changes only what fills the sidebar — it never opens a tab and never
+changes the page. Nodes and Administration are for administrators only: for
+everyone else those buttons are <b>hidden</b>, not disabled.</dd>
+
+<dt>Pages (middle, on their own band)</dt>
+<dd>The profile's pages; each one replaces the whole workspace. A button
+carries the page's chosen icon, or its position when no icon is set; the title
+and the position are both in the tooltip (<code>2 · Alarms</code>), because
+neither fits a 52px button. "+" creates a page. The band behind this group is
+what keeps the active-page marker from reading as a mode marker: a mode and a
+page are active at the same time, and the two markers are drawn alike.</dd>
+
+<dt>Pinned commands (bottom)</dt>
+<dd>Settings opens the <a href="#settings-dialog">settings dialog</a>; Users
+opens the account list. A pinned command opens <b>in the current page</b>, the
+way any window does, so the page marker stays lit. Users is for administrators
+only and is hidden for everyone else.</dd>
+
+</dl>
+
+A page can be **moved by dragging**: a line between the buttons shows where it
+will land. The gap between two buttons and the area below the last one are both
+valid drop positions.
+
+Right-click a page button for its menu:
+
+<dl>
+
+<dt>Open page</dt>
+<dd>Switch to it. Absent when the page is already open.</dd>
+
+<dt>Rename…</dt>
+<dd>Set the title. Acts on the current page.</dd>
+
+<dt>Duplicate</dt>
+<dd>Copy the page with its layout and windows, and switch to the copy. The copy
+is taken after saving, so it carries what is on screen rather than what was
+last saved.</dd>
+
+<dt>Move up / Move down</dt>
+<dd>Reorder without dragging. Up is unavailable on the first page, down on the
+last.</dd>
+
+<dt>Icon</dt>
+<dd>Choose the page's icon; "None" restores the position number.</dd>
+
+<dt>Delete page</dt>
+<dd>Delete the page and its layout. Kept apart from the other items so it is
+not reached by habit.</dd>
+
+</dl>
+
+The rail's markers are a **projection of real state**, not a memory of the last
+click. If the open panes match no mode — because one was closed by hand, say —
+the mode marker clears rather than claiming something that is not there.
+
+## [](#settings-dialog)The settings dialog
+
+*Settings → Settings…* opens the client's settings. The Settings button at the
+foot of the [section rail](#activity-bar) opens the same dialog — one command
+behind both, so the settings live in exactly one place.
+
+![](../../img/settings-dialog.png)
+
+Settings apply **immediately**, as the menu items did: there is nothing to
+confirm, so the dialog carries Close alone. The checkboxes are the status bar
+and toolbar visibility, control confirmation and the control success message,
+event behaviour (show, hide, flash the window, sound) and — where the platform
+supports speech synthesis — spoken announcements. A disabled checkbox explains
+why in its tooltip. The lists at the foot are Language, Style and Colour
+scheme.
+
 ## Enabling it
 
-The experimental interface is chosen from the *Settings → Colour scheme*
-menu — next to *Style*, and behaving the same way: the choice applies
-immediately, with no dialog and no restart.
-
-![](../../img/colour-scheme-menu.png)
+The experimental interface is chosen in the *Settings → Settings…* dialog,
+from the **Colour scheme** list — next to *Style*, and behaving the same way:
+the choice applies immediately, with no restart.
 
 <dl>
 
