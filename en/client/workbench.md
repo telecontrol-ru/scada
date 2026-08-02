@@ -20,9 +20,15 @@ elements may change.
 
 The workbench regions:
 
-- **Section rail** (left) — switches between the overview, alarms, trends,
-  substations and tables; the Alarms section carries an unacknowledged-events
-  badge.
+- **Section rail** (left) — two groups separated by a divider. The top group
+  selects the **sidebar mode**: Objects (the object tree and portfolios),
+  Devices (the hardware tree), Files (files and favourites) and Nodes
+  (administrators only). A mode changes only what fills the sidebar — it never
+  opens a tab and never changes the page. The bottom group lists the profile's
+  **pages** as numbered buttons, with the page title in the tooltip: click a
+  number to switch, "+" to create one, drag to reorder, and right-click for
+  Rename / Delete / New. The unacknowledged-events count lives in the context
+  strip.
 - **Context strip** (top) — the search/command field and the alarm state:
   severity tiles ("Critical N", "Warning N", "Unacknowledged N",
   highlighted while alarms are active; with more than ten unacknowledged
@@ -293,3 +299,55 @@ This English page matches the Russian page content as of the description of
 the experimental workbench: the shell walkthrough, enabling, the command
 palette, the Table toolbar, the event journal's alarm surface, the
 transmission rules, and the Inspector.
+
+## [](#administration)Administration
+
+The experimental interface adds an **Administration** mode to the activity
+bar — a fifth one after Objects, Devices, Files and Nodes. It is available only
+to an account holding the configure right: without it the mode is not shown at
+all, rather than shown and disabled.
+
+Its explorer lists the administrative windows: Users, Roles, Password policy,
+Databases, Formats, Simulated Signals. The list is built from the commands the
+shell can actually carry out, so a window missing from the build, or one this
+session may not open, is simply not offered.
+
+### [](#users)Users
+
+The Users window reads the server's standard account list and shows, for each
+account: its name, description, **roles**, and whether it is enabled. A
+disabled account cannot log in.
+
+The Roles column *is* the permission model: the server grants rights by role,
+not by the former pair of access-right bits. An account may hold several roles
+at once, and their permissions combine. "None" means the account holds no
+role — it can log in and nothing more; "No data" means the role list could not
+be read, which is not the same thing.
+
+### [](#roles)Roles
+
+The Roles window lists every role on the server together with its members. The
+Type column distinguishes standard roles, which cannot be deleted, from custom
+roles created in this installation. The window is read-only: changing a role's
+membership is a privileged operation performed on the server.
+
+### [](#password-policy)Password policy
+
+The Password policy window shows what the server requires of a new password:
+the permitted length, the required character classes, and the written
+description of the rule configured in this installation. These are not client
+settings — they are the rules the server itself validates against.
+
+The same rules apply when changing a password: the dialog warns about a
+mismatch before sending the request, but the server always makes the final
+decision.
+
+### [](#set-password)Setting a password
+
+The *Set Password…* command behaves differently depending on whose account it
+is:
+
+- **your own** — the current password must be entered;
+- **someone else's** (an administrator reset) — the current-password field is
+  not shown: the server does not check it, so asking for it would be
+  misleading.
