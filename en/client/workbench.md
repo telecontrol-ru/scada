@@ -40,6 +40,13 @@ The workbench regions:
   round-trip time, and the server address and version. This is the only place
   the user and the connection details are shown.
 
+The server round-trip time is the age of an outstanding ping, so a growing
+number means no answer is arriving. Past 3 seconds the cell gains a "no
+response" marker and a warning is added to the journal: either the connection
+has degraded, or the client itself has stopped running — the operating system
+can suspend a client whose window is not visible, which halts data and events,
+not only the display. A separate event reports when the server answers again.
+
 By default the appearance follows the operating system; dark, light and
 high-contrast variants are also available (*Settings → Colour scheme*).
 Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
