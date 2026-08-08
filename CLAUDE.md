@@ -6,6 +6,27 @@ nav_exclude: true
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## This directory is part of the SCADA monorepo
+
+Since 2026-08-08 the user manual is developed in the monorepo at `scada-docs/`,
+and <https://github.com/telecontrol-ru/scada> is a **generated one-way export**
+of this directory (ADR 0009; `tools/export/products.toml` names it). Two
+consequences:
+
+- **Edit here, never in the published repository.** A commit pushed straight to
+  the export is overwritten by the next export, silently. The published history
+  is appended to and never rewritten, which is what keeps outside clones and the
+  Pages deployment intact.
+- **Dependabot's automated PRs are off** for the same reason: they landed on the
+  export. Bump `Gemfile` / `Gemfile.lock` here instead. Vulnerability alerts
+  stay on, so advisories still surface — the backlog entry is in the
+  superproject's `tasks.md` under *User docs › Site infrastructure*.
+
+The one backlog for the whole tree is the superproject's `tasks.md`; this
+directory does not have its own (the former `tasks.md` here was folded into it).
+Paths cited below that start outside this directory — `client/`, `docs/`,
+`cmake/` — are monorepo-rooted.
+
 ## Project Overview
 
 This is the documentation site for Telecontrol SCADA (ОИК Телеконтроль), an industrial control system. The site is built with Jekyll and hosted on GitHub Pages using the [Just the Docs](https://just-the-docs.com) theme as a normal gem dependency.
@@ -114,12 +135,11 @@ Client-side search via Lunr is enabled in `_config.yml`. The tokenizer is config
 
 ## Screenshots under `img/`
 
-Most images under `img/` are produced by an offline screenshot generator
-that lives in the scada repo (`client/tools/screenshot_generator/`; its
-authoritative design/workflow doc is `client/docs/screenshots.md` there).
+Most images under `img/` are produced by the offline screenshot generator at
+`client/tools/screenshot_generator/`, two directories away in this same tree;
+its authoritative design/workflow doc is `docs/ops/client-screenshots.md`.
 Every file in `img/` is tagged in the manifest
-`client/docs/screenshots/image_manifest.json` of the scada checkout
-(usually a sibling of this repo) with one of:
+`client/screenshots/image_manifest.json` with one of:
 
 - `auto-view` — main-window view; generator renders it via a
   `WindowInfo` registered with the controller registry.
@@ -141,21 +161,27 @@ manual page, so it is not expected in `img/`.
 
 ### Regenerating auto images
 
-From a scada checkout on the Windows dev box:
+From the monorepo checkout on the Windows dev box:
 
 ```shell
-cmd.exe /c "cd /d C:\tc\scada && cmake --workflow --preset update-screenshots-dev"
+cmd.exe /c "cd /d C:\tc\tc && cmake --workflow --preset update-screenshots-dev"
 ```
 
 That workflow rebuilds the generator, regenerates the local gallery, and
 copies the manifest's `current_generator_owned_subset` — currently
 `client-login.png`, `client-retransmission.png`, `graph-cursor.png`,
-`users.png` — into this repo's `img/` (the scada build's
-`SCADA_DOCS_IMG_DIR` cache variable must point at it; the default is
-`<scada>/scada-docs/img`).
+`users.png` — into `img/`.
 
-Then `git diff img/` in scada-docs to review the changes before
-committing.
+`SCADA_DOCS_IMG_DIR` needs no setting now: it defaults to
+`${PROJECT_SOURCE_DIR}/scada-docs/img` (`CMakeLists.txt`), which is this
+directory. **That default was broken between the 2026-08-02 monorepo cutover and
+the 2026-08-08 graft** — the docs tree was a sibling *outside* the project source
+dir, so `cmake/update_screenshots.cmake` hard-errored with "scada-docs img dir
+not found" unless the variable was pointed at `../scada-docs/img` by hand. If you
+have that override in a `CMakeUserPresets.json`, delete it.
+
+Then `git diff scada-docs/img/` to review before committing. The generator
+change and the images it produced now belong in the **same commit**.
 
 ### Adding a new image
 

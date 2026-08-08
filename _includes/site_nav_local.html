@@ -5,7 +5,7 @@
 
 {%- assign nav_pages = "" | split: "" -%}
 {%- for nav_page in site.html_pages -%}
-  {%- if nav_page.title != nil and nav_page.nav_exclude != true and nav_page.name != 'CLAUDE.md' and nav_page.name != 'tasks.md' -%}
+  {%- if nav_page.title != nil and nav_page.nav_exclude != true and nav_page.name != 'CLAUDE.md' -%}
     {%- assign nav_page_is_en = false -%}
     {%- if nav_page.url == '/en/' or nav_page.url contains '/en/' -%}
       {%- assign nav_page_is_en = true -%}
