@@ -22,6 +22,13 @@ consequences:
   stay on, so advisories still surface — the backlog entry is in the
   superproject's `tasks.md` under *User docs › Site infrastructure*.
 
+The published branch is `main` (renamed from `master` on 2026-08-08). Three
+things had to agree for the Pages deploy to keep working, and the third is not
+visible in this directory: `deploy-docs.yml`'s trigger, `_config.yml`'s
+`gh_edit_branch`, and the `github-pages` **environment's** deployment-branch
+policy, which still said `master` and rejected the deploy with no steps and no
+logs. See `docs/ops/monorepo-import-and-export.md`.
+
 The one backlog for the whole tree is the superproject's `tasks.md`; this
 directory does not have its own (the former `tasks.md` here was folded into it).
 Paths cited below that start outside this directory — `client/`, `docs/`,
