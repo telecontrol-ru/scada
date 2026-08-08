@@ -4,3 +4,8 @@ _site
 /.vs
 .bundle
 vendor
+# Agent scratch (settings.local.json, worktrees) stays local, but `skills/` is
+# shared project tooling and has to be re-included explicitly — git cannot
+# re-include a path whose parent directory is itself excluded.
+/.claude/*
+!/.claude/skills/
