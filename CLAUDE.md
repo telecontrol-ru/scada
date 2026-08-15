@@ -154,12 +154,18 @@ Every file in `img/` is tagged in the manifest
   pipeline.
 - `auto-menu` — right-click / popup menu rendered from the command
   registries.
-- `auto-state` — device / node state capture (online, offline, …).
+- `reshell-theme` — a capture of the opt-in UX reshell; renders only under
+  the generator's `--theme` flag.
 - `manual-diagram` — hand-drawn architecture or protocol diagram.
+- `manual-annotated` — a generated capture with call-outs drawn on by hand.
 - `manual-modus` — Modus schematic; depends on the ActiveX runtime the
   offline fixture doesn't have.
 - `manual-os` — OS-level screenshot (e.g. Windows firewall).
 - `obsolete` — no longer referenced from any page; removal candidate.
+
+(`auto-state` was retired on 2026-08-15: its five rows were audited, none was
+a device-state capture, and all five were retagged or retired. Read the live
+tag population out of `counts` in the manifest rather than from this list.)
 
 Manifest conventions: `referenced_from` lists the **Russian (canonical)
 pages only** — `en/` mirrors are implied by `_data/i18n_pages.yml`; an
@@ -168,24 +174,37 @@ manual page, so it is not expected in `img/`.
 
 ### Regenerating auto images
 
-From the monorepo checkout on the Windows dev box:
+**Two commands, in two directories** — ADR 0011 made `client` a product with
+its own build tree, so the render is a target there and the publish is a
+script the superproject root runs. From the monorepo checkout on the Windows
+dev box:
 
 ```shell
-cmd.exe /c "cd /d C:\tc\tc && cmake --workflow --preset update-screenshots-dev"
+cd C:\tc\tc\client
+cmake --build --preset relwithdebinfo -t regenerate_client_screenshots
+cd C:\tc\tc
+cmake -DSCADA_SCREENSHOT_SRC_DIR=client/screenshots \
+      -DSCADA_DOCS_IMG_DIR=scada-docs/img \
+      -P cmake/update_screenshots.cmake
 ```
 
-That workflow rebuilds the generator, regenerates the local gallery, and
-copies the manifest's `current_generator_owned_subset` — currently
-`client-login.png`, `client-retransmission.png`, `graph-cursor.png`,
-`users.png` — into `img/`.
+The first rebuilds the generator if needed and regenerates the tracked gallery
+in `client/screenshots/`. The second copies the manifest's
+`current_generator_owned_subset` into this directory's `img/`. Read the subset
+from the manifest — it was four files when this section was written and is
+nine today.
 
-`SCADA_DOCS_IMG_DIR` needs no setting now: it defaults to
-`${PROJECT_SOURCE_DIR}/scada-docs/img` (`CMakeLists.txt`), which is this
-directory. **That default was broken between the 2026-08-02 monorepo cutover and
-the 2026-08-08 graft** — the docs tree was a sibling *outside* the project source
-dir, so `cmake/update_screenshots.cmake` hard-errored with "scada-docs img dir
-not found" unless the variable was pointed at `../scada-docs/img` by hand. If you
-have that override in a `CMakeUserPresets.json`, delete it.
+**Both `-D` variables are required.** `cmake/update_screenshots.cmake` runs in
+script mode, so there is no cache and nothing to default from; it fails by name
+on either one missing. Earlier text here said `SCADA_DOCS_IMG_DIR` defaults to
+`${PROJECT_SOURCE_DIR}/scada-docs/img` — that was true only of the
+`update_screenshots` target, which was deleted along with the root's client
+build. A `SCADA_DOCS_IMG_DIR` override left in a `CMakeUserPresets.json` is now
+read by nothing at all; delete it.
+
+**Nothing enforces the order any more.** The single `update-screenshots-dev`
+workflow preset that used to run both halves is gone, and a publish run on its
+own will happily copy the previous render into `img/` without a word.
 
 Then `git diff scada-docs/img/` to review before committing. The generator
 change and the images it produced now belong in the **same commit**.
@@ -194,20 +213,24 @@ change and the images it produced now belong in the **same commit**.
 
 1. Decide whether the image can be auto-generated. If yes, add an entry to
    the manifest with the right `auto-*` tag, then extend
-   `client/tools/screenshot_generator/screenshot_data.json` in the scada
-   repo (`client/docs/screenshots.md` there documents the JSON schema and
-   the step-by-step flow per capture kind).
+   `client/tools/screenshot_generator/screenshot_data.json` in this same tree
+   (`docs/ops/client-screenshots.md` documents the JSON schema and the
+   step-by-step flow per capture kind).
 2. If it has to be hand-captured (`manual-*`), still add an entry there
    so future editors don't assume it's auto.
 3. Reference it from the right markdown page:
    - Russian root pages can use `![](img/foo.png)`
    - Russian `client/` or `dev/` pages can use `![](../img/foo.png)`
    - English pages should use `![]({{ '/img/foo.png' | relative_url }})`
-4. Validate manifest ↔ `img/` ↔ page consistency from the scada checkout:
+4. Validate manifest ↔ `img/` ↔ page consistency from the tree root:
 
    ```shell
-   python3 client/docs/screenshots/validate_image_manifest.py --docs-repo <this repo>
+   python3 client/screenshots/validate_image_manifest.py
    ```
+
+   It finds the manual itself since the graft; `--docs-repo` is no longer
+   needed and naming a pre-graft sibling checkout would validate against a
+   frozen tree.
 
    Run it after adding, retagging, or deleting any image, and after moving
    an image reference between pages.
