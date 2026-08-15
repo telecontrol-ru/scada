@@ -14,7 +14,7 @@ permalink: /en/client/device-watch/
 The device watch window shows the data-exchange event log for the
 selected device in real time.
 
-![]({{ '/img/devices-traffic.png' | relative_url }})
+![]({{ '/img/device-watch.png' | relative_url }})
 
 To open the window, select a device in the equipment panel and press the
 `Watch` button on the command bar, or choose `Watch` from the context

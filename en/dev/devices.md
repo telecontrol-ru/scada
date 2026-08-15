@@ -14,7 +14,7 @@ permalink: /en/dev/devices/
 The equipment window can be opened from the main menu with
 `Further -> Equipment`.
 
-![]({{ '/img/devices-off.png' | relative_url }})
+![]({{ '/img/hardware-tree.png' | relative_url }})
 
 ## Create devices
 
