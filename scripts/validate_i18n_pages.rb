@@ -27,7 +27,7 @@ def inferred_permalink(relative_path)
 end
 
 def extract_front_matter(file_path)
-  lines = File.readlines(file_path, chomp: true)
+  lines = File.readlines(file_path, chomp: true, encoding: "UTF-8")
   return nil unless lines.first == "---"
 
   closing_index = lines[1..].index("---")
@@ -70,7 +70,14 @@ def validate_unique_page_permalinks(by_permalink)
 end
 
 def load_pair_mappings
-  data = YAML.safe_load_file(MAP_PATH, permitted_classes: [], aliases: false)
+  # Read-then-parse rather than YAML.safe_load_file: the latter arrived in
+  # Psych 4 (Ruby 3.0) and this tree is still run against the macOS system
+  # Ruby 2.6. The explicit UTF-8 read is not incidental either -- the mapping
+  # and the pages it names carry Russian text, and a caller whose locale
+  # leaves the default external encoding US-ASCII gets "invalid byte sequence"
+  # instead of a validation result.
+  data = YAML.safe_load(File.read(MAP_PATH, encoding: "UTF-8"),
+                        permitted_classes: [], aliases: false)
   abort "#{MAP_PATH} must contain a YAML sequence" unless data.is_a?(Array)
 
   data
@@ -115,6 +122,7 @@ end
 
 permalinks = collect_permalinks
 validate_unique_page_permalinks(permalinks)
-validate_pair_mappings(permalinks, load_pair_mappings)
+mappings = load_pair_mappings
+validate_pair_mappings(permalinks, mappings)
 
-puts "Validated #{permalinks.size} page permalinks and #{YAML.safe_load_file(MAP_PATH).size} i18n mappings."
+puts "Validated #{permalinks.size} page permalinks and #{mappings.size} i18n mappings."

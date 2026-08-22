@@ -136,6 +136,20 @@ ruby scripts/validate_en_links.rb
 bundle exec jekyll build --destination ../_site_test
 ```
 
+**The two Ruby validators must keep running on the macOS system Ruby (2.6),
+and must not depend on the caller's locale.** Both broke on exactly those two
+things until 2026-08-22, which made the instruction above one that every docs
+change was quietly told to skip: `validate_i18n_pages.rb` called
+`YAML.safe_load_file`, which is Psych 4 (Ruby 3.0+), and `validate_en_links.rb`
+read files in the default external encoding, so a caller without a UTF-8 locale
+got `invalid byte sequence in US-ASCII` off the first Russian byte rather than a
+validation result. So: read with an explicit `encoding: "UTF-8"` and parse with
+`YAML.safe_load(File.read(...))` — do not "modernise" either back. The scripts
+are also registered as the ctest checks `scada_docs_i18n_pages_check` and
+`scada_docs_en_links_check` at the superproject root, which is what now runs
+them; that registration is why the Ruby-2.6 constraint is real rather than
+theoretical.
+
 ## Search
 
 Client-side search via Lunr is enabled in `_config.yml`. The tokenizer is configured to split on whitespace and punctuation so Cyrillic queries work.

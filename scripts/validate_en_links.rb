@@ -21,7 +21,12 @@ end
 errors = []
 
 markdown_files.each do |file_path|
-  content = File.read(file_path)
+  # Explicit UTF-8: the English pages link to Russian-named assets and quote
+  # Russian UI labels, so under a locale that leaves the default external
+  # encoding US-ASCII the first `line.match?` below raises "invalid byte
+  # sequence" rather than reporting anything. Do not rely on the caller's
+  # RUBYOPT/LANG for this.
+  content = File.read(file_path, encoding: "UTF-8")
   rel_path = relative_path(file_path)
 
   content.each_line.with_index(1) do |line, line_number|
