@@ -134,10 +134,9 @@ behind both, so the settings live in exactly one place.
 Settings apply **immediately**, as the menu items did: there is nothing to
 confirm, so the dialog carries Close alone. The checkboxes are the status bar
 and toolbar visibility, control confirmation and the control success message,
-event behaviour (show, hide, flash the window, sound) and — where the platform
-supports speech synthesis — spoken announcements. A disabled checkbox explains
-why in its tooltip. The lists at the foot are Language, Style and Colour
-scheme.
+and event behaviour (show, hide, flash the window, sound). A disabled checkbox
+explains why in its tooltip. The lists at the foot are Language, Style and
+Colour scheme.
 
 ## Enabling it
 
