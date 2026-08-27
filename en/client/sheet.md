@@ -54,6 +54,28 @@ For the selected cell range, the user can set:
 * **conditional formatting** to change the cell appearance based on its
   value
 
+## Table size
+
+Rows and columns are inserted from the header context menu, the same way
+they are in familiar spreadsheet editors:
+
+* right-click a **row header** (the number on the left) for `Insert 1 row
+  above` or `Insert 1 row below`;
+* right-click a **column header** (the letter on top) for `Insert 1 column
+  left` or `Insert 1 column right`.
+
+An insertion shifts the existing cells and discards nothing: a cell's
+contents and its formatting travel with it.
+
+Below the last row there is an **+ Add row** bar that appends a row to the
+end of the table.
+
+Deleting rows and columns is not supported yet.
+
+{: .note }
+> Inserting rows and columns is available in the web interface. In the
+> desktop Client, the size of a user table is set when the table is created.
+
 ## Cell blinking
 
 Cells whose values have changed can blink to draw the operator's
