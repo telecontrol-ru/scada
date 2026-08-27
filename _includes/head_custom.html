@@ -1,0 +1,201 @@
+{%- comment -%}
+Consent-gated Google Analytics for the manual.
+
+DO NOT replace this with the theme's built-in `ga_tracking` setting. Just the
+Docs' own `_includes/head.html` loads gtag.js unconditionally when
+`site.ga_tracking` is set — before the reader has agreed to anything, and with
+no way to decline. That is exactly the behaviour this file exists to avoid, so
+`ga_tracking` is deliberately left unset in `_config.yml`; the key read here is
+`analytics_measurement_id`.
+
+Nothing is fetched from Google until the reader accepts. The decision is kept
+in localStorage under the same key and the same record shape the web client
+uses (`web/apps/app/src/services/analytics.ts`), which is not incidental: the
+manual and the embedded client copy under /app/ are served from one origin, so
+one answer covers both and the reader is asked once rather than twice.
+
+Kept in vanilla JS with no build step, matching the rest of this Jekyll site.
+{%- endcomment -%}
+
+{%- assign ga_id = site.analytics_measurement_id | strip -%}
+{%- if ga_id != "" -%}
+<style>
+  .scada-consent {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 200;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid #d0d7de;
+    background: #fff;
+    color: #1b1f23;
+    box-shadow: 0 -6px 20px rgb(0 0 0 / 18%);
+    font-size: 0.85rem;
+  }
+  .scada-consent__text {
+    flex: 1 1 22rem;
+    min-width: 0;
+  }
+  .scada-consent__text strong {
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+  .scada-consent__actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.5rem;
+  }
+  /* Equal weight on both answers — a muted "decline" beside a prominent
+     "accept" is the pattern that makes the consent invalid. */
+  .scada-consent__actions button {
+    min-height: 34px;
+    padding: 0.35rem 1.1rem;
+    border: 1px solid #7d8590;
+    border-radius: 4px;
+    background: #f6f8fa;
+    color: #1b1f23;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  @media (prefers-color-scheme: dark) {
+    .scada-consent {
+      border-top-color: #444c56;
+      background: #22272e;
+      color: #cdd9e5;
+    }
+    .scada-consent__actions button {
+      border-color: #768390;
+      background: #2d333b;
+      color: #cdd9e5;
+    }
+  }
+</style>
+<script>
+  (function () {
+    var MEASUREMENT_ID = {{ ga_id | jsonify }};
+    var KEY = 'scada.analytics-consent';
+    var VERSION = 1;
+    // Russian is the primary tree at `/`; English lives under `/en/`. The
+    // baseurl sits in front of both, so test for the segment, not a prefix.
+    var isEnglish = /(^|\/)en(\/|$)/.test(window.location.pathname);
+    var COPY = isEnglish
+      ? {
+          title: 'Help us improve this documentation',
+          body:
+            'We would like to measure how this documentation is used with Google Analytics. ' +
+            'Nothing is sent to Google unless you accept.',
+          accept: 'Accept',
+          decline: 'Decline',
+          label: 'Usage measurement',
+        }
+      : {
+          title: 'Помогите нам улучшить документацию',
+          body:
+            'Мы хотели бы измерять использование этой документации с помощью Google Analytics. ' +
+            'Без вашего согласия в Google не отправляется ничего.',
+          accept: 'Принять',
+          decline: 'Отклонить',
+          label: 'Сбор статистики использования',
+        };
+
+    function readConsent() {
+      try {
+        var raw = window.localStorage.getItem(KEY);
+        if (!raw) return 'unset';
+        var parsed = JSON.parse(raw);
+        if (!parsed || parsed.version !== VERSION) return 'unset';
+        return parsed.state === 'granted' || parsed.state === 'denied' ? parsed.state : 'unset';
+      } catch (e) {
+        // Blocked site data. Ask again rather than assume yes.
+        return 'unset';
+      }
+    }
+
+    function writeConsent(state) {
+      try {
+        window.localStorage.setItem(
+          KEY,
+          JSON.stringify({ state: state, at: new Date().toISOString(), version: VERSION }),
+        );
+      } catch (e) {
+        /* nothing to do; the reader is asked again next page */
+      }
+    }
+
+    function loadTag() {
+      window.dataLayer = window.dataLayer || [];
+      // Google's snippet pushes the `arguments` object, not an array, and
+      // gtag.js distinguishes the two.
+      window.gtag =
+        window.gtag ||
+        function () {
+          window.dataLayer.push(arguments);
+        };
+      var script = document.createElement('script');
+      script.async = true;
+      script.src =
+        'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(MEASUREMENT_ID);
+      document.head.appendChild(script);
+      window.gtag('js', new Date());
+      // The manual is ordinary multi-page HTML, so the tag's own page view is
+      // correct here — unlike in the client, which routes in the browser.
+      window.gtag('config', MEASUREMENT_ID);
+    }
+
+    function showBanner() {
+      var banner = document.createElement('section');
+      banner.className = 'scada-consent';
+      banner.setAttribute('role', 'region');
+      banner.setAttribute('aria-label', COPY.label);
+
+      var text = document.createElement('div');
+      text.className = 'scada-consent__text';
+      var title = document.createElement('strong');
+      title.textContent = COPY.title;
+      var body = document.createElement('span');
+      body.textContent = COPY.body;
+      text.appendChild(title);
+      text.appendChild(body);
+
+      var actions = document.createElement('div');
+      actions.className = 'scada-consent__actions';
+      [
+        { label: COPY.decline, state: 'denied' },
+        { label: COPY.accept, state: 'granted' },
+      ].forEach(function (choice) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = choice.label;
+        button.addEventListener('click', function () {
+          writeConsent(choice.state);
+          banner.remove();
+          if (choice.state === 'granted') loadTag();
+        });
+        actions.appendChild(button);
+      });
+
+      banner.appendChild(text);
+      banner.appendChild(actions);
+      document.body.appendChild(banner);
+    }
+
+    function start() {
+      var consent = readConsent();
+      if (consent === 'granted') loadTag();
+      else if (consent === 'unset') showBanner();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
+  })();
+</script>
+{%- endif -%}

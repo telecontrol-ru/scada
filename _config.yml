@@ -39,6 +39,18 @@ aux_links:
     - "https://github.com/telecontrol-ru/scada"
 aux_links_new_tab: true
 
+# Google Analytics 4, consent-gated by `_includes/head_custom.html`.
+#
+# Deliberately NOT the theme's `ga_tracking` key: Just the Docs loads gtag.js
+# unconditionally when that is set, before the reader has agreed and with no
+# way to decline. Setting `ga_tracking` here would load the tag twice and
+# defeat the consent gate — leave it unset.
+#
+# Empty means no analytics at all: no tag, no banner. A GA4 measurement ID is
+# public (it ships to every visitor), so it belongs in this file rather than in
+# a secret store. See web/docs/analytics.md in the monorepo.
+analytics_measurement_id: ""
+
 # Footer
 footer_content: '<a href="mailto:mail@telecontrol.ru">ООО &laquo;Телеконтроль&raquo;</a>'
 
