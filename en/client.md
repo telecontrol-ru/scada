@@ -40,8 +40,14 @@ The menu bar provides these main groups of commands:
 * **Help**: open online documentation or show client version
 
 The `Settings` menu controls toolbar and status-bar visibility,
-operation confirmation, event popups, event blinking and sound,
-built-in Modus rendering, and the application style.
+operation confirmation, how the event panel announces alarms,
+built-in Modus rendering, and the application style. The four
+announcement options — `Show Events on Arrival`, `Hide Events on
+Acknowledge`, `Sound Alarm on Event` and `Flash Main Window on Event` —
+are described on the
+[alarm annunciation page]({{ '/en/client/alarms/' | relative_url }}),
+including which of them does nothing in the current version and which
+is Windows-only.
 
 ## Status bar
 
@@ -199,15 +205,18 @@ model appears as a `Model` subtree under the device node. See
 [Development]({{ '/en/development/' | relative_url }}) for the
 engineering details behind this view.
 
-## Event panel
+## [](#events-panel)Event panel
 
 The live event panel shows the current list of unacknowledged events.
 Operators can acknowledge an event by double-clicking it or by using the
 context menu. Multiple events can be acknowledged together with
 `Shift`-selection.
 
-If the `Show events on arrival` option is enabled, the live event panel
-opens automatically when new events arrive.
+With `Show Events on Arrival` enabled, the panel opens by itself when a
+new unacknowledged event arrives, and `Hide Events on Acknowledge`
+closes it again once the last one is acknowledged. Both, the alarm tone
+and the severity threshold are covered on the
+[alarm annunciation page]({{ '/en/client/alarms/' | relative_url }}).
 
 The event-row context menu exposes commands for the event itself and, if
 the event is linked to an object or device, the corresponding object or

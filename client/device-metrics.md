@@ -1,6 +1,6 @@
 ---
 title: Метрики устройств
-nav_order: 8
+nav_order: 9
 parent: Клиент
 permalink: /client/device-metrics/
 ---

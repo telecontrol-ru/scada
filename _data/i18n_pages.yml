@@ -34,6 +34,9 @@
 - ru: /client/events/
   en: /en/client/events/
 
+- ru: /client/alarms/
+  en: /en/client/alarms/
+
 - ru: /client/display/
   en: /en/client/display/
 
