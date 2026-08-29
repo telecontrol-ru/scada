@@ -170,6 +170,9 @@ The object panel is used to browse the object hierarchy, open related
 views, and execute object operations. It is available from
 `Further -> Objects`.
 
+The tree starts at the top-level objects and groups: no separate root row
+is drawn, because the panel's own title already names what it contains.
+
 The panel shows objects grouped by hierarchy. Values and quality flags
 appear to the right of object names. Invalid values are shown in gray.
 If an object has unacknowledged system events, its value flashes yellow.

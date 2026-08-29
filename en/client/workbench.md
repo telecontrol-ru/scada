@@ -31,7 +31,9 @@ The workbench regions:
   the connection state and the server address are not shown here — they appear
   in the status strip only.
 - **Object explorer** — the object tree with a "Filter" field and quality
-  dots: green — good, amber — uncertain, red — bad.
+  dots: green — good, amber — uncertain, red — bad. The tree starts at its
+  content: the pane's own title already names it, so no separate root row is
+  drawn. The same holds for the Devices, Files and Nodes panes.
 - **Workspace tabs** — the open windows (journal, tables, graphs, schematic
   displays) as editor-style tabs.
 - **Right-hand panels** — Inspector, Device diagnostics, Access rights,
