@@ -47,13 +47,16 @@ With the option off, the panel stays on screen until the operator closes it.
 
 **Settings → Sound Alarm on Event** (off by default).
 
-While at least one event stands unacknowledged, the client repeats a system
-tone. It stops as soon as the last event is acknowledged rather than after a
-fixed time, so a client that has gone quiet is a client with nothing
+On Windows, while at least one event stands unacknowledged, the client repeats
+a system tone. It stops as soon as the last event is acknowledged rather than
+after a fixed time, so a client that has gone quiet is a client with nothing
 outstanding.
 
-The tone plays **only in the Windows build**. On macOS the option appears in the
-menu and produces no sound.
+On every other platform the tone **sounds once** when the alarm arrives, rather
+than repeating: the client has no looping system sound to offer there. The
+option is live on both — what differs is only whether the tone repeats — and
+the annunciation that lasts until the last event is acknowledged is the
+unacknowledged count in the status bar.
 
 ## Window flash
 
