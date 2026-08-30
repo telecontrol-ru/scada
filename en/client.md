@@ -46,8 +46,7 @@ announcement options — `Show Events on Arrival`, `Hide Events on
 Acknowledge`, `Sound Alarm on Event` and `Flash Main Window on Event` —
 are described on the
 [alarm annunciation page]({{ '/en/client/alarms/' | relative_url }}),
-including which of them does nothing in the current version and which
-is Windows-only.
+including which of them is Windows-only.
 
 ## Status bar
 

@@ -59,10 +59,16 @@ menu and produces no sound.
 
 **Settings → Flash Main Window on Event** (off by default).
 
-The option is in the menu but **has no effect in the current version**: the
-window-flash handler is not implemented, so ticking it changes nothing. That is
-stated plainly here so no operator relies on an announcement that will not
-come — use the tone and the status-bar count to draw attention instead.
+While at least one event stands unacknowledged, the client asks the desktop for
+attention: the taskbar button flashes on Windows, the Dock icon bounces on
+macOS.
+
+The request is only made while the client's window is **not** the active one —
+an operator already looking at the client is not interrupted — and the system
+withdraws it as soon as the window is brought to the front. So the flash ends
+when the operator turns to the client, not when the events are acknowledged;
+the tone and the status-bar count are what stay until the last event is
+acknowledged.
 
 ## What is always visible
 
