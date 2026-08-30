@@ -73,6 +73,20 @@ when the operator turns to the client, not when the events are acknowledged;
 the tone and the status-bar count are what stay until the last event is
 acknowledged.
 
+## Spoken announcement
+
+**Settings → Speech** (on by default, where it is available at all).
+
+When an event arrives and nothing was standing unacknowledged before it, the
+client says **"Unacknowledged alarm"** once. It does not repeat while the alarm
+stands, and it says nothing when the last event is acknowledged: the
+announcement marks the arrival, and repeating it would talk over the operator.
+
+Spoken announcements are available in the **Windows build only** — they use the
+platform's own speech synthesis. Elsewhere the checkbox is drawn disabled
+rather than hidden, so the option reads as unavailable on this platform rather
+than as not existing.
+
 ## What is always visible
 
 The status bar shows the number of unacknowledged events and the current
