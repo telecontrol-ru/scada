@@ -1,20 +1,25 @@
 ---
-title: Experimental interface
+title: Operator workbench
 nav_order: 16
 parent: Client
 permalink: /en/client/workbench/
 ---
 
-# Experimental interface
+# Operator workbench
 {:.no_toc}
 
 * TOC
 {:toc}
 
-The client ships an experimental interface variant — an "operator
-workbench". The experimental interface is **off by default** and does not
-change the familiar client look; it is still under active development and its
-elements may change.
+The client window is laid out as an operator workbench: the section rail on
+the left, the context strip along the top, workspace tabs in the middle, the
+selection-driven panels on the right and the status strip at the foot. All of
+those regions are described below.
+
+Until version 2.6 this look was experimental and could be turned off with the
+**Classic** entry in the Colour scheme list. That entry is gone: the workbench
+is the only client look, and Colour scheme now chooses the appearance alone —
+follow system, dark, light or high contrast.
 
 ![]({{ '/img/workbench-window.png' | relative_url }})
 
@@ -52,7 +57,7 @@ not only the display. A separate event reports when the server answers again.
 
 By default the appearance follows the operating system; dark, light and
 high-contrast variants are also available
-(*Settings → Settings… → Colour scheme*).
+([*Settings → Settings… → Colour scheme*](#appearance)).
 Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
 change, period selection, object creation, About — follow the same theme.
 
@@ -141,37 +146,29 @@ supports speech synthesis — spoken announcements. A disabled checkbox explains
 why in its tooltip: spoken announcements are available in the Windows build
 only. The lists at the foot are Language, Style and Colour scheme.
 
-## Enabling it
+## [](#appearance)Appearance
 
-The experimental interface is chosen in the *Settings → Settings…* dialog,
-from the **Colour scheme** list — next to *Style*, and behaving the same way:
-the choice applies immediately, with no restart.
+The appearance is chosen in the *Settings → Settings…* dialog, from the
+**Colour scheme** list — next to *Style*, and behaving the same way: the
+choice applies immediately and in full, with no restart.
 
 <dl>
 
-<dt>Classic</dt>
-<dd>The client's ordinary look: the operating system's appearance, with the
-experimental interface off. The default.</dd>
-
 <dt>Follow system</dt>
-<dd>The experimental interface in whichever appearance — light or dark — the
-operating system is set to. A desktop appearance switch applies
-immediately.</dd>
+<dd>Whichever appearance — light or dark — the operating system is set to. The
+default; a desktop appearance switch applies immediately.</dd>
 
 <dt>Dark, Light, High contrast</dt>
-<dd>The experimental interface in an explicitly chosen appearance. Such a
-choice does not follow the operating system.</dd>
+<dd>An explicitly chosen appearance, which does not follow the operating
+system. Dark is the recommended control-room setting.</dd>
 
 </dl>
 
 The choice is saved when the client exits and restored on the next start.
 
-**Colours change immediately, the layout after a restart.** Switching between
-appearances (from dark to light, say) applies in full. Crossing between
-Classic and any experimental-interface appearance also changes what the
-workbench contains — the activity bar, the context bar and the Inspector —
-and that is built when the client starts. The client says so when you cross
-that boundary.
+Alarm severity, data quality and switchgear state keep their colours whatever
+the appearance: those are functional safety signals (ISA-101, ISA-18.2) and
+their values are the same in every scheme.
 
 ### Additional settings
 
@@ -180,10 +177,6 @@ application settings (QSettings), which can also be set in advance — when
 rolling the client out to many machines, say.
 
 <dl>
-
-<dt>Ux/Experimental</dt>
-<dd>Whether the experimental interface is on. Corresponds to choosing anything
-other than Classic.</dd>
 
 <dt>Ux/Theme</dt>
 <dd>Appearance variant: <code>system</code> (default, follows the OS),
@@ -196,6 +189,10 @@ the global stylesheet — for configurations with embedded, style-sensitive
 components. Not exposed in the dialog.</dd>
 
 </dl>
+
+<code>Ux/Experimental</code>, which used to turn the experimental interface
+on, is no longer read: its value is ignored and the workbench is always
+shown.
 
 ## [](#menu-reasons)Why a command is unavailable
 
@@ -213,8 +210,7 @@ example) are not listed in the menu at all; for a selected object the
 
 ![]({{ '/img/workbench-login.png' | relative_url }})
 
-Under the experimental interface the sign-in window gains a header with the
-product mark and name, and a "Connecting to:" line below the fields showing
+The sign-in window carries a header with the product mark and name, and a "Connecting to:" line below the fields showing
 which server and protocol the client is about to use. The line follows the
 fields as you change them, which helps avoid signing in to the wrong server.
 The fields themselves and the sign-in flow are unchanged.
@@ -249,7 +245,7 @@ table. *Enter* runs the selected entry.
 
 ![]({{ '/img/table-workspace.png' | relative_url }})
 
-In the experimental interface the [Table]({{ '/en/client/table/' | relative_url }}) window gains a toolbar
+The [Table]({{ '/en/client/table/' | relative_url }}) window carries a toolbar
 above the grid:
 
 <dl>
@@ -283,8 +279,8 @@ mini-graph of the value over the last hour, updating live.
 
 ![]({{ '/img/events-alarm-surface.png' | relative_url }})
 
-In the experimental interface the [event journal]({{ '/en/client/events/' | relative_url }})
-reads as an alarm surface:
+The [event journal]({{ '/en/client/events/' | relative_url }}) reads as an
+alarm surface:
 
 - **Row colour is severity.** An alarm row is coloured by its severity (red —
   critical, amber — warning); routine events stay unfilled so the eye is drawn
@@ -311,10 +307,10 @@ journal does not duplicate it with its historical copy.
 
 ## [](#transmission)Transmission rules
 
-![]({{ '/img/transmission-rules.png' | relative_url }})
+![]({{ '/img/client-retransmission.png' | relative_url }})
 
-The transmission window (a device's "signal → address" rule list) renders in
-the workbench theme. A destination rail on the left lists every
+The transmission window — a device's "signal → address" rule list — carries a
+destination rail on the left listing every
 retransmission destination device with its rule count; picking a destination
 switches the table to its rules, and the count updates as rules are added or
 removed. Selecting a rule fills the Transmission-rule panel on the right:
@@ -329,8 +325,7 @@ Revert/Apply when a write path is available.
 
 ![]({{ '/img/substation-display.png' | relative_url }})
 
-Under the experimental interface the schematic (single-line) display window
-gains a toolbar (a "Live" indicator, zoom / fit / 100% / export) and two bay
+The schematic (single-line) display window carries a toolbar (a "Live" indicator, zoom / fit / 100% / export) and two bay
 strips below it: "Measurements" — the selected signals' values with their
 update times — and "Recent events" — the active (unacknowledged) alarms with
 their severity, time, object and message. The diagram geometry is unchanged.
@@ -378,14 +373,14 @@ pending event the last row — "Awaiting acknowledgement" — carries no time.
 ## Translation status
 
 This English page matches the Russian page content as of the description of
-the experimental workbench: the shell walkthrough, enabling, the command
-palette, the Table toolbar, the event journal's alarm surface, the
+the operator workbench: the shell walkthrough, the appearance choice, the
+command palette, the Table toolbar, the event journal's alarm surface, the
 transmission rules, and the Inspector.
 
 ## [](#administration)Administration
 
-The experimental interface adds an **Administration** mode to the activity
-bar — a fifth one after Objects, Devices, Files and Nodes. It is available only
+The activity bar carries an **Administration** mode — a fifth one after
+Objects, Devices, Files and Nodes. It is available only
 to an account holding the configure right: without it the mode is not shown at
 all, rather than shown and disabled.
 
