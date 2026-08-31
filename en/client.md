@@ -113,8 +113,10 @@ It can also:
 * force a full poll
 * synchronize the device clock with the Server clock
 
-For retransmission projects, the client can create a virtual server
-device and a retransmission table for the selected objects.
+For retransmission projects, the client edits a destination device's
+retransmission table — the rules by which selected objects are forwarded to
+upper-level systems. See
+[Transmission rules]({{ '/en/client/workbench/#transmission' | relative_url }}).
 
 ### Common commands
 

@@ -307,19 +307,63 @@ journal does not duplicate it with its historical copy.
 
 ## [](#transmission)Transmission rules
 
+Transmission forwards SCADA objects to upper-level systems. Every destination
+device has its own rule table, and one rule binds one SCADA object to one
+information-channel address in the remote system. The mechanism is described
+on the [Architecture]({{ '/en/architecture/' | relative_url }}) page.
+
 ![]({{ '/img/client-retransmission.png' | relative_url }})
 
-The transmission window — a device's "signal → address" rule list — carries a
-destination rail on the left listing every
-retransmission destination device with its rule count; picking a destination
-switches the table to its rules, and the count updates as rules are added or
-removed. Selecting a rule fills the Transmission-rule panel on the right:
+### Opening the table
+
+The **Transmission table** command opens the rule table of the selected
+device. It is available when the selection is a destination device (not a
+communication link) and the user holds the configure permission. The
+destination device itself is created in the configuration like any other
+device — the command opens its table, it does not create the device.
+
+The destination rail on the left lists every retransmission destination
+device with its rule count; picking a destination switches the table to its
+rules, and the count updates as rules are added or removed.
+
+### Protocol
+
+A rule's protocol follows from the destination device's type and is not
+chosen separately. **Modbus**, **IEC 60870-5-104** and **IEC 61850** are
+supported. A device whose type declares no transmittable items does not
+appear in the destination rail.
+
+### Creating a rule
+
+The table is filled from the [object tree]({{ '/en/client/' | relative_url }}):
+tick an object and a rule for it appears in the table under the Object
+column; clearing the tick deletes the rule. The ticks in the tree always
+match the contents of the open table.
+
+Each new rule needs a destination address, typed directly into the table's
+Address column. The Object column is not editable — the source is set only by
+the tick in the tree.
+
+Selected rules are removed with the **Delete** command, which requires the
+delete-node permission.
+
+### The Transmission-rule panel
+
+Selecting a rule fills the Transmission-rule panel on the right:
 
 ![]({{ '/img/transmission-rule.png' | relative_url }})
 
 The panel shows the source signal (with its TS/TI type tag), the destination
 device, the protocol and the address (IOA); the address is editable behind
 Revert/Apply when a write path is available.
+
+### What happens at run time
+
+The rules are executed by the Server, not the client — the client only edits
+the table. The Server then sends the listed objects' values to the remote
+system over the destination device's protocol, and relays control commands
+arriving from the remote system at those addresses back to the equipment.
+Table changes take effect without restarting the client.
 
 ## [](#display)Schematic display
 
