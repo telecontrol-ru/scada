@@ -225,9 +225,11 @@ dominant trend on top (about two thirds of the screen) with the
 active-alarm table under it (the event journal in current mode,
 unacknowledged events only), and the Inspector on the right.
 
-The sidebar hosts several panes: "Objects" (the object tree with its filter
-and quality dots), "Favorites" and "Portfolio". The tabs along the bottom of
-the panel switch between them; "Objects" is the one open by default. The severity summary stays
+The sidebar carries the "Objects" mode's panes: "Objects" (the object tree
+with its filter and quality dots) and "Portfolio". The tabs along the bottom
+of the panel switch between them; "Objects" is the one open by default. Other
+modes' panes are absent from the page — "Favorites", for one, belongs to the
+"Files" mode, and the sidebar is conformed to whichever mode is selected. The severity summary stays
 visible in the top-bar tiles throughout. The trend is empty until the
 operator adds signals to it; the page layout is saved in the profile as a
 regular page.
