@@ -87,7 +87,7 @@ what keeps the active-page marker from reading as a mode marker: a mode and a
 page are active at the same time, and the two markers are drawn alike.</dd>
 
 <dt>Pinned commands (bottom)</dt>
-<dd>Settings opens the <a href="#settings-dialog">settings dialog</a>; Users
+<dd>Settings opens the <a href="#settings-dialog">settings</a>; Users
 opens the account list. A pinned command opens <b>in the current page</b>, the
 way any window does, so the page marker stays lit. Users is for administrators
 only and is hidden for everyone else.</dd>
@@ -130,25 +130,37 @@ The rail's markers are a **projection of real state**, not a memory of the last
 click. If the open panes match no mode — because one was closed by hand, say —
 the mode marker clears rather than claiming something that is not there.
 
-## [](#settings-dialog)The settings dialog
+## [](#settings-dialog)Settings
 
 *Settings → Settings…* opens the client's settings. The Settings button at the
-foot of the [section rail](#activity-bar) opens the same dialog — one command
+foot of the [section rail](#activity-bar) opens the same thing — one command
 behind both, so the settings live in exactly one place.
 
 ![](../../img/settings-dialog.png)
 
-Settings apply **immediately**, as the menu items did: there is nothing to
-confirm, so the dialog carries Close alone. The checkboxes are the status bar
-and toolbar visibility, control confirmation and the control success message,
-event behaviour (show, hide, flash the window, sound) and — where the platform
-supports speech synthesis — spoken announcements. A disabled checkbox explains
-why in its tooltip: spoken announcements are available in the Windows build
-only. The lists at the foot are Language, Style and Colour scheme.
+Settings open as a **surface** over the main window rather than as a dialog,
+and it carries three things the old dialog did not: a search field along the
+top, a list of categories down the left — Appearance, Events & alarms,
+Control, Workspace, Displays, each with the number of settings it holds — and
+the scope tabs: All, This client, Profile, This window. Beside them is how
+many settings and actions the current tab gathers.
+
+Every setting carries a description and a scope label, so it is visible which
+ones are kept on this computer and which travel with the account in the
+profile. Settings apply **immediately**, as the menu items did: there is
+nothing to confirm, and the surface closes from the close button in its
+header.
+
+Appearance holds Language, Colour scheme and Style. The rest hold the status
+bar and toolbar visibility, control confirmation and the control success
+message, event behaviour (show, hide, flash the window, sound) and — where the
+platform supports speech synthesis — spoken announcements. A disabled setting
+explains why in its tooltip: spoken announcements are available in the Windows
+build only.
 
 ## [](#appearance)Appearance
 
-The appearance is chosen in the *Settings → Settings…* dialog, from the
+The appearance is chosen in *Settings → Settings…*, from the
 **Colour scheme** list — next to *Style*, and behaving the same way: the
 choice applies immediately and in full, with no restart.
 
@@ -172,7 +184,7 @@ their values are the same in every scheme.
 
 ### Additional settings
 
-The choice made in the [settings dialog](#settings-dialog) is kept in the
+The choice made in the [settings](#settings-dialog) is kept in the
 application settings (QSettings), which can also be set in advance — when
 rolling the client out to many machines, say.
 
