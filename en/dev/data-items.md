@@ -42,8 +42,8 @@ Incoming values can be:
 * transformed by a linear scale for measured values
 * calculated using a [formula]({{ '/en/formulas/' | relative_url }})
 
-Object configuration is edited through either `Parameters` for a single
-object or `Element parameters` for an object group.
+Object configuration is edited through either `Properties` for a single
+object or `Element Properties` for an object group.
 
 ![]({{ '/img/menu-parameters.png' | relative_url }})
 

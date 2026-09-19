@@ -11,9 +11,9 @@ permalink: /en/dev/displays/
 * TOC
 {:toc}
 
-## Element parameters
+## Element properties
 
-The `Element parameters` command is opened from the context menu for a
+The `Element Properties` command is opened from the context menu for a
 selected object group:
 
 ![]({{ '/img/menu-parameters-elements.png' | relative_url }})

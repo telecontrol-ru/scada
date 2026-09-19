@@ -18,16 +18,16 @@ Project engineering is performed from the graphical Client while signed in with 
 When the user signs in with administrator rights, the Client adds
 administrative commands to its menus and context actions.
 
-### Parameters
+### Properties
 
-The `Parameters` command opens the property window for the selected data
+The `Properties` command opens the property window for the selected data
 item or object.
 
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
-### Element parameters
+### Element properties
 
-The `Element parameters` command opens a table that lists parameters for
+The `Element Properties` command opens a table that lists parameters for
 all display elements inside the selected group or direction.
 
 ![]({{ '/img/ti-element-parameters.png' | relative_url }})

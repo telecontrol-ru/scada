@@ -30,7 +30,7 @@ menu with `Create -> Device`.
 ## Device parameters
 
 To edit an element's parameters, open the element context menu and
-choose `Parameters`.
+choose `Properties`.
 
 ### Address map
 
@@ -288,7 +288,7 @@ is opened.</dd>
 ## IEC 61850 devices
 
 The IEC 61850 model can be browsed directly. Any model node can expose
-its bindable address through the `Parameters` command in the context
+its bindable address through the `Properties` command in the context
 menu.
 
 Server objects can also be created by dragging IEC 61850 model objects
