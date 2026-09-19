@@ -29,7 +29,8 @@ The workbench regions:
   **pages** on their own band, and the **pinned commands** at the foot.
   Described [below](#activity-bar). The unacknowledged-events count lives in
   the context strip.
-- **Context strip** (top) — the search/command field and the alarm state:
+- **Context strip** (top) — the [path](#breadcrumb), the search/command field
+  and the alarm state:
   severity tiles ("Critical N", "Warning N", "Unacknowledged N",
   highlighted while alarms are active; with more than ten unacknowledged
   alarms the counters give way to a single "Alarm flood" indicator). The user,
@@ -66,7 +67,7 @@ change, period selection, object creation, About — follow the same theme.
 A narrow strip down the left edge of the window, in three zones. It **never
 opens a workspace tab** — each zone answers a different level of navigation.
 
-![](../../img/workbench-activity-rail.png)
+![]({{ '/img/workbench-activity-rail.png' | relative_url }})
 
 <dl>
 
@@ -87,7 +88,7 @@ what keeps the active-page marker from reading as a mode marker: a mode and a
 page are active at the same time, and the two markers are drawn alike.</dd>
 
 <dt>Pinned commands (bottom)</dt>
-<dd>Settings opens the <a href="#settings-dialog">settings</a>; Users
+<dd>Settings opens the <a href="#settings">settings</a>; Users
 opens the account list. A pinned command opens <b>in the current page</b>, the
 way any window does, so the page marker stays lit. Users is for administrators
 only and is hidden for everyone else.</dd>
@@ -130,13 +131,30 @@ The rail's markers are a **projection of real state**, not a memory of the last
 click. If the open panes match no mode — because one was closed by hand, say —
 the mode marker clears rather than claiming something that is not there.
 
-## [](#settings-dialog)Settings
+## [](#breadcrumb)The path
+
+The left of the context strip states where the workspace currently is:
+**page → view → selected object**. It is the only region that names the
+object: the section rail names the mode and the page, the tab names the view,
+and neither says what the view is pointed at.
+
+The ends of the path — the page and the object — are drawn in the foreground
+weight and the middle steps are quiet. An empty step is dropped rather than
+left as a dangling separator, so a view with no selection simply has no third
+step. A step repeating the one before it is dropped for the same reason: a
+view named after the object it is pointed at would otherwise print that name
+twice. No object is named for a multiple selection.
+
+A long path is elided against the width the layout actually grants, so it
+follows the text size set in the operating system.
+
+## [](#settings)Settings
 
 *Settings → Settings…* opens the client's settings. The Settings button at the
 foot of the [section rail](#activity-bar) opens the same thing — one command
 behind both, so the settings live in exactly one place.
 
-![](../../img/settings-dialog.png)
+![]({{ '/img/settings-dialog.png' | relative_url }})
 
 Settings open as a **surface** over the main window rather than as a dialog,
 and it carries three things the old dialog did not: a search field along the
@@ -184,7 +202,7 @@ their values are the same in every scheme.
 
 ### Additional settings
 
-The choice made in the [settings](#settings-dialog) is kept in the
+The choice made in the [settings](#settings) is kept in the
 application settings (QSettings), which can also be set in advance — when
 rolling the client out to many machines, say.
 
@@ -428,12 +446,24 @@ was raised, when the server received it (that row appears only when delivery
 lagged, so the gap shows the delay) and when it was acknowledged. For a
 pending event the last row — "Awaiting acknowledgement" — carries no time.
 
-## Translation status
+### [](#inspector-series)Series
 
-This English page matches the Russian page content as of the description of
-the operator workbench: the shell walkthrough, the appearance choice, the
-command palette, the Table toolbar, the event journal's alarm surface, the
-transmission rules, and the Inspector.
+When a chart series is selected, a **Series** section appears below the
+element card — how that line is drawn:
+
+* the colour palette, one swatch per colour; the series' current colour is
+  ringed, and clicking another swatch recolours the line. It is the one field
+  in the section that writes.
+* "Own pane" — whether the series has a graph pane to itself
+* "Show dots" and "Stepped" — how the line is drawn
+
+Those last three are read-outs rather than switches: the graph window owns
+these modes (see [Graph]({{ '/en/client/graph/' | relative_url }})), and a
+second control here would write something the view already owns.
+
+The section belongs to the selection, not to the panel: it disappears with the
+selection, so another object's card is never shown carrying the previous
+view's series.
 
 ## [](#administration)Administration
 
@@ -443,9 +473,9 @@ to an account holding the configure right: without it the mode is not shown at
 all, rather than shown and disabled.
 
 Its explorer lists the administrative windows: Users, Roles, Password policy,
-Databases, Formats, Simulated Signals. The list is built from the commands the
-shell can actually carry out, so a window missing from the build, or one this
-session may not open, is simply not offered.
+Audit log, Databases, Formats, Simulated Signals. The list is built from the
+commands the shell can actually carry out, so a window missing from the build,
+or one this session may not open, is simply not offered.
 
 ### [](#users)Users
 
@@ -497,3 +527,52 @@ operations are recorded — a log showing only what succeeded cannot answer who
 The window is available to administrators only. It carries no acknowledgement
 controls: an audit entry records what happened, and there is nothing in it to
 acknowledge.
+
+### [](#historical-db)Databases
+
+The Databases window lists the history databases configured on the server and,
+for each, its state: Depth (days) — how long values are kept, Items — how many
+objects write into it, Written values, Write queue, Write latency (µs), and how
+long event and value cleanup take. A growing write queue means the database is
+not keeping up with the incoming data.
+
+Object and device parameters point at these databases: an object's value
+archive and a device's event archive are chosen from this list. Configuring the
+databases on the server side is described under
+[Server]({{ '/en/server/#history' | relative_url }}).
+
+### [](#ts-formats)Formats
+
+The Formats window defines how two-state (discrete) signals look on screen.
+Each format is a pair of states: "Label 0" and "Label 1" — the texts the states
+are captioned with — and "Colour 0" and "Colour 1" — the colours they are drawn
+in. A colour is chosen from the client's palette by name, not entered as RGB
+components.
+
+A format is assigned to an object in its parameters (see
+[Data items]({{ '/en/dev/data-items/' | relative_url }})), so one edit to a
+format changes every object it is assigned to.
+
+### [](#simulation-items)Simulated signals
+
+The Simulated signals window lists the signals the server generates itself,
+with no device involved. Each carries a Type — the waveform — a Period (ms), a
+Phase (ms) and an Update interval (ms) saying how often a new value is
+produced. Simulated signals are used for commissioning and training: they let
+displays, graphs and alarms be exercised before any equipment is connected.
+
+## [](#nodes)Nodes
+
+The **Nodes** mode shows the whole OPC UA address space — from the server's
+root folder along hierarchical references — rather than objects and equipment
+alone. It is available only to an account holding the configure right and,
+like Administration, is hidden from everyone else.
+
+It is a diagnostic view of the configuration: it shows everything the server
+publishes, including the service branches that the Objects and Devices panes do
+not carry. The tree starts at the root folder's contents — no separate root row
+is drawn.
+
+## Translation status
+
+This English page is a direct translation of the current Russian page.

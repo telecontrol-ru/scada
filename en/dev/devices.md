@@ -12,7 +12,7 @@ permalink: /en/dev/devices/
 {:toc}
 
 The equipment window can be opened from the main menu with
-`Further -> Equipment`.
+`More -> Equipment`.
 
 ![]({{ '/img/hardware-tree.png' | relative_url }})
 
@@ -31,6 +31,18 @@ menu with `Create -> Device`.
 
 To edit an element's parameters, open the element context menu and
 choose `Parameters`.
+
+### Address map
+
+Besides the tabs carrying its own parameters, a device has an **Address map**
+tab — the list of signals read from it, with the columns Signal, Type, IOA and
+NodeId. The tab is read-only: an address is set in the data item's own
+parameters, in its Channel field (see
+[Data items]({{ '/en/dev/data-items/' | relative_url }})). The map answers the
+reverse question — which object is behind an address that arrived from the
+device — and it is the same map the
+[frame decode]({{ '/en/client/device-watch/' | relative_url }}) uses in the
+device watch window.
 
 ## MODBUS devices
 

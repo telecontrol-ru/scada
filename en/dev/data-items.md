@@ -56,10 +56,49 @@ Single objects or object series are created through the `Create` menu:
 
 ![]({{ '/img/menu-create-object.png' | relative_url }})
 
-When creating an object series, select the object type and set the
-initial parameters:
+### Bulk create
+
+The `Multiple Create…` command opens a wizard that creates a whole set of
+objects from one pattern. It has three steps.
+
+<dl>
+
+<dt>Target and type</dt>
+<dd>"What to create" — data items, or transmission rules (the latter is offered
+only when there is something for a rule to forward, that is when source objects
+are already selected). For data items it also asks for the "Item type"
+(discrete or analog), the "Device" that is their source, and a "Source path
+template".</dd>
+
+<dt>Pattern: naming and addressing</dt>
+<dd>A "Name template" and a "NodeId template" with index tokens:
+<code>{n}</code> is the index in decimal, <code>{nn}</code> zero-padded to two
+digits, <code>{hex}</code> in hexadecimal. Any other text is copied verbatim,
+so "TS{n} current" at index 8 yields "TS8 current". The range comes from
+"Start index", "Count" and "Index step", and for transmission rules from "IOA
+start" and "IOA step" as well: a data item is not addressed on a link, so it
+has no IOA fields.
+
+A live preview is built below — a Name / NodeId / IOA / Status grid. Status
+marks each row "new", "exists" (such a node is already there) or "address out
+of range", and a "N new, M conflict" summary sits under the grid.</dd>
+
+<dt>Review and create</dt>
+<dd>States how many rows will be created out of the total: "Will create N of
+M". Conflicting rows are not counted, so running the wizard again over the same
+pattern completes the set rather than duplicating it.</dd>
+
+</dl>
+
+Once created, the objects' parameters can be edited in the usual way.
+
+The wizard replaced an earlier bulk-create dialog with "Name prefix", "Starting
+number", "Count", "Address prefix" and "Starting address" fields — it does the
+same thing, but from a pattern, and it shows the result before creating it:
 
 ![]({{ '/img/menu-create-object-ts-ti.png' | relative_url }})
+
+### Service objects
 
 Service objects can also be created for a specific device:
 
@@ -137,7 +176,7 @@ stale.</dd>
 
 <dt>Display parameters</dt>
 <dd>For discrete objects, selects the display format used in the UI.
-The available formats can be managed from `Further -> Formats`.</dd>
+The available formats can be managed from `More -> Formats`.</dd>
 
 <dt>Inversion</dt>
 <dd>Used only for discrete objects to invert the received state.</dd>
@@ -193,7 +232,7 @@ background until acknowledgement.</dd>
 
 <dt>Emulation</dt>
 <dd>Enables signal emulation. The emulation type is selected from the
-configured list of simulated signals under `Further -> Simulated
+configured list of simulated signals under `More -> Simulated
 signals`.</dd>
 
 </dl>

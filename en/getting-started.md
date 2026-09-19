@@ -112,13 +112,13 @@ If the `Automatic login` option is enabled, the Client reuses the saved credenti
 
 After you sign in:
 
-1. Open the object panel with `Further -> Objects`. The object tree
+1. Open the object panel with `More -> Objects`. The object tree
    shows the current values. Double-clicking an object opens its
    [Graph]({{ '/en/client/graph/' | relative_url }}).
 1. Open available displays from the
    [Display]({{ '/en/client/display/' | relative_url }}) menu.
-1. Check equipment status with `Further -> Equipment`.
-1. Create user accounts with `Further -> Users` and assign a secure
+1. Check equipment status with `More -> Equipment`.
+1. Create user accounts with `More -> Users` and assign a secure
    password to the `root` administrator account. See
    [User configuration]({{ '/en/dev/users/' | relative_url }}).
 

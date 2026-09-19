@@ -20,9 +20,7 @@ Data from [tables]({{ '/en/client/table/' | relative_url }}),
 can be exported to a CSV file.
 
 To export data, choose the `Export to CSV` command from the window's
-context menu or from the `Further` menu. The English docs keep the menu
-name `Further` as a direct translation placeholder for the current
-Russian UI documentation.
+context menu or from the `More` menu.
 
 ### Export options
 
@@ -77,7 +75,7 @@ The system configuration for groups, discrete signals, and measured
 values can be exported to a CSV file for review, editing, and import
 back into the system.
 
-Use the `Further -> Export configuration` command. The default output
+Use the `More -> Export configuration` command. The default output
 file is `configuration.csv`.
 
 The exported data includes:
@@ -92,7 +90,7 @@ Header format uses `PropertyName @NodeIdentifier`.
 
 ## Configuration import
 
-To import configuration, choose `Further -> Import configuration` and
+To import configuration, choose `More -> Import configuration` and
 select a previously exported CSV file.
 
 ### Import process

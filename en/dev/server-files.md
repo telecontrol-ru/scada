@@ -12,7 +12,7 @@ the Server provides schematic files to all connected Clients
 automatically.
 
 The server-files window can be opened with the `Files` command from the
-Client's `Further` menu:
+Client's `More` menu:
 
 ![]({{ '/img/menu-files.png' | relative_url }})
 

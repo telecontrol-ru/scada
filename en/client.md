@@ -21,20 +21,20 @@ Main client window:
 
 The main window contains the title bar, the main menu, a command
 toolbar, and a status bar. Operators work with multiple views inside
-worksheets and can switch between open windows without leaving the
+pages and can switch between open windows without leaving the
 application.
 
 ## Menus
 
 The menu bar provides these main groups of commands:
 
-* **Display**: open available diagrams
+* **Display**: open available schematic displays
 * **Table**: create tables, user tables, data tables, and group tables
 * **Graph**: create new graph windows
-* **Object**: execute commands that apply to the selected object
-* **Further**: open event windows, engineering panels, and
+* **Item**: execute commands that apply to the selected signal
+* **More**: open event windows, engineering panels, and
   configuration import or export tools
-* **Sheet**: create, rename, delete, and switch worksheets
+* **Page**: create, rename, duplicate, delete and switch pages
 * **Window**: rename, close, restore, and favorite open windows
 * **Settings**: configure the client look and behavior
 * **Help**: open online documentation or show client version
@@ -58,13 +58,15 @@ The status bar shows:
 * connection state to the Server
 * Server response time in milliseconds
 
-## Sheets and windows
+## Pages and windows
 
-The central workspace is divided into sheets. A client session can have
-multiple sheets, but only one is visible at a time. Sheets can be
-created, renamed, deleted, and switched from the `Sheet` menu.
+The central workspace is divided into pages. A client session can have
+multiple pages, but only one is visible at a time. Pages can be created,
+renamed, duplicated, deleted, and switched from the `Page` menu, or from the
+page buttons on the
+[section rail]({{ '/en/client/workbench/#activity-bar' | relative_url }}).
 
-Windows and panels can be arranged freely inside a sheet. They can be
+Windows and panels can be arranged freely inside a page. They can be
 docked side by side, stacked as tabs, or restored from the `Window`
 menu after accidental closure. The recycle list keeps the 10 most
 recently closed windows.
@@ -91,8 +93,8 @@ actions such as:
 * [Summary]({{ '/en/client/summary/' | relative_url }})
 * [Event journal]({{ '/en/client/events/' | relative_url }})
 * group table
-* acknowledge all events
-* remove blocking
+* acknowledge the object's events
+* unlock the object
 * control command
 * manual input
 
@@ -169,7 +171,7 @@ stay within the configured alarm-limit range.
 
 The object panel is used to browse the object hierarchy, open related
 views, and execute object operations. It is available from
-`Further -> Objects`.
+`More -> Objects`.
 
 The tree starts at the top-level objects and groups: no separate root row
 is drawn, because the panel's own title already names what it contains.
@@ -189,7 +191,7 @@ group.
 
 ## Equipment panel
 
-The equipment panel is available from `Further -> Equipment`.
+The equipment panel is available from `More -> Equipment`.
 
 It shows the device hierarchy and communication-state indicators for
 each device, including disabled channels, enabled channels, and

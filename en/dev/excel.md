@@ -7,7 +7,7 @@ permalink: /en/dev/excel/
 
 # Editing configuration in Microsoft Excel
 
-The Client's `Further` menu provides `Export` and `Import` of the
+The Client's `More` menu provides `Export` and `Import` of the
 current configuration to and from an external
 [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) text file:
 

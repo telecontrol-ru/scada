@@ -43,6 +43,15 @@ Right-clicking the graph area opens a context menu with commands to:
 * add a new sub-graph area
 * remove the selected sub-graph area
 
+## Series inspector
+
+Selecting a trend line fills the
+[inspector]({{ '/en/client/workbench/#inspector-series' | relative_url }}):
+a "Series" section appears below the element card, carrying the colour palette
+and the line's current display modes — "Own pane", "Show dots" and "Stepped".
+The colour is set by clicking a palette swatch; the display modes are shown
+there but toggled from the graph's context menu, described above.
+
 ## Display modes
 
 Stepped mode is enabled by default because it better reflects discrete
