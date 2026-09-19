@@ -154,7 +154,7 @@ follows the text size set in the operating system.
 foot of the [section rail](#activity-bar) opens the same thing — one command
 behind both, so the settings live in exactly one place.
 
-![]({{ '/img/settings-dialog.png' | relative_url }})
+![]({{ '/img/settings.png' | relative_url }})
 
 Settings open as a **surface** over the main window rather than as a dialog,
 and it carries three things the old dialog did not: a search field along the
