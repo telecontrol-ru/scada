@@ -6,7 +6,13 @@ require "pathname"
 SITE_ROOT = Pathname.new(__dir__).join("..").expand_path
 EN_ROOT = SITE_ROOT.join("en")
 
-FRAGILE_IMAGE_PATTERN = %r{!\[[^\]]*\]\(\.\./img/}
+# Any depth of `../`, not just one. The rule matched the literal `../img/`
+# until 2026-09-19, and `en/client/workbench.md` carried TWO `../../img/`
+# references that slipped past it and reached the published site — from the
+# permalink /en/client/workbench/, `../../` resolves to /en/, so both asked
+# for /en/img/<name>, which does not exist. One level deeper than the rule
+# written for exactly this failure.
+FRAGILE_IMAGE_PATTERN = %r{!\[[^\]]*\]\((?:\.\./)+img/}
 NON_EN_RELATIVE_URL_PATTERN = /\{\{\s*'\/(?!en\/|img\/)([^']+)'\s*\|\s*relative_url\s*\}\}/
 NON_EN_MARKDOWN_LINK_PATTERN = %r{\[[^\]]+\]\((?!https?://)(?!mailto:)(?!#)(?!\{\{\s*'/en/)(?!\{\{\s*'/img/)([^)]+)\)}
 
