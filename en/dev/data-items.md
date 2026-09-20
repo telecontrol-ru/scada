@@ -79,7 +79,8 @@ so "TS{n} current" at index 8 yields "TS8 current". The range comes from
 start" and "IOA step" as well: a data item is not addressed on a link, so it
 has no IOA fields.
 
-A live preview is built below — a Name / NodeId / IOA / Status grid. Status
+A live preview is built below — a row-number / Name / NodeId / IOA / Status
+grid. Status
 marks each row "new", "exists" (such a node is already there) or "address out
 of range", and a "N new, M conflict" summary sits under the grid.</dd>
 
@@ -90,13 +91,11 @@ pattern completes the set rather than duplicating it.</dd>
 
 </dl>
 
+The Pattern step, with its live preview:
+
+![]({{ '/img/bulk-create.png' | relative_url }})
+
 Once created, the objects' parameters can be edited in the usual way.
-
-The wizard replaced an earlier bulk-create dialog with "Name prefix", "Starting
-number", "Count", "Address prefix" and "Starting address" fields — it does the
-same thing, but from a pattern, and it shows the result before creating it:
-
-![]({{ '/img/menu-create-object-ts-ti.png' | relative_url }})
 
 ### Service objects
 
