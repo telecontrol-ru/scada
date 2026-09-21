@@ -240,10 +240,20 @@ example) are not listed in the menu at all; for a selected object the
 
 ![]({{ '/img/workbench-login.png' | relative_url }})
 
-The sign-in window carries a header with the product mark and name, and a "Connecting to:" line below the fields showing
-which server and protocol the client is about to use. The line follows the
-fields as you change them, which helps avoid signing in to the wrong server.
-The fields themselves and the sign-in flow are unchanged.
+The sign-in window carries only what signing in needs: the server, a user
+name, a password and a "Sign in automatically next time" box. The window title
+names the task and the content does not repeat it.
+
+The OPC UA security settings — the mode, the client certificate and the
+private key — sit behind a "Security and certificates" disclosure. It is shown
+only for a protocol that supports them, and it opens by itself when any of them
+already carries a value: this is configuration set once, not a credential
+supplied at every sign-in.
+
+The "Connecting to:" line below the fields appears only in a build carrying one
+protocol, where it is the only place the protocol is named. When the protocol
+is a field of its own, the line would repeat what is already written above it,
+so it is not drawn.
 
 ## [](#overview)The Overview landing page
 

@@ -106,7 +106,7 @@ Enter the Server host name or IP address in the `Server` field only if
 the Server is installed on a different computer. Otherwise, leave the
 field empty.
 
-If the `Automatic login` option is enabled, the Client reuses the saved credentials on the next startup. To bypass automatic login, hold `Ctrl` while launching the Client.
+If the `Sign in automatically next time` box is ticked, the Client reuses the saved credentials on the next startup. To bypass automatic login, hold `Ctrl` while launching the Client.
 
 ## First steps after login
 
