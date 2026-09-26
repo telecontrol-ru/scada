@@ -14,7 +14,7 @@ automatically.
 The server-files window can be opened with the `Files` command from the
 Client's `More` menu:
 
-![]({{ '/img/menu-files.png' | relative_url }})
+![]({{ '/img/files.png' | relative_url }})
 
 In the `Files` window, server-side schematic files can be organized into
 multiple nested folders. Double-clicking a selected schematic file opens

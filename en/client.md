@@ -233,7 +233,7 @@ device commands as well.
 The files panel provides access to Modus schematic files stored on the
 Server:
 
-![]({{ '/img/menu-files.png' | relative_url }})
+![]({{ '/img/files.png' | relative_url }})
 
 Files can be organized into folders. The context menu supports creating
 folders, uploading files, deleting entries, and renaming files or
