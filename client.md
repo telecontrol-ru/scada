@@ -365,7 +365,7 @@ permalink: /client/
 
 ## Избранное
 
-![](img/menu-favorites.png)
+![](img/favorites.png)
 
 
 ## [](#device-watch)Наблюдение
