@@ -12,7 +12,7 @@ permalink: /client/events/
 {:toc}
 
 
-![](../img/menu-events-log.png)
+![](../img/events-alarm-surface.png)
 
 Журнал дополняется [панелью тревог](../workbench/#journal): точкой «не
 квитировано» в первом столбце, названием важности,

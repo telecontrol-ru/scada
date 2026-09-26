@@ -14,7 +14,7 @@ permalink: /en/client/events/
 The event journal shows archived and current system events for the
 selected context in a dedicated log window.
 
-![]({{ '/img/menu-events-log.png' | relative_url }})
+![]({{ '/img/events-alarm-surface.png' | relative_url }})
 
 The journal carries [alarm chrome]({{ '/en/client/workbench/' | relative_url }}#journal):
 a leading pending dot, named severities, a footer summary of the unacknowledged
