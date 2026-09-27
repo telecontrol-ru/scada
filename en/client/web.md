@@ -23,10 +23,10 @@ own design system. That difference is deliberate, not drift.
 
 ## Connecting
 
-The web client is a set of static files published by the same HTTP server that
-serves the OPC UA WebSocket endpoint. There is no separate web-server
-application in Telecontrol SCADA: open the server address in a browser and the
-client is there.
+The web client is a set of static files (HTML and JavaScript) served by a web
+server. The SCADA Server itself does not serve them: it serves only the OPC UA
+WebSocket endpoint. How to connect the two is described under
+[Deployment](#deployment).
 
 The endpoint address defaults to the address of the page itself — `/ua` on the
 same host over the matching scheme (`wss:` for a page served over HTTPS). There
@@ -52,6 +52,62 @@ where the installation permits it.</dd>
 For diagnostics the endpoint can be overridden with the `scada-ws-host`,
 `scada-ws-port`, `scada-ws-path` and `scada-ws-scheme` query parameters; the
 override is remembered by the browser until it is changed again.
+
+## Deployment {#deployment}
+
+The web client needs three things:
+
+1. **A WebSocket endpoint** on the Server process the Clients connect to
+   (`scada-proxy` in a distributed installation) — see
+   [WebSocket endpoint for the web client]({{ '/en/server/' | relative_url }}#opcua-websocket).
+2. **The web client's files.** They are not part of the published
+   [releases]({{ '/en/getting-started/' | relative_url }}#download); request them
+   from Telecontrol (mail@telecontrol.ru).
+3. **A web server** that serves the files and forwards `/ua` requests to the
+   Server's endpoint. The page and the endpoint then share one address, and the
+   web client finds the Server with no further setup.
+
+The web server must provide:
+
+* **HTTPS with a certificate the browser trusts.** A page opened over HTTPS can
+  only connect over `wss:`.
+* **Forwarding of `/ua` to the Server with WebSocket support**, path
+  unchanged: the Server accepts connections on `/ua` only.
+* **The files for every other path**, with `index.html` for an unknown path:
+  the web client is a single-page application.
+* **The page's address in the Server's `allowed_origins`** when that list is
+  not empty — for example `https://scada.example.com`. The browser sends an
+  `Origin` header even when the page and the endpoint share an address, and
+  the comparison is exact.
+
+An example for the [Caddy](https://caddyserver.com/) web server on the same
+computer as the Server process, whose `opcua.url` includes
+`opc.ws://127.0.0.1:4842`:
+
+```
+scada.example.com {
+    handle /ua {
+        reverse_proxy 127.0.0.1:4842
+    }
+    handle {
+        root * /srv/scada-web
+        try_files {path} /index.html
+        file_server
+    }
+}
+```
+
+For a public host name Caddy obtains the HTTPS certificate automatically. If
+the web server runs on a different computer, enable `opc.wss://` on the Server
+instead of `opc.ws://` so the connection between them is encrypted, and make
+the web server trust the Server's certificate.
+
+The address for the "Cloud server" mode is set in `scada-config.js`, one of the
+web client's files:
+
+```js
+window.__SCADA_CONFIG__ = { cloudServerUrl: 'wss://scada.example.com/ua' };
+```
 
 ## Layout
 
@@ -120,7 +176,3 @@ The web client uses its own design system and supports light and dark themes.
 Alarm severity, data quality and switchgear state colours do not follow the
 theme and match the desktop Client: they are functional signalling
 (ISA-101, ISA-18.2).
-
-## Translation status
-
-This English page is a direct translation of the current Russian page.

@@ -10,6 +10,8 @@ permalink: /changes/
 * TOC
 {:toc}
 
+Дистрибутивы публикуются на странице [выпусков на GitHub](https://github.com/alexsmn/scada-client/releases); сейчас там доступен выпуск 2.5.7. Дистрибутивы более ранних версий не публикуются.
+
 ## 2.5.6
 
 ### Исправления
@@ -66,8 +68,6 @@ permalink: /changes/
 
 ## 2.4.0
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.4.0.msi)
-
 ### Новые функции
 
 1. Сервер: Добавлено опциональное архивирование логов устройства. Логи устройства, доступные из окна [наблюдения]({{ '/client/device-watch/' | relative_url }}), могут быть автоматически сохранены в исторической БД. Сохраненные логи будут отображены в окне наблюдения. Функция включается заданием параметра устройства *Архив событий*.
@@ -89,8 +89,6 @@ permalink: /changes/
 1. Клиент: Исправление подписки в окне [наблюдения]({{ '/client/device-watch/' | relative_url }}).
 
 ## 2.2.0
-
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.2.0.msi)
 
 ### Новые функции
 
@@ -128,8 +126,6 @@ permalink: /changes/
 
 ## 2.1.8
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.8.msi)
-
 ### Исправления
 
 1. Сервер: Исправлена ошибка в сообщении «Осталось x минут до завершения сервера» при извлечении USB-ключа.
@@ -139,8 +135,6 @@ permalink: /changes/
 1. Клиент: Исправлены цвета в [пользовательских таблицах]({{ '/client/sheet/' | relative_url }}).
 
 ## 2.1.7
-
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.7.msi)
 
 ### Исправления
 
@@ -158,8 +152,6 @@ permalink: /changes/
 
 ## 2.1.3
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.3.msi)
-
 ### Исправления
 
 1. Сервер: Исправление алиасов в выражениях объектов ТС и ТИТ.
@@ -171,8 +163,6 @@ permalink: /changes/
 1. Клиент: Исправление невозможности изменить адрес устройства MODBUS.
 
 ## 2.1.1
-
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.1.msi)
 
 ### Новые функции
 
@@ -191,8 +181,6 @@ permalink: /changes/
 1. Удалена поддержка подключений через WebSockets.
 
 ## 2.1.0
-
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.0.msi)
 
 В этой версии очищена устаревшая функциональность.
 
@@ -222,15 +210,11 @@ permalink: /changes/
 
 ## 2.0.59
 
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.59.msi)
-
 ### Исправления
 
 1. Сервер: Для МЭК-60870-5-104 при использовании сервера UDP поддерживаются устройства, отправляющие датаграммы из нескольких сообщений МЭК.
 
 ## 2.0.58
-
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.58.msi)
 
 ### Новые функции
 
@@ -243,10 +227,6 @@ permalink: /changes/
 1. Клиент: Привязка горячих клавиш *Ctrl+C*, *Ctrl+V*, *F2*, *Delete*.
 
 ## 2.0.57
-
-[Установка под Windows](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.57.msi)
-
-[Установка под Linux](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.57.tar.gz)
 
 ### Новые функции
 

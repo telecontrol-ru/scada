@@ -83,16 +83,44 @@ undefined variable is replaced with an empty string.
 
 ## Licensing
 
-Production operation requires a HASP or Guardant hardware key. Without a key, the Server runs in demo mode and stops after two hours.
+Each Server process needs a signed license file. The license states an
+expiry date and the processes purchased; a process the license does not name
+will not run. No hardware key is used.
 
-The Server checks for the license key at startup and periodically during
-runtime. If the key is removed while the Server is running, the Server
-logs a warning and stops after the configured timeout.
+The settings live in the `license` block of the parameter file:
+
+```json
+"license": {
+    "file": "C:\\ProgramData\\Telecontrol\\license.json",
+    "require_gcp_binding": false
+}
+```
+
+| Parameter | Default | Description |
+|---|---|---|
+| `file` | `license.json` | Path to the license file. A relative path resolves against the process's working directory, so an absolute path is safer. When the parameter is absent, the `SCADA_SERVER_LICENSE_FILE` environment variable is used |
+| `require_gcp_binding` | `true` | Check that the license is bound to this Google Cloud virtual machine. **Outside Google Cloud, set it to `false`**, or the license cannot be verified. When the parameter is absent, the `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` environment variable is used |
+
+The license is checked at startup and then every few seconds:
+
+* **No valid license**, or one that does not include this process — the
+  process stops. The reason is written to the log.
+* **The license could not be verified** (for example, the Google Cloud
+  metadata server did not answer) — the process keeps running but serves no
+  requests until verification succeeds.
+* **The license has expired** — the process keeps running but refuses
+  requests. Once the license file is replaced, service resumes without a
+  restart.
+
+Versions 2.5 and earlier used a HASP or Guardant hardware key, and ran for two
+hours in demo mode without one.
 
 ## Configuration storage
 
-By default, the configuration database is stored under
-`%ProgramData%\Telecontrol\SCADA Server\Configuration`. SQLite is
+The configuration database is stored in the directory named by
+`configuration.dir` in the process's parameter file; `${DIR_PARAM}/Configuration`,
+beside the parameter file, is a convenient choice. Without the parameter, the
+database is created in the executable's directory. SQLite is
 supported out of the box, and PostgreSQL can be used when a separate
 database server is required.
 
@@ -123,7 +151,9 @@ PostgreSQL is also supported:
 
 GigaBASE support was removed starting with version 2.1. Older
 configurations must be exported with the version 2.0 administration
-utility and imported into SQLite before the current Server is used.
+utility and imported into SQLite before the current Server is used. The
+utility is not published on the releases page; request it from
+Telecontrol (mail@telecontrol.ru).
 
 ## Historical databases {#history}
 
@@ -277,6 +307,39 @@ including objects, devices, and current or historical data.
 
 The connection is protected with PEM-formatted certificates. A key and
 certificate pair must be generated during initial setup.
+
+### WebSocket endpoint for the web client {#opcua-websocket}
+
+The [web client]({{ '/en/client/web/' | relative_url }}) connects to the
+Server over OPC UA on WebSocket. To enable it, add an address with the
+`opc.ws://` (unencrypted) or `opc.wss://` (TLS) scheme to `url`, which may be
+a list. Enable the endpoint on the process the Clients connect to —
+`scada-proxy` in a distributed installation:
+
+```json
+"opcua": {
+    "enabled": true,
+    "url": [
+        "opc.tcp://0.0.0.0:4840",
+        "opc.ws://127.0.0.1:4842"
+    ],
+    "allowed_origins": ["https://scada.example.com"]
+}
+```
+
+| Parameter | Default | Description |
+|---|---|---|
+| `url` | | An `opc.ws://host[:port][/ua]` or `opc.wss://host[:port][/ua]` address. The default port is 4842 for `opc.ws` and 4843 for `opc.wss`. The path is always `/ua`; any other path is rejected |
+| `server_private_key`, `server_certificate` | | Required for `opc.wss://`: they secure the TLS connection |
+| `advertise_url` | | The addresses the Server reports to clients when clients do not dial the `url` address directly — for example, through a web server. Each one applies to the `url` address with exactly the same scheme: an `opc.wss://` entry only to an `opc.wss://` listener |
+| `allowed_origins` | empty | Exact `Origin` header values (the web client page's address, such as `https://scada.example.com`) allowed to connect. An empty list allows any origin; `*` allows any and logs a warning |
+| `subprotocol` | `opcua+uajson` | The WebSocket subprotocol; do not change it |
+| `max_message_size` | 4194304 | Maximum message size, in bytes |
+| `compression` | `true` | WebSocket message compression |
+
+The Server itself does not serve the web client's files; that takes a
+separate web server — see
+[Deploying the web client]({{ '/en/client/web/' | relative_url }}#deployment).
 
 ## OPC client on Windows {#opc-classic}
 

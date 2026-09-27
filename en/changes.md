@@ -10,6 +10,8 @@ permalink: /en/changes/
 * TOC
 {:toc}
 
+Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); release 2.5.7 is available there today. Distributions of earlier versions are not published.
+
 ## 2.5.6
 
 ### Fixes
@@ -57,8 +59,6 @@ permalink: /en/changes/
 
 ## 2.4.0
 
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.4.0.msi)
-
 ### New features
 
 1. Server: added optional archiving of device logs. Logs visible in the [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window can now be stored in the historical database when the device `Event archive` parameter is enabled.
@@ -77,8 +77,6 @@ permalink: /en/changes/
 1. Client: fixed subscriptions in the [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window.
 
 ## 2.2.0
-
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.2.0.msi)
 
 ### New features
 
@@ -103,8 +101,6 @@ permalink: /en/changes/
 
 ## 2.1.8
 
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.8.msi)
-
 ### Fixes
 
 1. Server: fixed the message `x minutes remaining until server shutdown` when the USB key is removed.
@@ -112,8 +108,6 @@ permalink: /en/changes/
 1. Client: fixed colors in [User tables]({{ '/en/client/sheet/' | relative_url }}).
 
 ## 2.1.7
-
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.7.msi)
 
 ### Fixes
 
@@ -126,8 +120,6 @@ permalink: /en/changes/
 
 ## 2.1.3
 
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.3.msi)
-
 ### Fixes
 
 1. Server: fixed aliases in discrete and measured object expressions.
@@ -136,8 +128,6 @@ permalink: /en/changes/
 1. Client: fixed inability to change the MODBUS device address.
 
 ## 2.1.1
-
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.1.msi)
 
 ### New features
 
@@ -154,8 +144,6 @@ permalink: /en/changes/
 1. Removed support for WebSocket connections.
 
 ## 2.1.0
-
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.1.0.msi)
 
 This release removed obsolete functionality.
 
@@ -180,15 +168,11 @@ This release removed obsolete functionality.
 
 ## 2.0.59
 
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.59.msi)
-
 ### Fixes
 
 1. Server: for IEC 60870-5-104 in UDP server mode, fixed support for devices that send datagrams composed of multiple IEC messages.
 
 ## 2.0.58
-
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.58.msi)
 
 ### New features
 
@@ -200,10 +184,6 @@ This release removed obsolete functionality.
 1. Client: bound the `Ctrl+C`, `Ctrl+V`, `F2`, and `Delete` shortcuts.
 
 ## 2.0.57
-
-[Windows installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.57.msi)
-
-[Linux installer](https://telecontrol-public.s3-us-west-2.amazonaws.com/telecontrol-scada/telecontrol-scada-2.0.57.tar.gz)
 
 ### New features
 
