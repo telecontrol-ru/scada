@@ -59,13 +59,7 @@ processes run is decided by the license.
 2. Put the license file at
    `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 
-3. Create the Server certificate — the files `ServerCertificate.pem` and
-   `ServerPrivateKey.pem` in
-   `C:\Program Files\Telecontrol SCADA\data\Certificates`. The installer
-   does not create them, and the processes do not start without them. See
-   [Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate).
-
-4. From an elevated command prompt, run:
+3. From an elevated command prompt, run:
 
    ```bat
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --svc-password <password>
@@ -79,7 +73,9 @@ processes run is decided by the license.
 `--tiers`), writes each one's parameter file
 `%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` (the
 folder of `scada-filesystem` is named `filestore`), creates the
-configuration databases (never overwriting an existing one), registers one
+[Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) in
+`C:\Program Files\Telecontrol SCADA\data\Certificates` unless one is already
+there, creates the configuration databases (never overwriting an existing one), registers one
 Windows service per process, and starts them in the right order. To check the
 result:
 
@@ -270,17 +266,15 @@ used a hardware key. To move to version 2.6, on the computer where it ran:
 2. Back up the `%ProgramData%\Telecontrol\SCADA Server` folder.
 3. Install the version 2.6 package
    (`msiexec /i telecontrol-scada-<version>.msi /qn`).
-4. Create the [Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate)
-   in `C:\Program Files\Telecontrol SCADA\data\Certificates` — the version
-   2.6 processes do not start without it.
-5. Run `scada-setup migrate` and read the plan: what will be copied where,
+4. Run `scada-setup migrate` and read the plan: what will be copied where,
    and anything that prevents the migration. The command changes nothing.
-6. From an elevated command prompt, run
+5. From an elevated command prompt, run
    `scada-setup migrate --execute --svc-password <password>`. It removes the
    old service, copies the configuration, the users with their passwords, the
    history and the schematic files into the version 2.6 process folders, and
-   starts the processes as `apply` does.
-7. Set the [root password](#root-password) and check the result from the
+   starts the processes as `apply` does (creating the Server certificate
+   included).
+6. Set the [root password](#root-password) and check the result from the
    Client.
 
 The old `Configuration`, `History` and `FileSystem` folders are neither
@@ -300,8 +294,9 @@ the network.</dd>
 
 <dt>A Server process stops right after starting</dt>
 <dd>There is no valid license file, or the license does not include this
-process, or the <a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
-files are missing (the log shows <code>Can't open file</code>). The reason is
+process, or one of the <a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
+files was deleted (the log shows <code>Can't open file</code>;
+<code>scada-setup apply</code> then says which file is missing). The reason is
 written to the process log. See
 <a href="{{ '/en/server/' | relative_url }}#licensing">Licensing</a>.</dd>
 

@@ -59,13 +59,7 @@ permalink: /getting-started/
 2. Поместите файл лицензии в
    `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 
-3. Создайте сертификат Сервера — файлы `ServerCertificate.pem` и
-   `ServerPrivateKey.pem` в папке
-   `C:\Program Files\Telecontrol SCADA\data\Certificates`. Установщик их не
-   создает, а без них процессы не запускаются. Как их создать — в разделе
-   [Сертификат Сервера]({{ '/server/' | relative_url }}#opcua-certificate).
-
-4. В командной строке с правами администратора выполните:
+3. В командной строке с правами администратора выполните:
 
    ```bat
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --svc-password <пароль>
@@ -79,7 +73,9 @@ permalink: /getting-started/
 ограничить параметром `--tiers`), создает для каждого файл параметров
 `%ProgramData%\Telecontrol\SCADA Server\<процесс>\server.json` (у
 `scada-filesystem` папка называется `filestore`), создает
-конфигурационные БД (существующие не перезаписываются), регистрирует по службе
+[сертификат Сервера]({{ '/server/' | relative_url }}#opcua-certificate) в
+`C:\Program Files\Telecontrol SCADA\data\Certificates`, если его там еще нет,
+создает конфигурационные БД (существующие не перезаписываются), регистрирует по службе
 Windows на процесс и запускает их в нужном порядке. Проверить результат:
 
 ```bat
@@ -257,16 +253,14 @@ scada-setup apply --svc-password <пароль>
    `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 2. Сделайте резервную копию папки `%ProgramData%\Telecontrol\SCADA Server`.
 3. Установите пакет версии 2.6 (`msiexec /i telecontrol-scada-<версия>.msi /qn`).
-4. Создайте [сертификат Сервера]({{ '/server/' | relative_url }}#opcua-certificate)
-   в `C:\Program Files\Telecontrol SCADA\data\Certificates` — без него
-   процессы 2.6 не запустятся.
-5. Выполните `scada-setup migrate` и прочитайте план: что и куда будет
+4. Выполните `scada-setup migrate` и прочитайте план: что и куда будет
    скопировано и что мешает переходу. Команда ничего не меняет.
-6. В командной строке с правами администратора выполните
+5. В командной строке с правами администратора выполните
    `scada-setup migrate --execute --svc-password <пароль>`. Команда удаляет
    старую службу, копирует конфигурацию, пользователей с паролями, архивы и
-   файлы мнемосхем в папки процессов 2.6 и запускает их, как `apply`.
-7. Задайте [пароль root](#пароль-root) и проверьте работу Клиентом.
+   файлы мнемосхем в папки процессов 2.6 и запускает их, как `apply` (в том
+   числе создает сертификат Сервера).
+6. Задайте [пароль root](#пароль-root) и проверьте работу Клиентом.
 
 Старые папки `Configuration`, `History` и `FileSystem` не изменяются и не
 удаляются. Подробности — в разделе
@@ -284,8 +278,9 @@ scada-setup apply --svc-password <пароль>
 
 <dt>Процесс Сервера останавливается сразу после запуска</dt>
 <dd>Нет действительного файла лицензии или лицензия не включает этот процесс,
-либо нет файлов <a href="{{ '/server/' | relative_url }}#opcua-certificate">сертификата Сервера</a>
-(в журнале — <code>Can't open file</code>). Причина записывается в журнал процесса. Смотрите
+либо удален один из файлов <a href="{{ '/server/' | relative_url }}#opcua-certificate">сертификата Сервера</a>
+(в журнале — <code>Can't open file</code>; <code>scada-setup apply</code> в этом
+случае сообщает, какого файла не хватает). Причина записывается в журнал процесса. Смотрите
 <a href="{{ '/server/' | relative_url }}#licensing">Лицензирование</a>.</dd>
 
 <dt>Процесс работает, но отклоняет запросы</dt>

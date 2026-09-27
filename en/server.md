@@ -37,8 +37,8 @@ or from the command line of that process's executable:
 On Windows, the Server processes are installed and configured with the
 `scada-setup` tool that comes with the installer. It writes the parameter
 files `%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` from
-templates, creates the configuration databases, and registers the Windows
-services. A process's folder has the name the process has in `--tiers`
+templates, creates the configuration databases and the
+[Server certificate](#opcua-certificate), and registers the Windows services. A process's folder has the name the process has in `--tiers`
 (`config`, `proxy`, `historian`, `iec104`…), except `scada-filesystem`, whose
 folder is `filestore`. The executables' `--install` / `--uninstall` options
 are needed only for a hand-built setup. The step-by-step installation is in
@@ -46,7 +46,7 @@ are needed only for a hand-built setup. The step-by-step installation is in
 
 | Command | Does | Needs admin |
 |---|---|:-:|
-| `scada-setup apply` | Write parameter files and databases, register and start the services of the licensed processes | yes |
+| `scada-setup apply` | Write parameter files and databases, create the [Server certificate](#opcua-certificate) if there is none, register and start the services of the licensed processes | yes |
 | `scada-setup status` | License summary and each process's service state | no |
 | `scada-setup start` / `stop` | Start / stop this computer's services in order | yes |
 | `scada-setup remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the processes' data too) | yes |
@@ -105,10 +105,7 @@ The steps, on the computer where the 2.5 Server ran:
 
    The installer replaces the version 2.5 program and normally removes its
    service itself; the data stays where it is.
-4. Create the [Server certificate](#opcua-certificate) in
-   `C:\Program Files\Telecontrol SCADA\data\Certificates` — the version 2.6
-   processes do not start without it.
-5. See what will be done (the command changes nothing):
+4. See what will be done (the command changes nothing):
 
    ```bat
    scada-setup migrate
@@ -117,7 +114,7 @@ The steps, on the computer where the 2.5 Server ran:
    It lists what will be copied where, how much disk space that needs, which
    version 2.5 settings are not carried over, and anything that prevents the
    migration.
-6. From an elevated command prompt, run the migration:
+5. From an elevated command prompt, run the migration:
 
    ```bat
    scada-setup migrate --execute --svc-password <password>
@@ -125,11 +122,12 @@ The steps, on the computer where the 2.5 Server ran:
 
    It stops and removes the *Telecontrol SCADA Server* service if it is still
    there, copies the data, and then runs `scada-setup apply`: it writes the
-   parameter files and registers and starts the process services.
-7. Set the [root password](#root-password) in the parameter files of
+   parameter files, creates the [Server certificate](#opcua-certificate) if
+   there is none yet, and registers and starts the process services.
+6. Set the [root password](#root-password) in the parameter files of
    `config`, `proxy`, `historian` and `filestore`, and restart the processes
    (`scada-setup stop`, then `scada-setup start`).
-8. Connect a Client (port 2000, as before) as a user and check the objects,
+7. Connect a Client (port 2000, as before) as a user and check the objects,
    the history and the schematics.
 
 The migration does not start, and the command says why, when:
@@ -457,14 +455,39 @@ private key and a certificate in PEM format, named by `server_private_key` and
   process does not start** — the log shows `Can't open file` or
   `Failed to parse OPC UA server certificate PEM`.
 
-**Parameter files written by [`scada-setup`](#scada-setup) point at
+Parameter files written by [`scada-setup`](#scada-setup) point at
 `C:\Program Files\Telecontrol SCADA\data\Certificates\ServerCertificate.pem`
-and `ServerPrivateKey.pem`, and the installer does not create them.** Create
-them before `scada-setup apply`, or the processes will not start.
+and `ServerPrivateKey.pem`. The installer does not contain these files —
+**`scada-setup apply` creates them when they are not there yet**:
 
-A self-signed pair can be created with [OpenSSL](https://www.openssl.org/)
-(not part of Windows; it comes, for example, with Git for Windows). Save this
-as `cert.cnf`:
+* a 2048-bit RSA key without a passphrase and a self-signed SHA-256
+  certificate valid for 5 years;
+* the certificate lists the identifiers (ApplicationUri) of every process
+  `apply` enables on this computer, the computer's name, `localhost`,
+  `127.0.0.1`, and the `--advertise` address when one is given;
+* only the SYSTEM account the services run as, and administrators, can read
+  the key file.
+
+One pair serves every process on the computer. `apply` never replaces existing
+files. When a process that the certificate does not list is enabled after the
+pair was created, `apply` prints a warning naming its identifier: third-party
+OPC UA clients that check the certificate may refuse to connect to that
+process. When only one of the two files exists, `apply` stops and names the
+missing one.
+
+**To replace the certificate** — to issue a new one, include processes added
+since, or use a certificate from your own certificate authority:
+
+1. Stop the processes: `scada-setup stop`.
+2. Delete both files from `C:\Program Files\Telecontrol SCADA\data\Certificates`,
+   or put your own pair in their place (the key in PEM format, without a
+   passphrase).
+3. Run `scada-setup apply` with the same options as at installation: a
+   missing pair is created again, and the processes start.
+
+You can also create a self-signed pair of your own with
+[OpenSSL](https://www.openssl.org/) (not part of Windows; it comes, for
+example, with Git for Windows). Save this as `cert.cnf`:
 
 ```ini
 [req]
