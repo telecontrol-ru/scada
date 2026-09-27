@@ -211,7 +211,7 @@ model appears as a `Model` subtree under the device node. See
 [Development]({{ '/en/development/' | relative_url }}) for the
 engineering details behind this view.
 
-## [](#events-panel)Event panel
+## Event panel {#events-panel}
 
 The live event panel shows the current list of unacknowledged events.
 Operators can acknowledge an event by double-clicking it or by using the

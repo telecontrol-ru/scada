@@ -12,9 +12,11 @@ permalink: /en/server/
 
 The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux.
 
+The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
+
 ## Runtime modes
 
-On Windows, the Server is usually installed as the `Telecontrol SCADA Server` service and starts automatically during system boot.
+On Windows, each Server process is installed as its own service — `Telecontrol SCADA Config`, `Telecontrol SCADA Proxy`, `Telecontrol SCADA Historian`, `Telecontrol SCADA IEC 104`, and so on (the full list is in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers)) — and starts automatically during system boot.
 
 It can also be started in console mode for diagnostics or manual
 operation. In Linux deployments, the Server can run directly from an
@@ -22,18 +24,17 @@ unpacked distribution or inside a containerized environment.
 
 ### Windows service
 
-The Server can be controlled through the standard Windows Services UI or
-from the command line:
+Each service can be controlled through the standard Windows Services UI
+or from the command line of that process's executable:
 
 | Command | Purpose |
 |---|---|
 | `--install` | Install the Server as a Windows service |
 | `--uninstall` | Remove the Windows service |
 
-### [](#console) Console mode
+### Console mode {#console}
 
-To start the Server in console mode, stop the
-`Telecontrol SCADA Server` service and run the desktop shortcut or the
+To start a Server process in console mode, stop its service and run the desktop shortcut or the
 Start-menu entry for the console variant.
 
 If the current Windows user does not have administrative rights, server
@@ -48,10 +49,12 @@ The most important server startup options are:
 | `--install` | Install the Server as a Windows service |
 | `--uninstall` | Remove the Windows service |
 | `--service` | Run in service mode |
-| `--param <path>` | Use a specific `server.json` configuration file |
+| `--param <path>` | Use a specific parameter file. The default on Windows is `%ProgramData%\Telecontrol\SCADA <process>\<name>.json` (for example `%ProgramData%\Telecontrol\SCADA IEC 104\scada-iec104.json`); on Linux it is `<name>.json` in the `data` directory beside the executable's directory |
+| `--name <name>` | Override the Windows service name, so several services of one process can coexist on a machine |
+| `--display-name <name>` | Override the service display name and the console window title |
 | `--log-severity <level>` | Set the logging level |
 
-### [](#linux) Linux deployment
+### Linux deployment {#linux}
 
 The Server supports Linux. The graphical Client does not, so Linux
 operator workstations should use the
@@ -59,18 +62,24 @@ operator workstations should use the
 
 #### Run from an archive
 
-Unpack the server distribution archive and start the server executable.
-The `server.json` file must be present in the working directory or
-passed explicitly with `--param`.
+Unpack the server distribution archive and start the executables of the
+processes you need (`scada-config`, `scada-iec104`, and so on). Each
+process reads its own parameter file `data/<name>.json`, where `data` is
+resolved from the executable's directory as `<program dir>/../data`, or
+the file passed with `--param`.
 
 #### Docker deployment
 
-The Server can also run in a container. In that mode it accepts client
-connections on port `2000`.
+All processes share one Docker image. The environment variable `ROLE`
+selects which process a container runs (`config`, `proxy`, `historian`,
+`filesystem`, `modbus`, `iec104`, `iec61850`), and that process's
+parameter file is mounted as `/etc/scada/<ROLE>.json`. Client
+connections are accepted by the `proxy` container on port `2000`.
 
-Docker configuration supports environment-variable substitution in the
-`${ENV{VARIABLE_NAME}}` form, which is useful for values such as a
-PostgreSQL connection string.
+The parameter file supports environment-variable substitution in the
+`$ENV{VARIABLE_NAME}` form, which is useful for values such as a
+PostgreSQL connection string or the [root password](#root-password). An
+undefined variable is replaced with an empty string.
 
 ## Licensing
 
@@ -110,13 +119,13 @@ PostgreSQL is also supported:
 }
 ```
 
-### [](#migration) Migration from GigaBASE
+### Migration from GigaBASE {#migration}
 
 GigaBASE support was removed starting with version 2.1. Older
 configurations must be exported with the version 2.0 administration
 utility and imported into SQLite before the current Server is used.
 
-## [](#history) Historical databases
+## Historical databases {#history}
 
 Historical databases are stored in
 [SQLite](https://www.sqlite.org/index.html) format.
@@ -158,7 +167,7 @@ with `sqlite3.exe`, which is installed with the Server. The Russian page
 also includes example commands such as `pragma page_size`, `.tables`,
 `.schema`, and simple SQL queries for event counts.
 
-## [](#filesystem) Server-side file system
+## Server-side file system {#filesystem}
 
 The server-side file system stores schematic files on the Server so they
 can be provided to all Clients without manual synchronization.
@@ -179,7 +188,7 @@ By default the files are stored under
 Files are managed from the Client
 [Files]({{ '/en/dev/server-files/' | relative_url }}) window.
 
-## [](#logging) Logging
+## Logging {#logging}
 
 The Server writes text log files. Key settings include:
 
@@ -196,7 +205,7 @@ count limit is exceeded.
 
 The startup option `--log-severity` sets the logging level.
 
-## [](#sessions) Client connections
+## Client connections {#sessions}
 
 The `sessions` parameter defines the addresses and ports used for client
 connections. By default, the Server listens on all network interfaces
@@ -211,9 +220,37 @@ connections. By default, the Server listens on all network interfaces
 Multiple connection endpoints can be configured if different interfaces
 or ports are required.
 
-## [](#opcua) OPC UA server
+## Root password {#root-password}
 
-## External interfaces
+The built-in `root` account has all rights and always exists, whatever
+the configuration contains. Its password is set with
+`security.rootPassword`:
+
+```json
+"security": {
+    "rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"
+}
+```
+
+**WARNING:** without this parameter, `root` is given an empty password
+on first start and the Server accepts `root` with no password (a warning
+is written to the log). Set a password before the Server is reachable
+over the network.
+
+A configured value is authoritative: it is written on every start and
+replaces any password stored earlier, including one changed from the
+Client. To keep the password out of the file in plain text, pass it
+through an environment variable as in the example above.
+
+Set the parameter on **every** process that keeps the configuration in
+its own database; each of them has its own `root` account. In a minimal
+installation that is the single process. In the typical distributed
+installation it is `scada-config`, `scada-proxy`, `scada-historian` and
+`scada-filesystem`; the protocol processes receive their configuration
+from `scada-config` and do not use this parameter (they log a message
+saying so).
+
+## OPC UA server {#opcua}
 
 The Server can expose data to external systems through
 [OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/).
@@ -241,7 +278,7 @@ including objects, devices, and current or historical data.
 The connection is protected with PEM-formatted certificates. A key and
 certificate pair must be generated during initial setup.
 
-## [](#opc-classic) OPC client on Windows
+## OPC client on Windows {#opc-classic}
 
 On Windows, the Server can connect to external Classic OPC (OPC DA)
 servers. Their tags then appear in the Telecontrol SCADA Server address
@@ -255,7 +292,7 @@ space and can be bound to data objects.
 }
 ```
 
-## [](#vidicon) Vidicon integration
+## Vidicon integration {#vidicon}
 
 The Server supports integration with the Telecontrol Vidicon system to
 help migrate existing projects. When enabled, it imports Vidicon objects
@@ -269,7 +306,7 @@ into its own address space.
 
 This feature is available only on Windows.
 
-## [](#backup) Backup
+## Backup {#backup}
 
 ### Configuration backup
 
@@ -287,21 +324,17 @@ History databases are stored under
 `%ProgramData%\Telecontrol\SCADA Server\History`. Stop the Server before
 copying them to ensure data consistency.
 
-## [](#parameters) `server.json` parameter reference
+## `server.json` parameter reference {#parameters}
 
-System settings are stored in `server.json`, located in the Server
-configuration directory.
+System settings are stored in the process's parameter file (`server.json`
+in this section). Its default location is given under
+[`--param`](#command-line-options).
 
 These substitution variables can be used in the file:
 
 | Variable | Description |
 |---|---|
-| `${DIR_PARAM}` | Directory containing `server.json` |
+| `${DIR_PARAM}` | Directory containing the parameter file |
 | `${DIR_EXE}` | Directory containing the Server executable |
 | `${DIR_TEMP}` | Temporary directory |
-
-## Translation status
-
-This English page is now a functional reference page. The Russian page
-still contains a fuller low-level parameter dump and more detailed
-migration and SQLite-administration examples.
+| `$ENV{NAME}` | Value of the environment variable `NAME` (empty if it is not set) |

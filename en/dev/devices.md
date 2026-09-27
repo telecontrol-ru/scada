@@ -181,7 +181,7 @@ definitions are entered for discrete and measured objects:
 
 ![]({{ '/img/ti-channel.png' | relative_url }})
 
-## [](#iecDevice) IEC 60870-5 devices
+## IEC 60870-5 devices {#iecDevice}
 
 The supported IEC 60870-5 ASDU identifiers are described in the
 [Protocols]({{ '/en/protocols/' | relative_url }}#iec-60870) page.
@@ -285,7 +285,7 @@ is opened.</dd>
 
 </dl>
 
-## IEC 61850 devices
+## IEC 61850 devices {#iec-61850}
 
 The IEC 61850 model can be browsed directly. Any model node can expose
 its bindable address through the `Properties` command in the context

@@ -7,6 +7,20 @@ plugins:
   - jekyll-relative-links
   - jekyll-seo-tag
 
+# Maintainer files that are not pages. CLAUDE.md and scripts/ were published
+# as /CLAUDE.html and /scripts/*.rb until 2026-09-27. Jekyll's own defaults
+# (Gemfile, vendor/, ...) are repeated in case this key replaces them.
+exclude:
+  - CLAUDE.md
+  - scripts/
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - node_modules/
+
 # --- Just the Docs configuration ---
 
 # Color scheme: 'light', 'dark', or use the in-page toggle.

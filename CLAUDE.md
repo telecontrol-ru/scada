@@ -99,8 +99,8 @@ permalink: /en/client/graph/
 
 ## Key Conventions
 
-- Russian pages can keep Jekyll relative links (`jekyll-relative-links` plugin), e.g. `[Архитектура](architecture)`.
-- English pages should prefer `relative_url` links to the final English permalink, e.g. `{{ '/en/client/graph/' | relative_url }}`.
+- Link to another page with `relative_url` and its permalink, on both the Russian and the English side, e.g. `[Архитектура]({{ '/architecture/' | relative_url }})` and `{{ '/en/client/graph/' | relative_url }}`. **Never a bare relative link** such as `[Сервер](server)`: every permalink ends in `/`, so the browser resolves it against the page's own directory (`/architecture/server`) and it 404s. `jekyll-relative-links` does not rescue it — it rewrites links to `.md` files only ([README](https://github.com/benbalter/jekyll-relative-links#readme), checked 2026-09-27). Until 2026-09-27 this bullet recommended the bare form, and 87 links site-wide were dead because of it.
+- Give a heading a stable id with `## Title {#id}`. The older form `## [](#id)Title` renders an empty link and an id taken from the title, so `#id` names nothing; 133 links pointed at such ids until 2026-09-27.
 - Mark page-level `<h1>` with `{:.no_toc}` and use `* TOC \n {:toc}` if you want an in-page TOC; Just the Docs also exposes its own auto-generated TOC in the right rail.
 - English pages must use site-absolute image paths with `relative_url`, e.g. `![]({{ '/img/structure.png' | relative_url }})`.
 - Avoid `../img/...` in English pages because those paths are fragile under `/en/`.
@@ -118,7 +118,7 @@ permalink: /en/client/graph/
 
 ## Validation
 
-The docs workflow runs three checks before Pages deployment:
+The docs workflow runs four checks before Pages deployment:
 
 - `ruby scripts/validate_i18n_pages.rb`
   - verifies that every RU/EN mapping in `_data/i18n_pages.yml` points to a real page
@@ -127,14 +127,24 @@ The docs workflow runs three checks before Pages deployment:
   - blocks fragile `../img/...` paths in English pages
   - blocks non-English internal links from leaking into `en/`
 - `bundle exec jekyll build --destination ../_site`
+- `ruby scripts/check_site_links.rb _site --baseurl <base>`
+  - checks every internal link and image in the BUILT site: the page exists and the `#fragment` names an element on it
+  - the only check that sees the two link defects above, since both look fine in the Markdown
 
-Run the same checks locally before committing docs changes:
+Run the same checks locally before committing docs changes. The macOS system
+Ruby cannot run `jekyll build` for this Gemfile; Docker can, and the gem volume
+keeps the second run fast:
 
 ```shell
 ruby scripts/validate_i18n_pages.rb
 ruby scripts/validate_en_links.rb
-bundle exec jekyll build --destination ../_site_test
+docker run --rm -v "$PWD":/site -v scada-docs-gems:/usr/local/bundle -w /site ruby:3.3 \
+  sh -c 'bundle install --quiet && bundle exec jekyll build --baseurl /scada --destination _site'
+ruby scripts/check_site_links.rb _site --baseurl /scada
 ```
+
+`_config.yml` excludes this file and `scripts/` from the build. Both were
+published (`/scada/CLAUDE.html`) until 2026-09-27.
 
 **The two Ruby validators must keep running on the macOS system Ruby (2.6),
 and must not depend on the caller's locale.** Both broke on exactly those two

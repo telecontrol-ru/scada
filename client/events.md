@@ -12,9 +12,9 @@ permalink: /client/events/
 {:toc}
 
 
-![](../img/events-alarm-surface.png)
+![]({{ '/img/events-alarm-surface.png' | relative_url }})
 
-Журнал дополняется [панелью тревог](../workbench/#journal): точкой «не
+Журнал дополняется [панелью тревог]({{ '/client/workbench/' | relative_url }}#journal): точкой «не
 квитировано» в первом столбце, названием важности,
 итоговой строкой со сводкой неквитированных событий и кнопкой *Квитировать
 все*.

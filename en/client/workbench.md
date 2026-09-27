@@ -62,7 +62,7 @@ high-contrast variants are also available
 Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
 change, period selection, object creation, About — follow the same theme.
 
-## [](#activity-bar)The section rail
+## The section rail {#activity-bar}
 
 A narrow strip down the left edge of the window, in three zones. It **never
 opens a workspace tab** — each zone answers a different level of navigation.
@@ -131,7 +131,7 @@ The rail's markers are a **projection of real state**, not a memory of the last
 click. If the open panes match no mode — because one was closed by hand, say —
 the mode marker clears rather than claiming something that is not there.
 
-## [](#breadcrumb)The path
+## The path {#breadcrumb}
 
 The left of the context strip states where the workspace currently is:
 **page → view → selected object**. It is the only region that names the
@@ -148,7 +148,7 @@ twice. No object is named for a multiple selection.
 A long path is elided against the width the layout actually grants, so it
 follows the text size set in the operating system.
 
-## [](#settings)Settings
+## Settings {#settings}
 
 *Settings → Settings…* opens the client's settings. The Settings button at the
 foot of the [section rail](#activity-bar) opens the same thing — one command
@@ -176,7 +176,7 @@ platform supports speech synthesis — spoken announcements. A disabled setting
 explains why in its tooltip: spoken announcements are available in the Windows
 build only.
 
-## [](#appearance)Appearance
+## Appearance {#appearance}
 
 The appearance is chosen in *Settings → Settings…*, from the
 **Colour scheme** list — next to *Style*, and behaving the same way: the
@@ -224,7 +224,7 @@ components. Not exposed in the dialog.</dd>
 on, is no longer read: its value is ignored and the workbench is always
 shown.
 
-## [](#menu-reasons)Why a command is unavailable
+## Why a command is unavailable {#menu-reasons}
 
 When a context-menu command is disabled, hovering it shows a tooltip with
 the reason — "The signal has no output channel" for *Control…*, say, or
@@ -236,7 +236,7 @@ Commands that are unavailable outright (without the Control privilege, for
 example) are not listed in the menu at all; for a selected object the
 [Inspector](#inspector) shows that reason instead.
 
-## [](#login)Signing in
+## Signing in {#login}
 
 ![]({{ '/img/workbench-login.png' | relative_url }})
 
@@ -255,7 +255,7 @@ protocol, where it is the only place the protocol is named. When the protocol
 is a field of its own, the line would repeat what is already written above it,
 so it is not drawn.
 
-## [](#overview)The Overview landing page
+## The Overview landing page {#overview}
 
 ![]({{ '/img/workbench-overview.png' | relative_url }})
 
@@ -274,7 +274,7 @@ visible in the top-bar tiles throughout. The trend is empty until the
 operator adds signals to it; the page layout is saved in the profile as a
 regular page.
 
-## [](#palette)Command palette
+## Command palette {#palette}
 
 ![]({{ '/img/command-palette.png' | relative_url }})
 
@@ -283,7 +283,7 @@ palette: an input line filtering as you type, every registered command and
 window-open action, plus signal search by name — a chosen signal opens in a
 table. *Enter* runs the selected entry.
 
-## [](#table-toolbar)Table: the toolbar
+## Table: the toolbar {#table-toolbar}
 
 ![]({{ '/img/table-workspace.png' | relative_url }})
 
@@ -317,7 +317,7 @@ digits stay aligned and do not shift as values update — and two columns appear
 next to the value: "Quality" with a textual quality flag, and "Trend" with a
 mini-graph of the value over the last hour, updating live.
 
-## [](#journal)Event journal as an alarm surface
+## Event journal as an alarm surface {#journal}
 
 ![]({{ '/img/events-alarm-surface.png' | relative_url }})
 
@@ -347,7 +347,7 @@ alarm surface:
 A live alarm that also appears in the read history shows as one row — the
 journal does not duplicate it with its historical copy.
 
-## [](#transmission)Transmission rules
+## Transmission rules {#transmission}
 
 Transmission forwards SCADA objects to upper-level systems. Every destination
 device has its own rule table, and one rule binds one SCADA object to one
@@ -407,7 +407,7 @@ system over the destination device's protocol, and relays control commands
 arriving from the remote system at those addresses back to the equipment.
 Table changes take effect without restarting the client.
 
-## [](#display)Schematic display
+## Schematic display {#display}
 
 ![]({{ '/img/substation-display.png' | relative_url }})
 
@@ -416,7 +416,7 @@ strips below it: "Measurements" — the selected signals' values with their
 update times — and "Recent events" — the active (unacknowledged) alarms with
 their severity, time, object and message. The diagram geometry is unchanged.
 
-## [](#inspector)Inspector
+## Inspector {#inspector}
 
 ![]({{ '/img/inspector-panel.png' | relative_url }})
 
@@ -456,7 +456,7 @@ was raised, when the server received it (that row appears only when delivery
 lagged, so the gap shows the delay) and when it was acknowledged. For a
 pending event the last row — "Awaiting acknowledgement" — carries no time.
 
-### [](#inspector-series)Series
+### Series {#inspector-series}
 
 When a chart series is selected, a **Series** section appears below the
 element card — how that line is drawn:
@@ -475,7 +475,7 @@ The section belongs to the selection, not to the panel: it disappears with the
 selection, so another object's card is never shown carrying the previous
 view's series.
 
-## [](#administration)Administration
+## Administration {#administration}
 
 The activity bar carries an **Administration** mode — a fifth one after
 Objects, Devices, Files and Nodes. It is available only
@@ -487,7 +487,7 @@ Audit log, Databases, Formats, Simulated Signals. The list is built from the
 commands the shell can actually carry out, so a window missing from the build,
 or one this session may not open, is simply not offered.
 
-### [](#users)Users
+### Users {#users}
 
 The Users window reads the server's standard account list and shows, for each
 account: its name, description, **roles**, and whether it is enabled. A
@@ -499,14 +499,14 @@ at once, and their permissions combine. "None" means the account holds no
 role — it can log in and nothing more; "No data" means the role list could not
 be read, which is not the same thing.
 
-### [](#roles)Roles
+### Roles {#roles}
 
 The Roles window lists every role on the server together with its members. The
 Type column distinguishes standard roles, which cannot be deleted, from custom
 roles created in this installation. The window is read-only: changing a role's
 membership is a privileged operation performed on the server.
 
-### [](#password-policy)Password policy
+### Password policy {#password-policy}
 
 The Password policy window shows what the server requires of a new password:
 the permitted length, the required character classes, and the written
@@ -517,7 +517,7 @@ The same rules apply when changing a password: the dialog warns about a
 mismatch before sending the request, but the server always makes the final
 decision.
 
-### [](#set-password)Setting a password
+### Setting a password {#set-password}
 
 The *Set Password…* command behaves differently depending on whose account it
 is:
@@ -527,7 +527,7 @@ is:
   not shown: the server does not check it, so asking for it would be
   misleading.
 
-### [](#audit-log)Audit log
+### Audit log {#audit-log}
 
 The Audit log window is the event journal narrowed to audit events: who did
 what to accounts, passwords and role membership. Both successful and refused
@@ -538,7 +538,7 @@ The window is available to administrators only. It carries no acknowledgement
 controls: an audit entry records what happened, and there is nothing in it to
 acknowledge.
 
-### [](#historical-db)Databases
+### Databases {#historical-db}
 
 The Databases window lists the history databases configured on the server and,
 for each, its state: Depth (days) — how long values are kept, Items — how many
@@ -551,7 +551,7 @@ archive and a device's event archive are chosen from this list. Configuring the
 databases on the server side is described under
 [Server]({{ '/en/server/#history' | relative_url }}).
 
-### [](#ts-formats)Formats
+### Formats {#ts-formats}
 
 The Formats window defines how two-state (discrete) signals look on screen.
 Each format is a pair of states: "Label 0" and "Label 1" — the texts the states
@@ -563,7 +563,7 @@ A format is assigned to an object in its parameters (see
 [Data items]({{ '/en/dev/data-items/' | relative_url }})), so one edit to a
 format changes every object it is assigned to.
 
-### [](#simulation-items)Simulated signals
+### Simulated signals {#simulation-items}
 
 The Simulated signals window lists the signals the server generates itself,
 with no device involved. Each carries a Type — the waveform — a Period (ms), a
@@ -571,7 +571,7 @@ Phase (ms) and an Update interval (ms) saying how often a new value is
 produced. Simulated signals are used for commissioning and training: they let
 displays, graphs and alarms be exercised before any equipment is connected.
 
-## [](#nodes)Nodes
+## Nodes {#nodes}
 
 The **Nodes** mode shows the whole OPC UA address space — from the server's
 root folder along hierarchical references — rather than objects and equipment

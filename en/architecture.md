@@ -12,19 +12,44 @@ permalink: /en/architecture/
 
 ## Overview
 
-Telecontrol SCADA uses a client-server architecture. The central [Server]({{ '/en/server/' | relative_url }}) collects data from field devices, processes it in real time, stores history, and serves client sessions. The graphical [Client]({{ '/en/client/' | relative_url }}) and web-based access tools connect over TCP/IP and present data to operators.
+Telecontrol SCADA uses a client-server architecture. The [Server]({{ '/en/server/' | relative_url }}) collects data from field devices, processes it in real time, stores history, and serves client sessions. The Server is a set of separate processes, each owning one part of that work; see [Server processes](#tiers). The graphical [Client]({{ '/en/client/' | relative_url }}) and web-based access tools connect over TCP/IP and present data to operators.
 
 The main data flow is:
 
 1. Devices send telemetry to the Server using industrial protocols such as MODBUS, IEC 60870-5, and IEC 61850.
-1. The scanner layer receives and distributes updates into internal channels.
+1. The scanner layer (the protocol processes) receives and distributes updates into internal channels.
 1. The real-time subsystem applies reservation, transformations, limit checks, and calculated values.
-1. Historical services archive value changes and system events.
+1. The historian (`scada-historian`) archives value changes and system events.
 1. Clients display live and historical information and send control commands back to the Server.
+
+## Server processes {#tiers}
+
+The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (or run as its own process on Linux), reads its own parameter file, and is licensed separately, so an installation carries only the processes it needs.
+
+| Process | Windows service | Role |
+|:---|:---|:---|
+| `scada-config` | Telecontrol SCADA Config | Holds the configuration (objects, equipment, users) and serves it to the other processes |
+| `scada-proxy` | Telecontrol SCADA Proxy | Accepts Client connections and combines the other processes into one address space |
+| `scada-historian` | Telecontrol SCADA Historian | [Archiving](#archiving) of values and events; serves history |
+| `scada-filesystem` | Telecontrol SCADA Filesystem | [Server-side file system]({{ '/en/server/' | relative_url }}#filesystem) (displays and other files) |
+| `scada-modbus` | Telecontrol SCADA Modbus | Data acquisition over MODBUS RTU/TCP |
+| `scada-iec104` | Telecontrol SCADA IEC 104 | Data acquisition over IEC 60870-5-101/104 |
+| `scada-iec61850` | Telecontrol SCADA IEC 61850 | Data acquisition over IEC 61850 |
+| `scada-opc` | Telecontrol SCADA OPC | [OPC client](#opc-client-on-windows) (Windows only) |
+| `scada-vidicon` | Telecontrol SCADA Vidicon | [Vidicon integration]({{ '/en/server/' | relative_url }}#vidicon) (Windows only) |
+
+The processes exchange data with each other over OPC UA.
+
+**A minimal installation** is one protocol process (for example `scada-iec104`). It keeps the configuration in its own database and accepts Client connections itself. Such an installation has no archive: value and event history is stored only by `scada-historian`.
+
+**A distributed installation** consists of `scada-config`, the protocol processes it needs, `scada-historian`, optionally `scada-filesystem`, and `scada-proxy`, which the Clients connect to. The protocol processes receive their configuration from `scada-config`. Start them in this order: `scada-config`; then `scada-historian`, `scada-filesystem` and the protocol processes; then `scada-proxy`.
+
+Running the processes — startup, Windows services, parameter files — is described in the [Server]({{ '/en/server/' | relative_url }}) section.
 
 ## Client-server interaction
 
-Clients connect to the Server over TCP/IP on port `2000` by default.
+Clients connect to the Server over TCP/IP on port `2000` by default —
+to `scada-proxy` in a distributed installation.
 Client sessions tolerate short network interruptions and reconnect
 automatically. Through a single session, the Client can subscribe to
 live value updates, request historical data, execute control commands,
@@ -39,21 +64,21 @@ Address and port configuration is described in the Server section on
 
 ## Roles and permissions
 
-The system supports multiple user roles with different operational and engineering rights:
+Each user account is given two independent rights, *Control* and *Configure*. Their combinations give four familiar profiles:
 
-| Role | Control commands and setpoints | Configuration editing |
+| Rights | Control commands and setpoints | Configuration editing |
 |:---|:---:|:---:|
 | Executive / viewer | No | No |
 | SCADA engineer | No | Yes |
 | Dispatcher | Yes | No |
 | Administrator | Yes | Yes |
 
-User rights determine access to control operations, manual value entry, engineering tools, and user administration.
+Users authenticate with a name and password. The Server checks each request against OPC UA roles derived from these rights, which determine access to control operations, manual value entry, engineering tools, and user administration.
 
 For user setup details, see
 [User configuration]({{ '/en/dev/users/' | relative_url }}).
 
-## [](#data-items) Data objects
+## Data objects {#data-items}
 
 The main information objects are discrete signals, measured values, and control channels. Objects can be identified by number and, optionally, by a unique alias. They can also be archived with a defined history depth.
 
@@ -176,7 +201,7 @@ the current value:
 | `U` | Stale value |
 | `V` | Limit violation |
 
-### [](#manual-write) Manual input and blocking
+### Manual input and blocking {#manual-write}
 
 An operator with control privileges can manually set the value of any
 discrete or measured object with the `Manual input` command.
@@ -186,7 +211,7 @@ incoming telemetry from field devices is ignored and the manually
 entered value takes priority. When the block is removed, the next device
 update overwrites the manual value again.
 
-### [](#limits) Limit checks
+### Limit checks {#limits}
 
 Measured objects can define limit monitoring with alarm and pre-alarm
 threshold pairs. Each pair has an upper and lower boundary.
@@ -262,10 +287,10 @@ Events are reviewed in the
 
 ## Archiving
 
-The archive subsystem stores historical object values and system events
+The archive subsystem (`scada-historian`) stores historical object values and system events
 in one or more
 [SQLite](https://www.sqlite.org/index.html) databases. This database
-engine is built into the Server, so no third-party database system is
+engine is built into the process, so no third-party database system is
 required.
 
 Archived history can then be queried and displayed in the
@@ -280,7 +305,7 @@ See also the Server section on
 
 ### OPC UA server
 
-The SCADA Server can act as an
+Every SCADA Server process can act as an
 [OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/)
 server and expose its address space to external systems. External OPC
 UA clients can access current values, historical data, and
@@ -291,7 +316,7 @@ Configuration is described in the Server section on
 
 ### OPC client on Windows
 
-On Windows, the Server can also connect outward to Classic OPC (OPC DA)
+On Windows, the `scada-opc` process can connect outward to Classic OPC (OPC DA)
 servers. Their tags then appear in the Telecontrol SCADA address space
 and can be bound to SCADA objects.
 
@@ -301,19 +326,22 @@ Configuration is described in the Server section on
 ## Configuration
 
 The configuration stored on disk contains all SCADA objects, equipment
-structure, and users. It is updated immediately when edited so that
+structure, and users. It lives in a local database owned by
+`scada-config` in a distributed installation, or by the single process
+of a minimal one. It is updated immediately when edited so that
 changes are reflected across the running system without waiting for a
 manual save step.
 
-Configuration is edited with the built-in engineering tools. The default
-template configuration created on first installation includes the `root`
-user with an empty password.
+Configuration is edited with the built-in engineering tools, and
+requires the *Configure* right.
+
+The built-in `root` account has all rights and always exists,
+whatever the configuration contains.
+
+**WARNING:** while no root password is configured, the Server accepts
+`root` with an empty password. Set one with
+[`security.rootPassword`]({{ '/en/server/' | relative_url }}#root-password)
+before the Server is reachable over the network.
 
 For more details, see [Development]({{ '/en/development/' | relative_url }})
 and [Excel]({{ '/en/dev/excel/' | relative_url }}).
-
-## Translation status
-
-This English page is now a functional architectural reference. The
-Russian page still contains fuller low-level examples and some extra
-terminology detail.

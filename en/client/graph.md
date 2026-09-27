@@ -140,7 +140,7 @@ alarm thresholds:
 * high warning
 * high alarm
 
-See [Architecture: Limit checks]({{ '/en/architecture/#limit-checks' | relative_url }})
+See [Architecture: Limit checks]({{ '/en/architecture/#limits' | relative_url }})
 for the underlying configuration behavior.
 
 ## Switching to summary

@@ -86,7 +86,7 @@ operators, and built-in functions.
 
 See the syntax reference in [Formulas]({{ '/en/formulas/' | relative_url }}).
 
-## Sorting
+## Sorting {#sort}
 
 Two sort modes are available from the `Sort` submenu:
 

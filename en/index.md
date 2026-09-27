@@ -52,8 +52,8 @@ Example of a distributed deployment:
 * Retransmission of selected data to upper-level systems and an OPC UA
   server
 * [Formulas]({{ '/en/formulas/' | relative_url }}),
-  [manual input]({{ '/en/architecture/' | relative_url }}#manual-input),
-  and [limit checks]({{ '/en/architecture/' | relative_url }}#limit-checks)
+  [manual input]({{ '/en/architecture/' | relative_url }}#manual-write),
+  and [limit checks]({{ '/en/architecture/' | relative_url }}#limits)
 * Object emulation for testing without field hardware
 * [Historical archives]({{ '/en/server/' | relative_url }}#history)
   with automatic database maintenance

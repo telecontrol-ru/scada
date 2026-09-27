@@ -16,7 +16,7 @@ through the
 [Debugger]({{ '/en/client/debugger/' | relative_url }}) tools in the
 Client.
 
-## [](#modbus) MODBUS
+## MODBUS {#modbus}
 
 MODBUS is a master-slave communication protocol. Telecontrol SCADA
 supports MODBUS over RS-485, RS-422, RS-232, and Ethernet TCP/IP,
@@ -30,7 +30,7 @@ MODBUS function codes and maps them to SCADA objects.
 See also the engineering reference for
 [MODBUS devices]({{ '/en/dev/devices/' | relative_url }}).
 
-## [](#iec-60870) IEC 60870-5
+## IEC 60870-5 {#iec-60870}
 
 IEC 60870-5 directions define data channels such as a network endpoint
 or serial port. One direction can serve multiple devices.
@@ -87,7 +87,7 @@ supports devices that send datagrams built from multiple IEC messages.
 See also the engineering reference for
 [IEC 60870-5 devices]({{ '/en/dev/devices/' | relative_url }}).
 
-## [](#iec-61850) IEC 61850
+## IEC 61850 {#iec-61850}
 
 IEC 61850 support provides transparent access to the device information
 model. Data acquisition is performed through subscriptions to RCB/BRCB
