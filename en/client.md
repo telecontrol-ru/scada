@@ -256,7 +256,6 @@ The main operator-facing views now documented in English are:
 * [Portfolios]({{ '/en/client/portfolio/' | relative_url }})
 * [Export and import]({{ '/en/client/export/' | relative_url }})
 * [Printing]({{ '/en/client/print/' | relative_url }})
-* [Web interface]({{ '/en/client/web/' | relative_url }})
 
 ## Related views
 

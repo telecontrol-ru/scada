@@ -39,4 +39,3 @@ nav_order: 1
 * Конфигурирование во время работы с любого рабочего места, возможность [Редактирования конфигурации в Excel]({{ '/dev/excel/' | relative_url }})
 * [Наблюдение]({{ '/client/device-watch/' | relative_url }}) за каналами связи и [метрики устройств]({{ '/client/device-metrics/' | relative_url }})
 * [Экспорт]({{ '/client/export/' | relative_url }}) данных в CSV, [печать]({{ '/client/print/' | relative_url }}) таблиц и графиков
-* [Веб-интерфейс]({{ '/client/web/' | relative_url }}) для удаленного доступа через браузер

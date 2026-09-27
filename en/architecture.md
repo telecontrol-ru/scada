@@ -55,10 +55,6 @@ automatically. Through a single session, the Client can subscribe to
 live value updates, request historical data, execute control commands,
 and edit configuration when the user role allows it.
 
-Besides the graphical Client, a
-[Web interface]({{ '/en/client/web/' | relative_url }}) is also
-available for browser-based access.
-
 Address and port configuration is described in the Server section on
 [client connections]({{ '/en/server/' | relative_url }}#sessions).
 

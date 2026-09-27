@@ -47,19 +47,52 @@ What each process does, and the start order, are described in
 
 ## Installation on Windows
 
-Each Server process is installed as its own Windows service with the
-`--install` option of its executable, for example:
+One installer carries every Server process and the `scada-setup` tool. Which
+processes run is decided by the license.
 
-```
-scada-iec104.exe --install
+1. Install the package:
+
+   ```bat
+   msiexec /i telecontrol-scada-<version>.msi /qn
+   ```
+
+2. Put the license file at
+   `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+
+3. From an elevated command prompt, run:
+
+   ```bat
+   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --svc-password <password>
+   ```
+
+   `<password>` is the password of the `svc` service account the processes
+   use to connect to each other. It must be the same on every computer of the
+   site.
+
+`apply` enables every process the license entitles (narrow it with
+`--tiers`), writes each one's parameter file
+`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json`, creates the
+configuration databases (never overwriting an existing one), registers one
+Windows service per process, and starts them in the right order. To check the
+result:
+
+```bat
+scada-setup status
 ```
 
-The service is named after the process — `Telecontrol SCADA IEC 104`,
-`Telecontrol SCADA Config`, and so on — and starts automatically at boot,
-before any user signs in. The process reads the parameter file
-`%ProgramData%\Telecontrol\SCADA <process>\<name>.json`, for example
-`%ProgramData%\Telecontrol\SCADA IEC 104\scada-iec104.json`. See the
-[Server]({{ '/en/server/' | relative_url }}) section for details.
+**Several computers.** Set up the central computer first, then the computers
+running protocol processes, giving them the central computer's address:
+
+```bat
+rem Central computer:
+scada-setup apply --tiers config,historian,filesystem,proxy --svc-password <password>
+rem Computer near the equipment:
+scada-setup apply --tiers modbus,iec104 --central 10.0.0.10 --svc-password <password>
+```
+
+The remaining links between processes are set up automatically. All
+`scada-setup` commands are described in the
+[Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
 
 The graphical Client is installed on one or more operator workstations; the
 Server and the Client may also share one computer.
@@ -77,61 +110,80 @@ option.
 
 ## Installation on Linux
 
-The Server processes run on Linux: start the executables of the processes
-you need, and each reads its own parameter file `data/<name>.json` (see
-[Linux deployment]({{ '/en/server/' | relative_url }}#linux)). Container
-deployments use a single Docker image.
+The Server processes run on Linux, but `scada-setup` registers no services
+there: start the executables of the processes you need, each with its own
+parameter file (see [Linux deployment]({{ '/en/server/' | relative_url }}#linux)).
+Container deployments use a single Docker image.
 
-The graphical Client is not supported on Linux. Linux workstations should use
-the [Web interface]({{ '/en/client/web/' | relative_url }}).
+The graphical Client is not supported on Linux.
 
 ## License
 
-Each process needs a license file, `license.json`, listing the processes
-purchased. Without a valid license a process stops right after it starts.
-**If the Server does not run on Google Cloud, set
-`"license": {"require_gcp_binding": false}` in the parameter file** —
+The license is a signed `license.json` file listing the processes purchased.
+The same file goes on every computer of the site. A process the license does
+not name stops right after it starts. To add a process, replace the file with
+the new license on every computer — running processes pick it up without a
+restart — and run `scada-setup apply`.
+
+Parameter files written by `scada-setup` already contain
+`"license": {"require_gcp_binding": false}`. **If you write a parameter file by
+hand and the Server does not run on Google Cloud, set it yourself** —
 otherwise the process cannot verify its license and serves no requests. See
 [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 ## Root password
 
 The built-in `root` account has all rights. While no password is set for it,
-the Server accepts `root` with an empty password, so **set one before the
-first start**, with `security.rootPassword` in the parameter file of every
-process that keeps the configuration in its own database:
+a process accepts `root` with an empty password.
+
+**WARNING: `scada-setup` does not set a root password.** Each process that
+keeps the configuration in its own database — `scada-config`, `scada-proxy`,
+`scada-historian` and `scada-filesystem` — has its own `root` account, and
+after `apply` all of them accept an empty password. Right after installation,
+add to the parameter file of each of those processes
+(`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json`):
 
 ```json
 "security": {
-    "rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"
+    "rootPassword": "<password>"
 }
 ```
 
-A value set this way is written on every start and replaces a password
-changed from the Client. See
+and restart the processes (`scada-setup stop`, then `scada-setup start`).
+**Repeat this after every `scada-setup apply`**, which rewrites the parameter
+files from the templates. Restrict access to these files: the password is
+stored in them as plain text. See
 [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
 ## Network preparation
 
-If the server host is protected by Windows Firewall or another network
-filtering product, allow incoming TCP connections on port `2000` of the
-process the Clients connect to (`scada-proxy` in a distributed installation).
-Client workstations must be able to open outgoing TCP connections to the
-Server.
+Clients connect to the `scada-proxy` process: open inbound TCP port 2000 on
+its computer (and 4840 for external OPC UA clients). In a distributed
+installation the process ports must also be open between the site's
+computers:
 
-In a distributed installation the processes talk to each other over OPC UA,
-so their OPC UA ports (the `opcua.url` parameter) must be open between them.
+| Process | OPC UA | Clients |
+|---|:-:|:-:|
+| `scada-proxy` | 4840 | 2000 |
+| `scada-config` | 4841 | 2001 |
+| `scada-historian` | 4842 | 2002 |
+| `scada-modbus` | 4843 | 2003 |
+| `scada-iec104` | 4844 | 2004 |
+| `scada-iec61850` | 4845 | 2005 |
+| `scada-filesystem` | 4846 | 2006 |
+| `scada-opc` | 4847 | 2007 |
+| `scada-vidicon` | 4848 | 2008 |
 
-The Client port can be changed with the
-[`sessions`]({{ '/en/server/' | relative_url }}#sessions) parameter.
+`scada-setup` does not create firewall rules — open the ports by hand. Open
+the OPC UA ports to the site's computers only.
 
 ## Initial project setup
 
 For a real project:
 
-* put the configuration database in the directory named by `configuration.dir`
-  in the parameter file of the process that keeps the configuration
-  (`scada-config` in a distributed installation)
+* put the `scada-config` configuration database in
+  `%ProgramData%\Telecontrol\SCADA Server\config\Configuration` (or, for a
+  hand-written setup, the directory named by `configuration.dir`)
 * copy schematic files (`.sde`) to `%ProgramData%\Telecontrol\SCADA Client` on each workstation, or upload them to the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem) if that feature is enabled
 
 To explore the system without field equipment, give objects
@@ -141,10 +193,9 @@ For project engineering details, see [Development]({{ '/en/development/' | relat
 
 ## Start the Server
 
-On Windows, the process services start automatically with the operating
-system; a user sign-in is not required. In a distributed installation keep
-the order: `scada-config`; then `scada-historian`, `scada-filesystem` and the
-protocol processes; then `scada-proxy`.
+The process services start automatically with Windows; a user sign-in is not
+required. `scada-setup start` and `scada-setup stop` start or stop all of the
+computer's processes in the right order.
 
 As an alternative, a process can be started in
 [console mode]({{ '/en/server/' | relative_url }}#console).
@@ -185,7 +236,17 @@ For the main operator interface, continue with
 ## Upgrading
 
 Before upgrading, back up the configuration and historical databases — see
-[Backup]({{ '/en/server/' | relative_url }}#backup).
+[Backup]({{ '/en/server/' | relative_url }}#backup). Then, on each computer:
+
+```bat
+scada-setup stop
+msiexec /i telecontrol-scada-<new version>.msi /qn
+scada-setup apply --svc-password <password>
+```
+
+The installer replaces only the executables; `apply` rewrites the parameter
+files and leaves the data alone. After `apply`, set the
+[root password](#root-password) again.
 
 ## Troubleshooting
 

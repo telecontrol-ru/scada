@@ -32,6 +32,36 @@ or from the command line of that process's executable:
 | `--install` | Install the Server as a Windows service |
 | `--uninstall` | Remove the Windows service |
 
+### Setting up with scada-setup {#scada-setup}
+
+On Windows, the Server processes are installed and configured with the
+`scada-setup` tool that comes with the installer. It writes the parameter
+files `%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` from
+templates, creates the configuration databases, and registers the Windows
+services; the executables' `--install` / `--uninstall` options are needed only
+for a hand-built setup. The step-by-step installation is in
+[Getting started]({{ '/en/getting-started/' | relative_url }}).
+
+| Command | Does | Needs admin |
+|---|---|:-:|
+| `scada-setup apply` | Write parameter files and databases, register and start the services of the licensed processes | yes |
+| `scada-setup status` | License summary and each process's service state | no |
+| `scada-setup start` / `stop` | Start / stop this computer's services in order | yes |
+| `scada-setup remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the processes' data too) | yes |
+| `scada-setup generate --output <dir>` | Write the parameter files only, for inspection | no |
+
+Common options: `--tiers <list>` (default: the licensed processes),
+`--central <address>` (required on a computer without `scada-config`),
+`--advertise <address>` (this computer's address for the others, when its
+name does not resolve on the network), `--license <path>` (default
+`%ProgramData%\Telecontrol\SCADA Server\license.json`),
+`--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
+variable), `--data-root`, `--install-root`.
+
+`apply` can be run again: it rewrites the parameter files and brings the
+services to the required state without touching data. Hand edits to the
+parameter files are lost when it does.
+
 ### Console mode {#console}
 
 To start a Server process in console mode, stop its service and run the desktop shortcut or the
@@ -56,9 +86,7 @@ The most important server startup options are:
 
 ### Linux deployment {#linux}
 
-The Server supports Linux. The graphical Client does not, so Linux
-operator workstations should use the
-[Web interface]({{ '/en/client/web/' | relative_url }}).
+The Server supports Linux. The graphical Client does not.
 
 #### Run from an archive
 
@@ -100,6 +128,8 @@ The settings live in the `license` block of the parameter file:
 |---|---|---|
 | `file` | `license.json` | Path to the license file. A relative path resolves against the process's working directory, so an absolute path is safer. When the parameter is absent, the `SCADA_SERVER_LICENSE_FILE` environment variable is used |
 | `require_gcp_binding` | `true` | Check that the license is bound to this Google Cloud virtual machine. **Outside Google Cloud, set it to `false`**, or the license cannot be verified. When the parameter is absent, the `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` environment variable is used |
+
+Parameter files written by [`scada-setup`](#scada-setup) already carry the path `%ProgramData%\Telecontrol\SCADA Server\license.json` (or the one given with `--license`) and `"require_gcp_binding": false`.
 
 The license is checked at startup and then every few seconds:
 
@@ -272,6 +302,10 @@ replaces any password stored earlier, including one changed from the
 Client. To keep the password out of the file in plain text, pass it
 through an environment variable as in the example above.
 
+**`scada-setup` does not set this parameter**, and it rewrites the
+parameter files it generates on every `apply` — the procedure is in
+[Getting started]({{ '/en/getting-started/' | relative_url }}#root-password).
+
 Set the parameter on **every** process that keeps the configuration in
 its own database; each of them has its own `root` account. In a minimal
 installation that is the single process. In the typical distributed
@@ -307,39 +341,6 @@ including objects, devices, and current or historical data.
 
 The connection is protected with PEM-formatted certificates. A key and
 certificate pair must be generated during initial setup.
-
-### WebSocket endpoint for the web client {#opcua-websocket}
-
-The [web client]({{ '/en/client/web/' | relative_url }}) connects to the
-Server over OPC UA on WebSocket. To enable it, add an address with the
-`opc.ws://` (unencrypted) or `opc.wss://` (TLS) scheme to `url`, which may be
-a list. Enable the endpoint on the process the Clients connect to —
-`scada-proxy` in a distributed installation:
-
-```json
-"opcua": {
-    "enabled": true,
-    "url": [
-        "opc.tcp://0.0.0.0:4840",
-        "opc.ws://127.0.0.1:4842"
-    ],
-    "allowed_origins": ["https://scada.example.com"]
-}
-```
-
-| Parameter | Default | Description |
-|---|---|---|
-| `url` | | An `opc.ws://host[:port][/ua]` or `opc.wss://host[:port][/ua]` address. The default port is 4842 for `opc.ws` and 4843 for `opc.wss`. The path is always `/ua`; any other path is rejected |
-| `server_private_key`, `server_certificate` | | Required for `opc.wss://`: they secure the TLS connection |
-| `advertise_url` | | The addresses the Server reports to clients when clients do not dial the `url` address directly — for example, through a web server. Each one applies to the `url` address with exactly the same scheme: an `opc.wss://` entry only to an `opc.wss://` listener |
-| `allowed_origins` | empty | Exact `Origin` header values (the web client page's address, such as `https://scada.example.com`) allowed to connect. An empty list allows any origin; `*` allows any and logs a warning |
-| `subprotocol` | `opcua+uajson` | The WebSocket subprotocol; do not change it |
-| `max_message_size` | 4194304 | Maximum message size, in bytes |
-| `compression` | `true` | WebSocket message compression |
-
-The Server itself does not serve the web client's files; that takes a
-separate web server — see
-[Deploying the web client]({{ '/en/client/web/' | relative_url }}#deployment).
 
 ## OPC client on Windows {#opc-classic}
 

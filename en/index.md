@@ -69,4 +69,3 @@ Example of a distributed deployment:
 * [CSV export]({{ '/en/client/export/' | relative_url }}) and
   [printing]({{ '/en/client/print/' | relative_url }}) of tables and
   graphs
-* [Web access]({{ '/en/client/web/' | relative_url }}) through a browser

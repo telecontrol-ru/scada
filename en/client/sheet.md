@@ -73,8 +73,7 @@ end of the table.
 Deleting rows and columns is not supported yet.
 
 {: .note }
-> Inserting rows and columns is available in the web interface. In the
-> desktop Client, the size of a user table is set when the table is created.
+> The size of a user table is set when the table is created.
 
 ## Cell blinking
 

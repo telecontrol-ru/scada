@@ -16,9 +16,6 @@ menu:
 - `Export Configuration...` saves the configuration to a file;
 - `Import Configuration...` loads a file back into the server.
 
-In the web client the same actions are in the `Administration` section of
-the settings.
-
 ## The file
 
 The configuration is saved as a standard OPC UA
