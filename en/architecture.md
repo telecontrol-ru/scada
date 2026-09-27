@@ -294,8 +294,9 @@ Archived history can then be queried and displayed in the
 [Data]({{ '/en/client/data/' | relative_url }}), and
 [Summary]({{ '/en/client/summary/' | relative_url }}) views.
 
-See also the Server section on
-[historical databases]({{ '/en/server/' | relative_url }}#history).
+Creating archives and assigning them to objects is described under
+[Archiving]({{ '/en/dev/history/' | relative_url }}); storage on the Server,
+under [historical databases]({{ '/en/server/' | relative_url }}#history).
 
 ## External integration
 
@@ -340,4 +341,4 @@ whatever the configuration contains.
 before the Server is reachable over the network.
 
 For more details, see [Development]({{ '/en/development/' | relative_url }})
-and [Excel]({{ '/en/dev/excel/' | relative_url }}).
+and [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}).

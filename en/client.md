@@ -158,6 +158,24 @@ operator, because the selection lapses on the device timeout regardless.
 
 One-stage control is a single value write and uses neither stage.
 
+#### Command result {#control-result}
+
+While the command runs, the dialog's status line shows "Preparing to control..."
+or "Controlling..." (in Russian, «Подготовка к управлению...» /
+«Управление...»).
+
+* **Success.** The dialog closes; there is no separate message. The
+  [Event journal]({{ '/en/client/events/' | relative_url }}) gets a "Control -
+  Done" event («Управление - Выполнено»).
+* **Failure.** A message box titled "Control" (or "Manual Input") shows the
+  reason, for example "Not enough rights to perform the operation." The
+  control dialog stays open so the command can be retried. The event journal
+  records an event with the error code.
+
+The *Control Success Message* setting does not affect this dialog: it turns on
+event-panel messages for other successful operations — configuration edits,
+object creation, password changes.
+
 Manual input is intended for cases where a data item must temporarily
 override telemetry from field devices. If blocking is enabled for the
 object, incoming telemetry is ignored and the manual value takes
@@ -256,6 +274,7 @@ The main operator-facing views now documented in English are:
 * [Portfolios]({{ '/en/client/portfolio/' | relative_url }})
 * [Export and import]({{ '/en/client/export/' | relative_url }})
 * [Printing]({{ '/en/client/print/' | relative_url }})
+* [Reports and analysis]({{ '/en/client/reports/' | relative_url }})
 
 ## Related views
 

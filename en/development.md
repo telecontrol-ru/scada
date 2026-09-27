@@ -47,5 +47,6 @@ The engineering workflow covers:
 * [equipment and communication setup]({{ '/en/dev/devices/' | relative_url }})
 * [data-item configuration]({{ '/en/dev/data-items/' | relative_url }})
 * [electronic schematics and element parameters]({{ '/en/dev/displays/' | relative_url }})
-* [configuration export and import through Excel]({{ '/en/dev/excel/' | relative_url }})
+* [archiving]({{ '/en/dev/history/' | relative_url }})
+* [configuration export and import]({{ '/en/dev/excel/' | relative_url }})
 * [server-side file management]({{ '/en/dev/server-files/' | relative_url }})

@@ -69,46 +69,8 @@ associated application.
 
 Tables and summaries also support direct export to Microsoft Excel.
 
-## Configuration export
+## Configuration export and import
 
-The system configuration for groups, discrete signals, and measured
-values can be exported to a CSV file for review, editing, and import
-back into the system.
-
-Use the `More -> Export configuration` command. The default output
-file is `configuration.csv`.
-
-The exported data includes:
-
-* object identifiers and names
-* hierarchy, including parent objects
-* object types
-* all object-property values
-* links between objects
-
-Header format uses `PropertyName @NodeIdentifier`.
-
-## Configuration import
-
-To import configuration, choose `More -> Import configuration` and
-select a previously exported CSV file.
-
-### Import process
-
-1. The file is loaded and validated.
-1. The imported configuration is compared with the current one.
-1. A change report is shown with three categories:
-   * **Create** for new objects not present in the current configuration
-   * **Modify** for objects with changed properties, attributes, or links
-   * **Delete** for objects missing from the imported file
-1. The user confirms or rejects the changes.
-
-Incorrect import usage can cause configuration loss, so the change
-report should be reviewed carefully before confirmation.
-
-See also [Editing configuration in MS Excel]({{ '/en/dev/excel/' | relative_url }}).
-
-## Translation status
-
-This English page is a functional translation of the current Russian
-reference.
+The Server's configuration is exported and imported with `More -> Export
+Configuration...` and `Import Configuration...`, in the OPC UA NodeSet (XML)
+format. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}).

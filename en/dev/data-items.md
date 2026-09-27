@@ -127,9 +127,10 @@ The main parameter groups are:
 <dl>
 
 <dt>Value archive</dt>
-<dd>Defines the historical retention depth in days and selects the
-archive where object values are stored for later analysis in graphs,
-summaries, and the event journal.</dd>
+<dd>Selects the archive where object values are stored for later analysis
+in graphs, summaries, and the event journal. The retention depth belongs to
+the archive, not to the object. See
+[Archiving]({{ '/en/dev/history/' | relative_url }}).</dd>
 
 <dt>Name</dt>
 <dd>The display name used everywhere in the system. Names do not have to

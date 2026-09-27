@@ -58,6 +58,9 @@
 - ru: /client/print/
   en: /en/client/print/
 
+- ru: /client/reports/
+  en: /en/client/reports/
+
 - ru: /protocols/
   en: /en/protocols/
 
@@ -81,6 +84,9 @@
 
 - ru: /dev/excel/
   en: /en/dev/excel/
+
+- ru: /dev/history/
+  en: /en/dev/history/
 
 - ru: /dev/server-files/
   en: /en/dev/server-files/

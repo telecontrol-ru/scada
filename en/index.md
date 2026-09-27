@@ -63,7 +63,7 @@ Example of a distributed deployment:
 * Role-based access control through
   [user administration]({{ '/en/dev/users/' | relative_url }})
 * Online engineering from any workstation, including
-  [Excel-based configuration editing]({{ '/en/dev/excel/' | relative_url }})
+  [configuration export and import]({{ '/en/dev/excel/' | relative_url }})
 * [Device watch]({{ '/en/client/device-watch/' | relative_url }}) and
   [device metrics]({{ '/en/client/device-metrics/' | relative_url }})
 * [CSV export]({{ '/en/client/export/' | relative_url }}) and

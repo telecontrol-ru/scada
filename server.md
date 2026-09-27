@@ -99,7 +99,10 @@ Server* — и хранили его данные в папках `Configuration
 
    Установщик заменяет программу версии 2.5 и обычно сам удаляет ее службу;
    данные остаются на месте.
-4. Посмотрите, что будет сделано (команда ничего не меняет):
+4. Создайте [сертификат Сервера](#opcua-certificate) в
+   `C:\Program Files\Telecontrol SCADA\data\Certificates` — без него
+   процессы версии 2.6 не запустятся.
+5. Посмотрите, что будет сделано (команда ничего не меняет):
 
    ```bat
    scada-setup migrate
@@ -107,7 +110,7 @@ Server* — и хранили его данные в папках `Configuration
 
    Она перечисляет, что и куда будет скопировано, сколько места для этого
    нужно, какие настройки версии 2.5 не переносятся и что мешает переходу.
-5. Выполните переход в командной строке с правами администратора:
+6. Выполните переход в командной строке с правами администратора:
 
    ```bat
    scada-setup migrate --execute --svc-password <пароль>
@@ -116,10 +119,10 @@ Server* — и хранили его данные в папках `Configuration
    Команда останавливает и удаляет службу *Telecontrol SCADA Server*, если
    она еще осталась, копирует данные и затем выполняет `scada-setup apply`:
    создает файлы параметров, регистрирует и запускает службы процессов.
-6. Задайте [пароль root](#root-password) в файлах параметров `config`,
+7. Задайте [пароль root](#root-password) в файлах параметров `config`,
    `proxy`, `historian` и `filestore` и перезапустите процессы
    (`scada-setup stop`, затем `scada-setup start`).
-7. Подключитесь Клиентом (порт 2000, как и раньше) под учетной записью
+8. Подключитесь Клиентом (порт 2000, как и раньше) под учетной записью
    пользователя и проверьте объекты, архивы и мнемосхемы.
 
 Переход не выполняется, а команда объясняет причину, если:
@@ -422,7 +425,85 @@ sqlite> select count(*) from SystemEventType;
 | `server_certificate` | Путь к файлу сертификата (PEM) |
 | `trace` | Уровень диагностики: none, error, warning, info, debug, all |
 
-Для защиты соединений используются сертификаты в формате PEM. При первоначальной настройке необходимо сгенерировать пару ключ/сертификат и разместить файлы в указанной папке.
+### Сертификат Сервера {#opcua-certificate}
+
+Для защищенных соединений (политика Basic256Sha256, режим «Подпись и
+шифрование») процессу нужны закрытый ключ и сертификат в формате PEM, заданные
+параметрами `server_private_key` и `server_certificate`:
+
+* ключ RSA (рекомендуется 2048 бит) **без пароля**;
+* если параметры не заданы, процесс предлагает только незащищенные
+  соединения (политика None);
+* **если параметры заданы, а файлов нет или их не удается прочитать,
+  процесс не запускается** — в журнал выводится `Can't open file` или
+  `Failed to parse OPC UA server certificate PEM`.
+
+**Файлы параметров, созданные [`scada-setup`](#scada-setup), ссылаются на
+`C:\Program Files\Telecontrol SCADA\data\Certificates\ServerCertificate.pem`
+и `ServerPrivateKey.pem`, а установщик эти файлы не создает.** Создайте их до
+`scada-setup apply`, иначе процессы не запустятся.
+
+Создать самоподписанную пару можно программой [OpenSSL](https://www.openssl.org/)
+(в Windows она не входит в состав системы; ее устанавливают, например, вместе
+с Git для Windows). Сохраните в файл `cert.cnf`:
+
+```ini
+[req]
+distinguished_name = dn
+x509_extensions = v3
+prompt = no
+
+[dn]
+O = Telecontrol
+CN = Telecontrol SCADA Server
+
+[v3]
+basicConstraints = critical, CA:TRUE
+keyUsage = critical, digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyCertSign
+extendedKeyUsage = serverAuth, clientAuth
+subjectKeyIdentifier = hash
+subjectAltName = @san
+
+[san]
+URI.1 = urn:telecontrol:scada:server
+URI.2 = urn:SCADA-HOST:scada:historian
+DNS.1 = SCADA-HOST
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+```
+
+и выполните:
+
+```bat
+openssl req -x509 -nodes -newkey rsa:2048 -sha256 -days 1826 ^
+    -keyout ServerPrivateKey.pem -out ServerCertificate.pem -config cert.cnf
+```
+
+В разделе `[san]` замените `SCADA-HOST` именем компьютера и перечислите
+идентификаторы (ApplicationUri) всех процессов, работающих на нем:
+`urn:telecontrol:scada:server` для `scada-config` и `scada-proxy`,
+`urn:<имя компьютера>:scada:<процесс>` для остальных (например
+`urn:SCADA-HOST:scada:iec104`). Спецификация OPC UA требует, чтобы сертификат
+содержал идентификатор приложения, и сторонние клиенты OPC UA это проверяют.
+Скопируйте оба файла в папку, на которую ссылаются параметры, и ограничьте
+доступ к файлу ключа.
+
+Проверка сертификатов **клиентов** по умолчанию выключена: Сервер принимает
+любой клиентский сертификат. Чтобы принимать только доверенные, задайте папки:
+
+| Параметр | Описание |
+|---|---|
+| `trusted_certificates_dir` | Доверенные сертификаты клиентов (PEM или DER); клиент принимается, если его сертификат есть в этой папке |
+| `issuer_certificates_dir` | Сертификаты удостоверяющих центров; принимается клиент, чей сертификат ими подписан |
+| `crl_dir` | Списки отзыва для удостоверяющих центров |
+| `rejected_certificates_dir` | Сюда записываются отклоненные сертификаты клиентов — их можно перенести в доверенные |
+
+Дополнительные ограничения задаются в блоке `opcua.security`:
+`"allow_none": false` запрещает незащищенные соединения,
+`"require_encryption_for_password": true` запрещает передачу пароля без
+шифрования, `"require_trusted_client_cert": true` требует доверенный сертификат
+клиента. Анонимный вход предлагается всегда. Настольный Клиент сертификат
+Сервера не проверяет.
 
 ## Клиент OPC (Windows) {#opc-classic}
 
