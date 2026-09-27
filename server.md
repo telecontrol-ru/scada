@@ -30,7 +30,9 @@ permalink: /server/
 Под Windows процессы Сервера устанавливаются и настраиваются программой
 `scada-setup` из состава установщика. Она сама создает файлы параметров
 `%ProgramData%\Telecontrol\SCADA Server\<процесс>\server.json` из шаблонов,
-конфигурационные БД и службы Windows; ключи `--install` / `--uninstall`
+конфигурационные БД и службы Windows. Папка процесса называется так же, как
+процесс в параметре `--tiers` (`config`, `proxy`, `historian`, `iec104`…),
+кроме `scada-filesystem`: его папка — `filestore`; ключи `--install` / `--uninstall`
 исполняемых файлов нужны только при ручной настройке. Пошаговая установка
 описана в разделе [Начало работы]({{ '/getting-started/' | relative_url }}).
 
@@ -41,6 +43,7 @@ permalink: /server/
 | `scada-setup start` / `stop` | Запуск / остановка служб компьютера в нужном порядке | да |
 | `scada-setup remove [--purge-data]` | Остановить и удалить службы (с `--purge-data` — и данные процессов) | да |
 | `scada-setup generate --output <папка>` | Только создать файлы параметров, для просмотра | нет |
+| `scada-setup migrate [--execute]` | Перенести данные Сервера версии 2.5 — смотрите [Переход с версии 2.5](#upgrade-2-5) | с `--execute` — да |
 
 Общие параметры: `--tiers <список>` (по умолчанию — процессы из лицензии),
 `--central <адрес>` (обязателен на компьютере без `scada-config`),
@@ -53,6 +56,93 @@ permalink: /server/
 `apply` можно выполнять повторно: он заново создает файлы параметров и
 приводит службы к нужному состоянию, не трогая данные. Изменения, внесенные в
 файлы параметров вручную, при этом теряются.
+
+### Переход с версии 2.5 {#upgrade-2-5}
+
+Версии 2.5 и ранее устанавливали один процесс — службу *Telecontrol SCADA
+Server* — и хранили его данные в папках `Configuration`, `History` и
+`FileSystem` внутри `%ProgramData%\Telecontrol\SCADA Server`. Команда
+`scada-setup migrate` переносит эти данные в процессы версии 2.6:
+
+| Данные версии 2.5 | Куда копируются |
+|---|---|
+| Конфигурация `Configuration\configuration.sqlite3` | В папку `Configuration` процессов `config`, `proxy` и `historian` |
+| Пароли пользователей `Configuration\password.dat` | Туда же, рядом с каждой копией конфигурации |
+| Архивы `History` | `historian\History` |
+| Файлы мнемосхем `FileSystem` | `filestore\FileSystem` |
+
+Все пути указаны относительно `%ProgramData%\Telecontrol\SCADA Server`; если в
+`server.json` версии 2.5 были заданы другие папки, команда берет их оттуда.
+Конфигурация копируется в три процесса, потому что каждый работает со своей
+копией: `scada-config` передает ее процессам протокольного уровня,
+`scada-proxy` проверяет по ней имена и пароли пользователей Клиента,
+`scada-historian` берет из нее список исторических БД и назначение объектов.
+
+**Папки версии 2.5 только читаются**: команда ничего в них не изменяет и не
+удаляет. Это важно, потому что при первом запуске процессы 2.6 преобразуют
+свои копии в новый формат, после которого версия 2.5 работать с ними уже не
+сможет. Удалите старые папки сами, когда убедитесь, что обновленная система
+работает.
+
+Порядок перехода — на компьютере, где работал Сервер 2.5:
+
+1. Получите лицензию версии 2.6 (файл `license.json`) в ООО «Телеконтроль» и
+   положите ее в `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+   Аппаратный ключ HASP или Guardant версией 2.6 не используется.
+2. Сделайте резервную копию всей папки
+   `%ProgramData%\Telecontrol\SCADA Server`.
+3. Установите пакет версии 2.6:
+
+   ```bat
+   msiexec /i telecontrol-scada-<версия>.msi /qn
+   ```
+
+   Установщик заменяет программу версии 2.5 и обычно сам удаляет ее службу;
+   данные остаются на месте.
+4. Посмотрите, что будет сделано (команда ничего не меняет):
+
+   ```bat
+   scada-setup migrate
+   ```
+
+   Она перечисляет, что и куда будет скопировано, сколько места для этого
+   нужно, какие настройки версии 2.5 не переносятся и что мешает переходу.
+5. Выполните переход в командной строке с правами администратора:
+
+   ```bat
+   scada-setup migrate --execute --svc-password <пароль>
+   ```
+
+   Команда останавливает и удаляет службу *Telecontrol SCADA Server*, если
+   она еще осталась, копирует данные и затем выполняет `scada-setup apply`:
+   создает файлы параметров, регистрирует и запускает службы процессов.
+6. Задайте [пароль root](#root-password) в файлах параметров `config`,
+   `proxy`, `historian` и `filestore` и перезапустите процессы
+   (`scada-setup stop`, затем `scada-setup start`).
+7. Подключитесь Клиентом (порт 2000, как и раньше) под учетной записью
+   пользователя и проверьте объекты, архивы и мнемосхемы.
+
+Переход не выполняется, а команда объясняет причину, если:
+
+* конфигурация версии 2.5 хранится не в SQLite (например, в PostgreSQL);
+* в версии 2.5 есть пользователь с идентификатором 100 — он занят служебной
+  учетной записью `svc`. Создайте в версии 2.5 такого же пользователя под
+  другим именем, удалите старого и повторите переход;
+* на этом компьютере не выбран ни один из процессов `config`, `proxy` и
+  `historian`;
+* данные уже были перенесены (папки назначения существуют — команда никогда
+  их не перезаписывает);
+* на диске недостаточно места.
+
+Параметры `--from <папка>` (папка с `server.json` версии 2.5, если это не
+`%ProgramData%\Telecontrol\SCADA Server`) и `--from-exe-dir <папка>` (папка
+программы версии 2.5 — нужна, только если `server.json` не задавал папку
+данных и она находилась рядом с программой) используются редко.
+
+Если в версии 2.5 были включены клиент OPC или интеграция с ОИК Видикон, в
+версии 2.6 это отдельные процессы `scada-opc` и `scada-vidicon`: лицензия
+должна их включать. Команда `migrate` напоминает об этом в списке непереносимых
+настроек.
 
 ### Консольный режим {#console}
 
@@ -171,15 +261,15 @@ admin export --source-driver=GigaBASE "--source=c:\ProgramData\Telecontrol\SCADA
 
 Для хранения событий и изменений значений параметров используются пользовательские исторические БД. Допустимо создание нескольких пользовательских исторических БД. Сервер автоматически создает и удаляет необходимые файлы на диске при создании и удалении БД.
 
-Местоположение БД определяется параметром `history.dir`. По умолчанию используется папка `%ProgramData%\Telecontrol\SCADA Server\History`.
+Исторические БД ведет процесс `scada-historian`. Местоположение БД определяется параметром `history.dir` его файла параметров; `scada-setup` задает папку `%ProgramData%\Telecontrol\SCADA Server\historian\History`. (Сервер версии 2.5 хранил их в `%ProgramData%\Telecontrol\SCADA Server\History`; при [переходе с версии 2.5](#upgrade-2-5) они копируются в новую папку.)
 
-Для каждой БД создается собственная подпапка с уникальным идентификатором. Исключением является фиксированное имя `System` системной БД. Каждому объекту может быть назначена одна БД. При удалении объекта все связанные с ним данные удаляются из БД. При переназначении БД объекту связанные с ним данные удаляются из предыдущей БД.
+Для каждой БД создается собственная подпапка с числовым идентификатором БД. Исключением является фиксированное имя `System` системной БД. Каждому объекту может быть назначена одна БД. При удалении объекта все связанные с ним данные удаляются из БД. При переназначении БД объекту связанные с ним данные удаляются из предыдущей БД.
 
 Историческим БД задается глубина хранения данных. Сервер автоматически выполняет очистку БД в соответствии с ее глубиной.
 
 ### Оценка требуемого дискового пространства
 
-Максимальный допустимый размер БД составляет 1 Тб. Допустимые ограничения смотрите в подробных [характеристиках SQLite](http://sqlite.org/limits.html). Размер страницы БД, создаваемой Сервером, составляет 1 Кб. Максимальное число страниц равно 1073741823.
+Новые БД создаются со стандартным для SQLite размером страницы 4 Кб; БД, перенесенные из прежних версий, сохраняют свой. Допустимые размеры смотрите в [характеристиках SQLite](https://sqlite.org/limits.html).
 
 Размер записи одного [Объекта]({{ '/architecture/' | relative_url }}#data-items) составляет менее 100 Байт.
 
@@ -198,11 +288,13 @@ admin export --source-driver=GigaBASE "--source=c:\ProgramData\Telecontrol\SCADA
 
 Удобный графический интерфейс предоставляет бесплатная утилита [SQLiteStudio](https://sqlitestudio.pl/).
 
-Для прямого доступа к БД можно использовать утилиту командной строки SQLite, устанавливаемую вместе с Сервером. Для вызова командной строки SQLite перейдите в папку БД и выполните команду
+Для прямого доступа к БД можно использовать утилиту командной строки `sqlite3`. В установку версии 2.6 она не входит (версии 2.5 и ранее ее устанавливали); загрузите ее со [страницы загрузок SQLite](https://sqlite.org/download.html). Файл БД называется `history` и лежит в папке БД. Перейдите в эту папку и выполните команду
 
 ```batch
-"%ProgramFiles(x86)%\Telecontrol SCADA\bin\sqlite3.exe" history
+sqlite3 history
 ```
+
+Открывайте для записи только БД остановленного процесса (`scada-setup stop`).
 
 Утилита позволяет выполнять запросы SQL и ряд специальных команд. Для информации о списке допустимых команд смотрите [документацию SQLite](https://sqlite.org/cli.html).
 
@@ -212,31 +304,37 @@ admin export --source-driver=GigaBASE "--source=c:\ProgramData\Telecontrol\SCADA
 
 ```SQL
 sqlite> pragma page_size;
-1024
+4096
 ```
 
-Перечень таблиц:
+Перечень таблиц: значения параметров (`timed_data`), последние значения
+объектов (`items_info`) и по таблице на каждый тип событий:
 
 ```SQL
 sqlite> .tables
-events      timed_data
+AuditActivateSessionEventType  OperatorActionAuditEventType
+AuditUpdateMethodEventType     SystemEventType
+DeviceWatchEventType           items_info
+ItemAlarmEventType             timed_data
 ```
+
+В БД, перенесенной из прежних версий, может быть также таблица
+`events_v1_backup` — это исходная таблица событий старого формата, данные
+которой уже перенесены в `SystemEventType`.
 
 Схема таблицы системных событий:
 
 ```SQL
-sqlite> .schema events
-CREATE TABLE events(time INTEGER, change_mask INTEGER, severity INTEGER,
-item_id INTEGER, user_id INTEGER, value FLOAT, qualifier INTEGER,
-message TEXT, ack_id INTEGER, ack_time INTEGER, ack_user_id INTEGER);
-CREATE UNIQUE INDEX events_ack_index ON events(ack_id);
-CREATE INDEX events_time_index ON events(time);
+sqlite> .schema SystemEventType
+CREATE TABLE SystemEventType(EventID INTEGER PRIMARY KEY NOT NULL, Time INTEGER NOT NULL, ReceiveTime INTEGER NOT NULL, ChangeMask INTEGER, Severity INTEGER, NodeNS INTEGER NOT NULL, NodeID INTEGER NOT NULL, UserID INTEGER, Value FLOAT, Qualifier INTEGER, Message TEXT, Acked BOOLEAN NOT NULL, AckTime INTEGER, AckUserID INTEGER, SourceName TEXT, MessageLocale TEXT, SourceNameLocale TEXT);
+CREATE INDEX SystemEventType_TimeIndex ON SystemEventType(Time);
+CREATE INDEX SystemEventType_NodeIndex ON SystemEventType(NodeNS, NodeID);
 ```
 
 Количество системных событий в архиве:
 
 ```SQL
-sqlite> select count(*) from events;
+sqlite> select count(*) from SystemEventType;
 86
 ```
 
@@ -244,7 +342,7 @@ sqlite> select count(*) from events;
 
 Серверная файловая система позволяет хранить файлы мнемосхем на Сервере. Таким образом, доступ к мнемосхемам будет предоставлен всем Клиентам, избавляя их от необходимости ручной синхронизации при обновлении файлов.
 
-Серверная файловая система включается автоматически при новой установке ОИК. Для включения на существующих установках потребуется установить параметр `filesystem.enabled` в значение `true` в файле `server.json`:
+Серверную файловую систему ведет процесс `scada-filesystem`. В файле параметров, который создает `scada-setup`, она уже включена. При ручной настройке включите ее параметром `filesystem.enabled` в файле `server.json` процесса:
 
 ```json
 "filesystem": {
@@ -253,7 +351,7 @@ sqlite> select count(*) from events;
 }
 ```
 
-Файлы мнемосхем размещаются в папке, указанной в параметре `dir`. По умолчанию — `%ProgramData%\Telecontrol\SCADA Server\FileSystem`. Управление файлами выполняется из [панели файлов]({{ '/client/' | relative_url }}) Клиента.
+Файлы мнемосхем размещаются в папке, указанной в параметре `dir`; `scada-setup` задает папку `%ProgramData%\Telecontrol\SCADA Server\filestore\FileSystem`. (Сервер версии 2.5 хранил их в `%ProgramData%\Telecontrol\SCADA Server\FileSystem`; при [переходе с версии 2.5](#upgrade-2-5) они копируются в новую папку.) Управление файлами выполняется из [панели файлов]({{ '/client/' | relative_url }}) Клиента.
 
 ## Логирование {#logging}
 
@@ -354,23 +452,35 @@ sqlite> select count(*) from events;
 
 ## Резервное копирование {#backup}
 
+Все данные процессов, установленных `scada-setup`, находятся в папке
+`%ProgramData%\Telecontrol\SCADA Server`: у каждого процесса своя папка, а в
+ней — файл параметров и данные. Проще всего копировать эту папку целиком,
+предварительно остановив процессы, чтобы копия была целостной:
+
+```bat
+scada-setup stop
+rem скопируйте %ProgramData%\Telecontrol\SCADA Server
+scada-setup start
+```
+
 ### Резервное копирование конфигурации
 
-Для резервного копирования конфигурации SQLite достаточно скопировать папку `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
+Конфигурационные БД SQLite хранятся в папках `Configuration` процессов
+`config`, `proxy`, `historian` и `filestore`. Основная конфигурация — у
+`scada-config` (`config\Configuration`); по копии `scada-proxy`
+(`proxy\Configuration`) проверяются имена и пароли пользователей Клиента.
 
 При использовании PostgreSQL используйте стандартные средства резервного копирования PostgreSQL (`pg_dump`).
 
-Для миграции конфигурации между форматами используйте утилиту `scada-admin`:
-
-```batch
-scada-admin export --source <исходная_БД> --target <целевая_БД>
-```
-
 ### Резервное копирование архивов
 
-Исторические БД хранятся в папке `%ProgramData%\Telecontrol\SCADA Server\History`. Для резервного копирования скопируйте эту папку.
+Исторические БД хранятся в папке `historian\History`, файлы мнемосхем — в
+`filestore\FileSystem`.
 
-Перед резервным копированием рекомендуется остановить Сервер для обеспечения целостности данных.
+В версии 2.5 и ранее эти данные находились в папках `Configuration`, `History`
+и `FileSystem` непосредственно в `%ProgramData%\Telecontrol\SCADA Server`.
+После [перехода с версии 2.5](#upgrade-2-5) они остаются на месте, но
+процессами 2.6 уже не используются.
 
 ## Справочник параметров server.json {#parameters}
 

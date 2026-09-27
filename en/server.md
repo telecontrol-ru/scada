@@ -38,8 +38,10 @@ On Windows, the Server processes are installed and configured with the
 `scada-setup` tool that comes with the installer. It writes the parameter
 files `%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` from
 templates, creates the configuration databases, and registers the Windows
-services; the executables' `--install` / `--uninstall` options are needed only
-for a hand-built setup. The step-by-step installation is in
+services. A process's folder has the name the process has in `--tiers`
+(`config`, `proxy`, `historian`, `iec104`…), except `scada-filesystem`, whose
+folder is `filestore`. The executables' `--install` / `--uninstall` options
+are needed only for a hand-built setup. The step-by-step installation is in
 [Getting started]({{ '/en/getting-started/' | relative_url }}).
 
 | Command | Does | Needs admin |
@@ -49,6 +51,7 @@ for a hand-built setup. The step-by-step installation is in
 | `scada-setup start` / `stop` | Start / stop this computer's services in order | yes |
 | `scada-setup remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the processes' data too) | yes |
 | `scada-setup generate --output <dir>` | Write the parameter files only, for inspection | no |
+| `scada-setup migrate [--execute]` | Move a version 2.5 Server's data over — see [Upgrading from version 2.5](#upgrade-2-5) | with `--execute` |
 
 Common options: `--tiers <list>` (default: the licensed processes),
 `--central <address>` (required on a computer without `scada-config`),
@@ -61,6 +64,92 @@ variable), `--data-root`, `--install-root`.
 `apply` can be run again: it rewrites the parameter files and brings the
 services to the required state without touching data. Hand edits to the
 parameter files are lost when it does.
+
+### Upgrading from version 2.5 {#upgrade-2-5}
+
+Versions 2.5 and earlier installed a single process — the *Telecontrol SCADA
+Server* service — and kept its data in the `Configuration`, `History` and
+`FileSystem` folders inside `%ProgramData%\Telecontrol\SCADA Server`.
+`scada-setup migrate` moves that data into the version 2.6 processes:
+
+| Version 2.5 data | Copied to |
+|---|---|
+| Configuration `Configuration\configuration.sqlite3` | The `Configuration` folder of `config`, `proxy` and `historian` |
+| User passwords `Configuration\password.dat` | The same folders, beside each copy of the configuration |
+| History `History` | `historian\History` |
+| Schematic files `FileSystem` | `filestore\FileSystem` |
+
+All paths are relative to `%ProgramData%\Telecontrol\SCADA Server`; if the
+version 2.5 `server.json` named other folders, the command takes them from
+there. The configuration is copied to three processes because each works from
+its own copy: `scada-config` hands it to the protocol processes, `scada-proxy`
+checks Client user names and passwords against it, and `scada-historian`
+reads its historical databases and object assignments from it.
+
+**The version 2.5 folders are only read**: the command changes and deletes
+nothing in them. That matters, because on first start the 2.6 processes
+convert their copies to the new format, which version 2.5 can no longer use.
+Delete the old folders yourself once the upgraded system is known to work.
+
+The steps, on the computer where the 2.5 Server ran:
+
+1. Obtain a version 2.6 license (a `license.json` file) from Telecontrol and
+   put it at `%ProgramData%\Telecontrol\SCADA Server\license.json`. Version
+   2.6 does not use the HASP or Guardant hardware key.
+2. Back up the whole `%ProgramData%\Telecontrol\SCADA Server` folder.
+3. Install the version 2.6 package:
+
+   ```bat
+   msiexec /i telecontrol-scada-<version>.msi /qn
+   ```
+
+   The installer replaces the version 2.5 program and normally removes its
+   service itself; the data stays where it is.
+4. See what will be done (the command changes nothing):
+
+   ```bat
+   scada-setup migrate
+   ```
+
+   It lists what will be copied where, how much disk space that needs, which
+   version 2.5 settings are not carried over, and anything that prevents the
+   migration.
+5. From an elevated command prompt, run the migration:
+
+   ```bat
+   scada-setup migrate --execute --svc-password <password>
+   ```
+
+   It stops and removes the *Telecontrol SCADA Server* service if it is still
+   there, copies the data, and then runs `scada-setup apply`: it writes the
+   parameter files and registers and starts the process services.
+6. Set the [root password](#root-password) in the parameter files of
+   `config`, `proxy`, `historian` and `filestore`, and restart the processes
+   (`scada-setup stop`, then `scada-setup start`).
+7. Connect a Client (port 2000, as before) as a user and check the objects,
+   the history and the schematics.
+
+The migration does not start, and the command says why, when:
+
+* the version 2.5 configuration is not stored in SQLite (for example, it is in
+  PostgreSQL);
+* a version 2.5 user has the id 100, which the `svc` service account takes.
+  Create the same user in version 2.5 under another name, delete the old one,
+  and migrate again;
+* none of `config`, `proxy` and `historian` is selected on this computer;
+* the data has already been moved (the destination folders exist — the
+  command never overwrites them);
+* there is not enough disk space.
+
+`--from <folder>` (the folder holding the version 2.5 `server.json`, when it
+is not `%ProgramData%\Telecontrol\SCADA Server`) and `--from-exe-dir <folder>`
+(the version 2.5 program folder — needed only when `server.json` named no data
+folder and the data sat beside the program) are rarely needed.
+
+If version 2.5 had the OPC client or the Vidicon integration enabled, in
+version 2.6 these are the separate `scada-opc` and `scada-vidicon` processes,
+and the license must include them. `migrate` says so in its list of settings
+not carried over.
 
 ### Console mode {#console}
 
@@ -195,8 +284,13 @@ values. User historical databases store value changes and events for
 configured objects. Multiple user historical databases can exist at the
 same time, and the Server manages the required files automatically.
 
-By default, history is stored under
-`%ProgramData%\Telecontrol\SCADA Server\History`.
+Historical databases are kept by the `scada-historian` process, in the
+folder named by `history.dir` in its parameter file; `scada-setup` sets
+`%ProgramData%\Telecontrol\SCADA Server\historian\History`. (A version 2.5
+Server kept them in `%ProgramData%\Telecontrol\SCADA Server\History`;
+[upgrading from version 2.5](#upgrade-2-5) copies them to the new folder.)
+Each database has its own subfolder named by its numeric id, except the
+system database, whose folder is `System`.
 
 Each object can be assigned to one historical database. If an object is
 deleted or moved to a different database, its associated historical data
@@ -222,18 +316,24 @@ from the available disk space.
 
 ### Working with SQLite directly
 
-For administration and diagnostics, the history database can be opened
-with `sqlite3.exe`, which is installed with the Server. The Russian page
-also includes example commands such as `pragma page_size`, `.tables`,
-`.schema`, and simple SQL queries for event counts.
+For administration and diagnostics, a history database can be opened with
+the `sqlite3` command-line tool. Version 2.6 does not install it (versions 2.5
+and earlier did); download it from the
+[SQLite download page](https://sqlite.org/download.html). The database file is
+named `history` and sits in the database's folder: change to that folder and
+run `sqlite3 history`. Open a database for writing only while its process is
+stopped (`scada-setup stop`). The Russian page also includes example commands
+such as `pragma page_size`, `.tables`, `.schema`, and simple SQL queries for
+event counts.
 
 ## Server-side file system {#filesystem}
 
 The server-side file system stores schematic files on the Server so they
 can be provided to all Clients without manual synchronization.
 
-On new installations this feature is enabled automatically. On existing
-installations it can be enabled through `server.json`:
+The file system is kept by the `scada-filesystem` process, and the parameter
+file `scada-setup` writes already enables it. In a hand-built setup, enable it
+in the process's `server.json`:
 
 ```json
 "filesystem": {
@@ -242,8 +342,10 @@ installations it can be enabled through `server.json`:
 }
 ```
 
-By default the files are stored under
-`%ProgramData%\Telecontrol\SCADA Server\FileSystem`.
+The files are stored in the folder named by `dir`; `scada-setup` sets
+`%ProgramData%\Telecontrol\SCADA Server\filestore\FileSystem`. (A version
+2.5 Server kept them in `%ProgramData%\Telecontrol\SCADA Server\FileSystem`;
+[upgrading from version 2.5](#upgrade-2-5) copies them to the new folder.)
 
 Files are managed from the Client
 [Files]({{ '/en/dev/server-files/' | relative_url }}) window.
@@ -372,21 +474,36 @@ This feature is available only on Windows.
 
 ## Backup {#backup}
 
+All the data of the processes `scada-setup` installs is in
+`%ProgramData%\Telecontrol\SCADA Server`: each process has its own folder
+holding its parameter file and its data. The simplest backup copies that
+whole folder, with the processes stopped so the copy is consistent:
+
+```bat
+scada-setup stop
+rem copy %ProgramData%\Telecontrol\SCADA Server
+scada-setup start
+```
+
 ### Configuration backup
 
-For an SQLite configuration database, it is sufficient to copy
-`%ProgramData%\Telecontrol\SCADA Server\Configuration`.
+The SQLite configuration databases are in the `Configuration` folders of
+`config`, `proxy`, `historian` and `filestore`. The main configuration is
+`scada-config`'s (`config\Configuration`); Client user names and passwords
+are checked against `scada-proxy`'s copy (`proxy\Configuration`).
 
 For PostgreSQL, use the standard PostgreSQL backup tools such as
 `pg_dump`.
 
-To migrate configuration data between formats, use `scada-admin`.
-
 ### History backup
 
-History databases are stored under
-`%ProgramData%\Telecontrol\SCADA Server\History`. Stop the Server before
-copying them to ensure data consistency.
+The historical databases are in `historian\History`, and the schematic files
+in `filestore\FileSystem`.
+
+Versions 2.5 and earlier kept this data in the `Configuration`, `History` and
+`FileSystem` folders directly under `%ProgramData%\Telecontrol\SCADA Server`.
+After [upgrading from version 2.5](#upgrade-2-5) those folders stay where they
+are, but the 2.6 processes no longer use them.
 
 ## `server.json` parameter reference {#parameters}
 

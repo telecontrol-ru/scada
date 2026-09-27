@@ -71,7 +71,8 @@ processes run is decided by the license.
 
 `apply` enables every process the license entitles (narrow it with
 `--tiers`), writes each one's parameter file
-`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json`, creates the
+`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` (the
+folder of `scada-filesystem` is named `filestore`), creates the
 configuration databases (never overwriting an existing one), registers one
 Windows service per process, and starts them in the right order. To check the
 result:
@@ -141,7 +142,8 @@ keeps the configuration in its own database — `scada-config`, `scada-proxy`,
 `scada-historian` and `scada-filesystem` — has its own `root` account, and
 after `apply` all of them accept an empty password. Right after installation,
 add to the parameter file of each of those processes
-(`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json`):
+(`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json`, where
+`<process>` is `config`, `proxy`, `historian` and `filestore`):
 
 ```json
 "security": {
@@ -235,6 +237,10 @@ For the main operator interface, continue with
 
 ## Upgrading
 
+These steps upgrade version 2.6 and later. A version 2.5 or earlier Server
+was a single process with a single service, and its data has to be moved into
+the version 2.6 processes — see [below](#upgrade-2-5).
+
 Before upgrading, back up the configuration and historical databases — see
 [Backup]({{ '/en/server/' | relative_url }}#backup). Then, on each computer:
 
@@ -247,6 +253,31 @@ scada-setup apply --svc-password <password>
 The installer replaces only the executables; `apply` rewrites the parameter
 files and leaves the data alone. After `apply`, set the
 [root password](#root-password) again.
+
+### Upgrading from version 2.5 {#upgrade-2-5}
+
+A version 2.5 Server ran as a single *Telecontrol SCADA Server* service and
+used a hardware key. To move to version 2.6, on the computer where it ran:
+
+1. Obtain a version 2.6 license and put it at
+   `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+2. Back up the `%ProgramData%\Telecontrol\SCADA Server` folder.
+3. Install the version 2.6 package
+   (`msiexec /i telecontrol-scada-<version>.msi /qn`).
+4. Run `scada-setup migrate` and read the plan: what will be copied where,
+   and anything that prevents the migration. The command changes nothing.
+5. From an elevated command prompt, run
+   `scada-setup migrate --execute --svc-password <password>`. It removes the
+   old service, copies the configuration, the users with their passwords, the
+   history and the schematic files into the version 2.6 process folders, and
+   starts the processes as `apply` does.
+6. Set the [root password](#root-password) and check the result from the
+   Client.
+
+The old `Configuration`, `History` and `FileSystem` folders are neither
+changed nor deleted. See
+[Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5)
+for the details.
 
 ## Troubleshooting
 
