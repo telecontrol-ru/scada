@@ -1,27 +1,50 @@
 ---
-title: Excel
+title: Configuration export and import
 nav_order: 5
 parent: Development
 permalink: /en/dev/excel/
 ---
 
-# Editing configuration in Microsoft Excel
+# Configuration export and import
 
-The Client's `More` menu provides `Export` and `Import` of the
-current configuration to and from an external
-[CSV](https://en.wikipedia.org/wiki/Comma-separated_values) text file:
+The server's configuration can be exported to a file, edited or archived,
+and imported back. Administrators find the commands in the Client's `More`
+menu:
 
 ![]({{ '/img/menu-excel.png' | relative_url }})
 
-The text file uses
-[UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding.
+- `Export Configuration...` saves the configuration to a file;
+- `Import Configuration...` loads a file back into the server.
 
-For viewing and editing the file, you can use the free
-[Notepad++](https://notepad-plus-plus.org/) editor:
+In the web client the same actions are in the `Administration` section of
+the settings.
 
-![]({{ '/img/menu-notepad.png' | relative_url }})
+## The file
 
-or [Microsoft Excel](https://en.wikipedia.org/wiki/Microsoft_Excel).
+The configuration is saved as a standard OPC UA
+[NodeSet](https://reference.opcfoundation.org/Core/Part6/v105/docs/F.2): an XML
+file in [UTF-8](https://en.wikipedia.org/wiki/UTF-8) that any text or XML
+editor can open. A large configuration is saved compressed (`.xml.gz`);
+decompress such a file before editing it. Either form can be imported.
+
+The file holds configuration only: current values, history and events are
+not part of it. User accounts and roles are left out by default and are never
+written by an import.
+
+## Import
+
+Before anything is applied, the server checks the file and reports what would
+change: how many objects would be added, changed and deleted. The changes are
+applied only after you confirm, and they are applied as a whole: if any one of
+them cannot be made, the configuration is left as it was and the message lists
+what prevented it.
+
+A file holding a whole configuration replaces it: objects the file does not
+list are deleted.
+
+If the configuration changed after the file was exported, the server warns you:
+importing that file would overwrite the later changes. You can still check and
+apply it, but only explicitly.
 
 ## Translation status
 
