@@ -26,10 +26,15 @@ an installation made with `scada-setup`:
 
 * creating an archive and assigning one to an object from the Client are
   refused by the Server;
-* values coming from devices are not written to the archive;
-* the *Databases* window stays empty.
+* objects that already have an archive assigned (for example, ones moved
+  from version 2.5 with
+  [`scada-setup migrate`]({{ '/en/server/' | relative_url }}#upgrade-2-5)) are
+  archived, and the archives are listed in the *Databases* window;
+* after the service of a protocol process (for example,
+  *Telecontrol SCADA IEC 104*) restarts, its objects' values stop being
+  archived. Restart the *Telecontrol SCADA Historian* service after it.
 
-To set up archiving on a version 2.6 site, contact Telecontrol
+To assign archives to new objects on a version 2.6 site, contact Telecontrol
 (mail@telecontrol.ru). The Client procedure below is how it works on a Server
 running as a single process.
 
