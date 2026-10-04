@@ -16,8 +16,8 @@ real time.
 
 ![]({{ '/img/device-watch.png' | relative_url }})
 
-To open the window, select a device in the equipment panel and press the
-`Watch` button on the command bar, or choose `Watch` from the context menu.
+To open the window, select a device in the Hardware panel and choose `Watch`
+from its context menu (right mouse button) or from the **Item** menu.
 
 ## Two modes
 

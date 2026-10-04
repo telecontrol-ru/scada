@@ -49,10 +49,19 @@ Acknowledging confirms the operator has seen an event. Ways to do it:
 
 * **Double-click** a row — acknowledges the selected events.
 * *Acknowledge* in the context menu — acknowledges the selected rows.
-* *Acknowledge All* — in the context menu and as a button below the journal.
+* *Acknowledge All* — in the context menu and as a button below the journal
+  (see the caution below).
 * The *Acknowledge* button on an event card in the inspector.
 * With an object selected (in the object tree, on a display), the acknowledge
   command acknowledges all of that object's unacknowledged events.
+
+> **Caution.** *Acknowledge All* acknowledges **every** unacknowledged event
+> in the system, not only those shown in this window: area, severity and
+> object filters do not apply to it. To acknowledge only the visible events,
+> select those rows (*Shift* for a range, *Ctrl* for single rows) and choose
+> *Acknowledge*.
+
+There is no keyboard shortcut for acknowledgement.
 
 When a command is unavailable its tooltip says why: "Select an event to
 acknowledge", "The selected events are already acknowledged", or "No
@@ -69,9 +78,9 @@ acknowledges every event collapsed into it.
 ## Period {#period}
 
 The period is set in the filter bar above the journal (*Period*: *15 min*,
-*Hour*, *Day*, *Week*, *Month*) or with the *Period* commands on the command
-bar, which add *Custom...* — a dialog with an exact start and end date and
-time.
+*Hour*, *Day*, *Week*, *Month*) or from **Item → Period** in the main menu
+while the journal window is active, which adds *Custom...* — a dialog with an
+exact start and end date and time.
 
 * *Day* starts at midnight, *Week* on Monday, *Month* on the 1st.
 * *15 min* and *Hour* start at the beginning of the current 15-minute interval
@@ -116,6 +125,10 @@ Severity is a number from 1 to 1000. Rows of severity 800 and above are red
 Acknowledging does not change the row colour. The summary line below the
 journal shows the number of unacknowledged events and the highest severity
 among them.
+
+For the other colours and marks — the quality dots in the object tree, grey
+text for bad values, the quality letters — see
+[Reading values and colours]({{ '/en/client/' | relative_url }}#quality-legend).
 
 An object's event severity is set in its properties — see
 [Data objects]({{ '/en/dev/data-items/' | relative_url }}).

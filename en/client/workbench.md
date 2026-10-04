@@ -16,11 +16,6 @@ the left, the context strip along the top, workspace tabs in the middle, the
 selection-driven panels on the right and the status strip at the foot. All of
 those regions are described below.
 
-Until version 2.6 this look was experimental and could be turned off with the
-**Classic** entry in the Colour scheme list. That entry is gone: the workbench
-is the only client look, and Colour scheme now chooses the appearance alone —
-follow system, dark, light or high contrast.
-
 ![]({{ '/img/workbench-window.png' | relative_url }})
 
 The workbench regions:
@@ -37,7 +32,9 @@ The workbench regions:
   the connection state and the server address are not shown here — they appear
   in the status strip only.
 - **Object explorer** — the object tree with a "Filter" field and quality
-  dots: green — good, amber — uncertain, red — bad. The tree starts at its
+  dots: green — good, red — bad, blinking yellow — the object has an
+  unacknowledged event. See
+  [Reading values and colours]({{ '/en/client/' | relative_url }}#quality-legend). The tree starts at its
   content: the pane's own title already names it, so no separate root row is
   drawn. The same holds for the Devices, Files and Nodes panes.
 - **Workspace tabs** — the open windows (journal, tables, graphs, schematic
@@ -156,25 +153,26 @@ behind both, so the settings live in exactly one place.
 
 ![]({{ '/img/settings.png' | relative_url }})
 
-Settings open as a **surface** over the main window rather than as a dialog,
-and it carries three things the old dialog did not: a search field along the
-top, a list of categories down the left — Appearance, Events & alarms,
-Control, Workspace, Displays, each with the number of settings it holds — and
-the scope tabs: All, This client, Profile, This window. Beside them is how
-many settings and actions the current tab gathers.
+The settings screen opens over the main window: a search field along the top,
+the categories down the left with the number of settings in each, and scope
+tabs above the list — All, This client, Profile, This window.
 
 Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer and which travel with the account in the
-profile. Settings apply **immediately**, as the menu items did: there is
-nothing to confirm, and the surface closes from the close button in its
-header.
+profile. Settings apply **immediately**: there is nothing to confirm, and the
+screen closes from the close button in its header.
 
-Appearance holds Language, Colour scheme and Style. The rest hold the status
-bar and toolbar visibility, control confirmation and the control success
-message, event behaviour (show, hide, flash the window, sound) and — where the
-platform supports speech synthesis — spoken announcements. A disabled setting
-explains why in its tooltip: spoken announcements are available in the Windows
-build only.
+| Category | Settings |
+|---|---|
+| Appearance | Language, Colour scheme, Style |
+| Events & alarms | Sound Alarm on Event, Show Events on Arrival, Hide Events on Acknowledge, Flash Main Window on Event — see [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}) |
+| Control | Control Confirmation, Control Success Message — see [Control]({{ '/en/client/' | relative_url }}#control) |
+| Workspace | Toolbar (hidden by default), Status Bar |
+| Displays | Show Modus topology; the Open Displays Folder action |
+
+The current version has no switch for spoken announcements on the settings
+screen — see
+[Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
 
 ## Appearance {#appearance}
 
@@ -197,32 +195,30 @@ system. Dark is the recommended control-room setting.</dd>
 The choice is saved when the client exits and restored on the next start.
 
 Alarm severity, data quality and switchgear state keep their colours whatever
-the appearance: those are functional safety signals (ISA-101, ISA-18.2) and
-their values are the same in every scheme.
+the appearance: those are safety signals, and their values are the same in
+every scheme.
 
-### Additional settings
+### Presetting the appearance
 
-The choice made in the [settings](#settings) is kept in the
-application settings (QSettings), which can also be set in advance — when
-rolling the client out to many machines, say.
+The appearance choice is kept on the computer, in the operating-system user's
+settings: on Windows in the registry, under
+`HKEY_CURRENT_USER\Software\Telecontrol\Telecontrol SCADA Client\Ux`. The
+values can be set in advance — when rolling the client out to many machines,
+say.
 
 <dl>
 
 <dt>Ux/Theme</dt>
 <dd>Appearance variant: <code>system</code> (default, follows the OS),
 <code>dark</code>, <code>light</code>, <code>hc</code> (high contrast).
-Mirrors the Colour scheme list in the dialog.</dd>
+Mirrors the Colour scheme list.</dd>
 
 <dt>Ux/StyleSheet</dt>
 <dd>When <code>false</code>, theming is limited to the colour palette, without
 the global stylesheet — for configurations with embedded, style-sensitive
-components. Not exposed in the dialog.</dd>
+components. Not shown on the settings screen.</dd>
 
 </dl>
-
-<code>Ux/Experimental</code>, which used to turn the experimental interface
-on, is no longer read: its value is ignored and the workbench is always
-shown.
 
 ## Why a command is unavailable {#menu-reasons}
 
@@ -317,12 +313,12 @@ digits stay aligned and do not shift as values update — and two columns appear
 next to the value: "Quality" with a textual quality flag, and "Trend" with a
 mini-graph of the value over the last hour, updating live.
 
-## Event journal as an alarm surface {#journal}
+## Event journal as an alarm panel {#journal}
 
 ![]({{ '/img/events-alarm-surface.png' | relative_url }})
 
 The [event journal]({{ '/en/client/events/' | relative_url }}) reads as an
-alarm surface:
+alarm panel:
 
 - **Row colour is severity.** An alarm row is coloured by its severity (red —
   critical, amber — warning); routine events stay unfilled so the eye is drawn
@@ -343,6 +339,12 @@ alarm surface:
   journal reads "No unacknowledged events") and an *Acknowledge All* button
   running the same command as the context menu. The button is disabled when
   there is nothing to acknowledge.
+
+> **Caution.** The *Acknowledge All* button acknowledges **every**
+> unacknowledged event in the system, not only those the journal shows: the
+> selected area, the minimum severity and the object list do not apply to it.
+> To acknowledge only the visible events, select those rows (*Shift*, *Ctrl*)
+> and choose *Acknowledge* from the context menu.
 
 A live alarm that also appears in the read history shows as one row — the
 journal does not duplicate it with its historical copy.
@@ -430,7 +432,8 @@ selection:
   The band the current value has crossed is coloured and labelled, so it is
   clear which limit tripped. The section is hidden for signals that configure
   no limits;
-- a *Control…* button that opens the two-stage command confirmation. When
+- a *Control…* button that opens the
+  [control dialog]({{ '/en/client/' | relative_url }}#control). When
   control is unavailable, the reason appears under the button: the object
   cannot be controlled (a computed expression or a folder, for example), the
   signal has no output channel, or the session lacks the Control privilege.
@@ -468,8 +471,7 @@ element card — how that line is drawn:
 * "Show dots" and "Stepped" — how the line is drawn
 
 Those last three are read-outs rather than switches: the graph window owns
-these modes (see [Graph]({{ '/en/client/graph/' | relative_url }})), and a
-second control here would write something the view already owns.
+these modes (see [Graph]({{ '/en/client/graph/' | relative_url }})).
 
 The section belongs to the selection, not to the panel: it disappears with the
 selection, so another object's card is never shown carrying the previous
@@ -483,9 +485,8 @@ to an account holding the configure right: without it the mode is not shown at
 all, rather than shown and disabled.
 
 Its explorer lists the administrative windows: Users, Roles, Password policy,
-Audit log, Databases, Formats, Simulated Signals. The list is built from the
-commands the shell can actually carry out, so a window missing from the build,
-or one this session may not open, is simply not offered.
+Audit log, Databases, Formats, Simulated Signals. A window missing from the installation, or one this session may not open,
+is not offered.
 
 ### Users {#users}
 
@@ -493,8 +494,7 @@ The Users window reads the server's standard account list and shows, for each
 account: its name, description, **roles**, and whether it is enabled. A
 disabled account cannot log in.
 
-The Roles column *is* the permission model: the server grants rights by role,
-not by the former pair of access-right bits. An account may hold several roles
+The Roles column *is* the permission model: the server grants rights by role. An account may hold several roles
 at once, and their permissions combine. "None" means the account holds no
 role — it can log in and nothing more; "No data" means the role list could not
 be read, which is not the same thing.
