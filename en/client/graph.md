@@ -20,7 +20,7 @@ rendered with a dashed segment that starts at the corresponding point.
 
 The legend shows the current value, source timestamp, and historical data load percentage. When the time cursor is active, the legend shows the value at the cursor position instead of the latest value.
 
-## Multiple signals
+## Multiple objects {#multiple}
 
 When several signals are added to one graph window, the client creates
 separate graph areas with their own value scales.
@@ -103,7 +103,9 @@ command.
 
 To keep real-time rendering responsive, the number of simultaneously
 displayed points is limited to 10,000. If that limit would be exceeded,
-the visible time boundaries are adjusted automatically.
+the visible time boundaries are adjusted automatically. Over a long period
+the graph may therefore not show the whole chosen range; for reports over a
+month or longer, use the [summary]({{ '/en/client/summary/' | relative_url }}).
 
 ## Cursors
 
@@ -150,8 +152,10 @@ the graph window to
 [`Summary`]({{ '/en/client/summary/' | relative_url }})
 using the command panel or the object context menu.
 
-## Translation status
+## Printing and export {#print-export}
 
-This page is now a fuller English translation of the current Russian
-source. Further updates should track any future expansion of the Russian
-page rather than remain a placeholder.
+A graph cannot be printed or exported — the `Print`, `Export to CSV` and
+`Export to Excel` commands are unavailable for a graph window. To keep the
+values, open the [Data]({{ '/en/client/data/' | relative_url }}) or
+[Summary]({{ '/en/client/summary/' | relative_url }}) window from the graph
+and print or export that.

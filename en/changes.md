@@ -10,7 +10,41 @@ permalink: /en/changes/
 * TOC
 {:toc}
 
-Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); release 2.5.7 is available there today. Distributions of earlier versions are not published.
+Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); release 2.5.7 is available there today. Distributions of earlier versions are not published. The rest of this manual describes version 2.6, which is being prepared for release; how it differs from 2.5.7 is described below.
+
+## 2.6 (being prepared for release) {#v2-6}
+
+This version is not yet published on the releases page.
+
+### Server
+
+1. The Server is split into separate processes: `scada-config` (configuration), `scada-proxy` (Client connections), `scada-historian` (archive), `scada-filesystem` (files), the protocol processes `scada-modbus`, `scada-iec104` and `scada-iec61850`, and `scada-opc` and `scada-vidicon` (Windows only). Each process runs as its own Windows service (*Telecontrol SCADA Config*, *Telecontrol SCADA Proxy*, *Telecontrol SCADA Historian* and so on) instead of the single *Telecontrol SCADA Server* service. The processes are purchased separately. See [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
+
+1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
+
+1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+
+1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
+
+1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`. See [root password]({{ '/en/server/' | relative_url }}#root-password).
+
+1. New data folders: each process has its own folder `%ProgramData%\Telecontrol\SCADA Server\<process>` with its `server.json` parameter file (the folder of `scada-filesystem` is `filestore`). The license is `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+
+1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+
+### Client
+
+1. The user profile (pages, window layout, portfolios, settings) is saved on the Server for the account when the Client closes, and is available on another workstation. With rights "0" the profile is not saved on the Server — see [Portfolios]({{ '/en/client/portfolio/' | relative_url }}#storage).
+
+### Known limitations
+
+1. Archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).
+
+1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted.
+
+## 2.5.7
+
+Published on the releases page on 9 February 2026 (installer `telecontrol-scada-2.5.7.msi`). In this release the Server is a single *Telecontrol SCADA Server* service with a HASP or Guardant hardware key, as in version 2.5. No list of changes since 2.5.6 accompanies the release.
 
 ## 2.5.6
 
@@ -80,8 +114,8 @@ Distributions are published on the [GitHub releases page](https://github.com/ale
 
 ### New features
 
-1. Server: added the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem). It is enabled automatically on new installations and can be enabled on existing installations with `filesystem.enabled=true` in `server.json`.
-1. Client: added the server file-system panel under `Further -> Files`.
+1. Server: added the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem). It is enabled automatically on new installations and can be enabled on existing installations with `filesystem.enabled=true` in `server.json`. *This applies to versions 2.2–2.5, where the Server ran as one service; in version 2.6 the file system is served by the separate `scada-filesystem` process — see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).*
+1. Client: added the server file-system panel under `Further -> Files`. *That was the menu in version 2.2; in the current Client files open with the "Files" mode on the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar).*
 1. Client: added drag-and-drop in the configuration tree.
 1. Client: added retransmission support for all device types.
 1. Client: added the [Device metrics]({{ '/en/client/device-metrics/' | relative_url }}) panel for all device types, including MODBUS.

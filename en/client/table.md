@@ -35,6 +35,13 @@ related events for the object. The rightmost column shows the most
 recent unacknowledged system event, and a tooltip can preview the first
 few events.
 
+**With rights "0 — Executive / viewer" events cannot be acknowledged** (see
+[Roles and permissions]({{ '/en/architecture/' | relative_url }}#roles-and-permissions)):
+acknowledgement needs the *Control* or *Configure* right. For such a user the
+command looks available, but the Server rejects it: the events stay
+unacknowledged and the cell keeps blinking. Double-clicking a blinking row
+then does not open the graph either — use the *Graph* command.
+
 Rows can be reordered with `Ctrl+Up` and `Ctrl+Down`, or with the
 context-menu commands.
 
@@ -60,7 +67,8 @@ selected) are greyed out:
 <a href="{{ '/en/client/events/' | relative_url }}">Event journal</a>.</dd>
 
 <dt>Acknowledge all</dt>
-<dd>Acknowledges all active events for table objects.</dd>
+<dd>Acknowledges all active events for table objects. Has no effect with
+rights "0 — Executive / viewer".</dd>
 
 <dt>Rename (F2)</dt>
 <dd>Lets the user edit the formula or object reference for the selected
@@ -103,9 +111,3 @@ group values by device channels.</dd>
 </dl>
 
 The active sort mode is marked in the menu.
-
-## Translation status
-
-This English page is a functional translation of the main table
-behavior. The Russian page still contains the more detailed
-authoritative wording.

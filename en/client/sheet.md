@@ -16,8 +16,10 @@ displaying data in an arbitrary tabular layout. Columns are labeled with
 letters (`A`, `B`, `C`, and so on), and rows are labeled with numbers
 (`1`, `2`, `3`, and so on).
 
-To create a user table, choose `Table -> New user table` from the main
+To create a user table, choose `Table -> New Custom Table` from the main
 menu.
+
+A user table cannot be printed or exported to CSV.
 
 ## Formula bar
 
@@ -41,8 +43,10 @@ when the server data changes.
 
 ## Edit mode
 
-Cell editing is available only in edit mode, which is enabled by an
-administrator. In edit mode, formatting commands become available from
+Cell editing is available only in edit mode, which is switched on with the
+`Edit` command. The command is available only to users with the *Configure*
+right (rights 1 and 3); with rights "0 — Executive / viewer" the table is
+view-only. In edit mode, formatting commands become available from
 the context menu.
 
 ## Formatting

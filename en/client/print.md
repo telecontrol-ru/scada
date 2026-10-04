@@ -11,8 +11,13 @@ permalink: /en/client/print/
 * TOC
 {:toc}
 
-The contents of data windows, such as tables and summaries, can be
-printed with print preview.
+The contents of the [Table]({{ '/en/client/table/' | relative_url }}),
+[Summary]({{ '/en/client/summary/' | relative_url }}),
+[Data]({{ '/en/client/data/' | relative_url }}),
+[Event journal]({{ '/en/client/events/' | relative_url }}) and
+[Device watch]({{ '/en/client/device-watch/' | relative_url }}) windows can
+be printed with print preview. Graphs, displays and user tables cannot be
+printed.
 
 ## Start printing
 
@@ -28,17 +33,16 @@ to:
 * configure printer settings
 * choose the page orientation
 
-The data is formatted as a table with column headers.
+## What the printout contains {#contents}
 
-## Printing tables and summaries
+The printout contains **only the table**:
 
-When tables and summaries are printed, formatting is applied
-automatically:
+* the column headers, on the first row;
+* the data rows; for a summary, the start time of each interval on the left;
+* a page number at the bottom of each sheet.
 
-* column headers are placed on the first row
-* data is rendered into table cells
-* the layout is adapted to the paper size
-
-## Translation status
-
-This English page matches the current scope of the Russian source page.
+The table continues onto further pages to fit the paper. **The window title,
+the period and the aggregation function are not printed.** If the report
+needs them, write them on the printout, or export the data to CSV
+([Export and import]({{ '/en/client/export/' | relative_url }})) and lay out
+the report in another program.
