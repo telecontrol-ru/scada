@@ -59,7 +59,11 @@ Common options: `--tiers <list>` (default: the licensed processes),
 name does not resolve on the network), `--license <path>` (default
 `%ProgramData%\Telecontrol\SCADA Server\license.json`),
 `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
-variable), `--data-root`, `--install-root`.
+variable), `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
+environment variable; the [root password](#root-password), required by
+`apply` and `migrate --execute` on a computer running `scada-config`,
+`scada-proxy`, `scada-historian` or `scada-filesystem`), `--data-root`,
+`--install-root`.
 
 `apply` can be run again: it rewrites the parameter files and brings the
 services to the required state without touching data. Hand edits to the
@@ -117,17 +121,18 @@ The steps, on the computer where the 2.5 Server ran:
 5. From an elevated command prompt, run the migration:
 
    ```bat
-   scada-setup migrate --execute --svc-password <password>
+   scada-setup migrate --execute --svc-password <password> --root-password <root password>
    ```
 
    It stops and removes the *Telecontrol SCADA Server* service if it is still
    there, copies the data, and then runs `scada-setup apply`: it writes the
    parameter files, creates the [Server certificate](#opcua-certificate) if
-   there is none yet, and registers and starts the process services.
-6. Set the [root password](#root-password) in the parameter files of
-   `config`, `proxy`, `historian` and `filestore`, and restart the processes
-   (`scada-setup stop`, then `scada-setup start`).
-7. Connect a Client (port 2000, as before) as a user and check the objects,
+   there is none yet, and registers and starts the process services. User
+   passwords are carried over, while the version 2.5 root password — whether
+   set with `security.rootPassword` or changed from the Client — is replaced
+   on the 2.6 processes' first start by the [root password](#root-password)
+   given as `--root-password`.
+6. Connect a Client (port 2000, as before) as a user and check the objects,
    the history and the schematics.
 
 The migration does not start, and the command says why, when:
@@ -405,9 +410,15 @@ replaces any password stored earlier, including one changed from the
 Client. To keep the password out of the file in plain text, pass it
 through an environment variable as in the example above.
 
-**`scada-setup` does not set this parameter**, and it rewrites the
-parameter files it generates on every `apply` — the procedure is in
-[Getting started]({{ '/en/getting-started/' | relative_url }}#root-password).
+**On Windows, `scada-setup` sets it**: the parameter files it writes for
+`scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem`
+contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and `scada-setup apply`
+takes the variable's value from `--root-password` (or the
+`SCADA_SETUP_ROOT_PASSWORD` environment variable) and stores it in those
+processes' Windows service settings. On a computer running one of those
+processes, `apply` refuses to run without it. To change the root password,
+run `apply` with the new value; do not edit the generated parameter files,
+which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
 its own database; each of them has its own `root` account. In a minimal

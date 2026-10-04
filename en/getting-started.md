@@ -62,12 +62,13 @@ processes run is decided by the license.
 3. From an elevated command prompt, run:
 
    ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --svc-password <password>
+   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --svc-password <password> --root-password <root password>
    ```
 
    `<password>` is the password of the `svc` service account the processes
    use to connect to each other. It must be the same on every computer of the
-   site.
+   site. `<root password>` is the password of the built-in `root` account;
+   see [Root password](#root-password).
 
 `apply` enables every process the license entitles (narrow it with
 `--tiers`), writes each one's parameter file
@@ -88,12 +89,13 @@ running protocol processes, giving them the central computer's address:
 
 ```bat
 rem Central computer:
-scada-setup apply --tiers config,historian,filesystem,proxy --svc-password <password>
+scada-setup apply --tiers config,historian,filesystem,proxy --svc-password <password> --root-password <root password>
 rem Computer near the equipment:
 scada-setup apply --tiers modbus,iec104 --central 10.0.0.10 --svc-password <password>
 ```
 
-The remaining links between processes are set up automatically. All
+The protocol processes need no root password: `scada-config` keeps their
+accounts. The remaining links between processes are set up automatically. All
 `scada-setup` commands are described in the
 [Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
 
@@ -136,28 +138,23 @@ otherwise the process cannot verify its license and serves no requests. See
 
 ## Root password
 
-The built-in `root` account has all rights. While no password is set for it,
-a process accepts `root` with an empty password.
+The built-in `root` account has all rights. Its password is set by the
+`--root-password` option of `scada-setup apply` (or the
+`SCADA_SETUP_ROOT_PASSWORD` environment variable). On a computer running at
+least one of `scada-config`, `scada-proxy`, `scada-historian` and
+`scada-filesystem`, `apply` refuses to run without it: each of those processes
+has its own `root` account, which would otherwise accept an empty password.
 
-**WARNING: `scada-setup` does not set a root password.** Each process that
-keeps the configuration in its own database — `scada-config`, `scada-proxy`,
-`scada-historian` and `scada-filesystem` — has its own `root` account, and
-after `apply` all of them accept an empty password. Right after installation,
-add to the parameter file of each of those processes
-(`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json`, where
-`<process>` is `config`, `proxy`, `historian` and `filestore`):
+`scada-setup` stores the password in the Windows service settings of those
+processes rather than in the parameter files, and the processes write it again
+on every start. So:
 
-```json
-"security": {
-    "rootPassword": "<password>"
-}
-```
+* **to change the root password, run `scada-setup apply` with the new
+  `--root-password`** — a password changed from the Client is replaced by the
+  one given to `apply` the next time the process starts;
+* give the current root password on every later `apply`, upgrades included.
 
-and restart the processes (`scada-setup stop`, then `scada-setup start`).
-**Repeat this after every `scada-setup apply`**, which rewrites the parameter
-files from the templates. Restrict access to these files: the password is
-stored in them as plain text. See
-[Root password]({{ '/en/server/' | relative_url }}#root-password).
+See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
 ## Network preparation
 
@@ -210,8 +207,8 @@ Start the Client from the desktop shortcut or the Start menu. The login dialog a
 
 ![]({{ '/img/client-login.png' | relative_url }})
 
-For the first login, use `root` with the password set by
-`security.rootPassword`.
+For the first login, use `root` with the password given as
+`--root-password` during installation.
 
 Enter the host name or IP address of the process that accepts Client
 connections (`scada-proxy` in a distributed installation) in the `Server`
@@ -249,12 +246,12 @@ Before upgrading, back up the configuration and historical databases — see
 ```bat
 scada-setup stop
 msiexec /i telecontrol-scada-<new version>.msi /qn
-scada-setup apply --svc-password <password>
+scada-setup apply --svc-password <password> --root-password <root password>
 ```
 
 The installer replaces only the executables; `apply` rewrites the parameter
-files and leaves the data alone. After `apply`, set the
-[root password](#root-password) again.
+files and leaves the data alone. On computers running only protocol processes,
+`--root-password` may be omitted.
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
@@ -269,13 +266,13 @@ used a hardware key. To move to version 2.6, on the computer where it ran:
 4. Run `scada-setup migrate` and read the plan: what will be copied where,
    and anything that prevents the migration. The command changes nothing.
 5. From an elevated command prompt, run
-   `scada-setup migrate --execute --svc-password <password>`. It removes the
-   old service, copies the configuration, the users with their passwords, the
-   history and the schematic files into the version 2.6 process folders, and
-   starts the processes as `apply` does (creating the Server certificate
-   included).
-6. Set the [root password](#root-password) and check the result from the
-   Client.
+   `scada-setup migrate --execute --svc-password <password> --root-password <root password>`.
+   It removes the old service, copies the configuration, the users with their
+   passwords, the history and the schematic files into the version 2.6
+   process folders, and starts the processes as `apply` does (creating the
+   Server certificate included). The version 2.5 root password is replaced by
+   the one given as `--root-password` (see [Root password](#root-password)).
+6. Check the result from the Client.
 
 The old `Configuration`, `History` and `FileSystem` folders are neither
 changed nor deleted. See
