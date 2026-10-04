@@ -8,7 +8,7 @@ permalink: /en/dev/excel/
 # Configuration export and import
 
 The server's configuration can be exported to a file, edited or archived,
-and imported back. Administrators find the commands in the Client's `More`
+and imported back. Accounts holding the Configure right find the commands in the Client's `More`
 menu:
 
 ![]({{ '/img/menu-excel.png' | relative_url }})

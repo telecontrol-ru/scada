@@ -11,7 +11,8 @@ permalink: /en/dev/data-items/
 * TOC
 {:toc}
 
-Only system administrators and SCADA engineers can create, configure,
+Only accounts holding the Configure right (see
+[Users]({{ '/en/dev/users/' | relative_url }})) can create, configure,
 delete, copy, or move data items and groups.
 
 Each [data item]({{ '/en/architecture/' | relative_url }}#data-items)
@@ -56,7 +57,7 @@ Single objects or object series are created through the `Create` menu:
 
 ![]({{ '/img/menu-create-object.png' | relative_url }})
 
-### Bulk create
+### Bulk create {#bulk-create}
 
 The `Multiple Create…` command opens a wizard that creates a whole set of
 objects from one pattern. It has three steps.
@@ -68,16 +69,31 @@ objects from one pattern. It has three steps.
 only when there is something for a rule to forward, that is when source objects
 are already selected). For data items it also asks for the "Item type"
 (discrete or analog), the "Device" that is their source, and a "Source path
-template".</dd>
+template": the channel address on that device, with the same index tokens as
+the name template (see below). Each object gets that address in its Channel
+field, exactly as if the device and channel had been chosen in its properties
+by hand. For an IEC 60870-5 device it is the information object address (for
+example <code>1{nn}</code>); for MODBUS it is a MODBUS channel address (for
+example <code>HOLDREG:INT16:{n}</code>). With no device selected, or an empty
+template, the objects are created without a source.</dd>
 
 <dt>Pattern: naming and addressing</dt>
-<dd>A "Name template" and a "NodeId template" with index tokens:
+<dd>The "Name template", "NodeId template" and "Source path template" take
+index tokens:
 <code>{n}</code> is the index in decimal, <code>{nn}</code> zero-padded to two
 digits, <code>{hex}</code> in hexadecimal. Any other text is copied verbatim,
 so "TS{n} current" at index 8 yields "TS8 current". The range comes from
 "Start index", "Count" and "Index step", and for transmission rules from "IOA
 start" and "IOA step" as well: a data item is not addressed on a link, so it
 has no IOA fields.
+
+The "NodeId template" sets the new objects' identifiers in OPC UA form. The
+Server accepts only numeric identifiers in the object type's namespace:
+<code>ns=1;i=…</code> for TS and <code>ns=2;i=…</code> for TIT. The value the
+wizard proposes (<code>ns=2;s=RTU.TS{n}.I</code>) is a string identifier, and
+the Server will not create such objects. <strong>The simplest is to clear the
+field:</strong> the Server then assigns free numbers itself, as it does for an
+ordinary create.
 
 A live preview is built below — a row-number / Name / NodeId / IOA / Status
 grid. Status
@@ -87,9 +103,28 @@ of range", and a "N new, M conflict" summary sits under the grid.</dd>
 <dt>Review and create</dt>
 <dd>States how many rows will be created out of the total: "Will create N of
 M". Conflicting rows are not counted, so running the wizard again over the same
-pattern completes the set rather than duplicating it.</dd>
+NodeId pattern completes the set rather than duplicating it. With an empty
+NodeId template existing objects are not recognised, and running it again
+creates them a second time.</dd>
 
 </dl>
+
+Example: create five TIT objects "Feeder current 1" … "Feeder current 5"
+reading addresses 101–105 of an IEC 60870-5 device:
+
+| Field | Value |
+|---|---|
+| What to create | Data items |
+| Item type | Analog (TIT) |
+| Device | the IEC 60870 device |
+| Source path template | `1{nn}` |
+| Name template | `Feeder current {n}` |
+| NodeId template | empty |
+| Start index | 1 |
+| Count | 5 |
+| Index step | 1 |
+
+For index 1 the template `1{nn}` gives `101`, for index 5 it gives `105`.
 
 The Pattern step, with its live preview:
 
@@ -115,9 +150,9 @@ Copying is available through the `Copy` commands:
 
 Objects and groups can also be dragged inside the object tree.
 
-## Object parameters
+## Object properties
 
-Measured-object parameters are configured in the object properties
+Measured-object properties are configured in the object Properties
 window:
 
 ![]({{ '/img/ti-parameters.png' | relative_url }})
@@ -126,11 +161,22 @@ The main parameter groups are:
 
 <dl>
 
+<dt>Browse Name (Russian UI: «Обозначение»)</dt>
+<dd>In the Attributes group: the identifier the Server assigned to the object
+when it was created, for example <code>TIT.646</code>.
+<a href="{{ '/en/formulas/' | relative_url }}">Formulas</a> and the Control
+condition refer to the object by it.</dd>
+
 <dt>Value archive</dt>
 <dd>Selects the archive where object values are stored for later analysis
 in graphs, summaries, and the event journal. The retention depth belongs to
 the archive, not to the object. See
-[Archiving]({{ '/en/dev/history/' | relative_url }}).</dd>
+<a href="{{ '/en/dev/history/' | relative_url }}">Archiving</a>.
+<strong>WARNING: in version 2.6 the Server refuses an archive assignment made
+from the Client</strong> on an installation made with <code>scada-setup</code> as
+separate processes; to assign archives to new objects, contact Telecontrol.
+Details are on the <a href="{{ '/en/dev/history/' | relative_url }}">Archiving</a>
+page.</dd>
 
 <dt>Name</dt>
 <dd>The display name used everywhere in the system. Names do not have to
@@ -147,8 +193,13 @@ commands.</dd>
 
 <dt>Two-stage control</dt>
 <dd>Enables the IEC 60870 two-stage control workflow
-`SELECT/EXECUTE`. If disabled, the command is executed in a single
-stage.</dd>
+<code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
+stage. Default: Yes.</dd>
+
+<dt>Lock</dt>
+<dd>Yes — the object ignores values from the device and keeps the value set by
+manual input (quality flag <code>B</code>). Default: No. See
+<a href="{{ '/en/architecture/' | relative_url }}#manual-write">Manual input and blocking</a>.</dd>
 
 <dt>Channel</dt>
 <dd>Defines either the information-object address in the selected
@@ -168,7 +219,9 @@ source.</dd>
 
 <dt>Control condition</dt>
 <dd>A logical expression that enables or blocks control. It usually
-references discrete-object aliases or their internal object numbers.</dd>
+references discrete-object aliases or their designations, such as
+<code>TS.1379</code> (see <a href="{{ '/en/formulas/' | relative_url }}">Formulas</a>).
+Do not start it with <code>=</code>.</dd>
 
 <dt>Stale timeout, s</dt>
 <dd>If the value is not updated within this interval, it is marked as
@@ -176,13 +229,17 @@ stale.</dd>
 
 <dt>Display parameters</dt>
 <dd>For discrete objects, selects the display format used in the UI.
-The available formats can be managed from `More -> Formats`.</dd>
+The available formats can be managed from <code>More -&gt; Formats</code>.</dd>
 
 <dt>Inversion</dt>
 <dd>Used only for discrete objects to invert the received state.</dd>
 
 <dt>Transformation</dt>
-<dd>For measured values, defines how incoming data is processed:
+<dd>For measured values, defines how incoming data is processed. Default:
+None. <strong>WARNING: in this version the list may offer no choices</strong>,
+and then linear scaling cannot be switched on from the Client — see
+<a href="{{ '/en/dev/devices/' | relative_url }}#enum-lists">Fields with a list
+of values</a>.
   <dl>
   <dt>Linear</dt>
   <dd>Applies offset and scale transformation.</dd>
@@ -202,23 +259,42 @@ graphs.</dd>
 <dd>A unique system-wide alias used in formulas, logical expressions,
 tables, graphs, and schematic bindings. Aliases may contain Cyrillic or
 Latin letters and digits, but no spaces, and must be no longer than 50
-characters.</dd>
+characters. For a <a href="{{ '/en/formulas/' | relative_url }}">formula</a>
+to reach an alias, it must start with a letter or <code>_</code>.</dd>
 
-<dt>Importance</dt>
-<dd>A decimal value from `0` to `1,000,000,000` used for event coloring
-and filtering in the event journal and current-event panel.</dd>
+<dt>Severity (Russian UI: «Важность»)</dt>
+<dd>A number from 1 to 1000, default 10. The object's events carry it, and it
+colours and filters them in the event journal and the current-event
+panel.</dd>
 
-<dd>Acknowledged events are typically shown with these severity zones:</dd>
+<dd>Event rows are coloured by severity:</dd>
 
-* importance `< 60`: black text on white background
-* importance `< 80`: black text on yellow background
-* importance `> 80`: black text on red background
+* 800 and above: red background ("Critical", alarm)
+* 600 to 799: yellow background ("Warning")
+* below 600: not highlighted
 
-<dd>Unacknowledged events are shown with black text on a green
-background until acknowledgement.</dd>
+<dd>An unacknowledged event is marked by a dot in the first column and by
+"— pending —" in the acknowledge-time column; the row colour comes from the
+severity alone. See <a href="{{ '/en/client/events/' | relative_url }}#severity">Severity</a>.</dd>
 
 <dt>Range limiting</dt>
 <dd>Clamps the value to the logical range.</dd>
+
+<dt>Aperture</dt>
+<dd>Filtering group, TIT only: the smallest change of value that is accepted;
+smaller changes are ignored. In the object's units; 0 (default) means no
+filtering.</dd>
+
+<dt>Deadband</dt>
+<dd>Filtering group, TIT only: values smaller in magnitude than this are
+forced to zero. In the object's units; 0 (default) means unused.</dd>
+
+<dt>Limits</dt>
+<dd>Limits group, TIT only: low alarm, low warning, high warning and high alarm
+limit. An empty value means the limit is not set. They can be changed here or
+with the Limits command — see
+<a href="{{ '/en/architecture/' | relative_url }}#limits">Limit checks</a>.
+Anyone holding the Configure right can change them in the properties.</dd>
 
 <dt>Display</dt>
 <dd>Controls how a measured value is formatted:
@@ -230,10 +306,23 @@ background until acknowledgement.</dd>
   </dl>
 </dd>
 
-<dt>Emulation</dt>
-<dd>Enables signal emulation. The emulation type is selected from the
-configured list of simulated signals under `More -> Simulated
-signals`.</dd>
+<dt>Simulation</dt>
+<dd>Simulation group. Yes — the object takes its values not from the device
+but from the simulation signal chosen in the Simulation signal field. Default:
+No. An object group has the same flag: when it is on for the group, every
+object in it that has a signal chosen is simulated.</dd>
+
+<dt>Simulation signal</dt>
+<dd>Simulation group: the signal that feeds the object in simulation. Without
+the Simulation flag on (on the object or its group) this choice has no
+effect.
+
+Signals are created in the Simulated signals window (<code>More -&gt; Simulated
+signals</code>) with <code>Create -&gt; Simulation signal</code>. A signal has a Type — the
+waveform (default: random; the list may offer no choices, see
+<a href="{{ '/en/dev/devices/' | relative_url }}#enum-lists">Fields with a list of values</a>) —
+Period, ms (60000), Phase, ms (0) and Update, ms (1000). See also
+<a href="{{ '/en/client/workbench/' | relative_url }}#simulation-items">Simulated signals</a>.</dd>
 
 </dl>
 

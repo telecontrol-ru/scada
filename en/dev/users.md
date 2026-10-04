@@ -40,18 +40,29 @@ An account's Rights property is two independent permissions:
 limits.</dd>
 
 <dt>Configure</dt>
-<dd>Creating, changing and deleting objects, devices and accounts.</dd>
+<dd>Creating, changing and deleting objects, devices and accounts.
+<strong>In this version this right also includes everything the Control right
+gives</strong> — see the warning below.</dd>
 
 </dl>
 
-Their combinations give the four familiar values:
+Their combinations give the four familiar values. The table shows what an
+account can actually do:
 
-| Rights | Control functions and setpoints | Configuration editing |
+| Rights | Control, manual input and limits | Configuration editing |
 |:---|:---:|:---:|
 | 0 - Executive / viewer | No | No |
-| 1 - SCADA engineer | No | Yes |
+| 1 - SCADA engineer | Yes (see the warning) | Yes |
 | 2 - Dispatcher | Yes | No |
 | 3 - Administrator | Yes | Yes |
+
+**WARNING: in this version an account with the Configure right can also issue
+control and setpoint commands, enter values manually and change limits — even
+without the Control right.** So rights 1 (SCADA engineer) are in effect the
+same as rights 3 (Administrator). Limits of a TIT object are, besides, part of
+its properties (the Limits group of the Properties window), and anyone allowed
+to edit the configuration can change them. Give the Configure right only to
+people who may operate the plant.
 
 ## Roles
 

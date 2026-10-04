@@ -11,12 +11,12 @@ permalink: /en/development/
 * TOC
 {:toc}
 
-Project engineering is performed from the graphical Client while signed in with administrator rights. In that mode, the Client exposes additional commands for editing parameters, devices, data items, displays, users, and server-side files.
+Project engineering is performed from the graphical Client while signed in with an account holding the Configure right (see [Users]({{ '/en/dev/users/' | relative_url }})). The Client then exposes additional commands for editing parameters, devices, data items, displays, users, and server-side files.
 
-## Administrative commands
+## Configuration commands
 
-When the user signs in with administrator rights, the Client adds
-administrative commands to its menus and context actions.
+When the account holds the Configure right, the Client adds configuration
+commands to its menus and context actions.
 
 ### Properties
 

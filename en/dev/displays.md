@@ -32,14 +32,25 @@ change.
 The table context menu also provides `Copy` and `Paste` operations for
 objects.
 
-## ActiveXeme schematics
+## Modus schematics
 
-Display files with the `sde` and `xsde` extensions are stored in
-`%ProgramData%\Telecontrol\SCADA Client` on each client workstation.
+Displays — files with the `sde` and `xsde` extensions — are **created and
+edited in the Modus graphical editor**. The editor is not part of the SCADA
+delivery: it is a separate Windows program supplied by its maker, MODUS
+([swman.ru](http://swman.ru/)). The SCADA Client **shows** the displays
+itself, with its built-in module; workstations do not need the ActiveXeme
+component for that.
 
-After a new display is added, it becomes available from the `Display`
-main menu after the Client is restarted. The schematic folder can also
-be opened from the Client with `Settings -> Open schematic folder`.
+A finished display can be placed in one of two ways:
+
+* copy the file to `%ProgramData%\Telecontrol\SCADA Client` on every client
+  workstation. The Client opens that folder with
+  `Settings -> Open Displays Folder`;
+* upload the file once to the Server, which then serves it to every Client —
+  see [Server files]({{ '/en/dev/server-files/' | relative_url }}).
+
+A display added to a workstation's folder becomes available from the
+`Display` main menu after the Client is restarted.
 
 If a display file or object alias is changed, it is enough to close and
 reopen the display in the Client.
@@ -47,7 +58,8 @@ reopen the display in the Client.
 ### Binding objects
 
 To bind a discrete or measured object to a display, define an alias for
-the object in its parameter window.
+the object in its Properties window (the Alias field), opened with
+`Properties` from the object's context menu.
 
 After the alias is defined, bind it to a display element. Discrete
 objects are usually bound to elements with a position property, while
@@ -81,8 +93,3 @@ The Client `Displays` menu then shows the text defined in that title
 attribute:
 
 ![]({{ '/img/menu-scheme.png' | relative_url }})
-
-## Translation status
-
-This English page is a functional translation of the current Russian
-page.

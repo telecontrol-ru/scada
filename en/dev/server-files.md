@@ -20,17 +20,30 @@ In the `Files` window, server-side schematic files can be organized into
 multiple nested folders. Double-clicking a selected schematic file opens
 it in the Client.
 
-All schematic files should be stored on the Server in the main folder:
+## Uploading a display to the Server
 
-`%ProgramData%\Telecontrol\SCADA Server\FileSystem`
+1. Open the `Files` window (`More -> Files`).
+2. To make a folder, choose `Create -> Folder` from the window's context
+   menu.
+3. Select the folder the file belongs in and choose `Create -> File` from
+   the context menu. Pick the display file (`sde` or `xsde`) on your
+   computer — it is sent to the Server.
 
-This is the Server-side file system described in
-[Server]({{ '/en/server/' | relative_url }}#filesystem).
+Uploading needs the Configure right.
+
+## Where the Server keeps the files
+
+A version 2.6 Server keeps the files in the folder of the
+`scada-filesystem` process. On an installation made with `scada-setup` that
+is
+
+`%ProgramData%\Telecontrol\SCADA Server\filestore\FileSystem`
+
+A version 2.5 Server kept them in
+`%ProgramData%\Telecontrol\SCADA Server\FileSystem`; moving to 2.6 copies
+them to the new folder. See
+[Server-side file system]({{ '/en/server/' | relative_url }}#filesystem).
 
 With this arrangement, changing a schematic file once on the Server is
 enough for the updated version to become available to all Clients
 connected to that Server.
-
-## Translation status
-
-This English page is a direct translation of the current Russian page.

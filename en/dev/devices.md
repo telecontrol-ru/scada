@@ -18,19 +18,46 @@ The equipment window can be opened from the main menu with
 
 ## Create devices
 
-IEC 60870-5 directions can be added from the IEC subsystem context menu,
-for example with `Create -> IEC-101 direction` or
-`Create -> IEC-104 direction`.
+Directions are created from the context menu of the Equipment window:
+right-click an empty part of the window, with nothing selected, and choose
+`Create`:
+
+* `IEC 60870-104 Link` — an IEC 60870-5-104 direction (Russian UI:
+  «Канал IEC 60870-104»);
+* `IEC 60870-101 Link` — an IEC 60870-5-101 direction;
+* `Modbus direction`;
+* `IEC 61850 device`.
 
 ![]({{ '/img/devices-create.png' | relative_url }})
 
-An IEC 60870-5 device can then be added from the direction's context
-menu with `Create -> Device`.
+An IEC 60870-5 device is added from the direction's context menu with
+`Create -> IEC 60870 device`, a Modbus device with
+`Create -> Modbus device`.
 
-## Device parameters
+A new IEC 60870-5 direction is named "IEC 60870-104 Link" or "IEC 60870-101
+Link"; rename it in its properties. A -104 direction is created as a TCP
+client to `localhost`, port 2404, a -101 direction on serial port COM1.
+Set its Transport to match your site.
+
+A device or direction works only while its Disabled property is No. The
+model default for that property is Yes, so check it after creating. The
+`Enable` and `Disable` context-menu commands switch it as well.
+
+## Device properties
 
 To edit an element's parameters, open the element context menu and
 choose `Properties`.
+
+### Fields with a list of values {#enum-lists}
+
+**WARNING: in this version the fields with a list of values — a direction's
+Protocol and Mode, a TIT object's Conversion, a simulation signal's Type —
+may offer no choices.** Such a field then cannot be changed from the Client,
+and the default stated on this page applies. An IEC 60870-5 direction's
+protocol is set by the command that creates it (`IEC 60870-104 Link` or
+`IEC 60870-101 Link`), so an empty list does not get in the way there. If
+you need another value in such a field (for example the Modbus TCP protocol
+or Modbus retransmission mode), contact Telecontrol (mail@telecontrol.ru).
 
 ### Address map
 
@@ -44,19 +71,54 @@ device — and it is the same map the
 [frame decode]({{ '/en/client/device-watch/' | relative_url }}) uses in the
 device watch window.
 
-## MODBUS devices
+### Checking the setup {#commissioning}
+
+After creating a direction and a device, make sure data is flowing:
+
+1. Disabled is No on both the direction and the device.
+2. The indicator left of the device in the Equipment window shows the
+   channel as enabled, not "device not responding". The `Metrics` context
+   command shows the channel's service data.
+3. The [Watch]({{ '/en/client/device-watch/' | relative_url }}) window shows
+   the exchange. For IEC 60870-5, once connected, a general interrogation
+   runs: <code>C_IC_NA_1</code> with its activation confirmation, the data, and the
+   activation termination.
+4. The values of objects bound to the device arrive without the quality
+   flags `C` (no communication), `H` (connection error) and `K`
+   (configuration error) — see
+   [Quality flags]({{ '/en/architecture/' | relative_url }}#quality-flags).
+5. For a controllable object, send a test command and check in Watch that the
+   device confirmed it.
+
+## MODBUS devices {#mbDevice}
 
 Supported MODBUS function codes are described in
 [Protocols]({{ '/en/protocols/' | relative_url }}#modbus).
 
-### MODBUS direction parameter
+### MODBUS direction parameters
 
 <dl>
+
+<dt>Protocol</dt>
+<dd>RTU, ASCII or TCP. Default: RTU. See the
+<a href="#enum-lists">warning on list fields</a>.</dd>
+
+<dt>Mode</dt>
+<dd>Polling — the SCADA polls the devices (default); retransmission — the SCADA
+answers another system's requests. See the
+<a href="#enum-lists">warning on list fields</a>.</dd>
+
+<dt>Transport</dt>
+<dd>The communication channel: a serial port or a TCP/UDP network, set in the
+Transport window opened by the button in the field.</dd>
 
 <dt>Request delay, ms</dt>
 <dd>An artificial delay between the response and the next request. This
 is useful for serial devices that switch slowly between transmit and
-receive modes.</dd>
+receive modes. Default: 0.</dd>
+
+<dt>Disabled</dt>
+<dd>Yes — the direction does not run.</dd>
 
 </dl>
 
@@ -64,18 +126,24 @@ receive modes.</dd>
 
 <dl>
 
-<dt>Pause duration, ms</dt>
+<dt>Address</dt>
+<dd>The device (slave) address in MODBUS requests. Default: 1.</dd>
+
+<dt>Suspend duration, ms</dt>
 <dd>If several devices are polled cyclically and one device stops
 responding, polling of that device can be suspended for a while so the
-other devices can still be queried on time.</dd>
+other devices can still be queried on time. Default: 30000.</dd>
 
-<dt>Retry count</dt>
+<dt>Transmission retry attempts</dt>
 <dd>The maximum number of repeated requests when the device does not
-respond.</dd>
+respond; after that, communication loss is reported. Default: 3.</dd>
 
-<dt>Response timeout</dt>
-<dd>The maximum wait time for a device response before retrying the
-request.</dd>
+<dt>Response timeout, ms</dt>
+<dd>The maximum wait for a device response, in milliseconds, before the
+request is retried. Default: 1000.</dd>
+
+<dt>Disabled</dt>
+<dd>Yes — the device is not polled.</dd>
 
 </dl>
 
@@ -171,7 +239,7 @@ Examples:
 * `HOLDREG:FLOAT:10001`
 * `INPUTREG:FLOAT:10001`
 * `HOLDREG:INT32:10001`
-* `INPUTREG:UINT32:10001`
+* `INPUTREG:UINT32:10001` (read with function `0x04`)
 * `HOLDREG:DOUBLE:10001`
 
 The two parameter screenshots below show where these MODBUS channel
@@ -188,29 +256,102 @@ The supported IEC 60870-5 ASDU identifiers are described in the
 
 ### IEC 60870-5 direction parameters
 
+Defaults are given in brackets.
+
 <dl>
+
+<dt>Protocol</dt>
+<dd>IEC 60870-5-104 or IEC 60870-5-101, set by the command that created the
+direction (<code>IEC 60870-104 Link</code> or <code>IEC 60870-101 Link</code>).</dd>
+
+<dt>Mode</dt>
+<dd>Polling (default), retransmission or listening. In this version the
+direction's behaviour is decided mainly by Data collection and Transport: the
+SCADA polls the devices when data collection is on and answers another
+system's requests when it is off. Listening applies to IEC 60870-5-101 only.
+See the <a href="#enum-lists">warning on list fields</a>.</dd>
+
+<dt>Data collection</dt>
+<dd>Yes (default) — the SCADA is the controlling station: after connecting it
+sends the devices general interrogation and clock synchronisation commands.
+No — it sends neither and answers another system's requests; this is how
+<a href="#retransmission">retransmission</a> is set up.</dd>
+
+<dt>Transport</dt>
+<dd>The communication channel. The button in the field opens the Transport
+window: Type (TCP Client, TCP Server, UDP Client, UDP Server, Serial Port),
+Host and Port for a network, or the serial-port settings.</dd>
+
+![]({{ '/img/iec-60870-5-transport.png' | relative_url }})
 
 <dt>Event archive</dt>
 <dd>Selects the archive used to store network traffic for later analysis
 and saving to a text log file.</dd>
 
 <dt>Anonymous mode</dt>
-<dd>Switches the system from balanced mode to unbalanced mode, where the
-device establishes communication itself and explicit `STARTDT ACT`
-commands are not required after the link is opened.</dd>
+<dd>No (default) — on connecting, the SCADA opens a session for every device
+configured under the direction and polls each at its own address. Yes — a
+configured device is brought into service only when its first frame arrives,
+and right after connecting the SCADA sends one general interrogation to the
+broadcast common address 0xFFFF. Frames from addresses with no configured
+device are dropped with the warning "Unknown device address".</dd>
 
-<dt>Send window (K)</dt>
-<dd>Maximum number of transmitted ASDUs before acknowledgement is
-required.</dd>
+<dt>Send window (k)</dt>
+<dd>Maximum number of unacknowledged transmitted ASDUs (12).</dd>
 
-<dt>Receive window (W)</dt>
-<dd>Number of received ASDUs after which an acknowledgement is sent.</dd>
+<dt>Receive window (w)</dt>
+<dd>Number of received ASDUs after which an acknowledgement is sent (8).</dd>
 
-<dt>Retry count</dt>
-<dd>Maximum number of retries before communication loss is reported.</dd>
+<dt>Transmission retry attempts</dt>
+<dd>For IEC 60870-5-104: how many times an unacknowledged frame is
+retransmitted on t1 expiry before the connection is closed (0).</dd>
 
-<dt>Standard IEC 60870-5 field sizes</dt>
-<dd></dd>
+<dt>Connection timeout (t0), s</dt>
+<dd>Time allowed to establish the connection (30).</dd>
+
+<dt>Send timeout (t1), s</dt>
+<dd>Time allowed for the acknowledgement of a sent ASDU (15). When it (and
+the retries) run out, the connection is closed and re-established.</dd>
+
+<dt>Receive timeout (t2), s</dt>
+<dd>Time before a receive acknowledgement is sent when no further data
+arrives (10). <code>t2</code> must be smaller than <code>t1</code>.</dd>
+
+<dt>Idle timeout (t3), s</dt>
+<dd>Idle time after which a test frame is sent (20).</dd>
+
+<dt>Acknowledgement timeout, s</dt>
+<dd>Time allowed for the confirmation of a control or setpoint command and of
+clock synchronisation (5). An unconfirmed control command fails; an
+unconfirmed clock synchronisation drops the connection.</dd>
+
+<dt>Operation timeout, s</dt>
+<dd>Time within which a general or group interrogation must finish (20). If
+it does not, the connection is dropped and re-established. It does not apply
+to control commands.</dd>
+
+<dt>Device address size</dt>
+<dd>Size of the common ASDU address in bytes (2).</dd>
+
+<dt>Cause of transmission size</dt>
+<dd>Size of the cause-of-transmission field in bytes (2).</dd>
+
+<dt>Object address size</dt>
+<dd>Size of the information object address in bytes (3).</dd>
+
+<dt>CRC protection</dt>
+<dd>Yes — the SCADA expects two extra checksum bytes at the end of every
+received IEC 60870-5-104 frame. This is a non-standard extension; turn it on
+only when the equipment requires it (No).</dd>
+
+<dt>Disabled</dt>
+<dd>Yes — the direction does not run.</dd>
+
+</dl>
+
+The default field sizes are those of IEC 60870-5-104 and are not changed
+when an IEC 60870-5-101 direction is created. For -101, set them from the
+device documentation; typical values:
 
 | Field size, bytes | 104 | 101 |
 |:---|:---:|:---:|
@@ -218,86 +359,105 @@ required.</dd>
 | Device address (common ASDU address) | 2 | 1 |
 | Cause of transmission | 2 | 1 |
 
-<dt>Operation timeout, s</dt>
-<dd>Timeout for commands such as control operations and general
-interrogation.</dd>
-
-<dt>Transmission timeout (T1), s</dt>
-<dd>Time allowed for a response or ASDU delivery acknowledgement.</dd>
-
-<dt>Acknowledgement timeout, s</dt>
-<dd>Time allowed for command completion acknowledgement such as
-`ACTIVATION TERMINATION`.</dd>
-
-<dt>Receive timeout (T2), s</dt>
-<dd>Time before a receive acknowledgement is sent when no further data
-arrives. `T2` must be smaller than `T1`.</dd>
-
-<dt>Idle timeout (T3), s</dt>
-<dd>Time before a test frame is sent on an idle connection.</dd>
-
-<dt>Connection timeout (T0), s</dt>
-<dd>Time allowed to establish the connection.</dd>
-
-<dt>Transport</dt>
-<dd>Physical-transport settings for the device channel:</dd>
-
-![]({{ '/img/iec-60870-5-transport.png' | relative_url }})
-
-</dl>
-
 ### IEC 60870-5 device parameters
 
+Defaults are given in brackets.
+
 <dl>
+
+<dt>Address</dt>
+<dd>The device's common ASDU address (1).</dd>
+
+<dt>Switch address</dt>
+<dd>The link-layer address of the device for IEC 60870-5-101 (1).</dd>
 
 <dt>Event archive</dt>
 <dd>Selects the archive used to store traffic for one specific
 device.</dd>
 
-<dt>Address</dt>
-<dd>The device common address carried in the ASDU frame.</dd>
-
-<dt>Link address</dt>
-<dd>An additional link-layer address for the device.</dd>
-
 <dt>UTC time</dt>
-<dd>Selects UTC or local time for timestamps.</dd>
-
-<dt>Group interrogation periods 1...16, s</dt>
-<dd>Per-group interrogation periods using the standard general
-interrogation grouping model.</dd>
-
-<dt>General interrogation period, s</dt>
-<dd>How often `C_IC_NA_1` is sent. A value of `0` means it is sent only
-once after connection establishment.</dd>
-
-<dt>Clock synchronization period, s</dt>
-<dd>How often `C_CS_NA_1` is sent. A value of `0` means it is sent only
-once after the connection is established.</dd>
+<dd>Timestamp format: Yes — UTC, No — local time (No).</dd>
 
 <dt>General interrogation on startup</dt>
-<dd>If disabled, no general interrogation is sent after the connection
-is opened.</dd>
+<dd>Whether <code>C_IC_NA_1</code> is sent after the connection is established
+(Yes).</dd>
 
-<dt>Clock synchronization on startup</dt>
-<dd>If disabled, no clock synchronization is sent after the connection
-is opened.</dd>
+<dt>General interrogation period, s</dt>
+<dd>How often the general interrogation is repeated (0). 0 means no periodic
+interrogation; only the startup one runs, if enabled.</dd>
+
+<dt>Group 1...16 poll period, s</dt>
+<dd>Per-group interrogation periods (0 — the group is not
+interrogated).</dd>
+
+<dt>Clock synchronisation on startup</dt>
+<dd>Whether <code>C_CS_NA_1</code> is sent after the connection is established
+(No).</dd>
+
+<dt>Clock synchronisation period, s</dt>
+<dd>How often clock synchronisation is repeated (0 — no periodic
+synchronisation).</dd>
+
+<dt>Disabled</dt>
+<dd>Yes — the device is not polled.</dd>
 
 </dl>
 
+Interrogation and clock synchronisation run only while the direction's Data
+collection is on.
+
+### Retransmission to a dispatch centre {#retransmission}
+
+Example: a dispatch centre (DC) receives SCADA data over IEC 60870-5-104,
+with the SCADA as the controlled station — the TCP server the DC connects
+to.
+
+1. In the Equipment window, right-click an empty part of the window with
+   nothing selected and choose `Create -> IEC 60870-104 Link`.
+2. In the new direction's properties set:
+   * Name — for example "DC";
+   * Transport — in the Transport window: Type = TCP Server, Port = 2404 (or
+     the port agreed with the DC), Host = `0.0.0.0` to accept connections on
+     every network interface, or the IP address of the network card facing
+     the DC. With `localhost`, which a new direction gets, only this computer
+     can connect;
+   * Data collection = No — the SCADA will not send the DC interrogation or
+     clock synchronisation commands;
+   * Mode — retransmission, if the list offers choices. For
+     IEC 60870-5-104 an empty list (see the [warning](#enum-lists)) does not
+     get in the way;
+   * k, w, t1–t3 and the field sizes — as agreed with the DC;
+   * Disabled = No.
+3. Under the direction, `Create -> IEC 60870 device`. Set its Address — the
+   common ASDU address the DC uses for the SCADA — and Disabled = No.
+4. Select the device and open the `Transmission Table`. Add rules: each links
+   a SCADA object (Source object) to an information object address in the DC
+   (Receiver object address). The table is described in
+   [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission);
+   `Multiple Create` makes many rules at once (see
+   [Data items]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)).
+5. Open the port in the firewall of the computer running the Server's
+   IEC 104 process.
+6. Check: once the DC connects, the
+   [Watch]({{ '/en/client/device-watch/' | relative_url }}) window shows the
+   exchange, and the DC's general interrogation returns the object values.
+
+Modbus retransmission needs Mode = retransmission on the Modbus direction; if
+that list is empty, contact Telecontrol.
+
 ## IEC 61850 devices {#iec-61850}
 
-The IEC 61850 model can be browsed directly. Any model node can expose
-its bindable address through the `Properties` command in the context
-menu.
+A device is created with `Create -> IEC 61850 device` from the Equipment
+window's context menu (right-click an empty part of the window). Its
+properties are Host — the device's network address — and Port (default
+102), plus Disabled = No. Under the device an `IEC 61850 RCB` (report control
+block) can be created, with its Address set to the block's reference in the
+device model. The device model appears in the Model subtree.
+
+Any model node exposes its bindable address through the `Properties`
+command in the context menu.
 
 Server objects can also be created by dragging IEC 61850 model objects
 into an object group. Dragging a full functional-constraint group
 creates all objects from that group. Dragging a model object onto an
 existing SCADA object updates the existing binding.
-
-## Translation status
-
-This English page is now a substantially fuller engineering reference.
-The Russian page still remains the fullest source for low-level device
-details.

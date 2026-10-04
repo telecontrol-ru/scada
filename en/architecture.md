@@ -62,12 +62,14 @@ Address and port configuration is described in the Server section on
 
 Each user account is given two independent rights, *Control* and *Configure*. Their combinations give four familiar profiles:
 
-| Rights | Control commands and setpoints | Configuration editing |
+| Rights | Control, manual input and limits | Configuration editing |
 |:---|:---:|:---:|
 | Executive / viewer | No | No |
-| SCADA engineer | No | Yes |
+| SCADA engineer | Yes (see the warning) | Yes |
 | Dispatcher | Yes | No |
 | Administrator | Yes | Yes |
+
+**WARNING: in this version the Configure right also lets an account issue control commands, enter values manually and change limits, even without the Control right.** Limits are, besides, edited in the object's properties (the Limits group) by anyone allowed to change the configuration. Give the Configure right only to people who may operate the plant.
 
 Users authenticate with a name and password. The Server checks each request against OPC UA roles derived from these rights, which determine access to control operations, manual value entry, engineering tools, and user administration.
 
@@ -150,6 +152,12 @@ SCADA objects to the remote system's channel addresses.
 
 Retransmission works in both directions: values are sent outward, and
 incoming control commands can be relayed back to the field equipment.
+
+The setup — the direction, the receiving device and the retransmission
+table — is described in
+[Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission);
+working with the table itself is described in
+[Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission).
 
 ## Data acquisition
 
