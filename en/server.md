@@ -18,19 +18,34 @@ The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada
 
 On Windows, each Server process is installed as its own service — `Telecontrol SCADA Config`, `Telecontrol SCADA Proxy`, `Telecontrol SCADA Historian`, `Telecontrol SCADA IEC 104`, and so on (the full list is in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers)) — and starts automatically during system boot.
 
-It can also be started in console mode for diagnostics or manual
-operation. In Linux deployments, the Server can run directly from an
+It can also be started in console mode for diagnostics. In Linux deployments, the Server can run directly from an
 unpacked distribution or inside a containerized environment.
 
-### Windows service
+### Windows services {#services}
 
-Each service can be controlled through the standard Windows Services UI
-or from the command line of that process's executable:
+The services are registered by [`scada-setup`](#scada-setup); they run as the
+SYSTEM account and start automatically with Windows. `scada-setup stop` and
+`scada-setup start` stop and start all of a computer's services in the right
+order; a single service can be controlled through the standard Windows
+Services UI.
 
-| Command | Purpose |
-|---|---|
-| `--install` | Install the Server as a Windows service |
-| `--uninstall` | Remove the Windows service |
+When a computer runs *Telecontrol SCADA Config*, its other services depend on
+it, and *Telecontrol SCADA Proxy* also depends on *Telecontrol SCADA
+Filesystem*: Windows starts the dependent services after them, and the
+Services UI offers to stop a service whose dependents are running only
+together with them.
+
+**Recovery after a failure.** `scada-setup` sets every service to restart
+after a failure: 5 seconds after the first failure, 10 seconds after the
+second, and 60 seconds after later ones; the failure count resets after one
+day. A process exiting with a non-zero code counts as a failure too. A
+process that stopped because it has no license exits normally and is not
+restarted — start it with `scada-setup start`.
+
+**WARNING:** after a protocol process's service restarts, automatically
+included, its objects' values stop being archived. Restart the
+*Telecontrol SCADA Historian* service afterwards (see
+[Monitoring](#monitoring)).
 
 ### Setting up with scada-setup {#scada-setup}
 
@@ -41,7 +56,9 @@ templates, creates the configuration databases and the
 [Server certificate](#opcua-certificate), and registers the Windows services. A process's folder has the name the process has in `--tiers`
 (`config`, `proxy`, `historian`, `iec104`…), except `scada-filesystem`, whose
 folder is `filestore`. The executables' `--install` / `--uninstall` options
-are needed only for a hand-built setup. The step-by-step installation is in
+are needed only for a hand-built setup without `scada-setup`; do not use them
+to change or remove services `scada-setup` created — `scada-setup apply` and
+`scada-setup remove` do that. The step-by-step installation is in
 [Getting started]({{ '/en/getting-started/' | relative_url }}).
 
 | Command | Does | Needs admin |
@@ -66,8 +83,16 @@ environment variable; the [root password](#root-password), required by
 `--install-root`.
 
 `apply` can be run again: it rewrites the parameter files and brings the
-services to the required state without touching data. Hand edits to the
-parameter files are lost when it does.
+services to the required state without touching data. Repeat the same
+`--tiers`, `--central` and `--advertise` as at installation: without
+`--tiers` the command enables every process in the license.
+
+**WARNING:** `apply` writes every `server.json` afresh from a template, and
+**all** hand edits to it are lost — on every `apply`, every upgrade included.
+If you changed parameters by hand (for example
+[OPC UA client certificate checks](#opcua-certificate)), keep a copy of the
+edited file, and after each `apply` make the changes again and restart the
+process.
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
@@ -159,11 +184,39 @@ not carried over.
 
 ### Console mode {#console}
 
-To start a Server process in console mode, stop its service and run the desktop shortcut or the
-Start-menu entry for the console variant.
+For diagnostics, a Server process can run in a console window: it works as
+the service does and prints its log to the screen. The installer creates no
+shortcut for this.
 
-If the current Windows user does not have administrative rights, server
-operation in this mode may be limited or disrupted.
+1. Stop the process's service (for example *Telecontrol SCADA IEC 104*): the
+   process and its service cannot run at the same time — they use the same
+   ports and files.
+2. Open an elevated command prompt: without administrator rights the process
+   cannot read the [Server certificate](#opcua-certificate)'s private key and
+   does not start.
+3. Set the passwords the service gets from `scada-setup`, and start the
+   process with its parameter file:
+
+   ```bat
+   set SCADA_SVC_PASSWORD=<svc password>
+   set SCADA_ROOT_PASSWORD=<root password>
+   "C:\Program Files\Telecontrol SCADA\bin\scada-iec104.exe" --param "%ProgramData%\Telecontrol\SCADA Server\iec104\server.json"
+   ```
+
+   The executable is `scada-<process>.exe`; the parameter file's folder is
+   `config`, `proxy`, `historian`, `filestore` (for `scada-filesystem`),
+   `modbus`, `iec104`, `iec61850`, `opc` or `vidicon`.
+4. To finish, close the window or press *Ctrl+C*, then start the service
+   again: `scada-setup start`.
+
+**WARNING:** started without the `SCADA_ROOT_PASSWORD` variable,
+`scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`
+**sets the `root` account's password to empty** — their parameter files
+contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and a configured
+password is written on every start (see [Root password](#root-password)).
+Give `SCADA_ROOT_PASSWORD` the same password as `apply`. Without
+`SCADA_SVC_PASSWORD` the process cannot connect to the other processes.
+Protocol processes do not need `SCADA_ROOT_PASSWORD`.
 
 ## Command-line options
 
@@ -171,13 +224,15 @@ The most important server startup options are:
 
 | Option | Purpose |
 |---|---|
-| `--install` | Install the Server as a Windows service |
-| `--uninstall` | Remove the Windows service |
-| `--service` | Run in service mode |
+| `--install` | Install the Server as a Windows service (hand-built setups without `scada-setup` only) |
+| `--uninstall` | Remove the Windows service (hand-built setups without `scada-setup` only) |
+| `--service` | Run in service mode (used by Windows) |
 | `--param <path>` | Use a specific parameter file. The default on Windows is `%ProgramData%\Telecontrol\SCADA <process>\<name>.json` (for example `%ProgramData%\Telecontrol\SCADA IEC 104\scada-iec104.json`); on Linux it is `<name>.json` in the `data` directory beside the executable's directory |
 | `--name <name>` | Override the Windows service name, so several services of one process can coexist on a machine |
 | `--display-name <name>` | Override the service display name and the console window title |
-| `--log-severity <level>` | Set the logging level |
+
+Processes installed by `scada-setup` are started with a `--param` naming
+`%ProgramData%\Telecontrol\SCADA Server\<process folder>\server.json`.
 
 ### Linux deployment {#linux}
 
@@ -226,16 +281,27 @@ The settings live in the `license` block of the parameter file:
 
 Parameter files written by [`scada-setup`](#scada-setup) already carry the path `%ProgramData%\Telecontrol\SCADA Server\license.json` (or the one given with `--license`) and `"require_gcp_binding": false`.
 
-The license is checked at startup and then every few seconds:
+The license is checked at startup and then every 5 seconds:
 
 * **No valid license**, or one that does not include this process — the
-  process stops. The reason is written to the log.
+  process stops. The reason is written to the log. The process does the same
+  when the file is missing or only partly written at the moment it is
+  checked. The service then exits normally and Windows does **not** restart
+  it — once the file is fixed, start the processes with `scada-setup start`.
 * **The license could not be verified** (for example, the Google Cloud
   metadata server did not answer) — the process keeps running but serves no
   requests until verification succeeds.
 * **The license has expired** — the process keeps running but refuses
   requests. Once the license file is replaced, service resumes without a
   restart.
+
+`scada-setup status` shows when the license expires. During the last 30
+days the Server also raises a daily system event about the expiry, but it is
+visible only in the Client.
+
+Replace the license file in one step: copy the new file into the same folder
+under a temporary name and rename it to `license.json` over the old one
+(`move /y`) — see [License]({{ '/en/getting-started/' | relative_url }}#license).
 
 Versions 2.5 and earlier used a HASP or Guardant hardware key, and ran for two
 hours in demo mode without one.
@@ -358,20 +424,40 @@ Files are managed from the Client
 
 ## Logging {#logging}
 
-The Server writes text log files. Key settings include:
+Each process writes text log files named
+`scada-<process>_<date>_<time>-<number>.log` (for example
+`scada-iec104_2026-10-04_08-00-00-0.log`). For processes installed by
+`scada-setup`, the logs are in the `Logs` folder of the process folder:
+`%ProgramData%\Telecontrol\SCADA Server\<process folder>\Logs`. Settings:
 
 | Parameter | Default | Description |
 |---|---|---|
-| `log.dir` | `${DIR_PARAM}/Logs` | Log-directory path |
+| `log.dir` | `%ProgramData%\Telecontrol\SCADA Server\logs` (on Linux, `Telecontrol/SCADA Server/logs` under the process's working directory) | Log-directory path |
 | `log.max_file_size` | `10` | Maximum size of one log file in MB |
 | `log.max_total_size` | `100` | Maximum total log size in MB |
 | `log.max_count` | `1000` | Maximum number of log files |
+| `log.console_severity` | — | Lowest level of the messages printed **to the screen** in [console mode](#console) or to a container's output: `Trace`, `Debug`, `Info`, `Warning`, `Error` or `Critical`. Does not affect the log files |
 
-When a log file reaches its maximum size, the Server rotates to a new
-file. Old files are deleted automatically when the total size or file
-count limit is exceeded.
+A new file is started when the current one reaches its maximum size, and
+every day at midnight. Old files are deleted automatically when the total
+size or file count limit is exceeded. The level of the messages written to
+the files is not configurable.
 
-The startup option `--log-severity` sets the logging level.
+## Monitoring {#monitoring}
+
+* **Service and license state** — `scada-setup status` on each computer:
+  the license expiry, the processes it entitles, and the state of each
+  process's service.
+* **Process logs** — see [Logging](#logging). Why a process stopped (license,
+  certificate, parameter file) is written to its log.
+* **Archive writing** — the Client's `More -> Databases` window shows, for
+  each archive, how many values were written and the write queue (see
+  [Databases]({{ '/en/client/workbench/' | relative_url }}#historical-db)).
+  If the written-values count stops growing while object values change,
+  restart the *Telecontrol SCADA Historian* service: after a protocol
+  process's service restarts, automatically after a failure included, its
+  objects' values are not archived until *Telecontrol SCADA Historian* is
+  restarted.
 
 ## Client connections {#sessions}
 
@@ -421,12 +507,15 @@ run `apply` with the new value; do not edit the generated parameter files,
 which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
-its own database; each of them has its own `root` account. In a minimal
-installation that is the single process. In the typical distributed
-installation it is `scada-config`, `scada-proxy`, `scada-historian` and
-`scada-filesystem`; the protocol processes receive their configuration
-from `scada-config` and do not use this parameter (they log a message
-saying so).
+its own database; each of them has its own `root` account: `scada-config`,
+`scada-proxy`, `scada-historian` and `scada-filesystem`. The protocol
+processes receive their configuration from `scada-config` and do not use
+this parameter (they log a message saying so).
+
+**WARNING:** a process gets the `SCADA_ROOT_PASSWORD` variable from its
+service. Started outside the service (for example in
+[console mode](#console)) without that variable, it gives `root` an empty
+password.
 
 ## OPC UA server {#opcua}
 
@@ -434,6 +523,18 @@ The Server can expose data to external systems through
 [OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/).
 When enabled, external clients can browse the Server address space,
 including objects, devices, and current or historical data.
+
+In an installation made by `scada-setup`, OPC UA is enabled on every process
+(ports 4840–4848, see
+[Network preparation]({{ '/en/getting-started/' | relative_url }}#network)):
+the processes exchange data with each other over it.
+
+**WARNING:** open the OPC UA ports to the site's computers only. Processes
+register with `scada-proxy` and `scada-config` without authentication,
+anonymous sign-in is always offered, and client certificates are not checked
+by default. If an external system must connect to the Server, allow port
+4840 in the firewall from its address only, and turn on
+[client certificate checks](#opcua-certificate).
 
 ```json
 "opcua": {
@@ -542,7 +643,8 @@ clients check it. Copy both files to the folder the parameters name, and
 restrict access to the key file.
 
 **Client** certificates are not checked by default: the Server accepts any
-client certificate. To accept only trusted ones, set these folders:
+client certificate. To accept only trusted ones, set these folders in the
+`opcua` block of the parameter file:
 
 | Parameter | Description |
 |---|---|
@@ -557,6 +659,11 @@ Further restrictions go in the `opcua.security` block:
 unencrypted, and `"require_trusted_client_cert": true` requires a trusted
 client certificate. Anonymous sign-in is always offered. The desktop Client
 does not verify the Server's certificate.
+
+**WARNING:** `scada-setup` sets none of these parameters, and every
+`scada-setup apply` (upgrades included) writes the parameter files afresh,
+losing parameters added by hand. Keep a copy of the edited files, and after
+each `apply` make the changes again and restart the processes.
 
 ## OPC client on Windows {#opc-classic}
 
@@ -588,16 +695,28 @@ This feature is available only on Windows.
 
 ## Backup {#backup}
 
-All the data of the processes `scada-setup` installs is in
-`%ProgramData%\Telecontrol\SCADA Server`: each process has its own folder
-holding its parameter file and its data. The simplest backup copies that
-whole folder, with the processes stopped so the copy is consistent:
+On each computer running Server processes, copy:
+
+* the whole `%ProgramData%\Telecontrol\SCADA Server` folder — each process
+  has its own folder in it, holding its parameter file, databases and logs,
+  and the license file `license.json` sits beside them;
+* the `C:\Program Files\Telecontrol SCADA\data\Certificates` folder — the
+  [Server certificate](#opcua-certificate) and its private key. Keep the
+  copy of the key as safe as the passwords.
+
+Copy only with **this computer's processes stopped**: a copy of the files of
+running databases may be inconsistent.
 
 ```bat
 scada-setup stop
 rem copy %ProgramData%\Telecontrol\SCADA Server
+rem and C:\Program Files\Telecontrol SCADA\data\Certificates
 scada-setup start
 ```
+
+A restore also needs the `svc` password, the `root` password, and the
+`--tiers`, `--central` and `--advertise` that `scada-setup apply` was run
+with on this computer; none of them is in the backup.
 
 ### Configuration backup
 
@@ -619,11 +738,46 @@ Versions 2.5 and earlier kept this data in the `Configuration`, `History` and
 After [upgrading from version 2.5](#upgrade-2-5) those folders stay where they
 are, but the 2.6 processes no longer use them.
 
+### Restore {#restore}
+
+On the same computer:
+
+1. Stop the processes: `scada-setup stop`.
+2. Put the `%ProgramData%\Telecontrol\SCADA Server` folder (and the
+   `Certificates` folder, if it is gone) back from the backup.
+3. Start the processes: `scada-setup start`.
+4. Check the result: `scada-setup status`.
+
+On a new or rebuilt computer:
+
+1. Install the package of **the same version** as the backup.
+2. Put the `%ProgramData%\Telecontrol\SCADA Server` folder and the
+   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder back from
+   the backup. Restrict access to `ServerPrivateKey.pem` to the SYSTEM
+   account and administrators: a copied file takes the folder's permissions.
+3. From an elevated command prompt, run `scada-setup apply` with the same
+   `--tiers`, `--central` and `--advertise` as before, **the same `svc`
+   password**, and the `root` password. The `svc` password is stored in the
+   restored databases, and with a different one the processes cannot connect
+   to each other. `apply` registers and starts the services, and keeps the
+   restored databases and certificate.
+4. Check the result: `scada-setup status`.
+
+Without the `Certificates` folder, `apply` creates a new certificate, and
+third-party OPC UA clients that trusted the old one have to be set up again.
+
 ## `server.json` parameter reference {#parameters}
 
 System settings are stored in the process's parameter file (`server.json`
 in this section). Its default location is given under
 [`--param`](#command-line-options).
+
+**WARNING:** on Windows the parameter files are written by
+[`scada-setup`](#scada-setup), and every `scada-setup apply` — every upgrade
+included — writes them afresh from templates. **Any parameter changed in
+`server.json` by hand is lost.** If you change parameters by hand, keep a
+copy of the edited file, and after each `apply` make the changes again and
+restart the process.
 
 These substitution variables can be used in the file:
 

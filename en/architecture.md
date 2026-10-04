@@ -40,16 +40,16 @@ The SCADA Server is not a single program but a set of processes. Each one is ins
 
 The processes exchange data with each other over OPC UA.
 
-**A minimal installation** is one protocol process (for example `scada-iec104`). It keeps the configuration in its own database and accepts Client connections itself. Such an installation has no archive: value and event history is stored only by `scada-historian`.
+The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it. **The smallest installation** the `scada-setup` tool builds is `scada-config`, one or more protocol processes, `scada-filesystem`, and `scada-proxy`, which the Clients connect to. Without `scada-filesystem` the server-side file system is unavailable (`scada-setup` warns about it). Add `scada-historian` for a value and event archive: only it stores history. The license must name every installed process — see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
-**A distributed installation** consists of `scada-config`, the protocol processes it needs, `scada-historian`, optionally `scada-filesystem`, and `scada-proxy`, which the Clients connect to. The protocol processes receive their configuration from `scada-config`. Start them in this order: `scada-config`; then `scada-historian`, `scada-filesystem` and the protocol processes; then `scada-proxy`.
+The processes may run on one computer or be spread over several: usually `scada-config`, `scada-historian`, `scada-filesystem` and `scada-proxy` run on a central computer, and the protocol processes on it or on computers near the equipment. Start them in this order: `scada-config`; then `scada-historian`, `scada-filesystem` and the protocol processes; then `scada-proxy`. `scada-setup start` keeps this order on each computer.
 
 Running the processes — startup, Windows services, parameter files — is described in the [Server]({{ '/en/server/' | relative_url }}) section.
 
 ## Client-server interaction
 
 Clients connect to the Server over TCP/IP on port `2000` by default —
-to `scada-proxy` in a distributed installation.
+to `scada-proxy`.
 Client sessions tolerate short network interruptions and reconnect
 automatically. Through a single session, the Client can subscribe to
 live value updates, request historical data, execute control commands,
@@ -309,7 +309,9 @@ UA clients can access current values, historical data, and
 subscriptions.
 
 Configuration is described in the Server section on
-[OPC UA]({{ '/en/server/' | relative_url }}#opcua).
+[OPC UA]({{ '/en/server/' | relative_url }}#opcua). **Note:** open the
+processes' OPC UA ports only to the site's computers and trusted external
+systems — see the same section.
 
 ### OPC client on Windows
 
@@ -324,8 +326,8 @@ Configuration is described in the Server section on
 
 The configuration stored on disk contains all SCADA objects, equipment
 structure, and users. It lives in a local database owned by
-`scada-config` in a distributed installation, or by the single process
-of a minimal one. It is updated immediately when edited so that
+`scada-config` (`scada-proxy`, `scada-historian` and `scada-filesystem` also
+keep configuration databases of their own). It is updated immediately when edited so that
 changes are reflected across the running system without waiting for a
 manual save step.
 
@@ -336,7 +338,8 @@ The built-in `root` account has all rights and always exists,
 whatever the configuration contains.
 
 **WARNING:** while no root password is configured, the Server accepts
-`root` with an empty password. Set one with
+`root` with an empty password. On Windows, `scada-setup apply` sets it
+(the `--root-password` option); in a hand-built setup, set it with
 [`security.rootPassword`]({{ '/en/server/' | relative_url }}#root-password)
 before the Server is reachable over the network.
 

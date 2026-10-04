@@ -15,10 +15,13 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 ## System requirements
 
-* Windows 10 or newer for the Server and graphical Client, or Linux for the Server only
-* TCP/IP connectivity between clients and the server, using port 2000 by default
-* A license file issued for the Server processes you need (see [Licensing]({{ '/en/server/' | relative_url }}#licensing))
-* The [ActiveXeme](http://swman.ru/content/blogcategory/21/49/) component for Modus schematic rendering in the graphical client, if that display mode is used
+* Windows 10 or newer for the Server and graphical Client, or Linux for the
+  Server only, without the `scada-setup` tool (see
+  [Installation on Linux](#linux))
+* Windows administrator rights to install and set up the Server
+* A TCP/IP network between the site's computers; Clients connect to the
+  `scada-proxy` process on port 2000 (see [Network preparation](#network))
+* A license file issued for the Server processes you need (see [License](#license))
 
 ## Download {#download}
 
@@ -31,18 +34,32 @@ not contain the separate 2.6 processes. The earlier rules apply to it: the
 `Telecontrol SCADA Server` service, a HASP or Guardant hardware key, and the
 configuration in `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
 
-## Choose the Server processes
+## Choose the Server processes {#choose}
 
-Decide which Server processes the site needs:
+A version 2.6 Server is always installed as several processes: the protocol
+processes receive their configuration from `scada-config` and keep none of
+their own, so a protocol process cannot run without `scada-config`.
 
-* **A minimal installation** is one protocol process, for example
-  `scada-iec104`. It keeps the configuration in its own database and accepts
-  Client connections itself. It has no archive.
-* **A distributed installation** is `scada-config`, the protocol processes
-  you need, `scada-historian` for the archive, optionally `scada-filesystem`,
-  and `scada-proxy`, which the Clients connect to.
+The smallest set `scada-setup` builds is:
 
-What each process does, and the start order, are described in
+* `scada-config`, which holds the configuration;
+* one or more protocol processes (`scada-modbus`, `scada-iec104`,
+  `scada-iec61850`, and on Windows also `scada-opc` and `scada-vidicon`);
+* `scada-filesystem` — without it `scada-setup apply` prints a warning and
+  the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem)
+  (displays stored on the Server) is unavailable;
+* `scada-proxy`, which the Clients connect to.
+
+Add `scada-historian` to archive values and events; without it there is no
+archive.
+
+**The license must name every one of these processes**, `config`,
+`filesystem` and `proxy` included, not only the protocol processes: a process
+the license does not name stops right after it starts, and
+`scada-setup apply` refuses to install it.
+
+All the processes may run on one computer or be spread over several. What
+each process does, and the start order, are described in
 [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
 
 ## Installation on Windows
@@ -68,7 +85,8 @@ processes run is decided by the license.
    `<password>` is the password of the `svc` service account the processes
    use to connect to each other. It must be the same on every computer of the
    site. `<root password>` is the password of the built-in `root` account;
-   see [Root password](#root-password).
+   see [Root password](#root-password). **Write both passwords down**
+   somewhere safe: every upgrade and every restore from backup needs them.
 
 `apply` enables every process the license entitles (narrow it with
 `--tiers`), writes each one's parameter file
@@ -95,40 +113,71 @@ scada-setup apply --tiers modbus,iec104 --central 10.0.0.10 --svc-password <pass
 ```
 
 The protocol processes need no root password: `scada-config` keeps their
-accounts. The remaining links between processes are set up automatically. All
-`scada-setup` commands are described in the
-[Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
+accounts. `--central` is required on a computer without `scada-config`. The
+remaining links between processes are set up automatically.
+
+**Write down the `--tiers`, `--central` and `--advertise` you gave `apply`
+on each computer**, and repeat them on every later `apply`. Without
+`--tiers` the command enables **every** process in the license, including on
+a computer where they do not belong. All `scada-setup` commands are described
+in the [Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
 
 The graphical Client is installed on one or more operator workstations; the
 Server and the Client may also share one computer.
 
-### Install ActiveXeme
+### Displaying schematics
 
-The graphical Client uses the
-[ActiveXeme](http://swman.ru/content/blogcategory/21/49/) component to
-render electronic schematics. It can be downloaded from the Modus
-vendor site.
+The version 2.6 Client renders Modus schematics (`.sde` and `.xsde` files)
+itself, through a display module that has to be in the Client's folder,
+beside its executable. The ActiveXeme component is not used by the version
+2.6 Client. Without the module, a display window shows the message "No
+display runtime is installed." with the reason. Editing schematics still
+needs the Modus graphics editor.
 
-ActiveXeme is optional because the Client also supports built-in
-schematic rendering through the `Settings -> Built-in Modus rendering`
-option.
+## Installation on Linux {#linux}
 
-## Installation on Linux
-
-The Server processes run on Linux, but `scada-setup` registers no services
-there: start the executables of the processes you need, each with its own
-parameter file (see [Linux deployment]({{ '/en/server/' | relative_url }}#linux)).
-Container deployments use a single Docker image.
+The Server processes run on Linux, but `scada-setup` neither installs nor
+starts processes there (only `scada-setup generate`, which writes parameter
+files, is available): start the executables of the processes you need, each
+with its own parameter file (see
+[Linux deployment]({{ '/en/server/' | relative_url }}#linux)). Container
+deployments use a single Docker image.
 
 The graphical Client is not supported on Linux.
 
-## License
+## License {#license}
 
-The license is a signed `license.json` file listing the processes purchased.
-The same file goes on every computer of the site. A process the license does
-not name stops right after it starts. To add a process, replace the file with
-the new license on every computer — running processes pick it up without a
-restart — and run `scada-setup apply`.
+The license is a signed `license.json` file listing the processes purchased
+and its validity period. The same file goes on every computer of the site. A
+process the license does not name stops right after it starts.
+
+**Expiry.** `scada-setup status` shows when the license ends (the line
+`License: … (expires …)`; an expired one shows `OUTSIDE VALIDITY WINDOW`).
+Check it yourself: the Server warns of the coming expiry only as system events
+in the Client, during the last 30 days. Once the license has expired, the
+processes keep running but refuse Client requests until the license is
+replaced.
+
+**Replacing the license file.** Running processes re-read the file every 5
+seconds and pick up a new license without a restart. So replace the file in
+one step: copy the new license into the same folder under a temporary name,
+then rename it to `license.json` over the old file:
+
+```bat
+copy new-license.json "%ProgramData%\Telecontrol\SCADA Server\license.new"
+move /y "%ProgramData%\Telecontrol\SCADA Server\license.new" "%ProgramData%\Telecontrol\SCADA Server\license.json"
+```
+
+**WARNING:** if the file is missing or only partly written when a process
+checks it (for example while it is being copied over the old one), the
+process concludes there is no license and stops. Windows does not restart
+such a service: once the file is in place, start the processes with
+`scada-setup start`.
+
+**Adding a process.** Replace the file with the new license on every computer,
+and on the computer that will run the new process, run `scada-setup apply`
+with that computer's full process list in `--tiers`, the new one included,
+and the same other options as at installation.
 
 Parameter files written by `scada-setup` already contain
 `"license": {"require_gcp_binding": false}`. **If you write a parameter file by
@@ -156,12 +205,14 @@ on every start. So:
 
 See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
-## Network preparation
+## Network preparation {#network}
 
-Clients connect to the `scada-proxy` process: open inbound TCP port 2000 on
-its computer (and 4840 for external OPC UA clients). In a distributed
-installation the process ports must also be open between the site's
-computers:
+`scada-setup` does not create firewall rules — open the ports by hand:
+
+* **from the Client workstations** — only inbound TCP port 2000 on the
+  computer running `scada-proxy`;
+* **between the site's computers** (when the processes run on more than
+  one) — the processes' OPC UA ports from the table below.
 
 | Process | OPC UA | Clients |
 |---|:-:|:-:|
@@ -175,17 +226,47 @@ computers:
 | `scada-opc` | 4847 | 2007 |
 | `scada-vidicon` | 4848 | 2008 |
 
-`scada-setup` does not create firewall rules — open the ports by hand. Open
-the OPC UA ports to the site's computers only.
+**WARNING: OPC UA ports 4840–4848 must be reachable from the site's computers
+only.** Processes register with `scada-proxy` and `scada-config` without
+authentication, anonymous OPC UA sign-in is always offered, and OPC UA client
+certificates are not checked by default (see
+[Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate)).
+A computer that reaches these ports can connect to the Server processes or
+pose as one of them.
+
+Ports 2001–2008 of the other processes accept user sign-ins too, but Clients
+do not need them: keep them closed.
 
 ## Initial project setup
 
-For a real project:
+If you have a ready project configuration database (a version 2.6
+`configuration.sqlite3`), put it in the `Configuration` folders of three
+processes, each of which works with its own copy: `scada-config` serves the
+configuration to the protocol processes, `scada-proxy` checks Client user
+names and passwords against it, and `scada-historian` reads the archive list
+and the archive assigned to each object from it.
 
-* put the `scada-config` configuration database in
-  `%ProgramData%\Telecontrol\SCADA Server\config\Configuration` (or, for a
-  hand-written setup, the directory named by `configuration.dir`)
-* copy schematic files (`.sde`) to `%ProgramData%\Telecontrol\SCADA Client` on each workstation, or upload them to the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem) if that feature is enabled
+1. Stop the processes: `scada-setup stop`.
+2. Copy the file into the `config\Configuration`, `proxy\Configuration` and
+   `historian\Configuration` folders under
+   `%ProgramData%\Telecontrol\SCADA Server`, replacing the databases `apply`
+   created.
+3. Run `scada-setup apply` with the same options as at installation. It keeps
+   the copied databases and adds the `svc` service account (id 100) to them,
+   without which the processes cannot connect to each other. **A project user
+   with id 100 is replaced by the `svc` account.** A database taken from
+   another version 2.6 site keeps that site's `svc` password: this site then
+   needs the same `svc` password, or the processes cannot connect to each
+   other.
+
+Move a version 2.5 Server's configuration with `scada-setup migrate` instead:
+it also carries over the user passwords version 2.5 kept in a separate file
+(see [Upgrading from version 2.5](#upgrade-2-5)).
+
+On each workstation, copy the schematic files (`.sde`) to
+`%ProgramData%\Telecontrol\SCADA Client`, or upload them to the
+[server-side file system]({{ '/en/server/' | relative_url }}#filesystem)
+if that feature is used.
 
 To explore the system without field equipment, give objects
 [emulation]({{ '/en/architecture/' | relative_url }}#emulation).
@@ -195,10 +276,12 @@ For project engineering details, see [Development]({{ '/en/development/' | relat
 ## Start the Server
 
 The process services start automatically with Windows; a user sign-in is not
-required. `scada-setup start` and `scada-setup stop` start or stop all of the
+required. When a process fails, Windows restarts its service (see
+[Windows services]({{ '/en/server/' | relative_url }}#services)).
+`scada-setup start` and `scada-setup stop` start or stop all of the
 computer's processes in the right order.
 
-As an alternative, a process can be started in
+For diagnostics, a process can be started in
 [console mode]({{ '/en/server/' | relative_url }}#console).
 
 ## Client login
@@ -210,12 +293,11 @@ Start the Client from the desktop shortcut or the Start menu. The login dialog a
 For the first login, use `root` with the password given as
 `--root-password` during installation.
 
-Enter the host name or IP address of the process that accepts Client
-connections (`scada-proxy` in a distributed installation) in the `Server`
-field only if it runs on a different computer. Otherwise, leave the field
-empty.
+Enter the host name or IP address of the computer running `scada-proxy` in
+the `Server` field only if it is a different computer. Otherwise, leave the
+field empty.
 
-If the `Sign in automatically next time` box is ticked, the Client reuses the saved credentials on the next startup. To bypass automatic login, hold `Ctrl` while launching the Client.
+If the `Sign in automatically next time` box is ticked, the Client reuses the saved credentials on the next startup. On Windows, hold `Ctrl` while launching the Client to sign in with other credentials once; other operating systems have no such bypass.
 
 ## First steps after login
 
@@ -240,18 +322,20 @@ These steps upgrade version 2.6 and later. A version 2.5 or earlier Server
 was a single process with a single service, and its data has to be moved into
 the version 2.6 processes — see [below](#upgrade-2-5).
 
-Before upgrading, back up the configuration and historical databases — see
+Before upgrading, make a backup — see
 [Backup]({{ '/en/server/' | relative_url }}#backup). Then, on each computer:
 
 ```bat
 scada-setup stop
 msiexec /i telecontrol-scada-<new version>.msi /qn
-scada-setup apply --svc-password <password> --root-password <root password>
+scada-setup apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] --svc-password <password> --root-password <root password>
 ```
 
-The installer replaces only the executables; `apply` rewrites the parameter
-files and leaves the data alone. On computers running only protocol processes,
-`--root-password` may be omitted.
+Give `apply` the same `--tiers`, `--central` and `--advertise` as at
+installation, and the same `svc` password. The installer replaces only the
+executables; `apply` rewrites the parameter files (hand edits to them are
+lost) and leaves the data alone. On computers running only protocol
+processes, `--root-password` may be omitted.
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
@@ -284,30 +368,48 @@ for the details.
 <dl>
 
 <dt>Client cannot connect to the Server</dt>
-<dd>Check that the service of the process accepting Client connections
-(<em>Telecontrol SCADA Proxy</em> in a distributed installation) is running.
-Also verify that port 2000 is allowed by the firewall and reachable over
-the network.</dd>
+<dd>Check that the <em>Telecontrol SCADA Proxy</em> service is running
+(<code>scada-setup status</code> on its computer). Also verify that port 2000
+is allowed by the firewall and reachable over the network.</dd>
 
 <dt>A Server process stops right after starting</dt>
 <dd>There is no valid license file, or the license does not include this
 process, or one of the <a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
 files was deleted (the log shows <code>Can't open file</code>;
 <code>scada-setup apply</code> then says which file is missing). The reason is
-written to the process log. See
+written to the <a href="{{ '/en/server/' | relative_url }}#logging">process
+log</a>. See
 <a href="{{ '/en/server/' | relative_url }}#licensing">Licensing</a>.</dd>
 
+<dt>Every process stopped after the license file was replaced</dt>
+<dd>The file was missing or only partly written when it was checked. Put a
+valid file in place (see <a href="#license">Replacing the license file</a>)
+and run <code>scada-setup start</code>.</dd>
+
 <dt>A process runs but refuses requests</dt>
-<dd>The license is not verified or has expired. Outside Google Cloud, check
-that <code>"license": {"require_gcp_binding": false}</code> is set; for an
+<dd>The license is not verified or has expired (the expiry is in the
+<code>scada-setup status</code> output). Outside Google Cloud, check that
+<code>"license": {"require_gcp_binding": false}</code> is set; for an
 expired license, replace the file — no restart is needed.</dd>
 
+<dt>Values are no longer archived</dt>
+<dd>After a protocol process's service restarts (for example
+<em>Telecontrol SCADA IEC 104</em>), automatic restarts after a failure
+included, its objects' values stop being archived. Restart the
+<em>Telecontrol SCADA Historian</em> service. See
+<a href="{{ '/en/server/' | relative_url }}#monitoring">Monitoring</a>.</dd>
+
 <dt>Schematics do not open</dt>
-<dd>Install ActiveXeme or enable the built-in schematic renderer from
-the settings menu.</dd>
+<dd>If the display window says "No display runtime is installed.", the
+display module is missing from the Client's folder — contact Telecontrol.
+Otherwise, check that the schematic file is in
+<em>%ProgramData%\Telecontrol\SCADA Client</em> or in the
+<a href="{{ '/en/server/' | relative_url }}#filesystem">server-side file system</a>.</dd>
 
 <dt>Object values are shown in gray</dt>
-<dd>The device is unavailable or the data is invalid. Check the device
-state in the equipment panel.</dd>
+<dd>Gray value text means the value is not valid, for example because the
+device is unreachable. Check the device state in the equipment panel
+(<code>More -> Equipment</code>). A blinking yellow row background means
+something else — the object has an unacknowledged event.</dd>
 
 </dl>
