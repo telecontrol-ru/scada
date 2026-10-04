@@ -268,20 +268,22 @@ confirmation box is shown before that write.
 While the command runs, the dialog's status line shows "Preparing to control..."
 or "Controlling...".
 
-* **Success.** The dialog closes; the client shows no message of its own. The
+* **Success.** The dialog closes. The
   [Event journal]({{ '/en/client/events/' | relative_url }}) gets the Server's
-  "Control - Done" event.
+  "Control - Done" event («Управление - Выполнено»). When the *Control Success
+  Message* setting is on (it is by default), the event panel also shows a
+  Client message naming the signal and the value sent, ending "Operation
+  completed successfully".
 * **Failure.** A message box titled "Control" (or "Manual Input") shows the
   reason, for example "Not enough rights to perform the operation." The
   control dialog stays open so the command can be retried. The event journal
-  records an event with the error code.
+  records a "Control - Failed (…)" event with the error code in brackets, for
+  example "Control - Failed (Bad_Timeout)" («Управление - Ошибка
+  (Bad_Timeout)»).
 
-In the current version the *Control Success Message* setting (on by default)
-does **not** affect control commands or manual input, although its description
-on the settings screen speaks of control commands. It turns on event-panel
-messages for other successful operations — configuration edits, object
-creation, password changes, unblocking. Failures of those operations are
-always reported.
+The same setting turns on messages for other successful operations —
+configuration edits, object creation, password changes, unblocking. A failure
+is always reported, whatever the setting.
 
 ### Manual input {#manual-input}
 

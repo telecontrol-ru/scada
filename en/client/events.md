@@ -28,6 +28,11 @@ arrives and hides once every event is acknowledged — controlled by the
 *Show Events on Arrival* and *Hide Events on Acknowledge*
 [settings]({{ '/en/client/workbench/' | relative_url }}#settings).
 
+The *Severity* group of the panel's context menu sets which events are loaded
+into it: *All* loads every event, *Custom...* only those at or above the
+severity you enter. The threshold is remembered and stays in force until you
+choose *All*.
+
 ## Event journal
 
 Opened with `More -> Event Journal`; each use opens a new window. By default
@@ -65,6 +70,12 @@ There is no keyboard shortcut for acknowledgement.
 When a command is unavailable its tooltip says why: "Select an event to
 acknowledge", "The selected events are already acknowledged", or "No event
 shown here is waiting to be acknowledged".
+
+If the Server refuses an acknowledgement — for example because the user lacks
+the right to acknowledge — the event stays unacknowledged and the event panel
+shows a Client message, "Event acknowledgement" («Квитирование событий»), with
+the reason, for example "Not enough rights to perform the operation". The
+acknowledgement can be retried.
 
 Acknowledgement applies **system-wide**: the event becomes acknowledged for
 every Client. The journal's *Acknowledged By* and *Acknowledge Time* columns
