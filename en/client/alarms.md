@@ -128,10 +128,9 @@ Acknowledge an event by double-clicking its row or with *Acknowledge* in the
 row's context menu; hold *Shift* or *Ctrl* to select and acknowledge several
 rows at once. There is no keyboard shortcut for acknowledgement.
 
-> **Caution.** *Acknowledge All* acknowledges **every** unacknowledged event in
-> the system — including events the current window hides because of an area,
-> severity or object filter. To acknowledge only what you can see, select those
-> rows (*Shift*, *Ctrl*) and choose *Acknowledge*.
+*Acknowledge All* in the event journal and the event panel acknowledges only
+the events shown: events hidden by an area, severity or object filter stay
+unacknowledged.
 
 See the event panel section of the
 [client page]({{ '/en/client/' | relative_url }}#events-panel) and the

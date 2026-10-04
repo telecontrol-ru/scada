@@ -224,7 +224,8 @@ components. Not shown on the settings screen.</dd>
 
 When a context-menu command is disabled, hovering it shows a tooltip with
 the reason — "The signal has no output channel" for *Control…*, say, or
-"Nothing is waiting to be acknowledged" for *Acknowledge All*. That makes
+"No event shown here is waiting to be acknowledged" for *Acknowledge All* in
+the event journal. That makes
 it clear whether the command is blocked by the object's state or simply
 does not apply to the current selection.
 
@@ -337,14 +338,11 @@ alarm panel:
 - **Footer strip** — below the journal, a summary of the displayed
   unacknowledged events ("Unacknowledged: N · highest: Critical 800"; a quiet
   journal reads "No unacknowledged events") and an *Acknowledge All* button
-  running the same command as the context menu. The button is disabled when
-  there is nothing to acknowledge.
-
-> **Caution.** The *Acknowledge All* button acknowledges **every**
-> unacknowledged event in the system, not only those the journal shows: the
-> selected area, the minimum severity and the object list do not apply to it.
-> To acknowledge only the visible events, select those rows (*Shift*, *Ctrl*)
-> and choose *Acknowledge* from the context menu.
+  running the same command as the context menu. The button acknowledges only
+  the events the journal shows — after the selected area, the minimum
+  severity, the object list and the unacknowledged-only filter; events the
+  filters hide stay unacknowledged. The button is disabled when nothing shown
+  is waiting to be acknowledged.
 
 A live alarm that also appears in the read history shows as one row — the
 journal does not duplicate it with its historical copy.

@@ -49,23 +49,22 @@ Acknowledging confirms the operator has seen an event. Ways to do it:
 
 * **Double-click** a row — acknowledges the selected events.
 * *Acknowledge* in the context menu — acknowledges the selected rows.
-* *Acknowledge All* — in the context menu and as a button below the journal
-  (see the caution below).
+* *Acknowledge All* — in the context menu and as a button below the journal —
+  acknowledges every event the journal shows.
 * The *Acknowledge* button on an event card in the inspector.
 * With an object selected (in the object tree, on a display), the acknowledge
   command acknowledges all of that object's unacknowledged events.
 
-> **Caution.** *Acknowledge All* acknowledges **every** unacknowledged event
-> in the system, not only those shown in this window: area, severity and
-> object filters do not apply to it. To acknowledge only the visible events,
-> select those rows (*Shift* for a range, *Ctrl* for single rows) and choose
-> *Acknowledge*.
+*Acknowledge All* acknowledges only the events shown in this window: the
+area, severity, object and unacknowledged-only filters apply to it, and events
+they hide stay unacknowledged. A collapsed group of repeated alarms is
+acknowledged whole, every repeat included.
 
 There is no keyboard shortcut for acknowledgement.
 
 When a command is unavailable its tooltip says why: "Select an event to
-acknowledge", "The selected events are already acknowledged", or "No
-unacknowledged events".
+acknowledge", "The selected events are already acknowledged", or "No event
+shown here is waiting to be acknowledged".
 
 Acknowledgement applies **system-wide**: the event becomes acknowledged for
 every Client. The journal's *Acknowledged By* and *Acknowledge Time* columns

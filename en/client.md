@@ -197,9 +197,10 @@ upper-level systems. See
 ### Common commands
 
 Common commands include printing the active window, opening the event window,
-and *Acknowledge All* — which acknowledges **every** unacknowledged event in
-the system, whatever the current window shows (see the caution under
-[Event panel](#events-panel)).
+and *Acknowledge All*. With the event journal or the event panel active it
+acknowledges only the events that window shows, after its area, severity and
+object filters; from any other window it acknowledges every unacknowledged
+event in the system (see [Event panel](#events-panel)).
 
 ## Control {#control}
 
@@ -399,10 +400,10 @@ in the context menu. Several events can be acknowledged together by selecting
 them with `Shift` (a range) or `Ctrl` (single rows). There is no keyboard
 shortcut for acknowledgement.
 
-> **Caution.** *Acknowledge All* (in the context menu) acknowledges **every**
-> unacknowledged event in the system, not only those shown: the severity
-> threshold, the area and the object list do not apply to it. To acknowledge
-> only the visible events, select those rows and choose *Acknowledge*.
+*Acknowledge All* in the context menu acknowledges only the events the panel
+shows: events hidden by the severity threshold, the area or the object list
+stay unacknowledged. A collapsed group of repeated alarms is acknowledged
+whole. When nothing shown is waiting, the command is unavailable.
 
 With *Show Events on Arrival* on, the panel opens by itself when a new
 unacknowledged event arrives, and *Hide Events on Acknowledge* closes it again
