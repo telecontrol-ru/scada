@@ -364,7 +364,7 @@ order; `start` only with the [computer's parameters](#host-parameters):
 For diagnostics, a process can be started in
 [console mode]({{ '/en/server/' | relative_url }}#console).
 
-## Client login
+## Client login {#client-start}
 
 Start the Client from the desktop shortcut or the Start menu. The login dialog asks for SCADA credentials and, optionally, the target server name or IP address.
 
@@ -373,9 +373,22 @@ Start the Client from the desktop shortcut or the Start menu. The login dialog a
 For the first login, use `root` with the password given as
 `--root-password` during installation.
 
-Enter the host name or IP address of the computer running `scada-proxy` in
-the `Server` field only if it is a different computer. Otherwise, leave the
-field empty.
+The `Server` row has two fields. On the left is the list of server types
+(shown only when the Client supports more than one type): choose
+**"Telecontrol"**.
+
+> **Caution.** The "OPC UA" type connects the Client over OPC UA. In the
+> current version a Client connected with this type **does not reconnect by
+> itself** after the connection is lost: restart the Client to restore it. Use
+> the "Telecontrol" type to work with the SCADA Server.
+
+On the right, enter the host name or IP address of the computer running
+`scada-proxy` only if it is a different computer. Otherwise, leave the field
+empty.
+
+The "Security and certificates" disclosure (the security mode, the client
+certificate and private key) appears only for the "OPC UA" type; with the
+"Telecontrol" type there is nothing to fill in.
 
 If the `Sign in automatically next time` box is ticked, the Client reuses the saved credentials on the next startup. On Windows, hold `Ctrl` while launching the Client to sign in with other credentials once; other operating systems have no such bypass.
 

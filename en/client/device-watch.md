@@ -67,9 +67,9 @@ only the visible rows but also what `Save as` writes.
 
 <dt>Frame format</dt>
 <dd>"All frames", "I-format" — the frames that carry an ASDU, that is the data
-itself — or "S/U-format", the acknowledgements and link control. The latter two
-are grouped because neither carries data and both matter for the same question:
-why the link is not moving.</dd>
+itself — or "S/U-format", the acknowledgements and link control. S/U frames
+carry no data; they are the ones to look at when working out why the link is
+not passing data.</dd>
 
 <dt>Errors only</dt>
 <dd>Keeps warnings and worse — usually the reason the window was opened at
@@ -93,12 +93,10 @@ table. It shows:
   carried the field.
 
 The pane decodes **the frame's own octets** rather than the fields the server
-already extracted: byte offsets are the point of the pane, and a pane echoing
-the server's reading could not show the two disagreeing.
+already extracted, so it shows exactly what the device sent.
 
-The decode is deliberately tolerant: a truncated capture, an unknown type
-identifier, or a driver that is not IEC 60870-5-104 degrades to showing the raw
-octets rather than failing or guessing.
+When a capture is truncated, the type identifier is unknown, or the driver is
+not IEC 60870-5-104, the pane shows the frame's raw octets without a decode.
 
 Below the tree, a **Mapped node** group resolves the object addresses found in
 the frame against the address space, giving each one the signal's name and its
@@ -128,6 +126,3 @@ applies to the save as well.</dd>
 The number of displayed events is limited to 10,000 entries. When the limit is
 reached, older records are removed automatically.
 
-## Translation status
-
-This English page is a direct translation of the current Russian page.

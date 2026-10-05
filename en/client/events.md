@@ -18,8 +18,6 @@ Events are shown in two windows:
 * **The event journal** — every event in the chosen [period](#period),
   acknowledged ones included, with who acknowledged them and when.
 
-![]({{ '/img/events-alarm-surface.png' | relative_url }})
-
 ## Event panel
 
 Opened with `More -> Events`, it docks at the bottom of the main window under
@@ -28,10 +26,16 @@ arrives and hides once every event is acknowledged — controlled by the
 *Show Events on Arrival* and *Hide Events on Acknowledge*
 [settings]({{ '/en/client/workbench/' | relative_url }}#settings).
 
-The *Severity* group of the panel's context menu sets which events are loaded
-into it: *All* loads every event, *Custom...* only those at or above the
-severity you enter. The threshold is remembered and stays in force until you
-choose *All*.
+The *Severity* group of the panel's context menu sets the
+[severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold):
+*All* loads every event, *Custom...* only those at or above the severity you
+enter. The threshold is remembered and stays in force until you choose *All*.
+
+> **Caution.** The threshold acts on more than the panel. The client does not
+> receive events below it as current events at all: they are not in the count
+> or the tiles, they do not sound the tone or the spoken announcement, and
+> *Acknowledge All* does not acknowledge them. See
+> [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold).
 
 ## Event journal
 
@@ -77,9 +81,14 @@ shows a Client message, "Event acknowledgement" («Квитирование со
 the reason, for example "Not enough rights to perform the operation". The
 acknowledgement can be retried.
 
-Acknowledgement applies **system-wide**: the event becomes acknowledged for
-every Client. The journal's *Acknowledged By* and *Acknowledge Time* columns
-keep the user and time; an unacknowledged event shows "— pending —" there.
+Acknowledging a Server event applies **system-wide**: the event becomes
+acknowledged for every Client. The journal's *Acknowledged By* and *Acknowledge
+Time* columns keep the user and time; an unacknowledged event shows
+"— pending —" there.
+
+The client's own messages ("Local Event") are acknowledged **on this
+workstation only**: they are not sent to the Server, other workstations do not
+have them, and they are not kept across a restart of the client.
 
 When more than ten events are unacknowledged, repeats of the same message from
 the same source collapse into one row marked "×N". Acknowledging that row

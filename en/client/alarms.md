@@ -16,17 +16,14 @@ severity tiles, opening the event panel, flashing the window, a tone and a
 spoken message. The count and the tiles are always on; the rest are switched
 on and off on the settings screen: **Settings → Settings… → Events & alarms**.
 
-These preferences live in the user profile on the server, so a choice made at
-one workstation follows the account to the next. For an account with rights "0 — Executive / viewer" the server does not save
-the profile: the Client reports "Failed to save the profile to the server; it
-is kept on this computer only", and the settings stay on that workstation.
+These preferences live in the user's profile on the Server.
 
 ## Which events raise the alarm {#escalation}
 
 Not every unacknowledged event sounds. The annunciators fall into two groups.
 
-**Every unacknowledged event** is announced by the status-bar count, the
-severity tiles in the context strip, the event panel and the window flash.
+**Unacknowledged events** are announced by the status-bar count, the severity
+tiles in the context strip, the event panel and the window flash.
 
 **The tone and the spoken message** are on only while at least one of these
 holds:
@@ -38,11 +35,31 @@ holds:
 > **Caution.** Warnings (severity 600 to 799) and routine events do not sound
 > on their own: only the count, the tiles, the event panel and the window flash
 > announce them. A silent client does **not** mean nothing is unacknowledged —
-> check the count in the status bar.
+> check the count in the status bar and the event panel.
 
-The client's own messages ("Local Event") count too: an error message is
-critical and so sounds, while a warning — such as the loss of the connection
-to the Server — does not.
+The client's own messages ("Local Event") are events too: reports of a
+successful command, of the connection to the Server being lost and restored,
+of errors. An error message is critical and so sounds, while a warning — such
+as the loss of the connection to the Server — does not sound on its own.
+
+Client messages are counted **differently from the Server's events**:
+
+* they are in the status bar's "Events: N" count and count towards both
+  conditions above — including "more than ten";
+* they are **not** in the severity tiles ("Critical N", "Warning N",
+  "Unacknowledged N"), in the "Unacknowledged critical" and "Alarm flood"
+  indicators, or in the status bar's highest severity.
+
+So the tone can sound while the tiles read zero, or fewer than ten: after a few
+control commands with success messages and a few reconnections to the Server,
+for example. Acknowledge client messages in the event panel just like the
+Server's events.
+
+> **Caution.** Events below the [severity threshold](#threshold) are not
+> received by the client at all: they are not in the count, the tiles or the
+> event panel, and they raise no annunciation of any kind. "Check the count"
+> does not help for them. Keep the threshold at *All* on an operator
+> workstation.
 
 ## The event panel opens by itself
 
@@ -85,15 +102,22 @@ hold, and does not repeat.
 
 **Flash Main Window on Event** (off by default).
 
-While at least one event of any severity stands unacknowledged, the client asks
-the desktop for attention: the taskbar button flashes on Windows, the Dock icon
-bounces on macOS.
+When unacknowledged events appear (after there were none), the client asks the
+desktop for attention **once**: the taskbar button flashes on Windows, the Dock
+icon bounces on macOS.
 
-The request is only made while the client's window is **not** the active one —
-an operator already looking at the client is not interrupted — and the system
-withdraws it as soon as the window is brought to the front. So the flash ends
-when the operator turns to the client, not when the events are acknowledged;
-the status-bar count is what stays until the last event is acknowledged.
+The request takes effect only if the client's window is **not** the active one
+at that moment, and the system withdraws it as soon as the window is brought to
+the front. The client makes a new request only after every event has been
+acknowledged and a new one arrives. So:
+
+* while events remain unacknowledged, new events do **not** flash the window —
+  even if the operator has switched to another program;
+* if the first event arrived while the client's window was active, there is no
+  flash at all until everything is acknowledged.
+
+The window flash is only an extra cue; the status-bar count and the event panel
+are what reliably show unacknowledged events.
 
 ## Spoken announcement {#speech}
 
@@ -106,23 +130,54 @@ condition holds, and says nothing on acknowledgement. If the condition starts
 to hold again — a new critical event after the previous one was acknowledged,
 say — it speaks again.
 
-> **Caution.** In the current version the settings screen has no switch for
-> spoken announcements, so they cannot be turned off from the client.
+> **Caution.** In the current version there is no switch for spoken
+> announcements on the settings screen or in the command palette (*Ctrl+K*), so
+> they cannot be turned off from the client.
 
 ## What is always visible
 
-The status bar shows the number of unacknowledged events, the current severity
-threshold ("Severity: N") and the highest severity among the unacknowledged
-events. The context strip at the top shows the "Critical N", "Warning N" and
-"Unacknowledged N" tiles, or a single "Alarm flood" indicator during a flood.
+The status bar shows the number of unacknowledged events ("Events: N",
+client messages included), the current severity threshold ("Severity: N") and
+the highest severity among the Server's unacknowledged events.
 
-The severity threshold filters current events: an event below it never reaches
-the current-events panel and so never opens it. If an expected event did not
-appear, check the threshold first.
+The context strip at the top shows the "Critical N", "Warning N" and
+"Unacknowledged N" tiles — for the Server's events. Beside the tiles appear:
+
+* **"Unacknowledged critical"** — a flashing indicator while at least one of
+  the Server's critical events (severity 800 and above) is unacknowledged. It
+  stops flashing once every critical event is acknowledged;
+* **"Alarm flood (N)"** — while more than ten of the Server's events are
+  unacknowledged.
+
+The tiles stay in place either way.
+
+## Severity threshold {#threshold}
+
+The severity threshold sets which events the client receives from the Server as
+current events. For this workstation, an event below the threshold might as
+well not have happened:
+
+* it is not in the "Current Events" panel or in a journal showing current
+  events, and it does not open the panel;
+* it is not in the "Events: N" count or in the context strip's tiles and
+  indicators;
+* it does not sound the tone or the spoken announcement, and does not flash the
+  window;
+* the object's dot in the object tree does not blink for it;
+* *Acknowledge All* and an object's *Acknowledge* do not acknowledge it.
+
+Such events are still recorded on the Server and can be seen in the
+[event journal]({{ '/en/client/events/' | relative_url }}) for a period once it
+loads — when the journal window opens or the period changes.
+
+> **Caution.** The threshold is kept in the profile and stays in force until
+> *All* is chosen. Do not raise it on an operator workstation: the operator
+> will neither see nor hear events below it. If an expected event did not
+> appear, check "Severity: N" in the status bar first.
 
 To change it, right-click in the "Current Events" panel, choose
 **Severity → Custom...** and enter the minimum severity (0 means all events);
-**Severity → All** removes the threshold. The threshold is kept in the profile.
+**Severity → All** removes the threshold.
 
 ## Acknowledging
 
@@ -132,7 +187,12 @@ rows at once. There is no keyboard shortcut for acknowledgement.
 
 *Acknowledge All* in the event journal and the event panel acknowledges only
 the events shown: events hidden by an area, severity or object filter stay
-unacknowledged.
+unacknowledged. Run from any other window, it acknowledges every
+unacknowledged event the client receives and every client message — but not
+events below the [severity threshold](#threshold).
+
+Client messages are acknowledged on this workstation only: they are not sent
+to the Server and do not appear at other workstations.
 
 See the event panel section of the
 [client page]({{ '/en/client/' | relative_url }}#events-panel) and the

@@ -66,9 +66,15 @@ search for commands and signals by name.
 
 The status bar shows:
 
-* the number of unacknowledged events and the highest severity among them
-* the severity threshold ("Severity: N") for the current-events panel; it is
-  changed from the panel's context menu, *Severity → Custom...*
+* the number of unacknowledged events, "Events: N" (the client's own messages
+  are included in it), and the highest severity among the Server's
+  unacknowledged events
+* the severity threshold ("Severity: N"). The client does not show or count
+  events below the threshold at all: they are not in the current-events panel,
+  the count or the tiles, and they do not sound the tone or the spoken
+  announcement. It is changed from the current-events panel's context menu,
+  *Severity → Custom...*; see
+  [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold)
 * the active user name
 * the connection state: "Connected" or "Disconnected"
 * the Server round-trip time, "Server: N ms" ("No response" while
@@ -96,21 +102,29 @@ tables also appear at the bottom of the corresponding `Graph` and
 
 The status bar shows the connection state, "Connected" or "Disconnected", with
 the round-trip time "Server: N ms" beside it. When an answer takes longer than
-3 seconds, the time gains a "no response" marker and a warning is added to the
-event panel.
+3 seconds, the time gains a "no response" marker and the event panel gets the
+warning "The server has not answered a ping for N ms…" («Сервер не отвечает на
+опрос уже N мс…»); when the Server answers again, the panel shows "The server
+is answering again." («Сервер снова отвечает.»).
 
 **Losing the connection.** When the connection to the Server drops, the client
 adds a warning to the event panel ("Connection to server … lost. …
-Reconnecting in N seconds.") and reconnects by itself: the first attempt after
+Reconnecting in N seconds.", «Соединение с сервером … потеряно. … Повторное
+подключение через N с.») and reconnects by itself: the first attempt after
 5 seconds, then every 30 seconds until the connection is back. Once it is, the
 event panel shows "Connection to server established. Login successful."
+(«Соединение с сервером установлено. Вход выполнен.»).
 
-> **Caution.** The connection-lost warning does not by itself sound the tone
-> or the spoken announcement (see [Which events raise the
-> alarm]({{ '/en/client/alarms/' | relative_url }}#escalation)). While the
-> status bar reads "Disconnected", no new values or events arrive from the
-> Server and control commands are not carried out — do not act on the values on
-> screen.
+> **Caution.** One connection-lost warning does not sound the tone or the
+> spoken announcement, but each of them — like every client message — stays
+> unacknowledged and counts towards the "more than ten unacknowledged events"
+> condition (see [Which events raise the
+> alarm]({{ '/en/client/alarms/' | relative_url }}#escalation)). Acknowledge
+> these messages in the event panel: the severity tiles do not show them, so
+> otherwise accumulated client messages sound an alarm-flood tone that the
+> tiles do not explain. While the status bar reads "Disconnected", no new
+> values or events arrive from the Server and control commands are not carried
+> out — do not act on the values on screen.
 
 **Connecting by hand.** *More → Disconnect from Server* and *More → Connect to
 Server...* end the session and open the sign-in window. Only one of them is
@@ -118,28 +132,38 @@ available at a time: the first while connected, the second while disconnected.
 
 **Session ended from another workstation.** If someone signs in with the same
 account on another computer and ends your session (see
-[Shift handover](#shift-change)), the client says so in the event panel ("…
-These credentials are being used to log in from another workstation.") and
-does **not** reconnect by itself.
+[Shift handover](#shift-change)), the client says so in the event panel
+("Disconnected from server … These credentials are being used to log in from
+another workstation.", «Отключено от сервера … С этими учётными данными
+выполнен вход на другом рабочем месте.») and does **not** reconnect by itself.
 
 ## Shift handover {#shift-change}
 
 Each operator works under their own account: the event journal records who
 acknowledged an event and whose action caused it, and the workstation's
-settings and pages are kept in the account's profile on the server.
+settings and pages are kept in the user's profile on the Server.
 
 To hand over a shift:
 
-1. The outgoing operator chooses *More → Disconnect from Server*. The client
-   saves their profile, ends the session and opens the sign-in window.
-2. The incoming operator enters their own name and password.
+1. The outgoing operator closes the client's main window. The client saves
+   their profile on the Server, ends the session and exits.
+2. The incoming operator starts the client again and enters their own name
+   and password in the sign-in window.
+
+> **Caution.** Do not hand over with *More → Disconnect from Server*. In the
+> current version, after that command and a sign-in under another account the
+> client keeps the **previous** operator's pages and settings, and on exit it
+> saves them into the **new** operator's profile — overwriting that
+> operator's own pages and settings on the Server. *Disconnect from Server* is
+> fine for signing in again under the same account.
 
 If the sign-in window is closed, the client stays disconnected; sign in with
 *More → Connect to Server...*.
 
 On a shared workstation leave "Sign in automatically next time" unticked:
-with it, the client signs the last account in by itself on the next start. To
-skip automatic sign-in once, hold *Ctrl* while starting the client.
+with it, the client signs the last account in by itself on the next start. On
+Windows, hold *Ctrl* while starting the client to skip automatic sign-in once;
+other operating systems have no such bypass.
 
 If the account is not allowed several sessions at once and is already in use
 on another computer, signing in asks "The specified username is already in use
@@ -171,6 +195,11 @@ as:
   is blocked; see [Manual input](#manual-input))
 * *Control…* — a control command (see [Control](#control))
 * *Manual Input* (see [Manual input](#manual-input))
+* the *Device* submenu, with commands for the device the object takes its data
+  from: *Poll Device* (makes the Server run a forced full poll of the device)
+  and *Synchronize Clock* (makes the Server synchronize the device clock with
+  the Server clock). These commands are offered only on data objects — not on
+  the device itself in the equipment tree.
 
 If a matching window is already open for the same object, the client
 switches to it instead of opening a duplicate.
@@ -186,8 +215,10 @@ You can also:
 
 * enable communication with the device
 * disable communication with the device
-* force a full poll
-* synchronize the device clock with the Server clock
+
+A forced poll and clock synchronization are not offered here: they are in the
+*Device* submenu of a data object's context menu (see
+[Object commands](#object-commands)).
 
 For retransmission projects, the client edits a destination device's
 retransmission table — the rules by which selected objects are forwarded to
@@ -200,7 +231,10 @@ Common commands include printing the active window, opening the event window,
 and *Acknowledge All*. With the event journal or the event panel active it
 acknowledges only the events that window shows, after its area, severity and
 object filters; from any other window it acknowledges every unacknowledged
-event in the system (see [Event panel](#events-panel)).
+event the client receives and every client message. Events below the
+[severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold) are
+not received by the client, so this command does not acknowledge them (see
+[Event panel](#events-panel)).
 
 ## Control {#control}
 
@@ -248,9 +282,7 @@ IEC 60870-5 (SELECT/EXECUTE):
 2. **Operator confirmation.** The prompt is shown only after the select
    succeeds, which is why it opens with "The remote device is ready to execute
    the command." It then reviews the present and commanded values and warns
-   that the action cannot be undone remotely, as in one-stage control:
-
-   ![]({{ '/img/control-select-confirm.png' | relative_url }})
+   that the action cannot be undone remotely, as in one-stage control.
 
 3. **Execute.** Answering yes sends the execute command, and the device
    switches the circuit it already reserved.
@@ -281,15 +313,35 @@ or "Controlling...".
   example "Control - Failed (Bad_Timeout)" («Управление - Ошибка
   (Bad_Timeout)»).
 
+> **Caution.** A failure does not always mean the command was not carried out.
+> On a timeout (`Bad_Timeout`) or a connection lost mid-command the device may
+> have received and executed the command while the answer never reached the
+> Server. Before retrying, check the object's present state — in the dialog,
+> the Inspector or on the display: make sure the value is good and has not
+> already become the commanded one.
+
 The same setting turns on messages for other successful operations —
 configuration edits, object creation, password changes, unblocking. A failure
 is always reported, whatever the setting.
+
+Success messages are client messages ("Local Event"): they stay unacknowledged
+in the event panel until the operator acknowledges them, and they count in the
+"Events: N" count and towards the "more than ten unacknowledged events"
+condition that sounds the tone. The severity tiles do not show them.
+Acknowledge them like any other event — otherwise, after a few commands, the
+alarm-flood tone can sound with no alarm in the tiles.
 
 ### Manual input {#manual-input}
 
 *Manual Input* opens the "Manual Input" dialog: "Current value:", "New value:"
 and a "Lock:" checkbox. The "Write" button writes the value. No confirmation
 box is shown for manual input, whatever the *Control Confirmation* setting.
+
+On a successful write the dialog closes. When the *Control Success Message*
+setting is on (it is by default), the event panel shows a client message:
+"Manual Input", the signal's name, the value written and "Operation completed
+successfully". A failure is always reported in a message box titled "Manual
+Input", whatever the setting.
 
 A manually entered value carries the [Р] (manual) quality flag.
 
@@ -396,7 +448,10 @@ engineering details behind this view.
 
 ## Event panel {#events-panel}
 
-The live event panel shows the current list of unacknowledged events.
+The live event panel ("Current Events") shows the Server's current
+unacknowledged events and the client's own messages. Events below the
+[severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold) are
+not shown in it.
 Operators can acknowledge an event by double-clicking it or with *Acknowledge*
 in the context menu. Several events can be acknowledged together by selecting
 them with `Shift` (a range) or `Ctrl` (single rows). There is no keyboard
@@ -431,7 +486,7 @@ folders through the `Properties` command.
 
 ## Main views
 
-The main operator-facing views now documented in English are:
+The main operator-facing views:
 
 * [Graph]({{ '/en/client/graph/' | relative_url }})
 * [Table]({{ '/en/client/table/' | relative_url }})

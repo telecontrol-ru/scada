@@ -21,16 +21,18 @@ those regions are described below.
 The workbench regions:
 
 - **Section rail** (left) — three zones: the **sidebar modes**, the profile's
-  **pages** on their own band, and the **pinned commands** at the foot.
-  Described [below](#activity-bar). The unacknowledged-events count lives in
-  the context strip.
+  **pages**, and the **pinned commands** at the foot. Described
+  [below](#activity-bar).
 - **Context strip** (top) — the [path](#breadcrumb), the search/command field
-  and the alarm state:
-  severity tiles ("Critical N", "Warning N", "Unacknowledged N",
-  highlighted while alarms are active; with more than ten unacknowledged
-  alarms the counters give way to a single "Alarm flood" indicator). The user,
-  the connection state and the server address are not shown here — they appear
-  in the status strip only.
+  and the alarm state: the severity tiles "Critical N", "Warning N" and
+  "Unacknowledged N" (highlighted while alarms are active), and beside them a
+  flashing "Unacknowledged critical" indicator while a critical event is
+  unacknowledged and an "Alarm flood (N)" indicator while more than ten events
+  are unacknowledged. The tiles and indicators count the Server's events only;
+  the client's own messages are counted by "Events: N" in the status strip (see
+  [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}#escalation)).
+  The user, the connection state and the server address are not shown here —
+  they appear in the status strip only.
 - **Object explorer** — the object tree with a "Filter" field and quality
   dots: green — good, red — bad, blinking yellow — the object has an
   unacknowledged event. See
@@ -48,10 +50,12 @@ The workbench regions:
 
 The server round-trip time is the age of an outstanding ping, so a growing
 number means no answer is arriving. Past 3 seconds the cell gains a "no
-response" marker and a warning is added to the journal: either the connection
-has degraded, or the client itself has stopped running — the operating system
-can suspend a client whose window is not visible, which halts data and events,
-not only the display. A separate event reports when the server answers again.
+response" marker and the event panel gets the warning "The server has not
+answered a ping for N ms…": either the connection has degraded, or the client
+itself has stopped running — the operating system can suspend a client whose
+window is not visible, which halts data and events, not only the display. When
+the server answers again, the event panel shows "The server is answering
+again.".
 
 By default the appearance follows the operating system; dark, light and
 high-contrast variants are also available
@@ -76,13 +80,13 @@ mode changes only what fills the sidebar — it never opens a tab and never
 changes the page. Nodes and Administration are for administrators only: for
 everyone else those buttons are <b>hidden</b>, not disabled.</dd>
 
-<dt>Pages (middle, on their own band)</dt>
+<dt>Pages (middle, on a background of their own)</dt>
 <dd>The profile's pages; each one replaces the whole workspace. A button
 carries the page's chosen icon, or its position when no icon is set; the title
 and the position are both in the tooltip (<code>2 · Alarms</code>), because
-neither fits a 52px button. "+" creates a page. The band behind this group is
-what keeps the active-page marker from reading as a mode marker: a mode and a
-page are active at the same time, and the two markers are drawn alike.</dd>
+the title does not fit the narrow button. "+" creates a page. A mode and a page
+are marked alike and are active at the same time; the page buttons sit on a
+background of their own so the two markers are not confused.</dd>
 
 <dt>Pinned commands (bottom)</dt>
 <dd>Settings opens the <a href="#settings">settings</a>; Users
@@ -124,9 +128,9 @@ not reached by habit.</dd>
 
 </dl>
 
-The rail's markers are a **projection of real state**, not a memory of the last
-click. If the open panes match no mode — because one was closed by hand, say —
-the mode marker clears rather than claiming something that is not there.
+The mode marker shows what is open now, not which button was pressed last. If
+the open panes match no mode — because one was closed by hand, say — the mode
+marker clears.
 
 ## The path {#breadcrumb}
 
@@ -135,15 +139,10 @@ The left of the context strip states where the workspace currently is:
 object: the section rail names the mode and the page, the tab names the view,
 and neither says what the view is pointed at.
 
-The ends of the path — the page and the object — are drawn in the foreground
-weight and the middle steps are quiet. An empty step is dropped rather than
-left as a dangling separator, so a view with no selection simply has no third
-step. A step repeating the one before it is dropped for the same reason: a
-view named after the object it is pointed at would otherwise print that name
-twice. No object is named for a multiple selection.
-
-A long path is elided against the width the layout actually grants, so it
-follows the text size set in the operating system.
+The page and the object are shown in bold. When nothing is selected in the
+view, the path ends at the view; when the view is named after its object, the
+object's name is not repeated. No object is named for a multiple selection. A
+long path is shortened to fit the strip.
 
 ## Settings {#settings}
 
@@ -160,9 +159,10 @@ tabs above the list — All, This client, Profile, This window.
 Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer and which travel with the account in the
 profile. Settings apply **immediately**: there is nothing to confirm, and the
-screen closes from the close button in its header. For an account with rights "0 — Executive / viewer" the server does not save
-the profile: the Client reports "Failed to save the profile to the server; it
-is kept on this computer only", and the settings stay on that workstation.
+screen closes from the close button in its header. Settings in the Profile
+scope are kept in the user's profile on the Server. If the profile cannot be
+saved on the Server, the client reports "Failed to save the profile to the
+server; it is kept on this computer only".
 
 | Category | Settings |
 |---|---|
@@ -172,8 +172,8 @@ is kept on this computer only", and the settings stay on that workstation.
 | Workspace | Toolbar (hidden by default), Status Bar |
 | Displays | Show Modus topology; the Open Displays Folder action |
 
-The current version has no switch for spoken announcements on the settings
-screen — see
+The current version has no switch for spoken announcements, neither on the
+settings screen nor in the command palette — see
 [Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
 
 ## Appearance {#appearance}
@@ -239,20 +239,21 @@ example) are not listed in the menu at all; for a selected object the
 
 ![]({{ '/img/workbench-login.png' | relative_url }})
 
-The sign-in window carries only what signing in needs: the server, a user
-name, a password and a "Sign in automatically next time" box. The window title
-names the task and the content does not repeat it.
+The sign-in window has a "Server:" row (the server type and the address), a
+user name, a password and a "Sign in automatically next time" box. Signing in
+is described in [Getting started]({{ '/en/getting-started/' | relative_url }}#client-start).
+
+The server type is picked from the list left of the address; the list is shown
+only when the client supports more than one type. To work with the SCADA Server,
+choose **"Telecontrol"**.
 
 The OPC UA security settings — the mode, the client certificate and the
 private key — sit behind a "Security and certificates" disclosure. It is shown
-only for a protocol that supports them, and it opens by itself when any of them
-already carries a value: this is configuration set once, not a credential
-supplied at every sign-in.
+only for the "OPC UA" server type, and it opens by itself when any of them
+already carries a value. The "Telecontrol" type does not have it.
 
-The "Connecting to:" line below the fields appears only in a build carrying one
-protocol, where it is the only place the protocol is named. When the protocol
-is a field of its own, the line would repeat what is already written above it,
-so it is not drawn.
+When the client supports only one server type, a "Connecting to: …" line
+naming it appears below the fields.
 
 ## The Overview landing page {#overview}
 
@@ -317,8 +318,6 @@ next to the value: "Quality" with a textual quality flag, and "Trend" with a
 mini-graph of the value over the last hour, updating live.
 
 ## Event journal as an alarm panel {#journal}
-
-![]({{ '/img/events-alarm-surface.png' | relative_url }})
 
 The [event journal]({{ '/en/client/events/' | relative_url }}) reads as an
 alarm panel:
@@ -583,6 +582,3 @@ publishes, including the service branches that the Objects and Devices panes do
 not carry. The tree starts at the root folder's contents — no separate root row
 is drawn.
 
-## Translation status
-
-This English page is a direct translation of the current Russian page.
