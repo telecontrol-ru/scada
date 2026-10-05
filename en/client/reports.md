@@ -71,11 +71,6 @@ Summary, Data and the Event journal keep the chosen period with the window.
 
 Yesterday, or any other finished period, is set the same way.
 
-**Do not reopen the *Time Range* dialog unless you need to.** In dates-only
-mode it shows the day *after* the period's last day in *End*, and pressing
-*OK* as it stands lengthens the period by a day. If you do reopen it, set
-*End* to the period's last day again.
-
 ## A daily or monthly summary
 
 The typical report is a table of several objects' values aggregated by
