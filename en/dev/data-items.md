@@ -297,7 +297,8 @@ forced to zero. In the object's units; 0 (default) means unused.</dd>
 limit. An empty value means the limit is not set. They can be changed here or
 with the Limits command — see
 <a href="{{ '/en/architecture/' | relative_url }}#limits">Limit checks</a>.
-Anyone holding the Configure right can change them in the properties.
+Changing a limit needs the Control right: without it the limits are read-only
+in the properties, even with the Configure right.
 <strong>WARNING: a limit event gets the object's Severity</strong> (10 by
 default), and at that severity it is not highlighted. Give an object with
 limits a Severity of 600 or higher for its limit events to show as warnings,
