@@ -27,13 +27,9 @@ settings, not in the Server's configuration:
 
 * portfolios are **personal**: other users do not see them, and a portfolio
   cannot be handed to a colleague — they have to build their own;
-* the profile is saved on this computer and, when the Client closes, also on
-  the Server for your account, so the portfolios are available on another
-  workstation after signing in with the same account;
-* **with rights "0 — Executive / viewer" the profile is not saved on the
-  Server**: the Server rejects the write, the Client reports on closing that
-  the profile was kept on this computer only, and the portfolios stay on this
-  computer. On another computer they have to be built again.
+* the profile is saved on this computer and, when the Client closes, also in
+  your account's profile on the Server. This holds for every access level,
+  rights "0 — Executive / viewer" included.
 
 ## Create a portfolio
 

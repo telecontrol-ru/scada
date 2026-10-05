@@ -16,9 +16,7 @@ control equipment nor change the configuration (rights "0 — Executive /
 viewer",
 see [Roles and permissions]({{ '/en/architecture/' | relative_url }}#roles-and-permissions)).
 Everything described here is available with those rights, except
-acknowledging events, which needs the *Control* or *Configure* right. Also,
-with rights "0" portfolios and other profile settings are not saved on the
-Server.
+acknowledging events, which needs the *Control* or *Configure* right.
 
 ## Where the data comes from {#archive}
 
@@ -73,6 +71,11 @@ Summary, Data and the Event journal keep the chosen period with the window.
 
 Yesterday, or any other finished period, is set the same way.
 
+**Do not reopen the *Time Range* dialog unless you need to.** In dates-only
+mode it shows the day *after* the period's last day in *End*, and pressing
+*OK* as it stands lengthens the period by a day. If you do reopen it, set
+*End* to the period's last day again.
+
 ## A daily or monthly summary
 
 The typical report is a table of several objects' values aggregated by
@@ -89,8 +92,14 @@ interval:
    aggregation function — see [Summary]({{ '/en/client/summary/' | relative_url }}).
    A summary holds at most 10,000 rows and **silently** stops at the last
    one: a month at a 1-minute interval ends around the 7th. Use an interval
-   of at least 5 minutes for a month.
-5. Save or print the result: CSV export
+   of at least 5 minutes for a month, and of at least 1 hour for anything
+   longer.
+5. Wait for the data to load: values still loading are shown in grey text.
+   An empty cell that is still loading looks the same as an interval with no
+   change, and the printout or file holds whatever the screen shows when you
+   give the command — so print or export once no grey values are left and
+   new values have stopped appearing.
+6. Save or print the result: CSV export
    ([Export and import]({{ '/en/client/export/' | relative_url }})) or
    [printing]({{ '/en/client/print/' | relative_url }}) with a preview. The
    period and the aggregation function are not included in the printout or
@@ -112,7 +121,9 @@ change during the whole interval — see
 ## Analysing a graph
 
 1. Double-click an object in the object panel to open its
-   [Graph]({{ '/en/client/graph/' | relative_url }}).
+   [Graph]({{ '/en/client/graph/' | relative_url }}). If the active window
+   is already a graph, the double-click adds the object to that graph
+   instead of opening a new one.
 2. Set the [period](#period).
 3. Use cursors to read values at chosen moments, and limits to see
    excursions.
@@ -127,17 +138,24 @@ automatically.
 ## A standing set of objects
 
 If a report is built from the same objects every time, collect them in a
-[portfolio]({{ '/en/client/portfolio/' | relative_url }}): a named list of
-objects. Select the portfolio and choose *Summary* to open a summary of all
-its objects. Portfolios are personal: other users do not see them, and with
-rights "0" they are kept on this computer only (see
+[portfolio]({{ '/en/client/portfolio/' | relative_url }}) (*Portfolio* in
+the Client's menus): a named list of objects. Select the portfolio and choose
+*Summary* to open a summary of all its objects. Portfolios are personal:
+other users do not see them. They are kept in your account's profile on the
+Server (see
 [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage)).
 
 ## Events over a period
 
 In the [Event journal]({{ '/en/client/events/' | relative_url }}), set the
 [period](#period) to see past events. The event list can be exported to CSV
-and printed the same way as tables.
+and printed the same way as tables; for export to Excel and what it needs, see
+[Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
+
+If the event archive cannot be read (for example, the archive process is
+unavailable), the journal for the period stays empty **with no error
+message**. An empty journal for a period in which there certainly were events
+is a reason to tell the administrator, not proof that there were none.
 
 ## What the Client does not have {#not-available}
 

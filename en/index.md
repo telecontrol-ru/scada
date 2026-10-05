@@ -14,8 +14,13 @@ The system uses a client-server architecture. The Server is a set of
 separate processes: protocol processes (MODBUS, IEC 60870-5-104, IEC 61850
 and others), the archive, the configuration, the file store, and a proxy
 that Clients connect to. The processes are purchased separately and the
-license lists the ones purchased; a small site needs only one protocol
-process. See [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
+license lists the ones purchased. Even a small site needs more than one
+protocol process: the smallest set is `scada-config`, one or more protocol
+processes, `scada-filesystem` and `scada-proxy`, and the archive of values
+and events — and so any report or summary over the archive — also needs
+`scada-historian`. See
+[Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)
+and [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
 Any number of Clients can connect over TCP/IP, and client sessions remain
 resilient while the Server stays online.
 

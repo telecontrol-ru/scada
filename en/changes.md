@@ -34,7 +34,17 @@ This version is not yet published on the releases page.
 
 ### Client
 
-1. The user profile (pages, window layout, portfolios, settings) is saved on the Server for the account when the Client closes, and is available on another workstation. With rights "0" the profile is not saved on the Server — see [Portfolios]({{ '/en/client/portfolio/' | relative_url }}#storage).
+1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
+
+1. When the Client closes, the user profile (pages, window layout, portfolios, settings) is also saved in the account's profile on the Server, at every access level. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}#storage).
+
+1. *Acknowledge All* in the [Event journal]({{ '/en/client/events/' | relative_url }}) acknowledges only the events shown: events hidden by a zone, severity or object filter stay unacknowledged.
+
+1. When the Server refuses an acknowledgement (for example, for lack of rights), the event panel shows an error message and the acknowledgement can be retried.
+
+1. With the *Control Success Message* setting on, the Client reports a successful [control]({{ '/en/client/' | relative_url }}#control-result) or [manual input]({{ '/en/client/' | relative_url }}#manual-input) command.
+
+1. In the [event panel]({{ '/en/client/' | relative_url }}#events-panel), *Severity — All* removes the threshold that was set, and the panel loads every event again.
 
 ### Known limitations
 

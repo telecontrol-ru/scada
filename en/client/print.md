@@ -46,3 +46,7 @@ the period and the aggregation function are not printed.** If the report
 needs them, write them on the printout, or export the data to CSV
 ([Export and import]({{ '/en/client/export/' | relative_url }})) and lay out
 the report in another program.
+
+The printout holds what the window shows when you give the command. Print a
+summary once it has finished loading — see
+[Summary: printing and export]({{ '/en/client/summary/' | relative_url }}#print-export).

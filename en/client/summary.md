@@ -31,8 +31,10 @@ When the
 from the `Summary` context menu, the selected object and time interval
 are reused.
 
-Cells are shown in gray while historical data is still being requested
-from the Server, and take their normal colour as the data arrives.
+While data is still being requested from the Server, cell values are shown
+in grey text, which takes its normal colour as the data arrives. An empty
+cell whose data is still loading looks the same as a cell with no change —
+see [Printing and export](#print-export).
 
 ## Period {#period}
 
@@ -56,19 +58,27 @@ start of the interval is not carried over from the previous interval.
 
 ## Summary size {#limits}
 
-A summary holds at most 10,000 rows and 1,000 columns.
+A summary holds at most 10,000 rows.
 
 **WARNING:** if the period contains more than 10,000 intervals, the summary
 **silently** ends at row 10,000. For example, *Month* with a 1-minute
-interval stops about 6.9 days after the start of the month. For a week or a
-month choose an interval of 5 minutes or longer; 1 hour or 1 day is usually
-enough for a report.
+interval stops about 6.9 days after the start of the month, and with a
+5-minute interval about 34 days after it. For a week or a month choose an
+interval of 5 minutes or longer, and for anything longer than a month 1 hour
+or longer; 1 hour or 1 day is usually enough for a report.
+
+More than 1,000 columns can be added, but when a saved window is opened
+again (for example after the Client restarts) only the first 1,000 are
+restored and the rest are **silently** dropped.
 
 ## Aggregation interval {#interval}
 
 The row length is chosen with the commands *1-Minute*, *5 min*, *15 min*,
 *30 min*, *1-Hour*, *12 hours* and *1-Day*. Intervals are aligned to local
-time: hourly intervals start on the hour, daily ones at midnight.
+time: hourly intervals start on the hour, daily ones at midnight. If the
+computer's time zone observes daylight saving time, in the summer months the
+day boundary (and that of 12-hour intervals) is shifted by an hour from
+midnight.
 
 ## Aggregation function {#function}
 
@@ -108,7 +118,8 @@ noticeably from a time-weighted average.</dd>
 </dl>
 
 Cell values are shown in the object's display format and engineering units
-(*Sum* in the same units as the measurement itself).
+(*Sum* in the same units as the measurement itself). *Count* is a plain
+number, without the object's units or format.
 
 ## Printing and export {#print-export}
 
@@ -117,3 +128,9 @@ A summary can be [printed]({{ '/en/client/print/' | relative_url }}) and
 the file contain the table and the row labels, but not the period, the
 interval or the aggregation function — note them in the file name or on the
 printout.
+
+**Wait for loading to finish before printing or exporting.** The printout or
+file holds what the table shows when you give the command. A cell whose data
+has not arrived yet goes in empty, and cannot be told apart from an interval
+with no change. Print or export once no grey values are left and new values
+have stopped appearing.

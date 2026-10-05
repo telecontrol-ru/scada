@@ -80,6 +80,10 @@ Columns*).
 The window title, and a summary's period and aggregation function, are not
 written to the file — put them in the file name.
 
+The file holds what the window shows when you give the command. Export a
+summary once it has finished loading — see
+[Summary: printing and export]({{ '/en/client/summary/' | relative_url }}#print-export).
+
 ## Export to Excel {#excel}
 
 The `Export to Excel` command opens the window's data in a new Microsoft
