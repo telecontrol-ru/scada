@@ -21,8 +21,8 @@ printed.
 
 ## Start printing
 
-To print the contents of the active window, press the `Print` button on
-the command bar or choose the corresponding item from the context menu.
+To print the contents of the active window, choose `Print`
+from the context menu.
 
 ## Print preview
 

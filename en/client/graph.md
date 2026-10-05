@@ -26,8 +26,8 @@ When several signals are added to one graph window, the client creates
 separate graph areas with their own value scales.
 
 To inspect the same object in tabular form, open
-[`Data`]({{ '/en/client/data/' | relative_url }}) from the command panel
-or from the graph context menu.
+[`Data`]({{ '/en/client/data/' | relative_url }}) from the graph
+context menu.
 
 ## Context menu
 
@@ -88,8 +88,8 @@ graph area and drag left or right. Scrolling to the right is limited by
 the current time. Older data is requested from the Server
 automatically as new historical ranges become visible.
 
-The time interval can also be changed from the command panel by
-selecting a period relative to the current time. To return to the latest
+The time interval can also be changed from the *Period* submenu of the
+**Item** menu by selecting a period relative to the current time. To return to the latest
 data and resume automatic scrolling as new values arrive, use the
 `Current time` command from the graph context menu.
 
@@ -98,8 +98,8 @@ To zoom, drag on the corresponding scale:
 * drag left or right on the time scale to change the time range
 * drag up or down on the value scale to change the visible value range
 
-The exact time boundaries can also be set using the `Period` toolbar
-command.
+The exact time boundaries can also be set from the *Period* submenu of
+the **Item** menu.
 
 To keep real-time rendering responsive, the number of simultaneously
 displayed points is limited to 10,000. If that limit would be exceeded,
@@ -150,7 +150,7 @@ for the underlying configuration behavior.
 To inspect aggregated data for the same object and period, switch from
 the graph window to
 [`Summary`]({{ '/en/client/summary/' | relative_url }})
-using the command panel or the object context menu.
+using the object context menu.
 
 ## Printing and export {#print-export}
 

@@ -33,8 +33,8 @@ settings, not in the Server's configuration:
 
 ## Create a portfolio
 
-To create a new portfolio, choose `Create Portfolio` on the command bar or
-in the portfolio panel's context menu. The name is generated automatically
+To create a new portfolio, choose `Create Portfolio` in the portfolio
+panel's context menu. The name is generated automatically
 and opens for editing straight away.
 
 ## Rename
@@ -49,8 +49,8 @@ portfolio context menu.
 
 ## Summary and graphs for a portfolio {#open}
 
-Select a portfolio and choose *Summary*, *Graph* or *Table* on the command
-bar or in the context menu — the window opens with all of the portfolio's
+Select a portfolio and choose *Summary*, *Graph* or *Table* in the
+context menu — the window opens with all of the portfolio's
 objects. Select a single object in the portfolio to open windows for that
 object only. How to build a report is described in
 [Reports and analysis]({{ '/en/client/reports/' | relative_url }}).

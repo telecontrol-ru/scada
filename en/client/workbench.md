@@ -169,7 +169,7 @@ server; it is kept on this computer only".
 | Appearance | Language, Colour scheme, Style |
 | Events & alarms | Sound Alarm on Event, Show Events on Arrival, Hide Events on Acknowledge, Flash Main Window on Event — see [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}) |
 | Control | Control Confirmation, Control Success Message — see [Control]({{ '/en/client/' | relative_url }}#control) |
-| Workspace | Toolbar (hidden by default), Status Bar |
+| Workspace | Status Bar |
 | Displays | Show Modus topology; the Open Displays Folder action |
 
 The current version has no switch for spoken announcements, neither on the

@@ -17,7 +17,7 @@ with related information such as quality flags, the time of the last
 value change, the time of the last device update, and recent system
 events.
 
-Selecting a row activates object-specific commands in the command bar.
+Selecting a row activates object-specific commands in the **Item** menu.
 Right-clicking opens a context menu for the selected object and row.
 Multiple rows can be selected with `Shift` and `Ctrl`.
 

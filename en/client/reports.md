@@ -45,7 +45,8 @@ The windows that show data over time — [Graph]({{ '/en/client/graph/' | relati
 [Summary]({{ '/en/client/summary/' | relative_url }}),
 [Data]({{ '/en/client/data/' | relative_url }}) and the
 [Event journal]({{ '/en/client/events/' | relative_url }}) — show the time
-range set by the *Period* commands on the command bar. In the summary, the
+range set by the commands of the *Period* submenu in the **Item** menu. In
+the summary, the
 Data window and the event journal they mean:
 
 | Command | Range |
@@ -122,8 +123,8 @@ change during the whole interval — see
 2. Set the [period](#period).
 3. Use cursors to read values at chosen moments, and limits to see
    excursions.
-4. For aggregated values, switch to the summary with the *Summary* command on
-   the command bar or in the object's context menu.
+4. For aggregated values, switch to the summary with the *Summary* command in
+   the object's context menu.
 
 A graph cannot be printed or exported. To keep the values, open the *Data*
 or *Summary* window from the graph and print or export that. A graph shows at

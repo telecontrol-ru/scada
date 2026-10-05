@@ -31,7 +31,7 @@ ascending and descending.
 
 ## Period {#period}
 
-The period is set with the *Period* commands on the command bar — see
+The period is set with the commands of the *Period* submenu in the **Item** menu — see
 [Choosing a period]({{ '/en/client/reports/' | relative_url }}#period). A new
 window starts with *Day*. The period is saved with the window.
 

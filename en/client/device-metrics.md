@@ -16,8 +16,7 @@ devices in a grid. Rows correspond to the metrics defined by the device
 type, and columns correspond to devices.
 
 To open the metrics window, select a device or a direction in the
-equipment panel and press the `Metrics` button on the command bar, or
-choose `Metrics` from the context menu. When a direction is selected,
+equipment panel and choose `Metrics` from the context menu. When a direction is selected,
 the window shows metrics for all devices connected to that direction.
 
 Metric values update in real time.

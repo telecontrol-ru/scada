@@ -19,9 +19,8 @@ Main client window:
 
 ## Main areas
 
-The main window contains the title bar, the main menu and a status bar. A
-command toolbar below the menu is hidden by default (see
-[Commands](#commands)). Operators work with multiple views inside pages and
+The main window contains the title bar, the main menu and a status bar.
+Operators work with multiple views inside pages and
 can switch between open windows without leaving the application. The window's
 regions are described in detail on the
 [Operator workbench]({{ '/en/client/workbench/' | relative_url }}) page.
@@ -52,8 +51,7 @@ The settings screen groups the settings into categories:
   [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}).
 * **Control** — *Control Confirmation* (on by default) and *Control Success
   Message*. See [Control](#control).
-* **Workspace** — *Toolbar* (hidden by default) and *Status Bar*, both per
-  client window.
+* **Workspace** — *Status Bar*, per client window.
 * **Displays** — *Show Modus topology*, which draws the topology layer over
   Modus displays, and the *Open Displays Folder* action.
 
@@ -173,9 +171,7 @@ ends the session on the other computer, whose client then stays disconnected.
 ## Commands {#commands}
 
 The commands for the selected object or device are in its context menu (right
-mouse button) and in the **Item** menu. The command toolbar below the menu can
-show the same commands; it is hidden by default and is turned on with
-*Settings → Settings… → Workspace → Toolbar*. A command that does not apply to
+mouse button) and in the **Item** menu. A command that does not apply to
 the selection is greyed out, and hovering it shows why.
 
 ### Object commands

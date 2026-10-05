@@ -38,7 +38,8 @@ see [Printing and export](#print-export).
 
 ## Period {#period}
 
-The period is set with the *Period* commands on the command bar: *15 min*,
+The period is set with the commands of the *Period* submenu in the **Item**
+menu: *15 min*,
 *Hour*, *Day*, *Week*, *Month* and *Custom...* — see
 [Choosing a period]({{ '/en/client/reports/' | relative_url }}#period). A new
 summary starts with the period *Day*, a 1-hour interval and the *Last*

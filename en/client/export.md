@@ -21,8 +21,8 @@ Data from the [Table]({{ '/en/client/table/' | relative_url }}),
 can be exported to a CSV file. Graphs, displays and user tables cannot be
 exported.
 
-To export data, choose the `Export to CSV` command on the command bar or in
-the window's context menu.
+To export data, choose the `Export to CSV` command in the window's
+context menu.
 
 ### Export options
 
