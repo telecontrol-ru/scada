@@ -84,8 +84,8 @@ After creating a direction and a device, make sure data is flowing:
    runs: <code>C_IC_NA_1</code> with its activation confirmation, the data, and the
    activation termination.
 4. The values of objects bound to the device arrive without the quality
-   flags `C` (no communication), `H` (connection error) and `K`
-   (configuration error) — see
+   flags `С` (no communication), `Н` (connection error) and `К`
+   (configuration error), which the Client shows in Russian letters — see
    [Quality flags]({{ '/en/architecture/' | relative_url }}#quality-flags).
 5. For a controllable object, send a test command and check in Watch that the
    device confirmed it.
@@ -185,17 +185,19 @@ Depending on the register type, MODBUS values can be interpreted as:
 
 ### Full MODBUS channel-address format
 
-The full format contains one required field and several optional ones:
+The full format contains one required field and four optional ones:
 
 ```text
-[type_data[count]:]NUMBER[:bit[+bitcount]][;swapbytes]
+[type_data:]NUMBER[:bit[+bitcount]][;swapbytes]
 ```
 
 Fields:
 
 * `type_data` is one of `BOOL`, `INT8`, `UINT8`, `INT16`, `UINT16`,
-  `INT32`, `UINT32`, `FLOAT`, `DOUBLE`
-* `count` explicitly sets the number of registers to read
+  `INT32`, `UINT32`, `FLOAT`, `DOUBLE`. Without it, a register is read as
+  `UINT16` (an **unsigned** 16-bit integer) and a coil or discrete input as
+  `BOOL`. The number of registers read follows from the data type and is not
+  set separately
 * `NUMBER` is the decimal register number
 * `bit` is the first bit to mask, numbered from 1 to 16
 * `bitcount` reads several bits starting at `bit`
@@ -212,8 +214,10 @@ Typical examples include:
 * `BOOL:40003:5`
 * `1`
 * `10001`
-* `30001`
-* `40001`
+* `30001` — the same as `UINT16:30001`, an unsigned 16-bit integer; for a
+  signed one write `INT16:30001`
+* `40001` — the same as `UINT16:40001`; for a signed one write
+  `INT16:40001`
 * `HOLDREG:FLOAT:10001`
 
 ### Short MODBUS channel-address format
@@ -406,6 +410,12 @@ synchronisation).</dd>
 Interrogation and clock synchronisation run only while the direction's Data
 collection is on.
 
+An extra interrogation or clock synchronisation is requested with the Poll
+Device and Synchronize Clock commands. The device in the Equipment window
+does not offer them: they are in the Device submenu of the context menu of
+a data object bound to the device, and they act on the device that is that
+object's current source.
+
 ### Retransmission to a dispatch centre {#retransmission}
 
 Example: a dispatch centre (DC) receives SCADA data over IEC 60870-5-104,
@@ -430,17 +440,30 @@ to.
    * Disabled = No.
 3. Under the direction, `Create -> IEC 60870 device`. Set its Address — the
    common ASDU address the DC uses for the SCADA — and Disabled = No.
-4. Select the device and open the `Transmission Table`. Add rules: each links
-   a SCADA object (Source object) to an information object address in the DC
-   (Receiver object address). The table is described in
-   [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission);
-   `Multiple Create` makes many rules at once (see
-   [Data items]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)).
+4. Select the device and open the `Transmission Table`. The table has no
+   command to add a rule: a rule is created when you tick a SCADA object in
+   the object tree, and removed when you clear the tick. The table shows two
+   columns — Object (the SCADA object whose value is sent to the DC) and
+   Address (the information object address in the DC); type the address
+   straight into the Address column. The table is described in
+   [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission).
+
+   **WARNING: every new rule gets address 1.** Give each rule the address
+   agreed with the DC as soon as you tick its object — otherwise every
+   object reaches the DC under the same address. `Multiple Create` does not
+   create transmission rules in this version, so tick the objects one at a
+   time.
 5. Open the port in the firewall of the computer running the Server's
    IEC 104 process.
 6. Check: once the DC connects, the
    [Watch]({{ '/en/client/device-watch/' | relative_url }}) window shows the
    exchange, and the DC's general interrogation returns the object values.
+
+**WARNING:** retransmit objects whose values the same Server IEC 104
+process receives — for example, objects of IEC 60870-5 devices. Sending the
+DC objects whose data another Server process receives (for example, the
+Modbus or IEC 61850 process) is not confirmed to work in this version; if
+you need it, contact Telecontrol (mail@telecontrol.ru).
 
 Modbus retransmission needs Mode = retransmission on the Modbus direction; if
 that list is empty, contact Telecontrol.

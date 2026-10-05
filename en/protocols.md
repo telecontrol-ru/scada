@@ -112,7 +112,11 @@ Two-stage control commands are supported.
 Only UTC timestamps are supported. If the device uses a different time
 zone, timestamp handling may become problematic.
 
-The operator can also initiate a full interrogation of the device.
+A full interrogation of the device can be requested from the Client
+with the Poll Device command. It is not on the device in the Equipment
+window: it is in the Device submenu of the context menu of a data object
+bound to the device, and it interrogates the device that is that object's
+current source.
 
 ## Translation status
 

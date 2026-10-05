@@ -35,8 +35,12 @@ an installation made with `scada-setup`:
   archived. Restart the *Telecontrol SCADA Historian* service after it.
 
 To assign archives to new objects on a version 2.6 site, contact Telecontrol
-(mail@telecontrol.ru). The Client procedure below is how it works on a Server
-running as a single process.
+(mail@telecontrol.ru).
+
+The Client procedure below is how archives will be set up once a Server
+installed as separate processes accepts these commands. Already on a
+version 2.6 site, the *Databases* window lists the archives, and the
+[check](#checking) works for objects that already have an archive assigned.
 
 ## The Server's archives
 

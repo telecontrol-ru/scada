@@ -148,5 +148,5 @@ to these TIT objects when they were created.
 If a formula in a table is invalid, the Client reports "Invalid
 expression." and does not keep the formula. If an object's formula cannot
 be parsed, or one of its references is not found, the object gets no value
-and carries the quality flag `K` — not configured or a configuration error (see
+and carries the quality flag `К` — not configured or a configuration error (see
 [Quality flags]({{ '/en/architecture/' | relative_url }}#quality-flags)).

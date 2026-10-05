@@ -65,9 +65,12 @@ objects from one pattern. It has three steps.
 <dl>
 
 <dt>Target and type</dt>
-<dd>"What to create" — data items, or transmission rules (the latter is offered
-only when there is something for a rule to forward, that is when source objects
-are already selected). For data items it also asks for the "Item type"
+<dd>"What to create" — data items. In this version the list has no
+"Transmission rules" entry: the wizard opened by <code>Multiple Create…</code>
+is given no source objects, and a rule forwards an existing object.
+Transmission rules are created by ticking objects in the object tree — see
+<a href="{{ '/en/dev/devices/' | relative_url }}#retransmission">Retransmission to a dispatch centre</a>.
+For data items it also asks for the "Item type"
 (discrete or analog), the "Device" that is their source, and a "Source path
 template": the channel address on that device, with the same index tokens as
 the name template (see below). Each object gets that address in its Channel
@@ -83,9 +86,9 @@ index tokens:
 <code>{n}</code> is the index in decimal, <code>{nn}</code> zero-padded to two
 digits, <code>{hex}</code> in hexadecimal. Any other text is copied verbatim,
 so "TS{n} current" at index 8 yields "TS8 current". The range comes from
-"Start index", "Count" and "Index step", and for transmission rules from "IOA
-start" and "IOA step" as well: a data item is not addressed on a link, so it
-has no IOA fields.
+"Start index", "Count" and "Index step". Data items have no "IOA start" and
+"IOA step" fields: those belong to transmission rules, which the wizard does
+not create in this version.
 
 The "NodeId template" sets the new objects' identifiers in OPC UA form. The
 Server accepts only numeric identifiers in the object type's namespace:
@@ -294,7 +297,11 @@ forced to zero. In the object's units; 0 (default) means unused.</dd>
 limit. An empty value means the limit is not set. They can be changed here or
 with the Limits command — see
 <a href="{{ '/en/architecture/' | relative_url }}#limits">Limit checks</a>.
-Anyone holding the Configure right can change them in the properties.</dd>
+Anyone holding the Configure right can change them in the properties.
+<strong>WARNING: a limit event gets the object's Severity</strong> (10 by
+default), and at that severity it is not highlighted. Give an object with
+limits a Severity of 600 or higher for its limit events to show as warnings,
+or 800 or higher to show as alarms.</dd>
 
 <dt>Display</dt>
 <dd>Controls how a measured value is formatted:

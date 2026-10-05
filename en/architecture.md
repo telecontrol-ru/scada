@@ -78,7 +78,7 @@ For user setup details, see
 
 ## Data objects {#data-items}
 
-The main information objects are discrete signals, measured values, and control channels. Objects can be identified by number and, optionally, by a unique alias. They can also be archived with a defined history depth.
+The main information objects are discrete signals, measured values, and control channels. Objects can be identified by number and, optionally, by a unique alias. Their values can also be archived: the object is assigned an archive, and the retention depth in days is set on the archive, not on the object (see [Archiving]({{ '/en/dev/history/' | relative_url }})).
 
 Objects may be grouped into hierarchical structures that reflect the monitored process layout, for example by plant, substation, or device group.
 
@@ -192,18 +192,19 @@ correctly.
 ### Quality flags
 
 Object values carry quality flags that are commonly displayed next to
-the current value:
+the current value. The Client shows them with their Russian letters in every
+interface language:
 
 | Flag | Meaning |
 |:-:|---|
-| `K` | Not configured or configuration error |
-| `C` | No communication |
-| `H` | Connection error or invalid expression |
-| `P` | Manual input |
+| `К` | Not configured, configuration error, or an invalid calculation formula |
+| `С` | No communication |
+| `Н` | Connection error |
+| `Р` | Manual input |
 | `2` | Backup channel |
-| `B` | Blocked channel |
-| `U` | Stale value |
-| `V` | Limit violation |
+| `Б` | Blocked channel |
+| `У` | Stale value |
+| `В` | Limit violation |
 
 ### Manual input and blocking {#manual-write}
 
@@ -225,6 +226,16 @@ threshold pairs. Each pair has an upper and lower boundary.
 When a discrete object changes state, the real-time subsystem logs a
 system event. For measured objects, entering or leaving a limit range
 also generates events.
+
+**WARNING: a limit event gets the object's severity** (the Severity
+field in its properties, 10 by default), not a severity of its own for
+pre-alarm and alarm limits. At the default severity these events are not
+highlighted in the event journal or the current events panel. For an
+operator to notice a limit violation, set the measured object's Severity to
+600 or higher (yellow background, Warning) or 800 or higher (red
+background, Critical). The pre-alarm and alarm events of one object are
+coloured the same. See the Severity field under
+[Object properties]({{ '/en/dev/data-items/' | relative_url }}#object-properties).
 
 When a measured object with configured limits is displayed in a
 [Graph]({{ '/en/client/graph/' | relative_url }}), the limits are shown
