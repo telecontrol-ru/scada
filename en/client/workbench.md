@@ -160,7 +160,9 @@ tabs above the list — All, This client, Profile, This window.
 Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer and which travel with the account in the
 profile. Settings apply **immediately**: there is nothing to confirm, and the
-screen closes from the close button in its header.
+screen closes from the close button in its header. For an account with rights "0 — Executive / viewer" the server does not save
+the profile: the Client reports "Failed to save the profile to the server; it
+is kept on this computer only", and the settings stay on that workstation.
 
 | Category | Settings |
 |---|---|

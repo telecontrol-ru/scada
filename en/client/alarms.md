@@ -17,7 +17,9 @@ spoken message. The count and the tiles are always on; the rest are switched
 on and off on the settings screen: **Settings → Settings… → Events & alarms**.
 
 These preferences live in the user profile on the server, so a choice made at
-one workstation follows the account to the next.
+one workstation follows the account to the next. For an account with rights "0 — Executive / viewer" the server does not save
+the profile: the Client reports "Failed to save the profile to the server; it
+is kept on this computer only", and the settings stay on that workstation.
 
 ## Which events raise the alarm {#escalation}
 
