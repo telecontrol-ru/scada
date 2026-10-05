@@ -40,29 +40,25 @@ An account's Rights property is two independent permissions:
 limits.</dd>
 
 <dt>Configure</dt>
-<dd>Creating, changing and deleting objects, devices and accounts.
-<strong>In this version this right also includes everything the Control right
-gives</strong> — see the warning below.</dd>
+<dd>Creating, changing and deleting objects, devices and accounts. It does
+not grant control commands, manual value entry or limit changes.</dd>
 
 </dl>
 
-Their combinations give the four familiar values. The table shows what an
-account can actually do:
+Their combinations give the four familiar values:
 
 | Rights | Control, manual input and limits | Configuration editing |
 |:---|:---:|:---:|
 | 0 - Executive / viewer | No | No |
-| 1 - SCADA engineer | Yes (see the warning) | Yes |
+| 1 - SCADA engineer | No | Yes |
 | 2 - Dispatcher | Yes | No |
 | 3 - Administrator | Yes | Yes |
 
-**WARNING: in this version an account with the Configure right can also issue
-control and setpoint commands, enter values manually and change limits — even
-without the Control right.** So rights 1 (SCADA engineer) are in effect the
-same as rights 3 (Administrator). Limits of a TIT object are, besides, part of
-its properties (the Limits group of the Properties window), and anyone allowed
-to edit the configuration can change them. Give the Configure right only to
-people who may operate the plant.
+Control and setpoint commands, manual value entry and limit changes need the
+Control right. The limits of a TIT object also appear in its properties (the
+Limits group of the Properties window), but without the Control right they are
+read-only there. When a user without that right pastes a copied TIT object,
+the limits are not carried over: the object is created without them.
 
 ## Roles
 
@@ -71,9 +67,12 @@ The server does not check requests against those two bits directly. It checks
 
 * every authenticated account gets the `Observer` role — reading values,
   history and events
-* the Control right adds `Operator` — writing values and calling methods
+* the Control right adds `Operator` — writing values and calling methods,
+  including control commands, manual value entry and limit changes
 * the Configure right adds `Engineer`, `Supervisor`, `ConfigureAdmin` and
-  `SecurityAdmin` — the full set, including adding and deleting nodes
+  `SecurityAdmin` — changing the configuration, including adding and deleting
+  nodes, but not writing object values or their limits and not issuing
+  control commands: the server allows those to the `Operator` role alone
 * an anonymous session gets the `Anonymous` role alone
 
 An account may hold several roles at once, and their permissions combine. It is

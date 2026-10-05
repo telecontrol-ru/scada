@@ -65,11 +65,11 @@ Each user account is given two independent rights, *Control* and *Configure*. Th
 | Rights | Control, manual input and limits | Configuration editing |
 |:---|:---:|:---:|
 | Executive / viewer | No | No |
-| SCADA engineer | Yes (see the warning) | Yes |
+| SCADA engineer | No | Yes |
 | Dispatcher | Yes | No |
 | Administrator | Yes | Yes |
 
-**WARNING: in this version the Configure right also lets an account issue control commands, enter values manually and change limits, even without the Control right.** Limits are, besides, edited in the object's properties (the Limits group) by anyone allowed to change the configuration. Give the Configure right only to people who may operate the plant.
+Control commands, manual value entry and limit changes need the Control right, including limits in the object's properties (the Limits group). The Configure right does not grant them.
 
 Users authenticate with a name and password. The Server checks each request against OPC UA roles derived from these rights, which determine access to control operations, manual value entry, engineering tools, and user administration.
 
