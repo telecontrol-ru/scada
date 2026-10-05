@@ -20,17 +20,17 @@ This version is not yet published on the releases page.
 
 1. The Server is split into separate processes: `scada-config` (configuration), `scada-proxy` (Client connections), `scada-historian` (archive), `scada-filesystem` (files), the protocol processes `scada-modbus`, `scada-iec104` and `scada-iec61850`, and `scada-opc` and `scada-vidicon` (Windows only). Each process runs as its own Windows service (*Telecontrol SCADA Config*, *Telecontrol SCADA Proxy*, *Telecontrol SCADA Historian* and so on) instead of the single *Telecontrol SCADA Server* service. The processes are purchased separately. See [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
 
-1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
+1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows; installing the Server on Linux is available on request in this version. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
-1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`. See [root password]({{ '/en/server/' | relative_url }}#root-password).
+1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`. See [Root password]({{ '/en/getting-started/' | relative_url }}#root-password).
 
 1. New data folders: each process has its own folder `%ProgramData%\Telecontrol\SCADA Server\<process>` with its `server.json` parameter file (the folder of `scada-filesystem` is `filestore`). The license is `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 
-1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
 
 ### Client
 

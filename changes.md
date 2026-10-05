@@ -20,7 +20,7 @@ permalink: /changes/
 
 1. Сервер разделен на отдельные процессы: `scada-config` (конфигурация), `scada-proxy` (подключения Клиентов), `scada-historian` (архив), `scada-filesystem` (файлы), процессы протокольного уровня `scada-modbus`, `scada-iec104`, `scada-iec61850`, а также `scada-opc` и `scada-vidicon` (только Windows). Каждый процесс работает своей службой Windows (*Telecontrol SCADA Config*, *Telecontrol SCADA Proxy*, *Telecontrol SCADA Historian* и т.д.) вместо единой службы *Telecontrol SCADA Server*. Процессы приобретаются по отдельности. Смотрите [Состав Сервера]({{ '/architecture/' | relative_url }}#tiers).
 
-1. Программа настройки `scada-setup`: команда `apply` создает файлы параметров, конфигурационные БД и службы процессов и запускает их; `status`, `start`, `stop` и `remove` управляют службами; `migrate` переносит данные Сервера версии 2.5. Смотрите [Настройка с помощью scada-setup]({{ '/server/' | relative_url }}#scada-setup).
+1. Программа настройки `scada-setup`: команда `apply` создает файлы параметров, конфигурационные БД и службы процессов и запускает их; `status`, `start`, `stop` и `remove` управляют службами; `migrate` переносит данные Сервера версии 2.5. `scada-setup` работает под Windows; установка Сервера под Linux в этой версии выполняется по запросу. Смотрите [Настройка с помощью scada-setup]({{ '/server/' | relative_url }}#scada-setup).
 
 1. Лицензия — подписанный файл `license.json` со списком приобретенных процессов вместо аппаратного ключа HASP или Guardant. Процесс, не названный в лицензии, не работает. Смотрите [Лицензирование]({{ '/server/' | relative_url }}#licensing).
 

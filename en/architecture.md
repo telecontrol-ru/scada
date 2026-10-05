@@ -12,7 +12,7 @@ permalink: /en/architecture/
 
 ## Overview
 
-Telecontrol SCADA uses a client-server architecture. The [Server]({{ '/en/server/' | relative_url }}) collects data from field devices, processes it in real time, stores history, and serves client sessions. The Server is a set of separate processes, each owning one part of that work; see [Server processes](#tiers). The graphical [Client]({{ '/en/client/' | relative_url }}) and web-based access tools connect over TCP/IP and present data to operators.
+Telecontrol SCADA uses a client-server architecture. The [Server]({{ '/en/server/' | relative_url }}) collects data from field devices, processes it in real time, stores history, and serves client sessions. The Server is a set of separate processes, each owning one part of that work; see [Server processes](#tiers). [Clients]({{ '/en/client/' | relative_url }}) connect to the Server over TCP/IP and give the operator visualization and control. The number of Clients is not limited.
 
 The main data flow is:
 
@@ -24,7 +24,7 @@ The main data flow is:
 
 ## Server processes {#tiers}
 
-The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (or run as its own process on Linux), reads its own parameter file, and is licensed separately, so an installation carries only the processes it needs.
+The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (or run as its own process on Linux), reads its own parameter file, and is purchased separately: one installer carries every process, and the license names the ones purchased for the site.
 
 | Process | Windows service | Role |
 |:---|:---|:---|
@@ -42,7 +42,7 @@ The processes exchange data with each other over OPC UA.
 
 The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it. **The smallest installation** the `scada-setup` tool builds is `scada-config`, one or more protocol processes, `scada-filesystem`, and `scada-proxy`, which the Clients connect to. Without `scada-filesystem` the server-side file system is unavailable (`scada-setup` warns about it). Add `scada-historian` for a value and event archive: only it stores history. The license must name every installed process — see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
-The processes may run on one computer or be spread over several: usually `scada-config`, `scada-historian`, `scada-filesystem` and `scada-proxy` run on a central computer, and the protocol processes on it or on computers near the equipment. Start them in this order: `scada-config`; then `scada-historian`, `scada-filesystem` and the protocol processes; then `scada-proxy`. `scada-setup start` keeps this order on each computer.
+The processes may run on one computer or be spread over several. **`scada-config`, `scada-historian`, `scada-filesystem` and `scada-proxy` always run on one computer — the central one**: the protocol processes reach `scada-config` and `scada-proxy` at the central computer's single address, and `scada-proxy` connects to `scada-historian` and `scada-filesystem` on its own computer only. The protocol processes run on the central computer or on computers near the equipment. Start them in this order: `scada-config`; then `scada-historian`, `scada-filesystem` and the protocol processes; then `scada-proxy`. `scada-setup start` keeps this order on each computer.
 
 Running the processes — startup, Windows services, parameter files — is described in the [Server]({{ '/en/server/' | relative_url }}) section.
 
@@ -328,9 +328,10 @@ UA clients can access current values, historical data, and
 subscriptions.
 
 Configuration is described in the Server section on
-[OPC UA]({{ '/en/server/' | relative_url }}#opcua). **Note:** open the
-processes' OPC UA ports only to the site's computers and trusted external
-systems — see the same section.
+[OPC UA]({{ '/en/server/' | relative_url }}#opcua). **Note:** in this
+version the OPC UA ports are protected by the firewall alone: open them only
+to the site's computers, and allow an external system port 4840 from its
+address only — see the same section.
 
 ### OPC client on Windows
 
