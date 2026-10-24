@@ -412,10 +412,21 @@ Table changes take effect without restarting the client.
 
 ![]({{ '/img/substation-display.png' | relative_url }})
 
-The schematic (single-line) display window carries a toolbar (a "Live" indicator, zoom / fit / 100% / export) and two bay
-strips below it: "Measurements" — the selected signals' values with their
-update times — and "Recent events" — the active (unacknowledged) alarms with
-their severity, time, object and message. The diagram geometry is unchanged.
+A Vidicon display window (`.vds` files) carries a toolbar (a "Live" label,
+zoom / fit / 100% / export) and two bay strips below it: "Measurements" — the
+values of the signals whose shapes the operator has clicked, with their update
+times — and "Recent events" — the unacknowledged events of **the whole
+system** (not only this display's objects), up to the 50 latest, with their
+severity, time, object and message. The diagram geometry is unchanged. Modus
+schematics (`.sde`, `.xsde`) have no such toolbar or strips; see
+[Display]({{ '/en/client/display/' | relative_url }}).
+
+> **Caution.** "Live" is a fixed label, not a connection indicator: it stays
+> green even when the connection to the Server is lost. Only the status bar
+> shows the connection state ("Connected" / "Disconnected"); see
+> [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
+> In this version the schematics themselves show no live values — read values
+> in the "Measurements" strip and in the Inspector.
 
 ## Inspector {#inspector}
 
@@ -438,8 +449,11 @@ selection:
   signal has no output channel, or the session lacks the Control privilege.
 
 Selecting a table row — including a formula row — fills the Inspector; the
-value keeps updating while the row stays selected. Clicking an element on a
-schematic display selects it in the Inspector as well.
+value keeps updating while the row stays selected. Clicking a shape bound to
+an object on a schematic display selects that object in the Inspector as well.
+Clicking a shape with no object behind it leaves the **previous** object in
+the Inspector — check the name there before running commands; see
+[Working with a schematic]({{ '/en/client/display/' | relative_url }}#working).
 
 ![]({{ '/img/inspector-event.png' | relative_url }})
 

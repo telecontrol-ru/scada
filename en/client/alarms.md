@@ -89,6 +89,12 @@ With the option off, the panel stays on screen until the operator closes it.
 
 **Sound Alarm on Event** (off by default).
 
+> **Caution.** The tone is off for **every new** account: the setting is kept
+> in the user's profile, so it has to be turned on under each operator account
+> — **Settings → Settings… → Events & alarms → Sound Alarm on Event**. Spoken
+> announcements exist on Windows only, so on macOS this tone is the only
+> audible alarm: while it is off, the client on macOS raises alarms silently.
+
 The tone sounds only under the conditions listed [above](#escalation).
 
 On Windows it repeats for as long as the condition holds and stops as soon as

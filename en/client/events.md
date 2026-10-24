@@ -46,8 +46,9 @@ appended when a filter is set.
 
 A journal can also be opened for chosen objects: select them and choose
 *Events* in the *Open* group of the context menu. That journal shows only
-their events. The alarm strip on the overview page opens the journal with
-[*Unacknowledged Only*](#filters) already set.
+their events. The active-alarm table on the
+[Overview]({{ '/en/client/workbench/' | relative_url }}#overview) page is an
+event journal opened with [*Unacknowledged Only*](#filters) already set.
 
 New events appear in the journal at once; past events are loaded from the
 Server when the window opens and whenever the period changes.

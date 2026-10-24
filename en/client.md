@@ -15,7 +15,7 @@ The graphical client is the main operator application. It provides access to dia
 
 Main client window:
 
-![]({{ '/img/client-window.png' | relative_url }})
+![]({{ '/img/workbench-window.png' | relative_url }})
 
 ## Main areas
 
@@ -91,7 +91,7 @@ docked side by side, stacked as tabs, or restored from the `Window`
 menu after accidental closure. The recycle list keeps the 10 most
 recently closed windows.
 
-The `Window -> Favorite` command stores a window together with its
+The `Window -> Add to Favourites` command stores a window together with its
 content under a user-defined name and folder. Favorited graphs and
 tables also appear at the bottom of the corresponding `Graph` and
 `Table` menus for quick reopening.
@@ -186,7 +186,10 @@ as:
 
 * [Graph]({{ '/en/client/graph/' | relative_url }})
 * [Table]({{ '/en/client/table/' | relative_url }})
-* [Display]({{ '/en/client/display/' | relative_url }})
+* [Display]({{ '/en/client/display/' | relative_url }}) — opens the Modus
+  schematic that contains the object, or switches to it if it is already open.
+  The object's shape is **not** selected or highlighted on it; find it on the
+  schematic yourself
 * [Data]({{ '/en/client/data/' | relative_url }})
 * [Summary]({{ '/en/client/summary/' | relative_url }})
 * [Event journal]({{ '/en/client/events/' | relative_url }})
@@ -244,10 +247,30 @@ object's context menu, in the **Item** menu, or with the button in the
 [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector). It needs
 the Control privilege.
 
+> **Caution.** The command acts on the object selected **now**. Clicking a
+> shape on a schematic that has no object behind it moves the selection frame
+> to that shape, but the **previous** object stays selected — and *Control…*,
+> the **Item** menu, the Inspector and double-click acknowledgement all apply to
+> it. Before *Control…* and before a double-click, check the object's name in
+> the Inspector, and in the dialog that opens check the object's name again.
+
 The command opens the "Control" dialog: the object's name, "Current value:"
 and "New value:". For a discrete (TS) object the new value is picked from the
 list of states (the state opposite the current one is proposed); for an analog
 (TI) object it is typed as a number. The "Execute" button sends the command.
+
+Until the operator changes the "New value:" field, the proposed value follows
+the object's present state: if the state changes while the dialog is open, the
+proposal changes with it. Always set the new value explicitly — pick the state
+in the list or type the number — even when the proposal is what you want.
+
+Type a fractional number with a decimal **point**: `12.5`. A comma is not
+accepted — "12,5" is answered with "Incorrect floating point value."
+(«Указано некорректное значение с плавающей точкой.») and nothing is sent.
+
+Whether the present value is good is shown in the "Control" dialog (the
+quality mark after "Current value:", such as "?" on a bad value) and in the
+Inspector.
 
 If the object has a control permission condition, the dialog has a
 "Condition:" row. It reads "Satisfied" or "Unsatisfied" and updates live.
@@ -261,6 +284,10 @@ default. While it is on, before a command goes to the equipment the client
 shows a confirmation box: the object's name, "Present:" and "Command:" — the
 present and the commanded values — and the warning "This control command is
 sent to physical equipment and cannot be undone remotely. Send it?".
+
+> **Caution.** The confirmation box shows the present value **without** its
+> quality mark: a bad value carries no "?" there. Check that the value is good
+> before confirming — in the "Control" dialog and in the Inspector.
 
 The box's default button is "No": pressing *Enter* **cancels** the command. To
 send it, choose "Yes".
@@ -317,9 +344,10 @@ or "Controlling...".
 > **Caution.** A failure does not always mean the command was not carried out.
 > On a timeout (`Bad_Timeout`) or a connection lost mid-command the device may
 > have received and executed the command while the answer never reached the
-> Server. Before retrying, check the object's present state — in the dialog,
-> the Inspector or on the display: make sure the value is good and has not
-> already become the commanded one.
+> Server. Before retrying, check the object's present state — in the dialog
+> or the Inspector: make sure the value is good and has not already become the
+> commanded one. A schematic will not tell you: in this version it shows no
+> live values.
 
 The same setting turns on messages for other successful operations —
 configuration edits, object creation, password changes, unblocking. A failure
