@@ -216,6 +216,10 @@ incoming telemetry from field devices is ignored and the manually
 entered value takes priority. When the block is removed, the next device
 update overwrites the manual value again.
 
+A blocked object carries the quality flag `Б`. The block is removed with the
+`Unlock` command (Russian UI: «Разблокировать») from the object's context
+menu.
+
 ### Limit checks {#limits}
 
 Measured objects can define limit monitoring with alarm and pre-alarm

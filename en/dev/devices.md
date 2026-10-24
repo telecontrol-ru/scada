@@ -101,7 +101,9 @@ Supported MODBUS function codes are described in
 
 <dt>Protocol</dt>
 <dd>RTU, ASCII or TCP. Default: RTU. See the
-<a href="#enum-lists">warning on list fields</a>.</dd>
+<a href="#enum-lists">warning on list fields</a>. In this version the ASCII
+variant is not implemented: when it is selected the Server exchanges binary
+RTU frames, so a device that speaks only MODBUS ASCII will not answer.</dd>
 
 <dt>Mode</dt>
 <dd>Polling — the SCADA polls the devices (default); retransmission — the SCADA
@@ -147,28 +149,68 @@ request is retried. Default: 1000.</dd>
 
 </dl>
 
-## MODBUS register addressing
+## MODBUS register addressing {#modbus-registers}
 
 Each MODBUS register is 16 bits wide and is treated as a single word.
 Each word contains two bytes, `Hi` and `Lo`, stored in direct order:
 `[Hi][Lo]`.
 
-Two MODBUS registers form a 32-bit double word. Four MODBUS registers
-form a 64-bit value.
+Two MODBUS registers form a 32-bit double word made of a high word (`Hi`)
+and a low word (`Lo`). The MODBUS standard does not fix the order in which a
+device sends them; most devices send the high word first: `[Hi][Lo]`.
+
+{: .warning }
+> In this version the Server treats the **first** of the two registers as the
+> **low** word by default, that is, it expects `[Lo][Hi]`. For a device that
+> sends the high word first (`[Hi][Lo]`), add `;swapwords` to every FLOAT,
+> INT32 and UINT32 address, for example `FLOAT:30001;swapwords`. Before
+> commissioning, compare the value read against a known value on the device.
+
+Four MODBUS registers form a 64-bit value.
+
+{: .warning }
+> In this version a DOUBLE (64-bit) value is read correctly only from a device
+> that sends the words starting with the **least significant** one. The
+> standard order — most significant word first — cannot be read: for DOUBLE,
+> `;swapwords` swaps the words in pairs (first with second, third with fourth),
+> which does not produce that order. If the device allows it, transfer such
+> values as FLOAT instead.
 
 Examples:
 
-* single word: `0x10DE`
-* double word: `0x10DE34A8`
+* single word: `0x10DE` — `0x10` is the high byte, `0xDE` the low byte
+* double word: `0x10DE34A8` — `0x10DE` is the high word, `0x34A8` the low
+  word. A `[Hi][Lo]` device sends register `0x10DE` first, then `0x34A8`; for
+  the Server to read `0x10DE34A8` from them, the channel address needs
+  `;swapwords`.
 
 The protocol uses four logical register groups:
 
 | Register number (dec) | Register address (hex) | Register type | Command | Access |
 |:---:|:---:|:---|:---:|:---:|
-| `1-9999` | `0x0000-0x270F` | Coils | `0x01/0x05(0x0F)` | Read/write |
+| `1-9999` | `0x0000-0x270F` | Coils | `0x01 / 0x05` | Read/write |
 | `10001-19999` | `0x0000-0x270F` | Discrete Inputs | `0x02` | Read |
 | `30001-39999` | `0x0000-0x270F` | Input Registers | `0x04` | Read |
-| `40001-49999` | `0x0000-0x270F` | Holding Registers | `0x03/0x06(0x10)` | Read/write |
+| `40001-49999` | `0x0000-0x270F` | Holding Registers | `0x03 / 0x10` | Read/write |
+
+The Command column gives the functions the Server sends: for reading and,
+after the slash, for writing. Holding registers are always written with
+`0x10`, even a single register; a coil with `0x05`.
+
+{: .warning }
+> **In this version writes (control) are reliable only for coils and for
+> whole unsigned 16-bit holding registers** (addresses such as `40001` or
+> `UINT16:40001`). Do not configure control on FLOAT, INT32, UINT32 or DOUBLE
+> addresses, for negative values, or on individual register bits
+> (`BOOL:40003:5`, `UINT16:40001:1+7`):
+>
+> * the value written is converted to an unsigned integer, so the fractional
+>   part is lost and negative and floating-point values are sent wrongly;
+> * at most two registers (32 bits) are written, so a DOUBLE is never written
+>   whole;
+> * `;swapbytes` and `;swapwords` are ignored when writing;
+> * a write to register bits sends the mask of the selected bits whatever the
+>   value being written, and clears all the other bits of the register.
 
 The decimal register number is not the same as the hexadecimal address
 carried in MODBUS frames. The difference between them is the group
@@ -185,10 +227,10 @@ Depending on the register type, MODBUS values can be interpreted as:
 
 ### Full MODBUS channel-address format
 
-The full format contains one required field and four optional ones:
+The full format contains one required field and several optional ones:
 
 ```text
-[type_data:]NUMBER[:bit[+bitcount]][;swapbytes]
+[type_data:]NUMBER[:bit[+bitcount]][;swapbytes][;swapwords]
 ```
 
 Fields:
@@ -199,26 +241,43 @@ Fields:
   `BOOL`. The number of registers read follows from the data type and is not
   set separately
 * `NUMBER` is the decimal register number
-* `bit` is the first bit to mask, numbered from 1 to 16
-* `bitcount` reads several bits starting at `bit`
-* `;swapbytes` swaps `Hi` and `Lo` bytes inside a 16-bit word
-* `;swapwords` swaps the 16-bit words inside a 32-bit word
+* `bit` is the first bit to mask, numbered from 1 (the least significant bit)
+  to 16. Bits can be selected only in registers, and only for `BOOL`, `INT8`,
+  `UINT8`, `INT16` and `UINT16`
+* `bitcount` is the number of **additional** bits after `bit`, so
+  `bitcount + 1` bits are read in all: `INT16:40123:3+2` masks bits 3, 4
+  and 5
+* `;swapbytes` swaps the `Hi` and `Lo` bytes in every 16-bit register
+* `;swapwords` swaps the two 16-bit registers of a FLOAT, INT32 or UINT32
+  value; it is needed for devices that send the high word first (see the
+  warning under [MODBUS register addressing](#modbus-registers)). For DOUBLE
+  it swaps the words in pairs
 
-Typical examples include:
+Coils and discrete inputs (numbers 1–9999 and 10001–19999) accept only
+`BOOL`; the Server rejects an address such as `INT16:123`.
 
-* `FLOAT:30001`
-* `INT16:41105;swapbytes`
-* `UINT32:41105;swapwords`
-* `UINT16:30001:1+7`
-* `UINT16:30001:9+7`
-* `BOOL:40003:5`
-* `1`
-* `10001`
+Examples:
+
+* `FLOAT:30001;swapwords` — two input registers `0x0000` and `0x0001`,
+  function `0x04`, as an IEEE 754 single-precision float; register `0x0000`
+  is the high word (the `[Hi][Lo]` order most devices use)
+* `FLOAT:30001` — the same, with register `0x0000` as the low word
+  (`[Lo][Hi]`)
+* `INT16:41105;swapbytes` — holding register `0x0450`, function `0x03`, as a
+  signed 16-bit integer with its bytes swapped
+* `UINT32:41105;swapwords` — holding registers `0x0450` and `0x0451`,
+  function `0x03`, as an unsigned 32-bit integer; register `0x0450` is the
+  high word
+* `UINT16:30001:1+7` — the low byte of input register `0x0000`
+* `UINT16:30001:9+7` — the high byte of input register `0x0000`
+* `BOOL:40003:5` — bit 5 of holding register `0x0002`, read with `0x03`. Do
+  not configure control on such an address (see the warning on writes above)
+* `1` — coil 0, read with `0x01` and written with `0x05`
+* `10001` — discrete input 0, read with `0x02`
 * `30001` — the same as `UINT16:30001`, an unsigned 16-bit integer; for a
   signed one write `INT16:30001`
-* `40001` — the same as `UINT16:40001`; for a signed one write
-  `INT16:40001`
-* `HOLDREG:FLOAT:10001`
+* `40001` — the same as `UINT16:40001`, read with `0x03` and written with
+  `0x10`; for a signed one write `INT16:40001`
 
 ### Short MODBUS channel-address format
 
@@ -233,18 +292,27 @@ Fields:
 
 * `TYPE_REGISTER` is one of `COIL`, `DISCINPUT`, `INPUTREG`, `HOLDREG`
 * `TYPE_DATA` is one of the supported data types
-* `ADDR` is the absolute decimal register address
+* `ADDR` is the absolute decimal register address, which is the actual
+  hexadecimal address plus one
 
 This format is used when the actual hexadecimal register address is
-higher than `0x270F`.
+higher than `0x270F`. `;swapbytes` and `;swapwords` are appended to it as to
+the full format, and the default word order is the same — the first register
+is the low word.
 
 Examples:
 
-* `HOLDREG:FLOAT:10001`
-* `INPUTREG:FLOAT:10001`
-* `HOLDREG:INT32:10001`
-* `INPUTREG:UINT32:10001` (read with function `0x04`)
-* `HOLDREG:DOUBLE:10001`
+* `HOLDREG:FLOAT:10001;swapwords` — holding registers `0x2710` and `0x2711`,
+  function `0x03`, as a single-precision float; `0x2710` is the high word
+* `INPUTREG:FLOAT:10001;swapwords` — input registers `0x2710` and `0x2711`,
+  function `0x04`, as a single-precision float; `0x2710` is the high word
+* `HOLDREG:INT32:10001;swapwords` — holding registers `0x2710` and `0x2711`,
+  function `0x03`, as a signed 32-bit integer; `0x2710` is the high word
+* `INPUTREG:UINT32:10001` — input registers `0x2710` and `0x2711`, function
+  `0x04`, as an unsigned 32-bit integer; `0x2710` is the low word
+* `HOLDREG:DOUBLE:10001` — holding registers `0x2710` to `0x2713`, function
+  `0x03`, as a double-precision float; `0x2710` is the least significant word
+  (see the DOUBLE warning above)
 
 The two parameter screenshots below show where these MODBUS channel
 definitions are entered for discrete and measured objects:

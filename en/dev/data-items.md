@@ -160,6 +160,22 @@ window:
 
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
+{: .note }
+> In the Properties window the device and channel fields are grouped under
+> three rows, and are labelled differently from the names used below:
+>
+> | Group in the window (Russian UI) | Field label in the window | Field in this manual |
+> |---|---|---|
+> | Primary input («Основной ввод») | Device | Device |
+> | Primary input («Основной ввод») | Channel | Channel |
+> | Backup input («Резервный ввод») | Device (backup) | Backup device |
+> | Backup input («Резервный ввод») | Channel (backup) | Backup channel |
+> | Output («Вывод») | Device (control) | Control device |
+> | Output («Вывод») | Channel (control) | Control channel |
+>
+> In this version the Russian Client also shows these six field labels in
+> English.
+
 The main parameter groups are:
 
 <dl>
@@ -310,7 +326,15 @@ or 800 or higher to show as alarms.</dd>
   <dt>Engineering units</dt>
   <dd>The unit suffix shown after the value.</dd>
   <dt>Format</dt>
-  <dd>The number of decimal places.</dd>
+  <dd>A number pattern the value is displayed with; the default is
+  <code>0.####</code>. The number of characters after the point is the number
+  of decimal places the value is rounded to. A <code>0</code> after the point
+  is a required digit and is always shown; a <code>#</code> is optional, and
+  trailing zeros in its place are dropped. The part before the point has no
+  effect. Examples: <code>0.####</code> — up to four decimals (10.5 is shown
+  with one decimal place, 10 with none); <code>0.00</code> — always two
+  (10 is shown as 10.00); <code>0</code> — a whole number. The pattern always
+  uses a point, whatever decimal separator the screen shows.</dd>
   </dl>
 </dd>
 
