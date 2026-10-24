@@ -46,7 +46,21 @@ IEC 60870 device number 1. Inside the braces goes the device identifier
 (<code>IEC_DEV.1</code>), a <code>!</code> and the channel address in the protocol's
 format. This is how an object's source is written when Device and Channel are
 selected in its properties, and a formula may use it like any other
-reference.</dd>
+reference.
+
+A device identifier is a Latin namespace name, a dot and a number:
+<code>IEC_DEV.n</code> for an IEC 60870-5 device, <code>MODBUS_DEVICES.n</code> for a
+MODBUS device, <code>IEC61850_DEV.n</code> for an IEC 61850 device. The Server
+assigns it when the device is created and shows it in the Browse Name field
+(Russian UI: «Обозначение») of the Attributes group in the device's
+Properties window (with the same caveat as for an object's designation: go
+by the original value).
+
+Inside the braces the channel address is written exactly as in the Channel
+field, and it may contain <code>:</code>, <code>;</code>, <code>/</code> and <code>$</code>: for example
+<code>{MODBUS_DEVICES.1!INT16:40001;swapbytes}</code> or
+<code>{IEC61850_DEV.1!LD0/GGIO1$ST$Ind1}</code>. The reference ends at the first
+closing brace <code>}</code>, so the address itself cannot contain one.</dd>
 
 </dl>
 

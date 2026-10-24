@@ -88,7 +88,11 @@ After creating a direction and a device, make sure data is flowing:
    (configuration error), which the Client shows in Russian letters — see
    [Quality flags]({{ '/en/architecture/' | relative_url }}#quality-flags).
 5. For a controllable object, send a test command and check in Watch that the
-   device confirmed it.
+   device confirmed it. Skip this step for IEC 61850 devices: remote control
+   does not work for them in this version (see
+   [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)). Instead,
+   check that values arrive through every report control block you
+   created.
 
 ## MODBUS devices {#mbDevice}
 
@@ -219,7 +223,7 @@ offset.
 Depending on the register type, MODBUS values can be interpreted as:
 
 * `BOOL`
-* `INT8` / `UINT8`
+* `INT8` / `UINT8` (without a bit range, the low byte of the register is read)
 * `INT16` / `UINT16`
 * `INT32` / `UINT32`
 * `FLOAT`
@@ -357,8 +361,12 @@ Host and Port for a network, or the serial-port settings.</dd>
 ![]({{ '/img/iec-60870-5-transport.png' | relative_url }})
 
 <dt>Event archive</dt>
-<dd>Selects the archive used to store network traffic for later analysis
-and saving to a text log file.</dd>
+<dd>The archive that stores the direction's events, such as loss and
+restoration of communication. Network traffic (the exchanged frames) is not
+archived: it can be viewed, analysed and saved to a log file only in the
+<a href="{{ '/en/client/device-watch/' | relative_url }}">Device watch</a>
+window while it is open. See also
+<a href="{{ '/en/dev/history/' | relative_url }}">Archiving</a>.</dd>
 
 <dt>Anonymous mode</dt>
 <dd>No (default) — on connecting, the SCADA opens a session for every device
@@ -444,8 +452,10 @@ Defaults are given in brackets.
 <dd>The link-layer address of the device for IEC 60870-5-101 (1).</dd>
 
 <dt>Event archive</dt>
-<dd>Selects the archive used to store traffic for one specific
-device.</dd>
+<dd>The archive that stores the device's events, such as loss and
+restoration of communication with it. Network traffic is not archived; the
+<a href="{{ '/en/client/device-watch/' | relative_url }}">Device watch</a>
+window shows it.</dd>
 
 <dt>UTC time</dt>
 <dd>Timestamp format: Yes — UTC, No — local time (No).</dd>
@@ -542,8 +552,17 @@ A device is created with `Create -> IEC 61850 device` from the Equipment
 window's context menu (right-click an empty part of the window). Its
 properties are Host — the device's network address — and Port (default
 102), plus Disabled = No. Under the device an `IEC 61850 RCB` (report control
-block) can be created, with its Address set to the block's reference in the
-device model. The device model appears in the Model subtree.
+block) can be created, with its Address set to the block's MMS address in
+the device model, for example `LD0/LLN0$RP$urcbA01` (unbuffered) or
+`LD0/LLN0$BR$brcbA01` (buffered). The device model appears in the Model
+subtree.
+
+**Without a report control block the device's objects receive no values**:
+the Server gets IEC 61850 data only from reports, and an object receives a
+value only if its address matches a member of the dataset of one of the
+created blocks exactly. For the setup procedure and this version's
+limitations (remote control, Poll Device and double-point positions do not
+work) see [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 Any model node exposes its bindable address through the `Properties`
 command in the context menu.

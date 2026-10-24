@@ -20,7 +20,3 @@ equipment panel and choose `Metrics` from the context menu. When a direction is 
 the window shows metrics for all devices connected to that direction.
 
 Metric values update in real time.
-
-## Translation status
-
-This English page matches the current scope of the Russian source page.

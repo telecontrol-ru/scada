@@ -29,8 +29,3 @@ When a request row is selected, the full contents of the request and
 response are shown.
 
 The number of displayed requests is limited to 1,000.
-
-## Translation status
-
-This English page is a functional translation of the current Russian
-page.

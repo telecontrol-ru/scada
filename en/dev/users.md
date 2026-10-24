@@ -94,7 +94,3 @@ the server.
 Every action on accounts, passwords and role membership — successful or refused
 — is recorded in the
 [audit log]({{ '/en/client/workbench/#audit-log' | relative_url }}).
-
-## Translation status
-
-This English page is a direct translation of the current Russian page.

@@ -42,7 +42,3 @@ list are deleted.
 If the configuration changed after the file was exported, the server warns you:
 importing that file would overwrite the later changes. You can still check and
 apply it, but only explicitly.
-
-## Translation status
-
-This English page is a direct translation of the current Russian page.

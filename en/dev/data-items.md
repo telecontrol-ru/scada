@@ -213,7 +213,10 @@ commands.</dd>
 <dt>Two-stage control</dt>
 <dd>Enables the IEC 60870 two-stage control workflow
 <code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
-stage. Default: Yes.</dd>
+stage. Default: Yes. The SELECT stage is sent only with the IEC 60870-5
+command <code>C_SC_NA_1</code>; for other IEC 60870-5 commands and for MODBUS
+devices it is skipped and only EXECUTE is performed. Set No if the device
+does not support select-before-operate.</dd>
 
 <dt>Lock</dt>
 <dd>Yes — the object ignores values from the device and keeps the value set by
@@ -269,10 +272,13 @@ of values</a>.
 
 <dt>Logical minimum and maximum</dt>
 <dd>Define the logical value range and the Y-axis range used by
-graphs.</dd>
+graphs. Defaults: minimum −100, maximum 100. Set the logical range of every
+TIT object to its real scale; otherwise graphs show it on a −100…100
+scale.</dd>
 
 <dt>Physical minimum and maximum</dt>
-<dd>Define the physical value range used in linear scaling.</dd>
+<dd>Define the physical value range used in linear scaling. Defaults:
+minimum 0, maximum 65535.</dd>
 
 <dt>Alias</dt>
 <dd>A unique system-wide alias used in formulas, logical expressions,
@@ -357,8 +363,3 @@ Period, ms (60000), Phase, ms (0) and Update, ms (1000). See also
 <a href="{{ '/en/client/workbench/' | relative_url }}#simulation-items">Simulated signals</a>.</dd>
 
 </dl>
-
-## Translation status
-
-This English page is now a substantially fuller engineering reference.
-The Russian page still remains the fullest low-level source.

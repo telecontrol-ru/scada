@@ -77,7 +77,3 @@ choose *Summary* or *Graph*.
 summary or graph of several objects, select them in the
 [object panel]({{ '/en/client/' | relative_url }}#object-panel) or collect them
 in a [portfolio]({{ '/en/client/portfolio/' | relative_url }}).
-
-## Translation status
-
-This English page is a direct translation of the current Russian page.

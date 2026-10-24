@@ -48,30 +48,43 @@ Supported application-layer ASDU types include:
 
 | ASDU label | Type ID | Description |
 |:---|:---:|:---|
-| `M_SP_NA_1` | 1 | Single-point information |
+| `M_SP_NA_1` | 1 | Single-point information (0 – OFF, 1 – ON) |
 | `M_SP_TA_1` | 2 | Single-point with timestamp |
-| `M_DP_NA_1` | 3 | Double-point information |
-| `M_BO_NA_1` | 7 | 32-bit bitstring |
-| `M_ME_NA_1` | 9 | Normalized measured value |
-| `M_ME_NB_1` | 11 | Scaled measured value |
-| `M_ME_TB_1` | 12 | Scaled measured value with timestamp |
-| `M_ME_NC_1` | 13 | Short floating-point measured value |
-| `M_IT_NA_1` | 15 | Integrated total |
+| `M_DP_NA_1` | 3 | Double-point information (0 – indeterminate or intermediate, 1 – OFF, 2 – ON, 3 – indeterminate); see the note below |
+| `M_BO_NA_1` | 7 | 32-bit bitstring — **not supported in this version**: values from these ASDUs do not reach objects |
+| `M_ME_NA_1` | 9 | Normalized measured value — arrives as a signed 16-bit integer, see the note below |
+| `M_ME_NB_1` | 11 | Scaled measured value (signed 16-bit integer) |
+| `M_ME_TB_1` | 12 | Scaled measured value (integer) with timestamp |
+| `M_ME_NC_1` | 13 | Short floating-point measured value (float) |
+| `M_IT_NA_1` | 15 | Integrated total (int32) |
 | `M_SP_TB_1` | 30 | Single-point with CP56Time2a |
 | `M_DP_TB_1` | 31 | Double-point with CP56Time2a |
-| `M_ME_TD_1` | 34 | Normalized value with CP56Time2a |
-| `M_ME_TE_1` | 35 | Scaled value with CP56Time2a |
+| `M_ME_TD_1` | 34 | Normalized value with CP56Time2a — as `M_ME_NA_1` |
+| `M_ME_TE_1` | 35 | Scaled value (integer) with CP56Time2a |
 | `M_ME_TF_1` | 36 | Float value with CP56Time2a |
 | `M_IT_TB_1` | 37 | Integrated total with CP56Time2a |
-| `C_SC_NA_1` | 45 | Single command |
+| `C_SC_NA_1` | 45 | Single command (0 – OFF, 1 – ON) |
 | `M_EI_NA_1` | 70 | End of initialization |
 | `C_IC_NA_1` | 100 | General interrogation |
 | `C_CI_NA_1` | 101 | Counter interrogation |
 | `C_CS_NA_1` | 103 | Time synchronization |
 | `C_RP_NA_1` | 105 | Reset process |
-| `P_ME_NA_1` | 110 | Parameter write, normalized |
-| `P_ME_NB_1` | 111 | Parameter write, scaled |
-| `P_ME_NC_1` | 112 | Parameter write, float |
+| `P_ME_NA_1` | 110 | Parameter write, normalized (16-bit integer) |
+| `P_ME_NB_1` | 111 | Parameter write, scaled (16-bit integer) |
+| `P_ME_NC_1` | 112 | Parameter write, short floating point (float) |
+
+**WARNING:** in this version normalized values (`M_ME_NA_1`, `M_ME_TD_1`)
+are not converted to the −1…+1 range: the TIT object receives the signed
+16-bit integer exactly as transmitted (1.0 arrives as 32767, −1.0 as
+−32768). To get the normalized value, create a TIT object without a device
+and enter a [formula]({{ '/en/formulas/' | relative_url }}) in its Channel
+field, for example `{IEC_DEV.1!115} / 32768`, where `IEC_DEV.1` is the
+device identifier and 115 the information object address.
+
+Double-point information (`M_DP_NA_1`, `M_DP_TB_1`) gives the TS object the
+value 1 only in position 2 (ON); in positions 0, 1 and 3 the object gets 0.
+Positions 0 and 3 are additionally flagged with the bad-quality flag
+(Russian UI: «Недост»), which tells them apart from OFF.
 
 For control operations, Telecontrol SCADA uses:
 
@@ -99,35 +112,61 @@ See also the engineering reference for
 ## IEC 61850 {#iec-61850}
 
 IEC 61850 support provides transparent access to the device information
-model. Data acquisition is performed through subscriptions to RCB/BRCB
-report blocks transported over MMS.
+model. See also the engineering reference for
+[IEC 61850 devices]({{ '/en/dev/devices/' | relative_url }}#iec-61850).
 
-Before data collection can begin, the required report blocks must exist
-on the IEC 61850 device. After a connection is established, the Server
-configures those report blocks for spontaneous event transmission.
+Data is acquired only through subscriptions to report control blocks
+(RCB — unbuffered, BRCB — buffered) over MMS. The Server never reads values
+directly: an object whose data is not in any subscribed report receives no
+value. To enable data acquisition:
 
-Object binding uses MMS addresses in the format:
+1. Under the IEC 61850 device in the Equipment window, create a report
+   control block with *Create — IEC 61850 RCB* (Russian UI: «Создать — RCB
+   МЭК-61850») and enter in its Address field the block's MMS address in the
+   device model: the logical device, the logical node (usually `LLN0`), the
+   functional constraint `RP` (unbuffered) or `BR` (buffered) and the block
+   name, for example `LD0/LLN0$RP$urcbA01` or `LD0/LLN0$BR$brcbA01`. The
+   block name and the contents of its dataset are set by the device's own
+   configuration.
+2. Bind TS and TIT objects to members of that block's dataset. The address
+   in the object's Channel field must match a dataset member **exactly**,
+   including letter case and nesting level: the member `LD0/GGIO1$ST$Ind1`
+   and the address `LD0/GGIO1$ST$Ind1$stVal` are different addresses, and no
+   value arrives for the second. Dragging an object from the Model subtree
+   writes the address in the right form; just check that the object is a
+   member of the block's dataset.
 
-`LogicalDevice/LogicalNode$FC$DataObject`
+When the connection is established, the Server reads the block's
+parameters and its dataset from the device, enables reporting and requests
+a general interrogation (GI) through the block: a device that supports GI
+immediately sends the current values of every dataset member, followed by
+spontaneous reports of changes. Messages about the block subscription and
+its dataset are shown in the
+[Device watch]({{ '/en/client/device-watch/' | relative_url }}) window.
 
-Typical functional constraints are:
+Object binding uses MMS addresses in the format
+`LogicalDevice/LogicalNode$FC$DataObject`. TS objects bind to `FC=ST`
+objects, TIT objects to `FC=MX` objects.
 
-* `FC=ST` for discrete-state bindings
-* `FC=MX` for measured-value bindings
-* `FC=CO` for control commands
+**WARNING:** in this version only the following are read correctly:
 
-Two-stage control commands are supported.
+* single-point status (class SPS, boolean `stVal`) for TS objects;
+* `FC=MX` measurements with a floating-point value (`mag.f`, for example
+  class MV) for TIT objects.
 
-Only UTC timestamps are supported. If the device uses a different time
-zone, timestamp handling may become problematic.
+Double-point positions (classes DPS and DPC, for example `Pos`, type
+Dbpos) are read wrongly: the TS object always shows "on" when bound to the
+data object, or gets no value when bound to `stVal`. Do not use such
+objects to show switchgear positions; if you need this, contact
+Telecontrol LLC (mail@telecontrol.ru).
 
-A full interrogation of the device can be requested from the Client
-with the Poll Device command. It is not on the device in the Equipment
-window: it is in the Device submenu of the context menu of a data object
-bound to the device, and it interrogates the device that is that object's
-current source.
+**WARNING:** in this version remote control (`FC=CO`) and the Poll Device
+command do not work for IEC 61850 devices: the Server rejects them with an
+error. Switchgear cannot be controlled through an IEC 61850 device in this
+version.
 
-## Translation status
+**WARNING:** only UTC timestamps are supported. If the device uses a
+different time zone, value updates will be affected.
 
-This English page is now a functional protocol reference. The Russian
-page still contains fuller wording and a few extra implementation notes.
+See the [IEC 61850 article](https://en.wikipedia.org/wiki/IEC_61850) for a
+description of the protocol.
