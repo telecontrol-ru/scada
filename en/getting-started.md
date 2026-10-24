@@ -521,6 +521,27 @@ The "Security and certificates" disclosure (the security mode, the client
 certificate and private key) appears only for the "OPC UA" type; with the
 "Telecontrol" type there is nothing to fill in.
 
+In the "Most secure available" and "Sign and encrypt" modes the Client checks
+the Server's identity by its certificate:
+
+* The Client's own certificate and private key are optional: if the fields are
+  empty, the Client creates its own certificate on the first connection.
+* The first time it meets a Server's certificate, the Client asks: "The server
+  presented a certificate this computer has not trusted before", and shows its
+  subject and SHA-256 fingerprint. Compare the fingerprint with the one the
+  Server's administrator publishes, and answer *Yes* to trust the certificate
+  and connect.
+* If the server at the same address presents a *different* certificate, the
+  Client warns: "WARNING: the server at this address presented a DIFFERENT
+  certificate…". That is what an intercepted connection would look like: trust
+  the new certificate only if the Server's administrator confirms it was
+  replaced.
+
+The certificates are kept in the `pki` folder of the Client's user data:
+`%APPDATA%\Telecontrol\SCADA Client\pki` on Windows and
+`~/Library/Application Support/Telecontrol/SCADA Client/pki` on macOS. To stop
+trusting a Server, delete its certificate from the `trusted` subfolder.
+
 If the `Sign in automatically next time` box is ticked, the Client stores the
 name and password on this computer and no longer waits for input in the
 sign-in window: on every start, and after *Disconnect from Server* and
