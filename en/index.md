@@ -21,6 +21,13 @@ and events — and so any report or summary over the archive — also needs
 `scada-historian`. See
 [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)
 and [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
+On a new version 2.6 installation archives cannot yet be assigned to objects
+from the Client (see [Archiving]({{ '/en/dev/history/' | relative_url }})),
+and the license is issued for a term after which the processes refuse
+requests and reports stop working
+([Licensing]({{ '/en/server/' | relative_url }}#licensing)), so contact
+Telecontrol before relying on reports, summaries and graph history on a new
+site.
 Any number of Clients can connect over TCP/IP, and client sessions remain
 resilient while the Server stays online.
 

@@ -18,7 +18,7 @@ rendered with a dashed segment that starts at the corresponding point.
 
 ## Current value
 
-The legend shows the current value, source timestamp, and historical data load percentage. When the time cursor is active, the legend shows the value at the cursor position instead of the latest value.
+For each trend line the [legend](#legend) shows the object's current value, and the minimum, maximum and average over the visible part of the graph. When a cursor is placed on the time scale, the value at its position is shown in a separate `@ cursor` column.
 
 ## Multiple objects {#multiple}
 
@@ -62,15 +62,26 @@ Point markers are also enabled by default to make sample timing easier
 to inspect. Each stored sample is rendered with a visible marker on the
 trend line.
 
-## Legend
+## Legend {#legend}
 
 The legend is shown inside the graph area by default. It displays one
 row for each plotted object and provides these columns:
 
-* **Name**: object name
-* **Value**: current value, or the value at the active cursor position
-* **Time**: source timestamp
-* **Load**: percentage of historical data already loaded from the Server
+* **Color and name**: a swatch of the line color and the object name
+* **Current**: the object's current value
+* **Min**, **Max**, **Average**: the minimum, maximum and arithmetic mean over
+  the time range visible on the graph. Only good-quality numeric values count:
+  bad-quality samples (for example, during a communication loss) are left out.
+  The values are recalculated when you scroll or zoom the time scale. If the
+  visible range holds no good value, the columns show a dash "—".
+* **@ cursor**: the value at the time-scale cursor (see [Cursors](#cursors));
+  a dash "—" when no cursor is placed
+
+{: .note }
+> The legend's minimum, maximum and average can differ from the
+> [summary]({{ '/en/client/summary/' | relative_url }}) for the same interval:
+> the legend counts only good-quality values, and only over the visible part
+> of the graph.
 
 The legend can be hidden or restored from the context menu.
 
@@ -107,7 +118,7 @@ the visible time boundaries are adjusted automatically. Over a long period
 the graph may therefore not show the whole chosen range; for reports over a
 month or longer, use the [summary]({{ '/en/client/summary/' | relative_url }}).
 
-## Cursors
+## Cursors {#cursors}
 
 Clicking once on the time scale or value scale adds a cursor at the
 selected position. A cursor is a guide line that spans the full graph
@@ -122,8 +133,8 @@ cursor is attached.
 ![]({{ '/img/graph-cursor.png' | relative_url }})
 
 After a cursor is created, it follows the mouse pointer until it is
-placed with another click. The legend then shows graph values at the
-cursor position instead of the latest sample values.
+placed with another click. The legend's `@ cursor` column then shows the
+graph values at the time-scale cursor position.
 
 Any number of cursors can be added. They stay attached to their scale
 values even when the graph is zoomed.

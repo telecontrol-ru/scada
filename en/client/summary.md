@@ -130,6 +130,12 @@ the file contain the table and the row labels, but not the period, the
 interval or the aggregation function — note them in the file name or on the
 printout.
 
+In the CSV file the interval-start column is headed `Time`; on the printout
+it has no heading. The printout is not split into pages by width: a summary
+of many objects is squeezed to the width of one page, so its columns become
+narrow and their text wraps. For a wide summary choose landscape orientation,
+or export it to CSV.
+
 **Wait for loading to finish before printing or exporting.** The printout or
 file holds what the table shows when you give the command. A cell whose data
 has not arrived yet goes in empty, and cannot be told apart from an interval

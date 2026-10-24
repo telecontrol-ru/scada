@@ -41,7 +41,17 @@ The printout contains **only the table**:
 * the data rows; for a summary, the start time of each interval on the left;
 * a page number at the bottom of each sheet.
 
-The table continues onto further pages to fit the paper. **The window title,
+**WARNING: from the [Table]({{ '/en/client/table/' | relative_url }}) window,
+the printout gets every column, hidden ones included** — the `Trend` column
+(empty on paper) and the `Source` column with formulas and object
+identifiers. To print only the columns you need, export the table to CSV,
+delete the extra columns and print the file from another program.
+
+The table continues onto further pages by rows. It is **not** split by
+width: every column is squeezed to the page width, so a wide table (a summary
+of many objects, for example) prints in narrow columns with wrapped text.
+Choose landscape orientation in the print preview, or export the data to
+CSV. **The window title,
 the period and the aggregation function are not printed.** If the report
 needs them, write them on the printout, or export the data to CSV
 ([Export and import]({{ '/en/client/export/' | relative_url }})) and lay out

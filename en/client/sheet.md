@@ -46,38 +46,20 @@ when the server data changes.
 Cell editing is available only in edit mode, which is switched on with the
 `Edit` command. The command is available only to users with the *Configure*
 right (rights 1 and 3); with rights "0 — Executive / viewer" the table is
-view-only. In edit mode, formatting commands become available from
-the context menu.
+view-only. In edit mode, the context menu offers the background-color
+command (see below).
 
 ## Formatting
 
-For the selected cell range, the user can set:
-
-* **background color**
-* **alignment**: left, center, or right
-* **conditional formatting** to change the cell appearance based on its
-  value
+In edit mode the cell context menu has a single command, `Color...`, which
+sets the **background color** of the selected cell range. The Client has no
+other formatting commands: no alignment, no conditional formatting, and no
+inserting or deleting rows and columns.
 
 ## Table size
 
-Rows and columns are inserted from the header context menu, the same way
-they are in familiar spreadsheet editors:
-
-* right-click a **row header** (the number on the left) for `Insert 1 row
-  above` or `Insert 1 row below`;
-* right-click a **column header** (the letter on top) for `Insert 1 column
-  left` or `Insert 1 column right`.
-
-An insertion shifts the existing cells and discards nothing: a cell's
-contents and its formatting travel with it.
-
-Below the last row there is an **+ Add row** bar that appends a row to the
-end of the table.
-
-Deleting rows and columns is not supported yet.
-
-{: .note }
-> The size of a user table is set when the table is created.
+A user table always has 100 rows and 100 columns; its size cannot be
+changed.
 
 ## Cell blinking
 

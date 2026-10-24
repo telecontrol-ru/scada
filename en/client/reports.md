@@ -18,6 +18,16 @@ see [Roles and permissions]({{ '/en/architecture/' | relative_url }}#roles-and-p
 Everything described here is available with those rights, except
 acknowledging events, which needs the *Control* or *Configure* right.
 
+**Before relying on reports on a new version 2.6 installation, contact
+Telecontrol** (mail@telecontrol.ru): on a new installation archives cannot yet
+be assigned to objects from the Client (see
+[Where the data comes from](#archive) and
+[Archiving]({{ '/en/dev/history/' | relative_url }})), and without that,
+summaries, graphs and the Data window stay empty for past periods. The Server
+license is also issued for a term: after it expires the Server processes
+refuse requests, and reports stop working — see
+[Licensing]({{ '/en/server/' | relative_url }}#licensing).
+
 ## Where the data comes from {#archive}
 
 Reports are built from the Server's archive, kept by the `scada-historian`
@@ -59,6 +69,11 @@ Data window and the event journal they mean:
 
 Summary, Data and the Event journal keep the chosen period with the window.
 
+**WARNING: check the dates in the *Time Range* dialog.** If *Start* is later
+than *End* (or, with times set, equal to it), the dialog accepts the period
+without a warning, and the window shows **the last hour** instead of the range
+you set.
+
 ### A report for last month {#last-month}
 
 *Month* shows the current, unfinished month. To report on last month:
@@ -71,6 +86,13 @@ Summary, Data and the Event journal keep the chosen period with the window.
 4. In the summary choose the *1-Day* interval — one row per day.
 
 Yesterday, or any other finished period, is set the same way.
+
+{: .note }
+> In the version 2.5 Client, reopening the *Time Range* dialog with the
+> *Time* box cleared shows an *End* date one day later than the one set, and
+> pressing *OK* moves the end of the period a day later. If you work with the
+> 2.5 Client, check *End* every time you reopen the dialog. Version 2.6 fixes
+> this.
 
 ## A daily or monthly summary
 
@@ -124,7 +146,10 @@ change during the whole interval — see
 3. Use cursors to read values at chosen moments, and limits to see
    excursions.
 4. For aggregated values, switch to the summary with the *Summary* command in
-   the object's context menu.
+   the object's context menu. The minimum, maximum and average in the
+   [graph legend]({{ '/en/client/graph/' | relative_url }}#legend) count only
+   good-quality values over the visible part of the graph, while the summary
+   counts bad-quality values too, so for the same interval they can differ.
 
 A graph cannot be printed or exported. To keep the values, open the *Data*
 or *Summary* window from the graph and print or export that. A graph shows at
@@ -135,7 +160,7 @@ automatically.
 
 If a report is built from the same objects every time, collect them in a
 [portfolio]({{ '/en/client/portfolio/' | relative_url }}) (*Portfolio* in
-the Client's menus): a named list of objects. Select the portfolio and choose
+the Client's menus): a named set of objects. Select the portfolio and choose
 *Summary* to open a summary of all its objects. Portfolios are personal:
 other users do not see them. They are kept in your account's profile on the
 Server (see

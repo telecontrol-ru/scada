@@ -59,6 +59,11 @@ During export, the client shows a dialog for CSV format parameters:
 
 </dd>
 
+<dt>Expand grouped rows</dt>
+<dd>Shown only for windows that fold repeats into one row (the event
+journal). When checked (the default), every folded event is written to the
+file as its own row; when cleared, the rows are written as the window shows
+them.</dd>
 </dl>
 
 The chosen format settings are stored in the user profile and reused by
@@ -67,7 +72,7 @@ later exports.
 After export finishes, the client offers to open the file in the
 associated application.
 
-### What the file contains
+### What the file contains {#contents}
 
 The file holds **the cell text as shown in the window**, not numbers: values
 in the object's display format, with engineering units and with a `?` after
@@ -79,6 +84,15 @@ Columns*).
 
 The window title, and a summary's period and aggregation function, are not
 written to the file — put them in the file name.
+
+**WARNING: from the [Table]({{ '/en/client/table/' | relative_url }}) window,
+the file gets every column, hidden ones included.** The `Trend` column is
+always empty in the file, and the `Source` column holds formulas and object
+identifiers. Delete the columns you do not need in the file yourself. The
+same applies to export to Excel.
+
+In a summary, the first column, holding the interval start time, is headed
+`Time`.
 
 The file holds what the window shows when you give the command. Export a
 summary once it has finished loading — see

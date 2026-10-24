@@ -46,6 +46,16 @@ This version is not yet published on the releases page.
 
 1. In the [event panel]({{ '/en/client/' | relative_url }}#events-panel), *Severity — All* removes the threshold that was set, and the panel loads every event again.
 
+1. Fixed: reopening the *Period* dialog with the *Time* box cleared no longer moves the end of the period a day later. See [A report for last month]({{ '/en/client/reports/' | relative_url }}#last-month).
+
+1. The [graph legend]({{ '/en/client/graph/' | relative_url }}#legend) shows each line's current value, minimum, maximum and average over the visible range, with the value at the cursor in its own `@ cursor` column.
+
+1. The [Table]({{ '/en/client/table/' | relative_url }}) window has new `Quality`, `Trend` and `Source` columns; columns can be hidden from the header context menu.
+
+1. The [CSV export]({{ '/en/client/export/' | relative_url }}) dialog has an *Expand grouped rows* option for the event journal.
+
+1. The Client interface is available in English, and the appearance is chosen from the *Colour scheme* list — see [Settings]({{ '/en/client/workbench/' | relative_url }}#settings) and [Appearance]({{ '/en/client/workbench/' | relative_url }}#appearance).
+
 ### Known limitations
 
 1. Archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).

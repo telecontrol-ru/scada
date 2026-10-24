@@ -13,9 +13,26 @@ permalink: /en/client/table/
 
 The `Table` window displays current object values in a grid. Each row
 represents one object, and the columns show the current value together
-with related information such as quality flags, the time of the last
-value change, the time of the last device update, and recent system
-events.
+with related information:
+
+* `Name` — the object name;
+* `Value` — the current value;
+* `Quality` — the value's quality mark;
+* `Trend` — a mini-graph of the object's recent values;
+* `Source Timestamp`, `Server Timestamp` — when the value was received from
+  the device and on the Server;
+* `Change Time` — when the value last changed;
+* `Event` — the most recent unacknowledged system event for the object;
+* `Source` — what the row is bound to: an object identifier or a formula.
+
+Right-clicking any column header opens the list of columns: clear a check box
+to hide that column, and set it to bring the column back. The last visible
+column cannot be hidden. The set of visible columns is saved with the window.
+
+**WARNING:** hidden columns still go into the
+[printout]({{ '/en/client/print/' | relative_url }}#contents) and the
+[export]({{ '/en/client/export/' | relative_url }}#contents) — those always
+contain every column of the table.
 
 Selecting a row activates object-specific commands in the **Item** menu.
 Right-clicking opens a context menu for the selected object and row.
@@ -31,7 +48,7 @@ an object row opens that object's graph.
 
 If there are unacknowledged events for an object, the value cell starts
 blinking. In that state, double-clicking the row acknowledges the
-related events for the object. The rightmost column shows the most
+related events for the object. The `Event` column shows the most
 recent unacknowledged system event, and a tooltip can preview the first
 few events.
 

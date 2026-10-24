@@ -47,6 +47,10 @@ Objects are added to the selected portfolio from the object panel (with the
 check box next to the object) or with the `Add Items...` command in the
 portfolio context menu.
 
+A portfolio is a set, not an ordered list: each object is in it once, and the
+objects are shown in an order the Client chooses itself — not the order in
+which they were added. That order cannot be changed.
+
 ## Summary and graphs for a portfolio {#open}
 
 Select a portfolio and choose *Summary*, *Graph* or *Table* in the
@@ -57,7 +61,10 @@ object only. How to build a report is described in
 
 ## Delete
 
-The context menu includes commands for removing individual objects from
-a portfolio or deleting the portfolio completely. If an object is
-deleted from the system, it is automatically removed from all
-portfolios.
+The `Delete` command in the context menu removes the selected object from
+its portfolio or, when the portfolio itself is selected, deletes the whole
+portfolio. If an object is deleted from the system, it is automatically
+removed from all portfolios.
+
+**WARNING:** a portfolio is deleted at once, **without confirmation**, and
+this cannot be undone — the only way back is to build it again.
