@@ -32,6 +32,8 @@ This version is not yet published on the releases page.
 
 1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 
+1. The configuration of a new installation is a demo project (objects with emulation, IEC 60870-5-104 links, archives, the users «Клиент 1» … «Клиент 10» and `guest`). Before going live, replace it with the project's configuration or delete the demo data. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
+
 ### Client
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
@@ -61,6 +63,16 @@ This version is not yet published on the releases page.
 1. Archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).
 
 1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted.
+
+1. `scada-setup` has not yet been tried on a site under Windows, and in this build the services it registers may fail to start (error 1053). Test the installation on a spare computer, and do not run `migrate --execute` on a production version 2.5 site until you have confirmed that the services start. See [Services may fail to start]({{ '/en/server/' | relative_url }}#services-start-warning).
+
+1. The OPC UA ports 4840–4848, over which the processes exchange data, are protected only by the firewall. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
+
+1. The password of the `svc` service account cannot be changed after installation. See [The svc account]({{ '/en/server/' | relative_url }}#svc).
+
+1. The `svc` and `root` passwords given to `scada-setup apply` are stored in plain text in the Windows service settings in the registry. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup-options).
+
+1. `scada-setup apply` does not restart services that are running: a new `root` password and other options take effect only after a restart. Run `scada-setup stop` before `apply` on a running installation. See [Re-running apply]({{ '/en/server/' | relative_url }}#reapply).
 
 ## 2.5.7
 
@@ -249,7 +261,28 @@ This release removed obsolete functionality.
 
 1. Client: fixed configuration [export and import]({{ '/en/client/export/' | relative_url }}) issues.
 
-## Translation status
+1. Server: IEC 60870 — fixed execution of telecontrol commands.
 
-This English page is now a functional release-history page. The Russian
-page still remains the fuller canonical record.
+## 2.0.53
+
+### New features
+
+1. Server: support for the SQLite format of the configuration database. New configuration databases are created in the SQLite format.
+
+## 2.0.52
+
+### New features
+
+1. Client: [Summary]({{ '/en/client/summary/' | relative_url }}) — the aggregation interval is saved.
+
+### Fixes
+
+1. Client: fixed filling [user table]({{ '/en/client/sheet/' | relative_url }}) cells from the object tree.
+
+1. Client: fixed editing user table cells from the formula bar.
+
+1. Client: fixed setting the cell color in the user table.
+
+1. Client: editing a user table is now available to administrators only.
+
+1. Server: fixed the `Alias!SourceTimeStamp` and `Alias!ServerTimeStamp` fields.

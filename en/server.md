@@ -10,7 +10,7 @@ permalink: /en/server/
 * TOC
 {:toc}
 
-The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux.
+The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and, on request, on Linux (see [Linux deployment](#linux)).
 
 The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
 
@@ -18,10 +18,14 @@ The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada
 
 On Windows, each Server process is installed as its own service — `Telecontrol SCADA Config`, `Telecontrol SCADA Proxy`, `Telecontrol SCADA Historian`, `Telecontrol SCADA IEC 104`, and so on (the full list is in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers)) — and starts automatically during system boot.
 
-It can also be started in console mode for diagnostics. In Linux deployments, the Server can run directly from an
-unpacked distribution or inside a containerized environment.
+It can also be started in console mode for diagnostics.
 
 ### Windows services {#services}
+
+**WARNING: in this build the services registered by `scada-setup` may fail
+to start** — see the [warning](#services-start-warning) in the `scada-setup`
+description. Test the installation on a spare computer before moving a site
+onto it.
 
 The services are registered by [`scada-setup`](#scada-setup); they run as the
 SYSTEM account and start automatically with Windows. `scada-setup stop` and
@@ -62,6 +66,29 @@ to change or remove services `scada-setup` created — `scada-setup apply` and
 `scada-setup remove` do that. The step-by-step installation is in
 [Getting started]({{ '/en/getting-started/' | relative_url }}).
 
+#### Services may fail to start {#services-start-warning}
+
+**WARNING: this version of `scada-setup` has not yet been tried on a site
+under Windows, and in this build the services it registers may fail to
+start.** Windows then reports that the service did not respond to the start
+request in a timely fashion (error 1053), and `scada-setup apply` or
+`scada-setup start` fails to start the service. The same applies to services
+installed with an executable's `--install` option. Therefore:
+
+* first run `apply` and `start` on a **spare computer**, and check with
+  `scada-setup status` that every service is running;
+* **do not run `scada-setup migrate --execute` on a production version 2.5
+  site** until you have confirmed that the services start — the command
+  removes the version 2.5 service (see
+  [Upgrading from version 2.5](#upgrade-2-5) and
+  [Rolling back to version 2.5](#rollback-2-5));
+* if a service fails to start with error 1053, contact Telecontrol
+  (mail@telecontrol.ru). For diagnostics the process can be started in
+  [console mode](#console).
+
+If the result of any command differs from what this page describes, report
+that to Telecontrol too.
+
 **Run `scada-setup` from an elevated command prompt, and always by its full
 path:**
 
@@ -80,9 +107,26 @@ by its full path, name the installation folder explicitly:
 | `apply` | Write parameter files and databases, create the [Server certificate](#opcua-certificate) if there is none, register and start the processes' services | yes |
 | `status` | License summary and each process's service state | yes |
 | `start` / `stop` | Start / stop this computer's services in order | yes |
-| `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the processes' data too) | yes |
+| `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the processes' data too — see the [warning](#remove)) | yes |
 | `generate --output <dir>` | Write the parameter files only, for inspection | no |
 | `migrate [--execute]` | Move a version 2.5 Server's data over — see [Upgrading from version 2.5](#upgrade-2-5) | with `--execute` |
+
+In its messages `scada-setup` calls the Server processes *tiers*: for
+example, `status` prints the line `Entitled tiers: config historian …` — the
+processes the license allows — and errors read
+`--tiers must name at least one tier` or
+`the license does not entitle tier(s) …`. The names in these messages are the
+same as in the `--tiers` option.
+
+**A new installation starts with a demo project.** The configuration
+databases `apply` creates are copies of the demo configuration shipped with
+the installer: objects with emulation, two enabled IEC 60870-5-104 links (one
+of them accepts connections on port 2404 of this computer — the
+`scada-iec104` process takes that port, if it is installed), two archives,
+and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Before
+going live, delete the demo devices, objects and users, or replace the
+configuration with the project's (see
+[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project)).
 
 #### Options {#scada-setup-options}
 
@@ -120,8 +164,38 @@ included:
 * `apply` without `--license` writes the default path into the parameter
   files.
 
-`apply` can be run again: it rewrites the parameter files and brings the
-services to the required state without touching data.
+`apply` can be run again: it rewrites the parameter files and re-registers
+the services with the new settings, without touching data.
+
+#### Re-running apply on running processes {#reapply}
+
+**`apply` does not restart services that are already running:** it leaves a
+running service as it is, and the service keeps working with its old
+settings. A new `root` password (`--root-password`), another license file
+(`--license`), a different `--central` or `--advertise`, and rewritten
+parameter files take effect only after the process restarts. So, when you
+change anything on a running installation, stop the processes first and then
+run `apply`, which starts them again:
+
+```bat
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
+```
+
+Do the same when changing the `root` password, when adding a process to the
+computer, and when restoring the `svc` password after a mismatch.
+
+#### Removing services and data {#remove}
+
+`remove` stops and unregisters the services; the processes' data stays.
+
+**WARNING: `remove --purge-data` without `--tiers` irreversibly deletes the
+data of all nine processes**, without asking for confirmation: the `config`,
+`proxy`, `historian`, `filestore`, `modbus`, `iec104`, `iec61850`, `opc` and
+`vidicon` folders in `%ProgramData%\Telecontrol\SCADA Server` — the
+configuration, user passwords, archives, display files and logs. Make a
+[backup](#backup) before using `--purge-data`, and always give `--tiers`
+with exactly the processes whose data must be deleted.
 
 **WARNING:** `apply` writes every `server.json` afresh from a template, and
 **all** hand edits to it are lost — on every `apply`, every upgrade included.
@@ -135,11 +209,6 @@ Windows service settings, in the `Environment` values of the registry keys
 that anyone who signs in to Windows on that computer can read them: keep
 untrusted users from signing in to the Server computers, and do not combine a
 Server computer with an operator workstation.
-
-**The behaviour of the Windows services is described from the design of the
-program**: this version of `scada-setup` has not yet been tried on a site
-under Windows. If a command's result differs from this description, report
-it to Telecontrol.
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
@@ -193,8 +262,15 @@ command prompt:
    nothing):
 
    ```bat
-   "<path to the unpacked scada-setup.exe>" migrate --tiers config,historian,filesystem,proxy
+   "<path to the unpacked scada-setup.exe>" migrate --tiers config,historian,filesystem,iec104,proxy
    ```
+
+   Besides `config`, `historian`, `filesystem` and `proxy`, give `--tiers`
+   **a protocol process for every protocol** the version 2.5 devices use (in
+   the example IEC 60870-5-104, `iec104`; `modbus` for MODBUS, `iec61850` for
+   IEC 61850). The command does not warn when one is missing: the
+   configuration is carried over, but no data is collected from that
+   protocol's devices.
 
    It lists what will be copied where, how much disk space that needs, which
    version 2.5 settings are not carried over and, under the heading
@@ -210,10 +286,13 @@ command prompt:
    The installer replaces the version 2.5 program; the data stays where it
    is. The *Telecontrol SCADA Server* service may stay registered — the next
    step stops and removes it.
-6. Run the migration with the same `--tiers` as in step 4:
+6. Run the migration with the same `--tiers` as in step 4 (read the
+   [warning](#services-start-warning) first: in this build the version 2.6
+   services may fail to start, and this command removes the version 2.5
+   service):
 
    ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" migrate --execute --tiers config,historian,filesystem,proxy --svc-password <password> --root-password <root password>
+   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" migrate --execute --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
    ```
 
    It checks the plan once more, stops and removes the *Telecontrol SCADA
@@ -225,7 +304,12 @@ command prompt:
    `security.rootPassword` or changed from the Client — is replaced on the
    2.6 processes' first start by the [root password](#root-password) given as
    `--root-password`.
-7. Connect a Client (port 2000, as before) as a user and check the objects,
+7. Install the version 2.6 Client on **every** workstation: the 2.6 Client
+   displays schematics with its own display module (see
+   [Displaying schematics]({{ '/en/getting-started/' | relative_url }}#displays)).
+   Whether a version 2.5 Client works with a 2.6 Server has not been
+   verified.
+8. Connect a Client (port 2000, as before) as a user and check the objects,
    the history and the schematics.
 
 **If `migrate --execute` fails:**
@@ -233,7 +317,9 @@ command prompt:
 * **after copying all the data** (the output has a `Copied` line for every
   line of the plan) — do not run `migrate` again: it would refuse, because
   the destination folders now exist. Fix the cause of the error and finish
-  with `apply` with the same `--tiers` and passwords;
+  with `stop` and `apply` with the same `--tiers` and passwords (if the
+  services fail to start with error 1053, see the
+  [warning](#services-start-warning));
 * **part-way through copying** — delete the `config`, `proxy`, `historian`
   and `filestore` folders it created in
   `%ProgramData%\Telecontrol\SCADA Server` (leave the version 2.5
@@ -262,6 +348,65 @@ If version 2.5 had the OPC client or the Vidicon integration enabled, in
 version 2.6 these are the separate `scada-opc` and `scada-vidicon` processes,
 and the license must include them. `migrate` says so in its list of settings
 not carried over.
+
+### Rolling back to version 2.5 {#rollback-2-5}
+
+If the 2.6 Server does not work after the migration (for example, its
+services do not start), version 2.5 can be brought back, but not by
+installing over it: **the 2.6 installer refuses to install an earlier
+version** while 2.6 is installed, and the version 2.5 *Telecontrol SCADA
+Server* service has already been removed by `migrate --execute`. On the same
+computer, from an elevated command prompt:
+
+1. Stop and remove the version 2.6 services — with the same `--tiers` as in
+   the migration, and **without** `--purge-data`:
+
+   ```bat
+   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers config,historian,filesystem,iec104,proxy
+   ```
+
+2. Uninstall version 2.6 (Control Panel — Programs and Features, or
+   `msiexec /x telecontrol-scada-<version>.msi /qn`).
+3. Install release 2.5.7 (`telecontrol-scada-2.5.7.msi` from the
+   [releases page]({{ '/en/getting-started/' | relative_url }}#download)) the
+   way you installed version 2.5, and attach the HASP or Guardant hardware
+   key.
+4. Check that the *Telecontrol SCADA Server* service is running, and connect
+   with a version 2.5 Client.
+
+`migrate` did not change the version 2.5 `Configuration`, `History` and
+`FileSystem` folders, so the 2.5 Server resumes with the data as it was at
+the migration: configuration changes and archives recorded by version 2.6 are
+not carried back. If the version 2.5 folders have already been deleted,
+restore them from the backup made before the migration. The 2.6 process
+folders (`config`, `proxy`, `historian`, `filestore` and so on) and the 2.6
+license file `license.json` are not needed by version 2.5; delete them once
+you are sure you will not need them.
+
+### Uninstalling the Server {#uninstall}
+
+**Remove the services first, then the program.** The installer removes only
+what it installed: the services registered by `scada-setup` and their
+registry settings — with the `svc` and `root` passwords in plain text —
+remain, as do the data folders and the Server certificate's private key. From
+an elevated command prompt, on every Server computer:
+
+1. Remove the services:
+
+   ```bat
+   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <this computer's processes>
+   ```
+
+2. Uninstall the program (Control Panel — Programs and Features, or
+   `msiexec /x telecontrol-scada-<version>.msi /qn`).
+3. [Back up](#backup) the data if you may need it, and delete the folders:
+   * `%ProgramData%\Telecontrol\SCADA Server` — the processes' data, the
+     license file and, if a migration from version 2.5 was done, the
+     version 2.5 folders;
+   * `C:\Program Files\Telecontrol SCADA\data\Certificates` — the
+     [Server certificate](#opcua-certificate) and its private key (if the
+     `C:\Program Files\Telecontrol SCADA` folder is still there after the
+     uninstall, delete it as a whole).
 
 ### Console mode {#console}
 
@@ -342,18 +487,10 @@ process reads its own parameter file `data/<name>.json`, where `data` is
 resolved from the executable's directory as `<program dir>/../data`, or
 the file passed with `--param`.
 
-#### Docker deployment
-
-All processes share one Docker image. The environment variable `ROLE`
-selects which process a container runs (`config`, `proxy`, `historian`,
-`filesystem`, `modbus`, `iec104`, `iec61850`), and that process's
-parameter file is mounted as `/etc/scada/<ROLE>.json`. Client
-connections are accepted by the `proxy` container on port `2000`.
-
-The parameter file supports environment-variable substitution in the
-`$ENV{VARIABLE_NAME}` form, which is useful for values such as a
-PostgreSQL connection string or the [root password](#root-password). An
-undefined variable is replaced with an empty string.
+Environment variables can be substituted into the parameter file
+(`$ENV{NAME}`, see the [parameter reference](#parameters)), for example to
+keep the [root password](#root-password) out of the file. Installation in
+Docker containers is also available on request.
 
 ## Licensing
 
@@ -477,7 +614,12 @@ old records automatically.
 
 ### Disk-space estimate
 
-The Russian source page includes a sizing rule of thumb:
+New databases are created with SQLite's standard page size of 4 KB;
+databases carried over from earlier versions keep theirs. For the permitted
+sizes, see the [SQLite limits](https://sqlite.org/limits.html).
+
+One [object]({{ '/en/architecture/' | relative_url }}#data-items) record
+takes less than 100 bytes. So the expected database size in MB is:
 
 `size = freq * depth / 10000`
 
@@ -487,8 +629,8 @@ where:
 * `freq` is the number of value changes per day
 * `depth` is the retention depth in days
 
-The inverse formula can be used to estimate the maximum retention depth
-from the available disk space.
+Or, with a known amount of free disk space, the maximum retention depth in
+days is `depth = size * 10000 / freq`.
 
 ### Working with SQLite directly
 
@@ -498,9 +640,52 @@ and earlier did); download it from the
 [SQLite download page](https://sqlite.org/download.html). The database file is
 named `history` and sits in the database's folder: change to that folder and
 run `sqlite3 history`. Open a database for writing only while its process is
-stopped (`scada-setup stop`). The Russian page also includes example commands
-such as `pragma page_size`, `.tables`, `.schema`, and simple SQL queries for
-event counts.
+stopped (`scada-setup stop`).
+
+The Server maintains its databases automatically, so this is optional. A
+convenient graphical tool is the free
+[SQLiteStudio](https://sqlitestudio.pl/). `sqlite3` runs SQL queries and a
+number of special commands; see the [SQLite documentation](https://sqlite.org/cli.html).
+
+#### Examples
+
+The database page size:
+
+```SQL
+sqlite> pragma page_size;
+4096
+```
+
+The tables: parameter values (`timed_data`), the latest object values
+(`items_info`), and one table per event type:
+
+```SQL
+sqlite> .tables
+AuditActivateSessionEventType  OperatorActionAuditEventType
+AuditUpdateMethodEventType     SystemEventType
+DeviceWatchEventType           items_info
+ItemAlarmEventType             timed_data
+```
+
+A database carried over from an earlier version may also have an
+`events_v1_backup` table — the original old-format event table, whose data
+has already been moved to `SystemEventType`.
+
+The schema of the system events table:
+
+```SQL
+sqlite> .schema SystemEventType
+CREATE TABLE SystemEventType(EventID INTEGER PRIMARY KEY NOT NULL, Time INTEGER NOT NULL, ReceiveTime INTEGER NOT NULL, ChangeMask INTEGER, Severity INTEGER, NodeNS INTEGER NOT NULL, NodeID INTEGER NOT NULL, UserID INTEGER, Value FLOAT, Qualifier INTEGER, Message TEXT, Acked BOOLEAN NOT NULL, AckTime INTEGER, AckUserID INTEGER, SourceName TEXT, MessageLocale TEXT, SourceNameLocale TEXT);
+CREATE INDEX SystemEventType_TimeIndex ON SystemEventType(Time);
+CREATE INDEX SystemEventType_NodeIndex ON SystemEventType(NodeNS, NodeID);
+```
+
+The number of system events in the archive:
+
+```SQL
+sqlite> select count(*) from SystemEventType;
+86
+```
 
 ## Server-side file system {#filesystem}
 
@@ -540,7 +725,7 @@ Each process writes text log files named
 | `log.max_file_size` | `10` | Maximum size of one log file in MB |
 | `log.max_total_size` | `100` | Maximum total log size in MB |
 | `log.max_count` | `1000` | Maximum number of log files |
-| `log.console_severity` | — | Lowest level of the messages printed **to the screen** in [console mode](#console) or to a container's output: `Trace`, `Debug`, `Info`, `Warning`, `Error` or `Critical`. Does not affect the log files |
+| `log.console_severity` | — | Lowest level of the messages printed **to the screen** in [console mode](#console): `Trace`, `Debug`, `Info`, `Warning`, `Error` or `Critical`. Does not affect the log files |
 
 A new file is started when the current one reaches its maximum size, and
 every day at midnight. Old files are deleted automatically when the total
@@ -555,7 +740,18 @@ see them, start the process in [console mode](#console).
 
 * **Service and license state** — `scada-setup status` on each computer
   (from an elevated command prompt): the license expiry, the processes it
-  entitles, and the state of each process's service.
+  entitles, and the state of each process's service. It prints, for
+  example:
+
+  ```text
+  License: C:\ProgramData\Telecontrol\SCADA Server\license.json (expires 2027-01-31T00:00:00Z)
+  Entitled tiers: config historian filesystem iec104 proxy
+  config       SERVICE_RUNNING
+  historian    SERVICE_RUNNING
+  ```
+
+  A running service shows `SERVICE_RUNNING`, a stopped one
+  `SERVICE_STOPPED`, and one the computer does not have `not installed`.
 * **Process logs** — see [Logging](#logging). Why a process stopped (license,
   certificate) is written to its log; an error in the parameter file is not —
   only [console mode](#console) shows it.
@@ -616,7 +812,9 @@ takes the variable's value from `--root-password` (or the
 processes' Windows service settings — in plain text, in the registry (see
 the [warning](#scada-setup-options) in the `scada-setup` description). On a computer running one of those
 processes, `apply` refuses to run without it. To change the root password,
-run `apply` with the new value; do not edit the generated parameter files,
+stop the processes (`scada-setup stop`) and run `apply` with the new value:
+`apply` does not restart running processes, which would keep accepting the
+old password (see [Re-running apply](#reapply)). Do not edit the generated parameter files,
 which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
@@ -647,8 +845,9 @@ the registry).
 * **Do not change or delete the `svc` account** in the Client's *Users*
   window: that breaks the links between the processes too.
 * When the passwords differ, the protocol process keeps running but gets no
-  configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Run
-  `apply` on that computer with the original `svc` password.
+  configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Stop
+  the processes on that computer (`scada-setup stop`) and run `apply` with
+  the original `svc` password (see [Re-running apply](#reapply)).
 
 ## OPC UA server {#opcua}
 
@@ -933,8 +1132,8 @@ On a new or rebuilt computer:
    restored databases, and with a different one the processes cannot connect
    to each other. `apply` registers and starts the services, and keeps the
    restored databases and certificate. If the site's other computers name this
-   one in `--central` by an address that has changed, run `apply` there with
-   the new address.
+   one in `--central` by an address that has changed, run `stop` there and
+   then `apply` with the new address.
 5. Check the result: `scada-setup status`.
 
 With a new certificate, third-party OPC UA clients that trusted the old one

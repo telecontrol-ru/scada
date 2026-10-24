@@ -14,8 +14,8 @@ The system uses a client-server architecture. The Server is a set of
 separate processes: protocol processes (MODBUS, IEC 60870-5-104, IEC 61850
 and others), the archive, the configuration, the file store, and a proxy
 that Clients connect to. The processes are purchased separately and the
-license lists the ones purchased. Even a small site needs more than one
-protocol process: the smallest set is `scada-config`, one or more protocol
+license lists the ones purchased. A protocol process on its own is not
+enough, even on a small site: the smallest set is `scada-config`, one or more protocol
 processes, `scada-filesystem` and `scada-proxy`, and the archive of values
 and events — and so any report or summary over the archive — also needs
 `scada-historian`. See
@@ -65,7 +65,6 @@ Example of a distributed deployment:
   [summaries]({{ '/en/client/summary/' | relative_url }}) with archive
   aggregation
 * [User tables]({{ '/en/client/sheet/' | relative_url }}) with formulas
-  and conditional formatting
 * Telemetry acquisition and control over
   [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus),
   [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870), and

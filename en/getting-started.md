@@ -76,6 +76,14 @@ installer does not add that folder to `PATH`, and the tool finds its
 templates relative to the path it was invoked by: typed as a bare
 `scada-setup`, even from the `bin` folder, it may not find them.
 
+**WARNING: in this build the services `scada-setup` registers may fail to
+start** (Windows reports error 1053: the service did not respond to the start
+request in a timely fashion). This version of `scada-setup` has not yet been
+tried on a site under Windows. Install on a spare computer first and check
+with `status` that every service is running; if a service fails to start
+with error 1053, contact Telecontrol. See
+[Services may fail to start]({{ '/en/server/' | relative_url }}#services-start-warning).
+
 1. Install the package:
 
    ```bat
@@ -115,6 +123,11 @@ right order. To check the result:
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" status
 ```
+
+In `scada-setup`'s messages the processes are called *tiers*: the line
+`Entitled tiers: …` lists the processes the license allows, and below it the
+state of each process's service is printed (`SERVICE_RUNNING` means it is
+running).
 
 **WARNING: the `svc` and `root` passwords are stored in plain text.**
 `apply` writes them into the Windows service settings — the registry, in the
@@ -180,7 +193,7 @@ belong, remove their services (the processes' data stays):
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <the extra processes, comma-separated>
 ```
 
-### Displaying schematics
+### Displaying schematics {#displays}
 
 The version 2.6 Client renders Modus schematics (`.sde` and `.xsde` files)
 itself, through a display module that has to be in the Client's folder,
@@ -239,10 +252,13 @@ and the [computer's parameters](#host-parameters):
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
 ```
 
-**Adding a process.** Replace the file with the new license on every computer,
-and on the computer that will run the new process, run `scada-setup apply`
-with that computer's full process list in `--tiers`, the new one included,
-and the same other options as at installation. Write the new list down.
+**Adding a process.** Replace the file with the new license on every
+computer. On the computer that will run the new process, stop the processes
+(`scada-setup stop`) and run `scada-setup apply` with that computer's full
+process list in `--tiers`, the new one included, and the same other options
+as at installation: `apply` does not restart running services (see
+[Re-running apply]({{ '/en/server/' | relative_url }}#reapply)). Write the
+new list down.
 
 Parameter files written by `scada-setup` already contain
 `"license": {"require_gcp_binding": false}`. **If you write a parameter file by
@@ -263,9 +279,11 @@ has its own `root` account, which would otherwise accept an empty password.
 processes rather than in the parameter files, and the processes write it again
 on every start. So:
 
-* **to change the root password, run `scada-setup apply` with the new
-  `--root-password`** — a password changed from the Client is replaced by the
-  one given to `apply` the next time the process starts;
+* **to change the root password, stop the processes (`scada-setup stop`)
+  and run `scada-setup apply` with the new `--root-password`** — `apply` does
+  not restart running processes, and without `stop` they would keep accepting
+  the old password. A password changed from the Client is replaced by the one
+  given to `apply` the next time the process starts;
 * give the current root password on every later `apply`, upgrades included.
 
 See [Root password]({{ '/en/server/' | relative_url }}#root-password).
@@ -310,7 +328,18 @@ to the Server, allow it port 4840 from its address only (see
 Ports 2001–2008 of the other processes accept user sign-ins too, but Clients
 do not need them: keep them closed.
 
-## Initial project setup
+## Preparing the project {#project}
+
+**The configuration of a new installation is a demo project.** The
+databases `apply` creates are copies of the demo configuration shipped with
+the installer: 41 analog and 52 discrete objects, emulation signals, two
+enabled IEC 60870-5-104 links (one of them accepts connections on port 2404
+of this computer), two archives, and the users «Клиент 1» … «Клиент 10» and
+`guest`, which have no passwords set. Until the configuration is replaced,
+the `scada-iec104` process, if installed, takes port 2404 and works with the
+demo devices. **Before going live**, either replace the configuration with
+the project's (below), or delete the demo devices, objects and users in the
+Client (see [Development]({{ '/en/development/' | relative_url }})).
 
 If you have a ready project configuration database (a version 2.6
 `configuration.sqlite3`), put it in the `Configuration` folders of three
@@ -394,6 +423,11 @@ If the `Sign in automatically next time` box is ticked, the Client reuses the sa
 
 ## First steps after login
 
+**Until the configuration is replaced, what you see is the demo project**
+(see [Preparing the project](#project)): its objects, devices and the users
+«Клиент 1» … «Клиент 10» and `guest` are demo data. Delete them or replace
+the configuration before the system goes live.
+
 After you sign in:
 
 1. Open the object panel with `More -> Objects`. The object tree
@@ -443,8 +477,19 @@ processes, `--root-password` may be omitted.
 A version 2.5 Server ran as a single *Telecontrol SCADA Server* service and
 used a hardware key. The version 2.6 installer replaces the version 2.5
 program, so **check the migration plan before installing 2.6**: what blocks
-the migration can only be fixed in version 2.5. On the computer where the
-2.5 Server ran:
+the migration can only be fixed in version 2.5.
+
+**WARNING: do not run `migrate --execute` on a production version 2.5 site
+until you have confirmed that the 2.6 services start.** In this build the
+services `scada-setup` registers may fail to start (error 1053), and
+`migrate --execute` removes the version 2.5 service. Test `apply` and
+`start` on a spare computer first (see
+[Services may fail to start]({{ '/en/server/' | relative_url }}#services-start-warning));
+if a service fails to start with error 1053, contact Telecontrol. How to go
+back to version 2.5 is described in
+[Rolling back to version 2.5]({{ '/en/server/' | relative_url }}#rollback-2-5).
+
+On the computer where the 2.5 Server ran:
 
 1. Obtain a version 2.6 license and put it at
    `%ProgramData%\Telecontrol\SCADA Server\license.json`.
@@ -459,8 +504,14 @@ the migration can only be fixed in version 2.5. On the computer where the
 5. From an elevated command prompt, run:
 
    ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" migrate --execute --tiers <this computer's processes> --svc-password <password> --root-password <root password>
+   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" migrate --execute --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
    ```
+
+   In `--tiers`, list this computer's processes: `config`, `historian`,
+   `filesystem`, `proxy` and **a protocol process for every protocol** the
+   version 2.5 devices use (in the example `iec104`; `modbus` for MODBUS,
+   `iec61850` for IEC 61850). The command does not warn when one is missing,
+   and no data is then collected from that protocol's devices.
 
    It removes the old service, copies the configuration, the users with their
    passwords, the history and the schematic files into the version 2.6
@@ -468,12 +519,24 @@ the migration can only be fixed in version 2.5. On the computer where the
    Server certificate included). The version 2.5 root password is replaced by
    the one given as `--root-password` (see [Root password](#root-password)).
    **If the command fails after copying, do not run `migrate` again** —
-   finish with `apply` with the same `--tiers` and passwords (see
+   finish with `stop` and `apply` with the same `--tiers` and passwords (see
    [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5)).
-6. Check the result from the Client.
+6. Install the version 2.6 Client on **every** workstation (see
+   [Displaying schematics](#displays)): whether a version 2.5 Client works
+   with a 2.6 Server has not been verified.
+7. Check the result from the Client.
 
 The old `Configuration`, `History` and `FileSystem` folders are neither
 changed nor deleted.
+
+### Uninstalling {#uninstall}
+
+Before uninstalling the program, remove the services with
+`scada-setup remove --tiers <this computer's processes>`: the installer
+removes neither the services, nor their registry settings with the `svc` and
+`root` passwords, nor the data folders and the certificate's private key. The
+steps are in
+[Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 ## Troubleshooting
 
@@ -481,6 +544,18 @@ Run the `scada-setup` commands below by their full path from an elevated
 command prompt — `status` included.
 
 <dl>
+
+<dt>A service does not start, and Windows reports error 1053</dt>
+<dd>In this build the services registered by <code>scada-setup</code> may
+fail to start. Contact Telecontrol; for diagnostics the process can be
+started in
+<a href="{{ '/en/server/' | relative_url }}#console">console mode</a>. See
+<a href="{{ '/en/server/' | relative_url }}#services-start-warning">Services may fail to start</a>.</dd>
+
+<dt>A new <code>root</code> password or other <code>apply</code> options have no effect</dt>
+<dd><code>apply</code> does not restart running services. Run
+<code>scada-setup stop</code>, then <code>apply</code> (see
+<a href="{{ '/en/server/' | relative_url }}#reapply">Re-running apply</a>).</dd>
 
 <dt>Client cannot connect to the Server</dt>
 <dd>Check that the <em>Telecontrol SCADA Proxy</em> service is running
@@ -506,8 +581,8 @@ read the message.</dd>
 <dt>Protocol processes get no configuration</dt>
 <dd>If a protocol process's log shows <code>Bad_UserAccessDenied</code>, the
 <code>svc</code> password on that computer differs from the central
-computer's. Run <code>apply</code> there with the original <code>svc</code>
-password (see <a href="{{ '/en/server/' | relative_url }}#svc">The svc
+computer's. Run <code>scada-setup stop</code> there, then <code>apply</code>
+with the original <code>svc</code> password (see <a href="{{ '/en/server/' | relative_url }}#svc">The svc
 account</a>).</dd>
 
 <dt>Every process stopped after the license file was replaced</dt>

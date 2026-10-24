@@ -24,7 +24,7 @@ The main data flow is:
 
 ## Server processes {#tiers}
 
-The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (or run as its own process on Linux), reads its own parameter file, and is purchased separately: one installer carries every process, and the license names the ones purchased for the site.
+The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (or, in a Linux installation, which is available on request, run as its own process), reads its own parameter file, and is purchased separately: one installer carries every process, and the license names the ones purchased for the site.
 
 | Process | Windows service | Role |
 |:---|:---|:---|
@@ -354,6 +354,11 @@ structure, and users. It lives in a local database owned by
 keep configuration databases of their own). It is updated immediately when edited so that
 changes are reflected across the running system without waiting for a
 manual save step.
+
+On a new installation the configuration is a demo project; before going
+live, replace it with the project's configuration or delete the demo
+objects, devices and users — see
+[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 Configuration is edited with the built-in engineering tools, and
 requires the *Configure* right.
