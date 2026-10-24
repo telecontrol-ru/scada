@@ -64,7 +64,7 @@ This version is not yet published on the releases page.
 
 1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted.
 
-1. `scada-setup` has not yet been tried on a site under Windows, and in this build the services it registers may fail to start (error 1053). Test the installation on a spare computer, and do not run `migrate --execute` on a production version 2.5 site until you have confirmed that the services start. See [Services may fail to start]({{ '/en/server/' | relative_url }}#services-start-warning).
+1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
 1. The OPC UA ports 4840–4848, over which the processes exchange data, are protected only by the firewall. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 

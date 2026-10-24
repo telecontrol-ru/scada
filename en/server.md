@@ -22,11 +22,6 @@ It can also be started in console mode for diagnostics.
 
 ### Windows services {#services}
 
-**WARNING: in this build the services registered by `scada-setup` may fail
-to start** — see the [warning](#services-start-warning) in the `scada-setup`
-description. Test the installation on a spare computer before moving a site
-onto it.
-
 The services are registered by [`scada-setup`](#scada-setup); they run as the
 SYSTEM account and start automatically with Windows. `scada-setup stop` and
 `scada-setup start` stop and start all of a computer's services in the right
@@ -66,28 +61,9 @@ to change or remove services `scada-setup` created — `scada-setup apply` and
 `scada-setup remove` do that. The step-by-step installation is in
 [Getting started]({{ '/en/getting-started/' | relative_url }}).
 
-#### Services may fail to start {#services-start-warning}
-
-**WARNING: this version of `scada-setup` has not yet been tried on a site
-under Windows, and in this build the services it registers may fail to
-start.** Windows then reports that the service did not respond to the start
-request in a timely fashion (error 1053), and `scada-setup apply` or
-`scada-setup start` fails to start the service. The same applies to services
-installed with an executable's `--install` option. Therefore:
-
-* first run `apply` and `start` on a **spare computer**, and check with
-  `scada-setup status` that every service is running;
-* **do not run `scada-setup migrate --execute` on a production version 2.5
-  site** until you have confirmed that the services start — the command
-  removes the version 2.5 service (see
-  [Upgrading from version 2.5](#upgrade-2-5) and
-  [Rolling back to version 2.5](#rollback-2-5));
-* if a service fails to start with error 1053, contact Telecontrol
-  (mail@telecontrol.ru). For diagnostics the process can be started in
-  [console mode](#console).
-
-If the result of any command differs from what this page describes, report
-that to Telecontrol too.
+**This version of `scada-setup` has not yet been tried on a site under
+Windows.** If the result of any command differs from what this page
+describes, report that to Telecontrol (mail@telecontrol.ru).
 
 **Run `scada-setup` from an elevated command prompt, and always by its full
 path:**
@@ -286,10 +262,7 @@ command prompt:
    The installer replaces the version 2.5 program; the data stays where it
    is. The *Telecontrol SCADA Server* service may stay registered — the next
    step stops and removes it.
-6. Run the migration with the same `--tiers` as in step 4 (read the
-   [warning](#services-start-warning) first: in this build the version 2.6
-   services may fail to start, and this command removes the version 2.5
-   service):
+6. Run the migration with the same `--tiers` as in step 4:
 
    ```bat
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" migrate --execute --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
@@ -317,9 +290,7 @@ command prompt:
 * **after copying all the data** (the output has a `Copied` line for every
   line of the plan) — do not run `migrate` again: it would refuse, because
   the destination folders now exist. Fix the cause of the error and finish
-  with `stop` and `apply` with the same `--tiers` and passwords (if the
-  services fail to start with error 1053, see the
-  [warning](#services-start-warning));
+  with `stop` and `apply` with the same `--tiers` and passwords;
 * **part-way through copying** — delete the `config`, `proxy`, `historian`
   and `filestore` folders it created in
   `%ProgramData%\Telecontrol\SCADA Server` (leave the version 2.5

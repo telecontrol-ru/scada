@@ -76,14 +76,6 @@ installer does not add that folder to `PATH`, and the tool finds its
 templates relative to the path it was invoked by: typed as a bare
 `scada-setup`, even from the `bin` folder, it may not find them.
 
-**WARNING: in this build the services `scada-setup` registers may fail to
-start** (Windows reports error 1053: the service did not respond to the start
-request in a timely fashion). This version of `scada-setup` has not yet been
-tried on a site under Windows. Install on a spare computer first and check
-with `status` that every service is running; if a service fails to start
-with error 1053, contact Telecontrol. See
-[Services may fail to start]({{ '/en/server/' | relative_url }}#services-start-warning).
-
 1. Install the package:
 
    ```bat
@@ -479,14 +471,7 @@ used a hardware key. The version 2.6 installer replaces the version 2.5
 program, so **check the migration plan before installing 2.6**: what blocks
 the migration can only be fixed in version 2.5.
 
-**WARNING: do not run `migrate --execute` on a production version 2.5 site
-until you have confirmed that the 2.6 services start.** In this build the
-services `scada-setup` registers may fail to start (error 1053), and
-`migrate --execute` removes the version 2.5 service. Test `apply` and
-`start` on a spare computer first (see
-[Services may fail to start]({{ '/en/server/' | relative_url }}#services-start-warning));
-if a service fails to start with error 1053, contact Telecontrol. How to go
-back to version 2.5 is described in
+How to go back to version 2.5 is described in
 [Rolling back to version 2.5]({{ '/en/server/' | relative_url }}#rollback-2-5).
 
 On the computer where the 2.5 Server ran:
@@ -544,13 +529,6 @@ Run the `scada-setup` commands below by their full path from an elevated
 command prompt — `status` included.
 
 <dl>
-
-<dt>A service does not start, and Windows reports error 1053</dt>
-<dd>In this build the services registered by <code>scada-setup</code> may
-fail to start. Contact Telecontrol; for diagnostics the process can be
-started in
-<a href="{{ '/en/server/' | relative_url }}#console">console mode</a>. See
-<a href="{{ '/en/server/' | relative_url }}#services-start-warning">Services may fail to start</a>.</dd>
 
 <dt>A new <code>root</code> password or other <code>apply</code> options have no effect</dt>
 <dd><code>apply</code> does not restart running services. Run
