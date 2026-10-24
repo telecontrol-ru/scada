@@ -69,10 +69,12 @@ and `{u35_s1}` are not references. A Cyrillic `ТИТ.1` is neither a
 designation nor a channel reference — it is found only if an alias with that
 exact text exists.
 
-**WARNING:** in tables and user tables a device-channel reference works only
-when it is the whole formula. Inside an expression (for example
+**WARNING:** in tables, user tables and the Control condition a
+device-channel reference works only when it is the whole formula. Inside an expression (for example
 `{IEC_DEV.1!115} * 2`) the Client in this version does not find it. Refer
-there to the object that receives its value from that channel.
+there to the object that receives its value from that channel. A control
+condition such as `{IEC_DEV.1!5} = 1` is therefore never met, and control of
+the object stays blocked.
 
 ### A leading `=`
 

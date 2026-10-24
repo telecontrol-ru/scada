@@ -88,7 +88,13 @@ After creating a direction and a device, make sure data is flowing:
    (configuration error), which the Client shows in Russian letters — see
    [Quality flags]({{ '/en/architecture/' | relative_url }}#quality-flags).
 5. For a controllable object, send a test command and check in Watch that the
-   device confirmed it. Skip this step for IEC 61850 devices: remote control
+   device confirmed it.
+   **WARNING:** for IEC 60870-5 the Client in this version reports success
+   even when the device rejected the command. Check the device's reply in
+   Watch: a cause of transmission 44–47 (`UNKNOWN_TYPE`, `UNKNOWN_COT`,
+   `UNKNOWN_DEVICE`, `UNKNOWN_ADDRESS` — unknown type, cause, common ASDU
+   address or object address) means the command was not executed, whatever
+   the Client reports. Skip this step for IEC 61850 devices: remote control
    does not work for them in this version (see
    [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)). Instead,
    check that values arrive through every report control block you
@@ -516,6 +522,12 @@ to.
      get in the way;
    * k, w, t1–t3 and the field sizes — as agreed with the DC;
    * Disabled = No.
+
+   The ASDU types of retransmission are not configurable: in general
+   interrogation and spontaneous traffic alike the SCADA sends TS objects as
+   `M_SP_TB_1` (30, single-point information with time tag) and TIT objects
+   as `M_ME_TF_1` (36, short floating-point value with time tag). Agree these
+   types with the DC.
 3. Under the direction, `Create -> IEC 60870 device`. Set its Address — the
    common ASDU address the DC uses for the SCADA — and Disabled = No.
 4. Select the device and open the `Transmission Table`. The table has no
@@ -556,6 +568,13 @@ block) can be created, with its Address set to the block's MMS address in
 the device model, for example `LD0/LLN0$RP$urcbA01` (unbuffered) or
 `LD0/LLN0$BR$brcbA01` (buffered). The device model appears in the Model
 subtree.
+
+**WARNING:** set the RCB Address while the device has Disabled = Yes, type
+the functional constraint exactly as `RP` or `BR`, and enable the device
+last. In this version changing an RCB or the device while they are enabled,
+or an Address with any other functional constraint, can crash the
+`scada-iec61850` process; plan later changes for a maintenance window. See
+[IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 **Without a report control block the device's objects receive no values**:
 the Server gets IEC 61850 data only from reports, and an object receives a

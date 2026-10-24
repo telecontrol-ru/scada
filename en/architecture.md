@@ -60,7 +60,7 @@ Address and port configuration is described in the Server section on
 
 ## Roles and permissions
 
-Each user account is given two independent rights, *Control* and *Configure*. Their combinations give four familiar profiles:
+An account holds two independent rights, *Control* and *Configure*, through membership of OPC UA roles: Control comes with the `Operator` role, Configure with the `ConfigureAdmin` role. Their combinations give four familiar profiles:
 
 | Rights | Control, manual input and limits | Configuration editing |
 |:---|:---:|:---:|
@@ -71,7 +71,9 @@ Each user account is given two independent rights, *Control* and *Configure*. Th
 
 Control commands, manual value entry and limit changes need the Control right, including limits in the object's properties (the Limits group). The Configure right does not grant them. The configuration, conversely, is changed only with the Configure right; the Control right can only enable and disable devices.
 
-Users authenticate with a name and password. The Server checks each request against OPC UA roles derived from these rights, which determine access to control operations, manual value entry, engineering tools, and user administration.
+Users authenticate with a name and password. The Server grants the session rights from the roles the account is a member of and checks each request against them; the roles determine access to control operations, manual value entry, engineering tools, and user administration.
+
+**WARNING:** in this version an account's Permissions property grants nothing, and the Client cannot make a new account a member of a role: a user created in the Client can only view data. Accounts that existed before the upgrade keep their rights. See [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights).
 
 For user setup details, see
 [User configuration]({{ '/en/dev/users/' | relative_url }}).

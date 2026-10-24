@@ -144,6 +144,22 @@ spontaneous reports of changes. Messages about the block subscription and
 its dataset are shown in the
 [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window.
 
+**WARNING: changing an RCB can crash the `scada-iec61850` process.** In
+this version any change to a report control block, or to its IEC 61850
+device, while both are enabled recreates them on the Server, and the
+`scada-iec61850` process may terminate abnormally — until it restarts, no
+data arrives from any IEC 61850 device. An RCB Address whose functional
+constraint is neither `RP` nor `BR` crashes it too. So:
+
+1. Create the blocks and set their Address while the device has
+   Disabled = Yes.
+2. Type the functional constraint in the address exactly as `RP` or `BR`
+   (Latin capitals).
+3. Enable the device (Disabled = No) last, once every block's address is
+   set.
+4. Plan later changes to an RCB or to the device for a maintenance window:
+   they may restart the process.
+
 Object binding uses MMS addresses in the format
 `LogicalDevice/LogicalNode$FC$DataObject`. TS objects bind to `FC=ST`
 objects, TIT objects to `FC=MX` objects.

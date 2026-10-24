@@ -27,7 +27,8 @@ data.
 ## Control conditions
 
 A control channel can include a logical control condition. When the
-condition is true, control is enabled:
+condition is true, control is enabled in the Client's Control window (see the
+Control condition property below for details and limitations):
 
 ![]({{ '/img/ti-remote-control-enabled.png' | relative_url }})
 
@@ -51,7 +52,11 @@ object or `Element Properties` for an object group.
 ## Creating objects
 
 Objects can be created only inside an object group, and groups can be
-nested inside other groups.
+nested inside other groups. The first group is created at the root of the
+object tree, All objects («Все объекты»): select it and choose
+`Create -> Group`. Objects are created in the selected group with
+`Create -> Status signal object` and `Create -> Analogue measurement object`
+(Russian UI: «Объект ТС», «Объект ТИТ»).
 
 Single objects or object series are created through the `Create` menu:
 
@@ -243,7 +248,14 @@ source.</dd>
 <dd>A logical expression that enables or blocks control. It usually
 references discrete-object aliases or their designations, such as
 <code>TS.1379</code> (see <a href="{{ '/en/formulas/' | relative_url }}">Formulas</a>).
-Do not start it with <code>=</code>.</dd>
+Do not start it with <code>=</code>. The condition is checked only by the Client's Control window: commands
+arriving by retransmission from a dispatch centre or from external OPC UA
+clients are not checked against it, so it does not replace an interlock on
+the Server or in the device. Use a device-channel reference (for example
+<code>{IEC_DEV.1!5}</code>) only as the whole expression: inside an expression such as
+<code>{IEC_DEV.1!5} = 1</code> the Client does not find it, the condition is never
+met and control stays blocked — refer to the TS object that receives the
+channel's value instead.</dd>
 
 <dt>Stale timeout, s</dt>
 <dd>If the value is not updated within this interval, it is marked as

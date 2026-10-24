@@ -13,12 +13,13 @@ permalink: /en/dev/users/
 
 The users window is opened from the main menu with `More -> Users`, or from the
 Users button at the foot of the section rail. It is available only to an
-account holding the configure right.
+account holding the Configure right (the `ConfigureAdmin` role).
 
 ![]({{ '/img/users.png' | relative_url }})
 
 Double-clicking a user row starts editing its properties: the name, the
-description and the access rights.
+description and the permissions. In this version the Permissions
+property grants nothing — see [Access rights](#access-rights).
 
 To create a new user, choose `Create -> User` from the window's context menu.
 
@@ -49,30 +50,31 @@ reset) does not. The server sets what a password must satisfy — see
   session; answering yes disconnects the first `root` session. Give each
   administrator a user of their own rather than sharing `root`.
 
-## Access rights
+## Access rights {#access-rights}
 
-An account's Rights property is two independent permissions:
+What an account may do after signing in is decided by the server from the
+**OPC UA roles** it is a member of. Two roles carry the rights:
 
 <dl>
 
-<dt>Control</dt>
+<dt>Operator — the Control right</dt>
 <dd>Issuing control and setpoint commands, manual value entry, editing
 limits.</dd>
 
-<dt>Configure</dt>
+<dt>ConfigureAdmin — the Configure right</dt>
 <dd>Creating, changing and deleting objects, devices and accounts. It does
 not grant control commands, manual value entry or limit changes.</dd>
 
 </dl>
 
-Their combinations give the four familiar values:
+Their combinations give the four familiar levels:
 
-| Rights | Control, manual input and limits | Configuration editing |
-|:---|:---:|:---:|
-| 0 - Executive / viewer | No | No |
-| 1 - SCADA engineer | No | Yes |
-| 2 - Dispatcher | Yes | No |
-| 3 - Administrator | Yes | Yes |
+| Level | Account's roles | Control, manual input and limits | Configuration editing |
+|:---|:---|:---:|:---:|
+| 0 - Executive / viewer | none | No | No |
+| 1 - SCADA engineer | `ConfigureAdmin` | No | Yes |
+| 2 - Dispatcher | `Operator` | Yes | No |
+| 3 - Administrator | `Operator` and `ConfigureAdmin` | Yes | Yes |
 
 Control and setpoint commands, manual value entry and limit changes need the
 Control right. The limits of a TIT object also appear in its properties (the
@@ -84,24 +86,38 @@ The configuration, conversely, is changed only with the Configure right. The
 one exception is a device's Enable and Disable commands: taking a device out
 of service and back needs only the Control right.
 
-## Roles
+**WARNING: in this version an account's Permissions property (Russian UI:
+«Права») grants nothing.** You can still enter a value (0–3), but at sign-in
+the server grants rights from roles alone. A user created in the Client with
+Permissions = 3 can only view data after signing in: the Roles column of the
+Users window shows None («Нет»). This version has no way in the Client to make
+a new account a member of `Operator` or `ConfigureAdmin` — the Roles window is
+read-only, and the `scada-setup` installer assigns no roles. If a new user
+needs control or configuration rights, contact Telecontrol
+(mail@telecontrol.ru) in advance, before the site goes into service.
 
-The server does not check requests against those two bits directly. It checks
-**OPC UA roles**, derived from them:
+Accounts that existed before the upgrade to this version, including those
+migrated from version 2.5, keep their rights: on its first start the server
+converts their Permissions value, once, into membership of `Operator` and
+`ConfigureAdmin`. The `root` account keeps full rights regardless of roles.
+
+## Roles {#roles}
+
+The roles the server grants a session:
 
 * every authenticated account gets the `Observer` role — reading values,
   history and events
-* the Control right adds `Operator` — writing values and calling methods,
-  including control commands, manual value entry and limit changes; this role
-  does not change the configuration, except to enable or disable a device
-* the Configure right adds `Engineer`, `Supervisor`, `ConfigureAdmin` and
+* `Operator` — writing values and calling methods, including control
+  commands, manual value entry and limit changes; this role does not change
+  the configuration, except to enable or disable a device
+* `ConfigureAdmin` also gives the session `Engineer`, `Supervisor` and
   `SecurityAdmin` — changing the configuration, including adding and deleting
   nodes, but not writing object values or their limits and not issuing
   control commands: the server allows those to the `Operator` role alone
 * an anonymous session gets the `Anonymous` role alone
 
 An account may hold several roles at once, and their permissions combine. It is
-the roles, not the pair of bits, that the
+the roles that the
 [Users]({{ '/en/client/workbench/#users' | relative_url }}) window and the
 workbench's Access rights panel show; the panel derives from them what the
 account may view, control and configure.
