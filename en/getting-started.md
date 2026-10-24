@@ -60,9 +60,20 @@ the license does not name stops right after it starts, and
 All the processes may run on one computer or be spread over several.
 **`scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem`
 always go on one and the same computer — the central one**; the protocol
-processes go on it too or on computers near the equipment. What each process
+processes go on it too or on other computers of the site. What each process
 does, and the start order, are described in
 [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
+
+**Each protocol process is installed on one computer of the site only, and
+serves every device of its protocol.** It receives the whole configuration
+from `scada-config`: in this version the devices of one protocol cannot be
+split between computers. Different protocol processes may go on different
+computers (for example `scada-modbus` on one and `scada-iec104` on another).
+
+**WARNING:** do not install the same protocol process (for example
+`scada-iec104`) on two computers: both processes would connect to every
+device of that protocol. Choose one computer for each process, one from
+which every device of its protocol can be reached.
 
 ## Installation on Windows
 
@@ -79,8 +90,14 @@ templates relative to the path it was invoked by: typed as a bare
 1. Install the package:
 
    ```bat
-   msiexec /i telecontrol-scada-<version>.msi /qn
+   msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log
    ```
+
+   `/qn` installs the package without any windows, `/norestart` keeps
+   Windows Installer from restarting the computer by itself, and
+   `/l*v install.log` writes a detailed installation log to `install.log`,
+   which is what an installation error is diagnosed from (these are general
+   Windows Installer options).
 
 2. Put the license file at
    `%ProgramData%\Telecontrol\SCADA Server\license.json`.
@@ -127,7 +144,8 @@ running).
 `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>` keys.
 Assume that anyone who signs in to Windows on that computer can read them:
 keep untrusted users from signing in to the Server computers, and do not
-install the Client on a Server computer that operators work at.
+make a Server computer an operator workstation. The Server installer puts
+the Client on the computer too (see [Installing the Client](#client-install)).
 
 **Several computers.** Set up the central computer first, then the computers
 running protocol processes, giving them the central computer's address:
@@ -135,7 +153,7 @@ running protocol processes, giving them the central computer's address:
 ```bat
 rem Central computer:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers config,historian,filesystem,proxy --svc-password <password> --root-password <root password>
-rem Computer near the equipment:
+rem Computer running protocol processes:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers modbus,iec104 --central 10.0.0.10 --svc-password <password>
 ```
 
@@ -145,9 +163,8 @@ remaining links between processes are set up automatically. All
 `scada-setup` commands are described in the
 [Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
 
-The graphical Client is installed on one or more workstations. The Server and
-the Client may share a computer if only trusted users work at it (see the
-password warning above).
+How to install the Client on the operator workstations is described below,
+in [Installing the Client](#client-install).
 
 ### The computer's parameters {#host-parameters}
 
@@ -160,6 +177,8 @@ for each computer,** and keep with the passwords:
 * `--advertise` — if you gave one;
 * `--license` — if the license file is not at
   `%ProgramData%\Telecontrol\SCADA Server\license.json`;
+* `--data-root` and `--install-root` — if you gave a non-standard data
+  folder or installation folder;
 * the `svc` password and the `root` password.
 
 **Give these options to every `apply` and `start` on that computer** (and
@@ -176,7 +195,12 @@ the passwords to `apply`), upgrades and restores included:
   writes that path into the parameter files and services.
 
 `stop`, `status` and `remove` without `--tiers` act on every Server service
-the computer has, so they need no options.
+the computer has, so they need no `--tiers` or `--central`. `status`,
+however, checks the license at `<data folder>\license.json` (by default
+`%ProgramData%\Telecontrol\SCADA Server\license.json`): if the license file
+is elsewhere, give it `--license` (and `--data-root` if the data folder is
+not the standard one), or it prints `License: not available` instead of the
+license details.
 
 **If `apply` was run without `--tiers`** and installed processes that do not
 belong, remove their services (the processes' data stays):
@@ -184,6 +208,32 @@ belong, remove their services (the processes' data stays):
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <the extra processes, comma-separated>
 ```
+
+### Installing the Client {#client-install}
+
+The [releases page](#download) has no separate Client installer: the Client
+is part of the same `telecontrol-scada-<version>.msi` package as the Server.
+The installer puts the Client on every computer the package is installed on,
+and creates a *Клиент* (Client) shortcut on the desktop and in the
+*Start — ОИК Телеконтроль* menu.
+
+* **On an operator workstation**, install the same package with the same
+  command,
+  `msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`,
+  and **do not run `scada-setup`**: only `scada-setup` creates the Server
+  process services, so without it no Server process runs on that computer.
+  A workstation needs no license file.
+* **On a Server computer** the Client is installed as well. Do not use it as
+  an operator workstation (see the password warning above). If the
+  administrator does not need the Client on that computer, delete the
+  *Клиент* shortcut from the desktop.
+
+**WARNING:** if Telecontrol has given you a separate Client package, do not
+install it on a Server computer, nor the Server package on a computer with
+such a Client, without checking the procedure with Telecontrol
+(mail@telecontrol.ru): the packages share one Windows Installer upgrade code,
+so installing one of them may remove the other. This behaviour has not been
+verified.
 
 ### Displaying schematics {#displays}
 
@@ -296,6 +346,25 @@ hand:
 
 When every process runs on one computer, only port 2000 needs opening.
 
+The rules can be created from an elevated command prompt (replace the
+addresses in the example with your computers'; `remoteip` takes them
+comma-separated):
+
+```bat
+rem Central computer: Clients (may be limited to the workstations' addresses with remoteip=...)
+netsh advfirewall firewall add rule name="Telecontrol SCADA Clients" dir=in action=allow protocol=TCP localport=2000
+rem Central computer, when there are other Server computers (here 10.0.0.11 and 10.0.0.12):
+netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4840,4841 remoteip=10.0.0.11,10.0.0.12
+rem Computer running scada-modbus and scada-iec104 (the central computer is 10.0.0.10):
+netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4843,4844 remoteip=10.0.0.10
+```
+
+**Links that accept connections.** When a link works passively — its
+Transport is of type TCP Server and the SCADA waits to be connected to (for
+example [retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)
+over IEC 60870-5-104, usually port 2404) — open its port on the computer of
+its protocol process, for the addresses that must connect only.
+
 | Process | OPC UA | Clients |
 |---|:-:|:-:|
 | `scada-proxy` | 4840 | 2000 |
@@ -327,7 +396,13 @@ databases `apply` creates are copies of the demo configuration shipped with
 the installer: 41 analog and 52 discrete objects, emulation signals, two
 enabled IEC 60870-5-104 links (one of them accepts connections on port 2404
 of this computer), two archives, and the users «Клиент 1» … «Клиент 10» and
-`guest`, which have no passwords set. Until the configuration is replaced,
+`guest`, which have no passwords set. The demo project's user list also has
+a `root` user. It is not the built-in `root` account: signing in as `root`
+always uses the built-in account, with the password given as
+`--root-password`, and this user can never sign in. **Do not change or
+delete it thinking it is the real `root`**: neither the password nor the
+rights of the built-in account depend on it. Until the configuration is
+replaced,
 the `scada-iec104` process, if installed, takes port 2404 and works with the
 demo devices. **Before going live**, either replace the configuration with
 the project's (below), or delete the demo devices, objects and users in the
@@ -454,7 +529,7 @@ from an elevated command prompt:
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-msiexec /i telecontrol-scada-<new version>.msi /qn
+msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
 ```
 
@@ -485,7 +560,7 @@ On the computer where the 2.5 Server ran:
    The steps are in
    [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 4. Install the version 2.6 package
-   (`msiexec /i telecontrol-scada-<version>.msi /qn`).
+   (`msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`).
 5. From an elevated command prompt, run:
 
    ```bat
@@ -514,13 +589,14 @@ On the computer where the 2.5 Server ran:
 The old `Configuration`, `History` and `FileSystem` folders are neither
 changed nor deleted.
 
-### Uninstalling {#uninstall}
+## Uninstalling {#uninstall}
 
 Before uninstalling the program, remove the services with
 `scada-setup remove --tiers <this computer's processes>`: the installer
 removes neither the services, nor their registry settings with the `svc` and
-`root` passwords, nor the data folders and the certificate's private key. The
-steps are in
+`root` passwords, nor the data folders and the certificate's private key.
+Then uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль)
+in *Control Panel — Programs and Features*. The steps are in
 [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 ## Troubleshooting

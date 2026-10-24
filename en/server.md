@@ -88,8 +88,8 @@ by its full path, name the installation folder explicitly:
 | `migrate [--execute]` | Move a version 2.5 Server's data over — see [Upgrading from version 2.5](#upgrade-2-5) | with `--execute` |
 
 In its messages `scada-setup` calls the Server processes *tiers*: for
-example, `status` prints the line `Entitled tiers: config historian …` — the
-processes the license allows — and errors read
+example, `status` prints the line `Entitled tiers: config filesystem historian …` — the
+processes the license allows, in alphabetical order — and errors read
 `--tiers must name at least one tier` or
 `the license does not entitle tier(s) …`. The names in these messages are the
 same as in the `--tiers` option.
@@ -114,8 +114,11 @@ configuration with the project's (see
   `apply`, `start` and `migrate` on a computer without `scada-config`.
 * `--advertise <address>` — this computer's address for the others, when its
   name does not resolve on the network.
-* `--license <path>` — the license file; default
-  `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+* `--license <path>` — the license file; default `license.json` in the data
+  folder (`%ProgramData%\Telecontrol\SCADA Server\license.json`). `apply`,
+  `start`, `migrate` and `status` check it: if the license file is
+  elsewhere, give `--license` to `status` too, or it prints
+  `License: not available`.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`.
@@ -127,7 +130,8 @@ configuration with the project's (see
   folder, when they are not the standard ones.
 
 **`scada-setup` does not remember its options.** Write down each computer's
-`--tiers`, `--central`, `--advertise` and `--license` at installation, and
+`--tiers`, `--central`, `--advertise`, `--license` and, if you gave them,
+`--data-root` and `--install-root` at installation, and
 give them to every `apply` and `start` on it, upgrades and restores
 included:
 
@@ -179,12 +183,17 @@ If you changed parameters by hand (for example the [log sizes](#logging)),
 keep a copy of the edited file, and after each `apply` make the changes again
 and restart the process.
 
+#### Passwords are stored in plain text {#stored-passwords}
+
 **WARNING: the passwords given to `apply` are stored in plain text** — in the
 Windows service settings, in the `Environment` values of the registry keys
 `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>`. Assume
 that anyone who signs in to Windows on that computer can read them: keep
 untrusted users from signing in to the Server computers, and do not combine a
-Server computer with an operator workstation.
+Server computer with an operator workstation. The Server installer puts the
+Client on the computer too, with a desktop shortcut — do not let operators
+work with it on a Server computer (see
+[Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install)).
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
@@ -253,10 +262,17 @@ command prompt:
    `Cannot migrate`, anything that prevents the migration. Fix that in
    version 2.5 and run the command again until the list is empty. The
    `C:\scada-2.6-setup` folder can then be deleted.
+
+   The check normally runs while the 2.5 Server is running. If the
+   `Cannot migrate` list has the line `Can't read the 2.5 configuration
+   database … stop the 2.5 service and run the migration again`, the running
+   2.5 Server most likely kept the configuration database from being read:
+   stop the *Telecontrol SCADA Server* service (Control Panel — Services), run
+   the check again, then start the service again.
 5. Install the version 2.6 package:
 
    ```bat
-   msiexec /i telecontrol-scada-<version>.msi /qn
+   msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log
    ```
 
    The installer replaces the version 2.5 program; the data stays where it
@@ -305,6 +321,9 @@ The migration does not start, and the command says why, when:
 * a version 2.5 user has the id 100, which the `svc` service account takes.
   Create the same user in version 2.5 under another name, delete the old one,
   and check again;
+* the version 2.5 configuration database cannot be read
+  (`Can't read the 2.5 configuration database …`) — stop the version 2.5
+  *Telecontrol SCADA Server* service and run the command again;
 * none of `config`, `proxy` and `historian` is selected on this computer;
 * the data has already been moved (the destination folders exist — the
   command never overwrites them);
@@ -324,8 +343,9 @@ not carried over.
 
 If the 2.6 Server does not work after the migration (for example, its
 services do not start), version 2.5 can be brought back, but not by
-installing over it: **the 2.6 installer refuses to install an earlier
-version** while 2.6 is installed, and the version 2.5 *Telecontrol SCADA
+installing over it: **the 2.5.7 installer refuses to install while a newer
+version is installed** (the message `A later version of ОИК Телеконтроль is
+already installed`), and the version 2.5 *Telecontrol SCADA
 Server* service has already been removed by `migrate --execute`. On the same
 computer, from an elevated command prompt:
 
@@ -336,8 +356,11 @@ computer, from an elevated command prompt:
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers config,historian,filesystem,iec104,proxy
    ```
 
-2. Uninstall version 2.6 (Control Panel — Programs and Features, or
-   `msiexec /x telecontrol-scada-<version>.msi /qn`).
+2. Uninstall version 2.6: the *ОИК Телеконтроль* program (publisher
+   ООО Телеконтроль) in *Control Panel — Programs and Features*, or
+   `msiexec /x telecontrol-scada-<version>.msi /qn /norestart /l*v uninstall.log`.
+   `msiexec /x` needs the file of the very package that is installed; if
+   you do not have it, uninstall from the Control Panel.
 3. Install release 2.5.7 (`telecontrol-scada-2.5.7.msi` from the
    [releases page]({{ '/en/getting-started/' | relative_url }}#download)) the
    way you installed version 2.5, and attach the HASP or Guardant hardware
@@ -368,8 +391,12 @@ an elevated command prompt, on every Server computer:
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <this computer's processes>
    ```
 
-2. Uninstall the program (Control Panel — Programs and Features, or
-   `msiexec /x telecontrol-scada-<version>.msi /qn`).
+2. Uninstall the program: the *ОИК Телеконтроль* program (publisher
+   ООО Телеконтроль) in *Control Panel — Programs and Features*, or
+   `msiexec /x telecontrol-scada-<version>.msi /qn /norestart /l*v uninstall.log`.
+   `msiexec /x` needs the file of the very package that is installed; if
+   you do not have it, uninstall from the Control Panel. The computer's
+   Client is uninstalled with the program.
 3. [Back up](#backup) the data if you may need it, and delete the folders:
    * `%ProgramData%\Telecontrol\SCADA Server` — the processes' data, the
      license file and, if a migration from version 2.5 was done, the
@@ -716,12 +743,13 @@ see them, start the process in [console mode](#console).
 
   ```text
   License: C:\ProgramData\Telecontrol\SCADA Server\license.json (expires 2027-01-31T00:00:00Z)
-  Entitled tiers: config historian filesystem iec104 proxy
+  Entitled tiers: config filesystem historian iec104 proxy
   config       SERVICE_RUNNING
   historian    SERVICE_RUNNING
   ```
 
-  A running service shows `SERVICE_RUNNING`, a stopped one
+  The processes on the `Entitled tiers` line are listed in alphabetical
+  order. A running service shows `SERVICE_RUNNING`, a stopped one
   `SERVICE_STOPPED`, and one the computer does not have `not installed`.
 * **Process logs** — see [Logging](#logging). Why a process stopped (license,
   certificate) is written to its log; an error in the parameter file is not —
@@ -781,7 +809,7 @@ contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and `scada-setup apply`
 takes the variable's value from `--root-password` (or the
 `SCADA_SETUP_ROOT_PASSWORD` environment variable) and stores it in those
 processes' Windows service settings — in plain text, in the registry (see
-the [warning](#scada-setup-options) in the `scada-setup` description). On a computer running one of those
+the [warning](#stored-passwords) in the `scada-setup` description). On a computer running one of those
 processes, `apply` refuses to run without it. To change the root password,
 stop the processes (`scada-setup stop`) and run `apply` with the new value:
 `apply` does not restart running processes, which would keep accepting the
@@ -1042,7 +1070,8 @@ rem and C:\Program Files\Telecontrol SCADA\data\Certificates
 
 A restore also needs the `svc` password, the `root` password, and the
 [computer's parameters](#scada-setup-options) — the `--tiers`, `--central`,
-`--advertise` and `--license` that `scada-setup apply` was run with on it;
+`--advertise` and `--license` (and `--data-root` and `--install-root`, if
+given) that `scada-setup apply` was run with on it;
 none of them is in the backup.
 
 ### Configuration backup
@@ -1131,3 +1160,14 @@ These substitution variables can be used in the file:
 | `${DIR_EXE}` | Directory containing the Server executable |
 | `${DIR_TEMP}` | Temporary directory |
 | `$ENV{NAME}` | Value of the environment variable `NAME` (empty if it is not set) |
+
+To see a complete, correct parameter file for a process, have one written
+with `scada-setup generate --tiers <processes> --output <folder>` (on a
+computer without `scada-config`, also with `--central <address>`): it only
+writes the files into the given folder and installs nothing. Writing a
+parameter file from scratch is not recommended — among other things it has to
+contain the [`license`](#licensing) block with
+`"require_gcp_binding": false` (outside Google Cloud),
+[`security.rootPassword`](#root-password) for `scada-config`, `scada-proxy`,
+`scada-historian` and `scada-filesystem`, and an enabled
+[`opcua`](#opcua) block, over which the processes exchange data.

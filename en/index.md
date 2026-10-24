@@ -33,8 +33,10 @@ resilient while the Server stays online.
 
 For operation, the system requires one computer for a single-machine
 deployment or multiple computers for a distributed deployment. The Server
-processes run on Windows 10 or newer or on Linux; the Client runs on
-Windows 10 or newer. In version 2.6 the Client displays Modus diagrams with
+processes run on Windows 10 or newer; installing the Server on Linux is
+available on request (see
+[Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)).
+The Client runs on Windows 10 or newer. In version 2.6 the Client displays Modus diagrams with
 its own display module, without the ActiveXeme component. That module is a
 separate library which may not yet be included in the Client installation:
 without it a diagram window shows the message "No display runtime is
@@ -63,7 +65,7 @@ Example of a distributed deployment:
 
 ## Key features
 
-* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}) with Windows and Linux server support
+* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows (on Linux on request)
 * Data display on Modus [displays]({{ '/en/client/display/' | relative_url }})
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and

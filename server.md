@@ -75,8 +75,8 @@ permalink: /server/
 | `migrate [--execute]` | Перенести данные Сервера версии 2.5 — смотрите [Переход с версии 2.5](#upgrade-2-5) | с `--execute` — да |
 
 В своих сообщениях `scada-setup` называет процессы Сервера словом *tier*:
-например, `status` выводит строку `Entitled tiers: config historian …` —
-процессы, разрешенные лицензией, — а при ошибках пишет
+например, `status` выводит строку `Entitled tiers: config filesystem historian …` —
+процессы, разрешенные лицензией, в алфавитном порядке, — а при ошибках пишет
 `--tiers must name at least one tier` или
 `the license does not entitle tier(s) …`. Имена в этих сообщениях — те же,
 что в параметре `--tiers`.
@@ -101,8 +101,11 @@ permalink: /server/
   `apply`, `start` и `migrate` на компьютере без `scada-config`.
 * `--advertise <адрес>` — адрес этого компьютера для остальных, если имя
   компьютера не разрешается в сети.
-* `--license <путь>` — файл лицензии; по умолчанию
-  `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+* `--license <путь>` — файл лицензии; по умолчанию `license.json` в папке
+  данных (`%ProgramData%\Telecontrol\SCADA Server\license.json`). Его
+  проверяют `apply`, `start`, `migrate` и `status`: если файл лицензии лежит
+  в другом месте, указывайте `--license` и в `status`, иначе он выводит
+  `License: not available`.
 * `--svc-password <пароль>` (или переменная окружения
   `SCADA_SETUP_SVC_PASSWORD`) — пароль [учетной записи svc](#svc),
   обязателен для `apply` и `migrate --execute`.
@@ -114,7 +117,8 @@ permalink: /server/
   не стандартные.
 
 **`scada-setup` не запоминает параметры.** Запишите `--tiers`, `--central`,
-`--advertise` и `--license` каждого компьютера при установке и указывайте их
+`--advertise`, `--license` и, если вы их задавали, `--data-root` и
+`--install-root` каждого компьютера при установке и указывайте их
 в каждой команде `apply` и `start` на нем, в том числе при обновлении и
 восстановлении:
 
@@ -165,12 +169,17 @@ permalink: /server/
 [размеры журналов](#logging)), сохраните копию измененного файла и после
 каждого `apply` внесите изменения снова и перезапустите процесс.
 
+#### Пароли хранятся открытым текстом {#stored-passwords}
+
 **ВНИМАНИЕ: пароли, переданные `apply`, хранятся открытым текстом** — в
 параметрах служб Windows, в значениях `Environment` разделов реестра
 `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Процесс>`.
 Считайте, что их может прочитать любой, кто входит в Windows на этом
 компьютере: не допускайте посторонних к входу на компьютеры Сервера и не
-совмещайте Сервер с рабочим местом операторов.
+совмещайте Сервер с рабочим местом операторов. Установщик Сервера ставит на
+компьютер и Клиент с пиктограммой на рабочем столе — не давайте операторам
+работать с ним на компьютере Сервера (смотрите
+[Установка Клиента]({{ '/getting-started/' | relative_url }}#client-install)).
 
 ### Переход с версии 2.5 {#upgrade-2-5}
 
@@ -241,10 +250,17 @@ Server* — и хранили его данные в папках `Configuration
    `Cannot migrate`, что мешает переходу. Исправьте это в версии 2.5 и
    повторите команду, пока список не станет пустым. Затем папку
    `C:\scada-2.6-setup` можно удалить.
+
+   Обычно проверка выполняется, пока Сервер 2.5 работает. Если в списке
+   `Cannot migrate` есть строка `Can't read the 2.5 configuration database …
+   stop the 2.5 service and run the migration again`, конфигурационную БД,
+   скорее всего, не дал прочитать работающий Сервер 2.5: остановите службу
+   *Telecontrol SCADA Server* (Панель управления — Службы), повторите
+   проверку и затем снова запустите службу.
 5. Установите пакет версии 2.6:
 
    ```bat
-   msiexec /i telecontrol-scada-<версия>.msi /qn
+   msiexec /i telecontrol-scada-<версия>.msi /qn /norestart /l*v install.log
    ```
 
    Установщик заменяет программу версии 2.5; данные остаются на месте. Служба
@@ -290,6 +306,9 @@ Server* — и хранили его данные в папках `Configuration
 * в версии 2.5 есть пользователь с идентификатором 100 — он занят служебной
   учетной записью `svc`. Создайте в версии 2.5 такого же пользователя под
   другим именем, удалите старого и повторите проверку;
+* конфигурационную БД версии 2.5 не удалось прочитать
+  (`Can't read the 2.5 configuration database …`) — остановите службу
+  *Telecontrol SCADA Server* версии 2.5 и повторите команду;
 * на этом компьютере не выбран ни один из процессов `config`, `proxy` и
   `historian`;
 * данные уже были перенесены (папки назначения существуют — команда никогда
@@ -310,8 +329,9 @@ Server* — и хранили его данные в папках `Configuration
 
 Если после перехода Сервер 2.6 не работает (например, его службы не
 запускаются), вернуть версию 2.5 можно, но не установкой поверх:
-**установщик 2.6 не дает установить более раннюю версию**, пока установлена
-2.6, а служба *Telecontrol SCADA Server* версии 2.5 уже удалена командой
+**установщик 2.5.7 отказывается устанавливаться, пока установлена более
+новая версия** (сообщение `A later version of ОИК Телеконтроль is already
+installed`), а служба *Telecontrol SCADA Server* версии 2.5 уже удалена командой
 `migrate --execute`. На том же компьютере, в командной строке с правами
 администратора:
 
@@ -322,8 +342,12 @@ Server* — и хранили его данные в папках `Configuration
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers config,historian,filesystem,iec104,proxy
    ```
 
-2. Удалите программу версии 2.6 (Панель управления — Программы и компоненты,
-   или `msiexec /x telecontrol-scada-<версия>.msi /qn`).
+2. Удалите программу версии 2.6: в *Панели управления — Программы и
+   компоненты* — программу *ОИК Телеконтроль* (издатель — ООО Телеконтроль)
+   или командой
+   `msiexec /x telecontrol-scada-<версия>.msi /qn /norestart /l*v uninstall.log`.
+   Команде `msiexec /x` нужен файл того самого пакета, который установлен;
+   если его нет, удаляйте через Панель управления.
 3. Установите выпуск 2.5.7 (`telecontrol-scada-2.5.7.msi` со
    [страницы выпусков]({{ '/getting-started/' | relative_url }}#download)) так
    же, как устанавливали версию 2.5, и подключите аппаратный ключ HASP или
@@ -353,8 +377,12 @@ Server* — и хранили его данные в папках `Configuration
    "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <процессы этого компьютера>
    ```
 
-2. Удалите программу (Панель управления — Программы и компоненты, или
-   `msiexec /x telecontrol-scada-<версия>.msi /qn`).
+2. Удалите программу: в *Панели управления — Программы и компоненты* —
+   программу *ОИК Телеконтроль* (издатель — ООО Телеконтроль) или командой
+   `msiexec /x telecontrol-scada-<версия>.msi /qn /norestart /l*v uninstall.log`.
+   Команде `msiexec /x` нужен файл того самого пакета, который установлен;
+   если его нет, удаляйте через Панель управления. Вместе с программой
+   удаляется и Клиент этого компьютера.
 3. Сделайте [резервную копию](#backup) данных, если они могут понадобиться,
    и удалите папки:
    * `%ProgramData%\Telecontrol\SCADA Server` — данные процессов, файл
@@ -670,11 +698,12 @@ sqlite> select count(*) from SystemEventType;
 
   ```text
   License: C:\ProgramData\Telecontrol\SCADA Server\license.json (expires 2027-01-31T00:00:00Z)
-  Entitled tiers: config historian filesystem iec104 proxy
+  Entitled tiers: config filesystem historian iec104 proxy
   config       SERVICE_RUNNING
   historian    SERVICE_RUNNING
   ```
 
+  Процессы в строке `Entitled tiers` перечислены в алфавитном порядке.
   Работающая служба — `SERVICE_RUNNING`, остановленная — `SERVICE_STOPPED`,
   отсутствующая на компьютере — `not installed`.
 * **Журналы процессов** — смотрите [Логирование](#logging). Причины остановки
@@ -718,7 +747,7 @@ sqlite> select count(*) from SystemEventType;
 
 Заданное значение имеет приоритет: оно записывается при каждом запуске и заменяет пароль, сохраненный ранее, в том числе измененный из Клиента. Чтобы пароль не хранился в файле открытым текстом, передавайте его через переменную окружения, как в примере выше.
 
-**Под Windows пароль задает `scada-setup`**: файлы параметров, которые он создает для `scada-config`, `scada-proxy`, `scada-historian` и `scada-filesystem`, содержат `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, а значение переменной `scada-setup apply` берет из параметра `--root-password` (или переменной окружения `SCADA_SETUP_ROOT_PASSWORD`) и сохраняет в параметрах служб Windows этих процессов — открытым текстом, в реестре (смотрите [предупреждение](#scada-setup-options) в описании `scada-setup`). На компьютере с одним из этих процессов `apply` без пароля не выполняется. Чтобы сменить пароль `root`, остановите процессы (`scada-setup stop`) и выполните `apply` с новым значением: работающие процессы `apply` не перезапускает, и они продолжали бы принимать старый пароль (смотрите [Повторный apply](#reapply)). Править созданные файлы параметров не нужно — при следующем `apply` они создаются заново.
+**Под Windows пароль задает `scada-setup`**: файлы параметров, которые он создает для `scada-config`, `scada-proxy`, `scada-historian` и `scada-filesystem`, содержат `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, а значение переменной `scada-setup apply` берет из параметра `--root-password` (или переменной окружения `SCADA_SETUP_ROOT_PASSWORD`) и сохраняет в параметрах служб Windows этих процессов — открытым текстом, в реестре (смотрите [предупреждение](#stored-passwords) в описании `scada-setup`). На компьютере с одним из этих процессов `apply` без пароля не выполняется. Чтобы сменить пароль `root`, остановите процессы (`scada-setup stop`) и выполните `apply` с новым значением: работающие процессы `apply` не перезапускает, и они продолжали бы принимать старый пароль (смотрите [Повторный apply](#reapply)). Править созданные файлы параметров не нужно — при следующем `apply` они создаются заново.
 
 Параметр задается **каждому** процессу, который хранит конфигурацию в собственной базе данных, — у каждого из них своя учетная запись `root`: это `scada-config`, `scada-proxy`, `scada-historian` и `scada-filesystem`. Процессы протокольного уровня получают конфигурацию от `scada-config` и этот параметр не используют (об этом выводится сообщение в журнал).
 
@@ -963,7 +992,8 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 
 Для восстановления понадобятся также пароль `svc`, пароль `root` и
 [параметры компьютера](#scada-setup-options) — `--tiers`, `--central`,
-`--advertise` и `--license`, с которыми на нем выполнялся `scada-setup apply`;
+`--advertise` и `--license` (и `--data-root` и `--install-root`, если они
+задавались), с которыми на нем выполнялся `scada-setup apply`;
 в резервную копию они не попадают.
 
 ### Резервное копирование конфигурации
@@ -1043,53 +1073,12 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 | `${DIR_TEMP}` | Временная папка |
 | `$ENV{ИМЯ}` | Значение переменной окружения `ИМЯ` (пустая строка, если она не задана) |
 
-Пример файла параметров для ручной настройки (файлы, которые создает `scada-setup`, отличаются от него):
-
-```json
-{
-    "configuration": {
-        "driver": "SQLite",
-        "dir": "${DIR_PARAM}/Configuration"
-    },
-
-    "history": {
-        "dir": "${DIR_PARAM}/History"
-    },
-
-    "sessions": [
-        "tcp;passive;host=0.0.0.0;port=2000"
-    ],
-
-    "opc": {
-        "client": {
-            "enabled": false
-        }
-    },
-
-    "opcua": {
-        "enabled": false,
-        "url": "opc.tcp://localhost:4840",
-        "server_private_key": "${DIR_PARAM}/Certificates/ServerPrivateKey.pem",
-        "server_certificate": "${DIR_PARAM}/Certificates/ServerCertificate.pem",
-        "trace": "none"
-    },
-
-    "filesystem": {
-        "enabled": true,
-        "dir": "${DIR_PARAM}/FileSystem"
-    },
-
-    "vidicon": {
-        "enabled": false
-    },
-
-    "log": {
-        "dir": "${DIR_PARAM}/Logs",
-        "max_file_size": 10,
-        "max_total_size": 100,
-        "max_count": 1000
-    },
-
-    "thread_count": 1
-}
-```
+Чтобы увидеть полный правильный файл параметров процесса, создайте его
+командой `scada-setup generate --tiers <процессы> --output <папка>` (на
+компьютере без `scada-config` — также с `--central <адрес>`): она только
+записывает файлы в указанную папку и ничего не устанавливает. Составлять
+файл параметров с нуля не рекомендуется — в нем должны быть, в частности,
+блок [`license`](#licensing) с `"require_gcp_binding": false` (вне Google
+Cloud), [`security.rootPassword`](#root-password) у процессов `scada-config`,
+`scada-proxy`, `scada-historian` и `scada-filesystem` и включенный
+[`opcua`](#opcua), по которому процессы обмениваются данными.

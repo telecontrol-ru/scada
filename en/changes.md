@@ -22,6 +22,8 @@ This version is not yet published on the releases page.
 
 1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows; installing the Server on Linux is available on request in this version. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
+1. One package, `telecontrol-scada-<version>.msi`, carries every Server process, `scada-setup` and the Client; the operator workstations get the same package, without `scada-setup`. See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
+
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
@@ -80,9 +82,11 @@ This version is not yet published on the releases page.
 
 1. The password of the `svc` service account cannot be changed after installation. See [The svc account]({{ '/en/server/' | relative_url }}#svc).
 
-1. The `svc` and `root` passwords given to `scada-setup apply` are stored in plain text in the Windows service settings in the registry. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup-options).
+1. The `svc` and `root` passwords given to `scada-setup apply` are stored in plain text in the Windows service settings in the registry. See [Passwords are stored in plain text]({{ '/en/server/' | relative_url }}#stored-passwords).
 
 1. `scada-setup apply` does not restart services that are running: a new `root` password and other options take effect only after a restart. Run `scada-setup stop` before `apply` on a running installation. See [Re-running apply]({{ '/en/server/' | relative_url }}#reapply).
+
+1. Each protocol process can run on one computer of the site only, and serves every device of its protocol: it receives the whole configuration from `scada-config`. Two instances of the same process (for example `scada-iec104` on two computers) would both connect to every device of that protocol. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
 ## 2.5.7
 
