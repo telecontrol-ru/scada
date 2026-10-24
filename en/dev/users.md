@@ -60,6 +60,10 @@ Limits group of the Properties window), but without the Control right they are
 read-only there. When a user without that right pastes a copied TIT object,
 the limits are not carried over: the object is created without them.
 
+The configuration, conversely, is changed only with the Configure right. The
+one exception is a device's Enable and Disable commands: taking a device out
+of service and back needs only the Control right.
+
 ## Roles
 
 The server does not check requests against those two bits directly. It checks
@@ -68,7 +72,8 @@ The server does not check requests against those two bits directly. It checks
 * every authenticated account gets the `Observer` role — reading values,
   history and events
 * the Control right adds `Operator` — writing values and calling methods,
-  including control commands, manual value entry and limit changes
+  including control commands, manual value entry and limit changes; this role
+  does not change the configuration, except to enable or disable a device
 * the Configure right adds `Engineer`, `Supervisor`, `ConfigureAdmin` and
   `SecurityAdmin` — changing the configuration, including adding and deleting
   nodes, but not writing object values or their limits and not issuing

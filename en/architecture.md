@@ -69,7 +69,7 @@ Each user account is given two independent rights, *Control* and *Configure*. Th
 | Dispatcher | Yes | No |
 | Administrator | Yes | Yes |
 
-Control commands, manual value entry and limit changes need the Control right, including limits in the object's properties (the Limits group). The Configure right does not grant them.
+Control commands, manual value entry and limit changes need the Control right, including limits in the object's properties (the Limits group). The Configure right does not grant them. The configuration, conversely, is changed only with the Configure right; the Control right can only enable and disable devices.
 
 Users authenticate with a name and password. The Server checks each request against OPC UA roles derived from these rights, which determine access to control operations, manual value entry, engineering tools, and user administration.
 
