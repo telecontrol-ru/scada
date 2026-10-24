@@ -48,6 +48,11 @@ The workbench regions:
   round-trip time, and the server address and version. This is the only place
   the user and the connection details are shown.
 
+> **Caution.** The status bar can be hidden (*Settings → Settings… →
+> Workspace → Status Bar*, separately for each main window), and then nothing
+> in that window reports a lost connection to the Server except the messages
+> in the event panel. Do not hide the status bar at an operator workstation.
+
 The server round-trip time is the age of an outstanding ping, so a growing
 number means no answer is arriving. Past 3 seconds the cell gains a "no
 response" marker and the event panel gets the warning "The server has not
@@ -124,7 +129,10 @@ last.</dd>
 
 <dt>Delete page</dt>
 <dd>Delete the page and its layout. Kept apart from the other items so it is
-not reached by habit.</dd>
+not reached by habit. The page is deleted at once, with <b>no
+confirmation</b>, and its windows do not go to the recycle list of closed
+windows, so they cannot be restored from the <i>Window</i> menu. Save any
+window you need to Favourites first.</dd>
 
 </dl>
 
@@ -160,9 +168,13 @@ Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer and which travel with the account in the
 profile. Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
-scope are kept in the user's profile on the Server. If the profile cannot be
-saved on the Server, the client reports "Failed to save the profile to the
-server; it is kept on this computer only".
+scope are kept in the user's profile on the Server. The profile is written to
+the Server when the client exits and on *More → Disconnect from Server*, not
+at the moment a setting changes. If the profile cannot be saved on the
+Server, the client reports "Failed to save the profile to the server; it is
+kept on this computer only" — but on exit that message appears in a client
+that is already closing and is usually not seen. So close the client only
+while the status bar reads "Connected".
 
 | Category | Settings |
 |---|---|
@@ -423,10 +435,13 @@ schematics (`.sde`, `.xsde`) have no such toolbar or strips; see
 
 > **Caution.** "Live" is a fixed label, not a connection indicator: it stays
 > green even when the connection to the Server is lost. Only the status bar
-> shows the connection state ("Connected" / "Disconnected"); see
+> shows the connection state ("Connected" / "Disconnected") — do not hide
+> it; see
 > [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
 > In this version the schematics themselves show no live values — read values
-> in the "Measurements" strip and in the Inspector.
+> in the "Measurements" strip and in the Inspector, and a lost device
+> connection or a stale value in the object tree or a table (see
+> [Inspector](#inspector)).
 
 ## Inspector {#inspector}
 
@@ -436,7 +451,8 @@ The Inspector panel (on the right) reflects the active window's current
 selection:
 
 - the object's name and its address — a node identifier or a formula;
-- the current value in large type with its quality flag ("Good" / "Bad");
+- the current value in large type with its quality flag ("Good" / "Bad" —
+  see the caution below);
 - the time of the last update;
 - the signal's limits — every configured band ("HiHi", "Hi", "Lo", "LoLo").
   The band the current value has crossed is coloured and labelled, so it is
@@ -447,6 +463,14 @@ selection:
   control is unavailable, the reason appears under the button: the object
   cannot be controlled (a computed expression or a folder, for example), the
   signal has no output channel, or the session lacks the Control privilege.
+
+> **Caution.** In the current version the Inspector shows "Good" even when the
+> device connection is lost or the value is stale: it labels a value "Bad"
+> only when the value carries the bad flag. A lost connection ([С]), a
+> connection failure ([Н]), a configuration error ([К]) and staleness ([У])
+> are shown only by the object tree (a red dot and letters before the value)
+> and by tables. Check the object there before a control command and after a
+> failed one; see [Control]({{ '/en/client/' | relative_url }}#control).
 
 Selecting a table row — including a formula row — fills the Inspector; the
 value keeps updating while the row stays selected. Clicking a shape bound to

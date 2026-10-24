@@ -30,8 +30,10 @@ regions are described in detail on the
 The menu bar provides these main groups of commands:
 
 * **Display**: open available schematic displays
-* **Table**: create tables, user tables, data tables, and group tables
-* **Graph**: create new graph windows
+* **Table**: *New Table*, *New Custom Table*, *New Data Table* and *Group
+  Table*, followed by the tables saved to [Favourites](#pages-and-windows)
+* **Graph**: *New Graph*, which opens a new graph window, followed by the
+  graphs saved to [Favourites](#pages-and-windows)
 * **Item**: the commands that apply to the selected object or device and to
   the active window — the same as the context menu
 * **More**: open the current-events panel (*Events*) and the *Event Journal*,
@@ -39,9 +41,17 @@ The menu bar provides these main groups of commands:
   or export tools, and *Connect to Server...* / *Disconnect from Server* (see
   [Connection to the Server](#connection))
 * **Page**: create, rename, duplicate, delete and switch pages
-* **Window**: rename, close, restore, and favorite open windows
+* **Window**: rename, close, restore, and favorite open windows. Its *New*
+  item (available while at least one window is open) opens **another main
+  window** of the client, in the same session and under the same account.
+  Closing one of several main windows does not end the session: the client
+  ends it only when the last main window is closed (see
+  [Shift handover](#shift-change))
 * **Settings**: one item, *Settings...*, which opens the settings screen
-* **Help**: open online documentation or show client version
+* **Help**: open online documentation or show client version. A client
+  started with the command-line option `--debug` also has *Debugger* and
+  *Debug Information* here; see
+  [Debugger]({{ '/en/client/debugger/' | relative_url }})
 
 The settings screen groups the settings into categories:
 
@@ -52,6 +62,11 @@ The settings screen groups the settings into categories:
 * **Control** — *Control Confirmation* (on by default) and *Control Success
   Message*. See [Control](#control).
 * **Workspace** — *Status Bar*, per client window.
+
+> **Caution.** The status bar is the only place that shows whether the client
+> is connected to the Server. Do not turn it off on an operator workstation,
+> in any of its main windows.
+
 * **Displays** — *Show Modus topology*, which draws the topology layer over
   Modus displays, and the *Open Displays Folder* action.
 
@@ -85,6 +100,12 @@ multiple pages, but only one is visible at a time. Pages can be created,
 renamed, duplicated, deleted, and switched from the `Page` menu, or from the
 page buttons on the
 [section rail]({{ '/en/client/workbench/#activity-bar' | relative_url }}).
+
+> **Caution.** *Page → Delete* takes effect at once, with **no
+> confirmation**, and the deleted page's windows do **not** go to the
+> recycle list of closed windows: they cannot be restored from the `Window`
+> menu. Save any window you need to Favourites first (`Window -> Add to
+> Favourites`, below).
 
 Windows and panels can be arranged freely inside a page. They can be
 docked side by side, stacked as tabs, or restored from the `Window`
@@ -135,6 +156,14 @@ account on another computer and ends your session (see
 another workstation.", «Отключено от сервера … С этими учётными данными
 выполнен вход на другом рабочем месте.») and does **not** reconnect by itself.
 
+> **Caution.** In the current version the client shows this same message for
+> **any** orderly close of the connection by the Server — for example, when
+> the Server is restarted or stopped — and does not reconnect then either. If
+> nobody signed in under your account on another workstation, the Server was
+> most likely restarted. While the status bar reads "Disconnected", no data
+> or events arrive: reconnect with *More → Connect to Server...* and sign in
+> under your own account.
+
 ## Shift handover {#shift-change}
 
 Each operator works under their own account: the event journal records who
@@ -143,10 +172,26 @@ settings and pages are kept in the user's profile on the Server.
 
 To hand over a shift:
 
-1. The outgoing operator closes the client's main window. The client saves
-   their profile on the Server, ends the session and exits.
+1. The outgoing operator makes sure the status bar reads "Connected" and
+   closes **all** of the client's main windows (if several were opened with
+   *Window → New*). When the last one is closed, the client saves the
+   profile on the Server, ends the session and exits.
 2. The incoming operator starts the client again and enters their own name
    and password in the sign-in window.
+
+> **Caution.** Closing one of several main windows does **not** end the
+> session: the remaining windows keep working under the outgoing operator's
+> account. Before leaving, check the taskbar for other client windows.
+
+The profile is written to the Server only when the client exits and on *More
+→ Disconnect from Server*. If saving it fails (for example, because there is
+no connection to the Server), the client reports "Failed to save the profile
+to the server; it is kept on this computer only" («Не удалось сохранить
+профиль на сервере; он сохранён только на этом компьютере»). On exit that
+message is posted into a client that is already closing, so it is usually
+not seen. Close the client only while the status bar reads "Connected";
+otherwise changes to pages and settings stay on this computer only and do
+not follow the account to another workstation.
 
 > **Caution.** Do not hand over with *More → Disconnect from Server*. In the
 > current version, after that command and a sign-in under another account the
@@ -217,8 +262,16 @@ For the selected device you can open:
 
 You can also:
 
-* enable communication with the device
-* disable communication with the device
+* enable communication with the device (*Enable*)
+* disable communication with the device (*Disable*)
+
+> **Caution.** *Disable* takes effect at once, with **no confirmation**, and
+> changes the configuration: the device stays disabled — across Server
+> restarts and for every workstation — until *Enable*. The Control privilege
+> (the "Dispatcher" level) is enough for it. While the device is disabled the
+> Server does not communicate with it, and all of its objects carry the [С]
+> (no connection) flag. Before *Disable*, check that the right device is
+> selected, and remember to enable it again.
 
 A forced poll and clock synchronization are not offered here: they are in the
 *Device* submenu of a data object's context menu (see
@@ -268,9 +321,19 @@ Type a fractional number with a decimal **point**: `12.5`. A comma is not
 accepted — "12,5" is answered with "Incorrect floating point value."
 («Указано некорректное значение с плавающей точкой.») and nothing is sent.
 
-Whether the present value is good is shown in the "Control" dialog (the
-quality mark after "Current value:", such as "?" on a bad value) and in the
-Inspector.
+The "Control" dialog marks a bad present value with "?" after "Current
+value:", and the Inspector labels it "Bad".
+
+> **Caution.** In the current version the "Control" dialog, the confirmation
+> box and the Inspector do **not** show a lost device connection or a stale
+> value: for an object with no connection to its device (the [С] flag), a
+> connection failure ([Н]), a configuration error ([К]) or a stale value
+> ([У]) they show the last value received with no "?", and the Inspector
+> labels it "Good". Only the [object panel](#object-panel) (a red dot and
+> letters in square brackets before the value) and tables show it. Before a
+> command, check the object in the object panel or a table: if [С], [Н], [К]
+> or [У] precedes the value, or the dot is red, the equipment's present
+> state is unknown.
 
 If the object has a control permission condition, the dialog has a
 "Condition:" row. It reads "Satisfied" or "Unsatisfied" and updates live.
@@ -287,7 +350,9 @@ sent to physical equipment and cannot be undone remotely. Send it?".
 
 > **Caution.** The confirmation box shows the present value **without** its
 > quality mark: a bad value carries no "?" there. Check that the value is good
-> before confirming — in the "Control" dialog and in the Inspector.
+> before confirming — in the "Control" dialog — and check the device
+> connection and staleness in the object panel or a table (see the caution
+> above).
 
 The box's default button is "No": pressing *Enter* **cancels** the command. To
 send it, choose "Yes".
@@ -344,10 +409,13 @@ or "Controlling...".
 > **Caution.** A failure does not always mean the command was not carried out.
 > On a timeout (`Bad_Timeout`) or a connection lost mid-command the device may
 > have received and executed the command while the answer never reached the
-> Server. Before retrying, check the object's present state — in the dialog
-> or the Inspector: make sure the value is good and has not already become the
-> commanded one. A schematic will not tell you: in this version it shows no
-> live values.
+> Server. Before retrying, check the object's present state in the
+> [object panel](#object-panel) or a table: make sure no [С], [Н], [К] or [У]
+> flag precedes the value, the dot is not red, and the value has not already
+> become the commanded one. The dialog and the Inspector will not do for this
+> check: in this version they show neither a lost device connection nor
+> staleness. A schematic will not tell you either: in this version it shows
+> no live values.
 
 The same setting turns on messages for other successful operations —
 configuration edits, object creation, password changes, unblocking. A failure
@@ -422,12 +490,15 @@ event journal.
 <dd>The value is bad. Normal text colour means the value is good.</dd>
 
 <dt>A "?" after the value</dt>
-<dd>The value is bad, for example <code>41 °C?</code>.</dd>
+<dd>The value is bad, for example <code>41 °C?</code>. It does not mark a lost
+connection or a stale value — for those, see the letters in square
+brackets.</dd>
 
 <dt>Letters in square brackets before the value</dt>
 <dd>Quality flags, shown with their Russian letters: <code>[Р]</code> manual
 input, <code>[Б]</code> blocked, <code>[2]</code> backup channel,
-<code>[С]</code> no connection, <code>[У]</code> stale, <code>[В]</code> limit
+<code>[С]</code> no connection, <code>[Н]</code> connection failure,
+<code>[К]</code> configuration error, <code>[У]</code> stale, <code>[В]</code> limit
 violation. The full list is in
 <a href="{{ '/en/architecture/' | relative_url }}#quality-flags">Quality flags</a>.</dd>
 
@@ -439,7 +510,11 @@ value has arrived, and groups have none — a group shows its device's
 connection state instead.</dd>
 
 <dt>The quality label in the Inspector</dt>
-<dd>"Good" or "Bad" beside the current value.</dd>
+<dd>"Good" or "Bad" beside the current value. <b>Caution:</b> in the current
+version the Inspector, like the "Control" dialog, takes only the bad flag
+into account; with a lost device connection ([С]), a connection failure
+([Н]), a configuration error ([К]) or a stale value ([У]) it shows "Good" and
+the value without "?". The object panel and tables show these flags.</dd>
 
 <dt>Row colour in the journal and the event panel</dt>
 <dd>The event's severity: a red fill is "Critical" (800 and above), a yellow

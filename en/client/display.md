@@ -12,12 +12,19 @@ permalink: /en/client/display/
 {:toc}
 
 The `Display` window shows Modus schematics (`.sde` and `.xsde` files) stored
-on the Server. The client draws them with its built-in display module; the
+on the Server. The client draws them with its own display module; the
 ActiveXeme component is neither needed nor used. The **Display** menu
 lists the available schematics.
 
+> **Caution.** The display module is a separate library which, in version
+> 2.6, may not yet be included in the Client installation. Without it the
+> client works, but instead of the schematic the window shows the message
+> "No display runtime is installed." («Модуль отображения мнемосхем не
+> установлен.») — in that case contact Telecontrol (see
+> [When a schematic is not shown](#not-shown)).
+
 > **Caution.** In this version schematics open and display **without live
-> values**: the built-in display module draws a schematic as its designer drew
+> values**: the display module draws a schematic as its designer drew
 > it and does not bind its shapes to objects. Colours, switch positions and
 > numbers on the schematic do not change with the state of the equipment.
 > Watch values and quality in tables, in the
@@ -72,8 +79,10 @@ Instead of the schematic the window may show one of these messages:
 <dd>The client's display module (on Windows, the file
 <code>display_runtime.dll</code>) is missing next to the client executable, so
 the client works but cannot draw schematics. The second line of the message
-gives the reason. The operator cannot fix this — contact Telecontrol. Restart
-the client once the module is in place.</dd>
+gives the reason. The module is a separate library which, in version 2.6,
+may not yet be included in the Client installation. The operator cannot fix
+this — contact Telecontrol. Restart the client once the module is in
+place.</dd>
 
 <dt>"No display document is assigned to this window."</dt>
 <dd>The window was saved without a schematic file. Close it and open the

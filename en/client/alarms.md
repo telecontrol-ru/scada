@@ -104,6 +104,18 @@ even if warnings are still unacknowledged.
 On every other platform the tone **sounds once**, when the condition starts to
 hold, and does not repeat.
 
+The client has no sound file of its own: on Windows the tone is the Windows
+system sound "Exclamation", played in a loop; on macOS it is the system alert
+sound. If that sound is set to "(None)" in the Windows sound settings, the
+volume is muted or the wrong output device is selected, the client stays
+silent on an alarm without saying so.
+
+> **Caution.** When commissioning an operator workstation, test the tone:
+> turn on *Sound Alarm on Event*, raise a critical event (severity 800 or
+> above) and make sure the tone is heard. Keep a sound assigned to the Windows
+> "Exclamation" event and the volume up on that computer, and test the tone
+> again after changing the Windows sound scheme or the audio device.
+
 ## Window flash
 
 **Flash Main Window on Event** (off by default).
@@ -129,6 +141,11 @@ are what reliably show unacknowledged events.
 
 The spoken announcement is on by default and available in the **Windows build
 only** — it uses the platform's own speech synthesis.
+
+The client speaks with the Windows default voice. For the Russian-language
+client the phrase is Russian («Неквитированное событие»), so a Russian
+speech-synthesis voice must be installed in Windows and selected as the
+default voice; check this when commissioning the workstation.
 
 When one of the conditions listed [above](#escalation) starts to hold, the
 client says **"Unacknowledged alarm"** once. It does not repeat while the
