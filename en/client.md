@@ -174,6 +174,11 @@ The commands for the selected object or device are in its context menu (right
 mouse button) and in the **Item** menu. A command that does not apply to
 the selection is greyed out, and hovering it shows why.
 
+*Copy*, *Paste* and *Delete* also run from the keyboard: *Ctrl+C*, *Ctrl+V*
+and *Delete* (*⌘C* and *⌘V* on macOS). *Delete* asks for confirmation from the
+keyboard too. A key acts only when its command applies to the selection; in a
+text field or a table, *Ctrl+C* still copies the text of the cells.
+
 ### Object commands
 
 For the selected object you can open related views or perform actions such
