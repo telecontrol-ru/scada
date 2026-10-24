@@ -6,6 +6,19 @@ permalink: /en/
 
 # Overview
 
+{: .note }
+> **Version 2.6.** This manual describes version 2.6, which is being prepared
+> for release. The published release is
+> [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), and it is built
+> differently: its Server is a single service with a HASP or Guardant
+> hardware key, not a set of separate processes. The version 2.6 license is
+> issued for a term: after it expires the Server processes refuse requests
+> ([Licensing]({{ '/en/server/' | relative_url }}#licensing)). Before buying
+> or upgrading, read the version 2.6
+> [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
+> — in particular, displays are shown without live values, and on a new
+> installation archives cannot be assigned to objects from the Client.
+
 Telecontrol SCADA is supervisory control and data acquisition software
 for collecting field data, presenting it to operators, issuing control
 commands, archiving telemetry, and displaying historical information.
@@ -21,13 +34,6 @@ and events — and so any report or summary over the archive — also needs
 `scada-historian`. See
 [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)
 and [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
-On a new version 2.6 installation archives cannot yet be assigned to objects
-from the Client (see [Archiving]({{ '/en/dev/history/' | relative_url }})),
-and the license is issued for a term after which the processes refuse
-requests and reports stop working
-([Licensing]({{ '/en/server/' | relative_url }}#licensing)), so contact
-Telecontrol before relying on reports, summaries and graph history on a new
-site.
 Any number of Clients can connect over TCP/IP, and client sessions remain
 resilient while the Server stays online.
 
@@ -36,13 +42,8 @@ deployment or multiple computers for a distributed deployment. The Server
 processes run on Windows 10 or newer; installing the Server on Linux is
 available on request (see
 [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)).
-The Client runs on Windows 10 or newer. In version 2.6 the Client displays Modus diagrams with
-its own display module, without the ActiveXeme component. That module is a
-separate library which may not yet be included in the Client installation:
-without it a diagram window shows the message "No display runtime is
-installed." — in that case contact Telecontrol. In this version diagrams
-are shown without live values (see
-[Display]({{ '/en/client/display/' | relative_url }})). The
+The Client runs on Windows 10 or newer. The Client displays Modus diagrams with
+its own display module, without the ActiveXeme component. The
 [Modus graphical editor](http://swman.ru/content/blogcategory/19/47/) is
 used to edit diagrams.
 
@@ -66,7 +67,9 @@ Example of a distributed deployment:
 ## Key features
 
 * Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows (on Linux on request)
-* Data display on Modus [displays]({{ '/en/client/display/' | relative_url }})
+* Modus [displays]({{ '/en/client/display/' | relative_url }}); in version 2.6
+  they are shown without live values — see
+  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade)
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
   [summaries]({{ '/en/client/summary/' | relative_url }}) with archive
@@ -75,9 +78,13 @@ Example of a distributed deployment:
 * Telemetry acquisition and control over
   [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus),
   [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870), and
-  [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)
-* Retransmission of selected data to upper-level systems and an OPC UA
-  server
+  [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850); for the
+  limitations of version 2.6 see
+  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-protocols)
+* [Retransmission]({{ '/en/dev/devices/' | relative_url }}#retransmission)
+  of selected data to upper-level systems and an OPC UA server; for the
+  limitations of version 2.6 see
+  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-protocols)
 * [Formulas]({{ '/en/formulas/' | relative_url }}),
   [manual input]({{ '/en/architecture/' | relative_url }}#manual-write),
   and [limit checks]({{ '/en/architecture/' | relative_url }}#limits)

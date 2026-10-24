@@ -40,7 +40,7 @@ This version is not yet published on the releases page.
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
 
-1. When the Client closes, it saves the user profile (pages, window layout, portfolios, settings) not only on this computer but also on the Server, in the account's profile, at every access level. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}#storage).
+1. The user profile (pages, window layout, portfolios, settings) is saved on this computer; in addition, when the Client closes it also saves the profile on the Server, in the account's profile, at every access level. Do not count on pages and portfolios appearing by themselves in the Client on another computer. See [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage).
 
 1. *Acknowledge All* in the [Event journal]({{ '/en/client/events/' | relative_url }}) acknowledges only the events shown: events hidden by a zone, severity or object filter stay unacknowledged.
 
@@ -66,17 +66,67 @@ This version is not yet published on the releases page.
 
 1. The *Audit log* window shows who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
 
-1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. The module ships as a separate library; without it a display window shows "No display runtime is installed." In this version displays are shown without live values. See [Display]({{ '/en/client/display/' | relative_url }}).
+1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. In this version displays are shown **without live values** — see [Known limitations](#known-limitations) and [Display]({{ '/en/client/display/' | relative_url }}).
+
+1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
+
+1. The `Multiple Create…` command opens a wizard that creates several data objects at once from one name and address pattern. See [Bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create).
 
 1. The Client interface is available in English, and the appearance is chosen from the *Colour scheme* list — see [Settings]({{ '/en/client/workbench/' | relative_url }}#settings) and [Appearance]({{ '/en/client/workbench/' | relative_url }}#appearance).
 
-### Known limitations
+### Known limitations {#known-limitations}
 
-1. Archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).
+Read this list before buying and before upgrading: each limitation is described in detail on the page it links to.
 
-1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted.
+#### Before upgrading from 2.5.7 {#limits-upgrade}
+
+1. **Displays are shown without live values.** The 2.5.7 Client showed objects' current values and states on Modus displays; the 2.6 Client draws a display as the designer drew it — colours, switch positions and numbers do not change. A site whose operators work from displays loses that when it upgrades; such a site should stay on version 2.5.7 for now. See [Display]({{ '/en/client/display/' | relative_url }}).
+
+1. The display module is a separate library that may not be included in the Client installation; without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
+
+1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
+
+#### Protocols and retransmission {#limits-protocols}
+
+1. IEC 61850: control commands and *Poll Device* do not work, and double-point positions (`Pos`) are read wrongly. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+
+1. MODBUS: writing is reliable only for coils and for whole unsigned 16-bit registers. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+
+1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+
+1. MODBUS ASCII is not implemented. See [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus).
+
+1. IEC 60870-5: ASDU type 7 (32-bit string) is not supported, and normalized values are not scaled to −1…+1. See [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
+
+1. The *Protocol* and *Mode* lists of a link (and other fields with a list of values) can be empty — the default value then applies. See [Fields with a list of values]({{ '/en/dev/devices/' | relative_url }}#enum-lists).
+
+1. Retransmission: every new rule gets address 1, retransmitting objects of another Server process is not confirmed, and MODBUS retransmission needs a mode the list may not offer. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
+#### Archive and reports {#limits-archive}
+
+1. On a new installation archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).
+
+1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted. See [Where the data comes from]({{ '/en/client/reports/' | relative_url }}#archive).
+
+1. In a summary, *Maximum* over negative values shows about 0, and *Sum* and *Average* are computed over recorded changes, not over time — a summary gives neither energy nor a time-weighted average. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
+
+1. Graphs cannot be printed or exported. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
+
+1. *Export to Excel* works only on Windows with Microsoft Excel, and only when the Client was started with `--excel`. See [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
+
+1. The encoding choice in CSV export has no effect: the file is always written in UTF-8. See [Export to CSV]({{ '/en/client/export/' | relative_url }}).
+
+#### Installation and security {#limits-setup}
+
+1. The license is issued for a term; after it expires the Server processes refuse requests. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
+
+1. Installing the Server on Linux is available on request: there is no Linux package. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+
+1. Each protocol process can run on one computer of the site only, and serves every device of its protocol. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
+
+1. The configuration of a new installation is a demo project with password-less users and enabled IEC 60870-5-104 links; replace it before going live. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 1. The OPC UA ports 4840–4848, over which the processes exchange data, are protected only by the firewall. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
@@ -84,11 +134,19 @@ This version is not yet published on the releases page.
 
 1. The `svc` and `root` passwords given to `scada-setup apply` are stored in plain text in the Windows service settings in the registry. See [Passwords are stored in plain text]({{ '/en/server/' | relative_url }}#stored-passwords).
 
-1. `scada-setup apply` does not restart services that are running: a new `root` password and other options take effect only after a restart. Run `scada-setup stop` before `apply` on a running installation. See [Re-running apply]({{ '/en/server/' | relative_url }}#reapply).
+1. `scada-setup apply` does not restart services that are running: a new `root` password and other options take effect only after a restart. See [Re-running apply]({{ '/en/server/' | relative_url }}#reapply).
 
-1. Each protocol process can run on one computer of the site only, and serves every device of its protocol: it receives the whole configuration from `scada-config`. Two instances of the same process (for example `scada-iec104` on two computers) would both connect to every device of that protocol. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
+#### Working with the Client {#limits-client}
 
-## 2.5.7
+1. After the Server closes the connection cleanly (for example, when it restarts), the Client does not reconnect by itself. See [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
+
+1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
+
+1. *Acknowledge All* outside the event journal and event panel acknowledges every unacknowledged event at once, without confirmation. See [Commands]({{ '/en/client/' | relative_url }}#commands).
+
+1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
+
+## 2.5.7 {#v2-5-7}
 
 Published on the releases page on 9 February 2026 (installer `telecontrol-scada-2.5.7.msi`). In this release the Server is a single *Telecontrol SCADA Server* service with a HASP or Guardant hardware key, as in version 2.5. No list of changes since 2.5.6 accompanies the release.
 

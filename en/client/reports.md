@@ -153,9 +153,32 @@ change during the whole interval — see
    counts bad-quality values too, so for the same interval they can differ.
 
 A graph cannot be printed or exported. To keep the values, open the *Data*
-or *Summary* window from the graph and print or export that. A graph shows at
-most 10,000 points at a time: over a long period the time scale is narrowed
+or *Summary* window from the graph and print or export that. From a graph
+these commands open a window for the **selected line** only; to get a summary
+of all the graph's objects at once, build it from the object panel — see
+[A weekly report of several objects](#week-print). A graph shows at most
+10,000 points at a time: over a long period the time scale is narrowed
 automatically.
+
+## A weekly report of several objects, printed {#week-print}
+
+A graph cannot be printed, so a "graph-like" report — several objects'
+values over a week — is printed as a summary. For example, three objects
+over 7 days:
+
+1. Select all three objects in the object panel and choose *Summary* — one
+   summary opens, with a column per object.
+2. Set the period to *Custom...*: clear the check box of the *Time* group and
+   in the *Date* group set *Start* to the first day and *End* to the seventh
+   (see [A report for last month](#last-month)). *Week* does not do this: it
+   shows the week from Monday until now.
+3. In the *Interval* submenu choose *1-Hour* — 168 rows, one per hour — and
+   the [function]({{ '/en/client/summary/' | relative_url }}#function) you
+   need, for example *Average* or *Maximum*.
+4. Wait until no grey values are left in the table, choose *Print*, and pick
+   landscape orientation in the print preview.
+5. Write the period, interval and function on the printout: they are not
+   printed.
 
 ## A standing set of objects
 
@@ -188,5 +211,12 @@ So that you do not look for them, the Client has no
   hand each time (the window keeps its period, interval and function);
 * comparison of two periods in one summary or on one graph;
 * printing or export of graphs;
+* consumption or energy per interval: a summary computes neither
+  time-weighted totals nor time-weighted averages (see
+  [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function)).
+  If the object is a cumulative counter, the consumption per interval can be
+  taken as the difference of the *Last* (or *First*) values of neighbouring
+  rows. An empty cell then means that the counter did not change in that
+  interval, not a zero reading: use the last non-empty value above it;
 * event statistics (event counts per period, object or severity);
 * text search in event messages in the event journal.
