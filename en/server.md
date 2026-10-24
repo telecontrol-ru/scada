@@ -99,10 +99,13 @@ databases `apply` creates are copies of the demo configuration shipped with
 the installer: objects with emulation, two enabled IEC 60870-5-104 links (one
 of them accepts connections on port 2404 of this computer — the
 `scada-iec104` process takes that port, if it is installed), two archives,
-and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Before
-going live, delete the demo devices, objects and users, or replace the
-configuration with the project's (see
-[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project)).
+and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Every
+one of the four copies — in the `Configuration` folders of `config`, `proxy`,
+`historian` and `filestore` — starts as this demo project. Before going live,
+replace all four with the project's configuration (see
+[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project)):
+deleting the demo data in the Client has not been verified to reach every
+copy.
 
 #### Options {#scada-setup-options}
 
@@ -112,13 +115,18 @@ configuration with the project's (see
   the computer has.
 * `--central <address>` — the central computer's address; required by
   `apply`, `start` and `migrate` on a computer without `scada-config`.
-* `--advertise <address>` — this computer's address for the others, when its
-  name does not resolve on the network.
+* `--advertise <address>` — this computer's address for the others. Without
+  it, a computer set up with `--central` reports its computer name, and
+  `scada-proxy` connects to it by that name: give the IP address unless the
+  central computer resolves the name. Decide before the first `apply`: the
+  [Server certificate](#opcua-certificate) records the address only when it
+  is created.
 * `--license <path>` — the license file; default `license.json` in the data
   folder (`%ProgramData%\Telecontrol\SCADA Server\license.json`). `apply`,
   `start`, `migrate` and `status` check it: if the license file is
   elsewhere, give `--license` to `status` too, or it prints
-  `License: not available`.
+  `License: not available`. Give a full path, beginning with the drive
+  letter: the processes receive the path as written.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`.
@@ -142,7 +150,7 @@ included:
   computer. `remove --tiers <the extra processes>` removes the extra services
   (without `--purge-data` their data stays);
 * `apply` without `--license` writes the default path into the parameter
-  files.
+  files only, not into the services.
 
 `apply` can be run again: it rewrites the parameter files and re-registers
 the services with the new settings, without touching data.
@@ -215,6 +223,12 @@ there. The configuration is copied to three processes because each works from
 its own copy: `scada-config` hands it to the protocol processes, `scada-proxy`
 checks Client user names and passwords against it, and `scada-historian`
 reads its historical databases and object assignments from it.
+
+**`scada-filesystem`'s copy (`filestore\Configuration`) is not migrated**: it
+stays the demo database `apply` created, whose users «Клиент 1» …
+«Клиент 10» and `guest` have no passwords, and `scada-filesystem` accepts
+sign-ins against it on port 2006. Never open that port (see
+[Network preparation]({{ '/en/getting-started/' | relative_url }}#network)).
 
 **The version 2.5 folders are only read**: the command changes and deletes
 nothing in them. That matters, because on first start the 2.6 processes
@@ -365,7 +379,12 @@ computer, from an elevated command prompt:
    [releases page]({{ '/en/getting-started/' | relative_url }}#download)) the
    way you installed version 2.5, and attach the HASP or Guardant hardware
    key.
-4. Check that the *Telecontrol SCADA Server* service is running, and connect
+4. On **every workstation** that got the version 2.6 package in the
+   migration (step 7 above): uninstall the *ОИК Телеконтроль* program in
+   *Control Panel — Programs and Features* and install the release 2.5.7
+   Client the way it was installed before. The 2.5.7 installer refuses to
+   install over version 2.6 on a workstation too.
+5. Check that the *Telecontrol SCADA Server* service is running, and connect
    with a version 2.5 Client.
 
 `migrate` did not change the version 2.5 `Configuration`, `History` and
@@ -376,6 +395,46 @@ restore them from the backup made before the migration. The 2.6 process
 folders (`config`, `proxy`, `historian`, `filestore` and so on) and the 2.6
 license file `license.json` are not needed by version 2.5; delete them once
 you are sure you will not need them.
+
+### Rolling back a failed upgrade {#rollback-upgrade}
+
+The same applies to an upgrade within version 2.6 (to a newer 2.6.x): the
+installer refuses to install an older version over a newer one (the message
+`A later version of ОИК Телеконтроль is already installed`), and restoring a
+backup [on the same computer](#restore) only puts the data back under the
+version that is installed now. **So back up every Server computer before every
+upgrade**: without that backup there is no way back.
+
+To go back to the previous version, on each Server computer the upgrade
+reached, from an elevated command prompt:
+
+1. Stop the processes:
+   `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
+2. Uninstall the newer version: the *ОИК Телеконтроль* program in
+   *Control Panel — Programs and Features*. The services and the data stay.
+3. Install the older version's package:
+
+   ```bat
+   msiexec /i telecontrol-scada-<older version>.msi /qn /norestart /l*v install.log
+   ```
+
+4. Stop the processes again (`scada-setup stop`) — the services may have
+   started — and put back, from the backup taken **before the upgrade**, the
+   data folder (`%ProgramData%\Telecontrol\SCADA Server`, or the folder given
+   as `--data-root`), replacing what is there, and the
+   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder if it is
+   gone. Do not keep the data the newer version worked with: whether a newer
+   version changes the databases when it first starts has not been verified,
+   so only the pre-upgrade backup is known to suit the older version.
+5. Run `scada-setup apply` with the
+   [computer's parameters](#scada-setup-options) and the same `svc` and
+   `root` passwords.
+6. Check the result: `scada-setup status`, then sign in from a Client.
+
+Changes made to the configuration and values archived after the backup are
+lost. If the workstations were upgraded too, uninstall the newer package on
+them in the same way and install the older one (with no `scada-setup`
+commands).
 
 ### Uninstalling the Server {#uninstall}
 
@@ -405,6 +464,18 @@ an elevated command prompt, on every Server computer:
      [Server certificate](#opcua-certificate) and its private key (if the
      `C:\Program Files\Telecontrol SCADA` folder is still there after the
      uninstall, delete it as a whole).
+4. Delete the firewall rules created in
+   [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)
+   (for a rule the computer does not have, `netsh` reports that no rules
+   match, which is harmless):
+
+   ```bat
+   netsh advfirewall firewall delete rule name="Telecontrol SCADA Clients"
+   netsh advfirewall firewall delete rule name="Telecontrol SCADA OPC UA"
+   ```
+
+   Delete in the same way any rule you created for links that accept
+   connections (for example port 2404), by the name you gave it.
 
 ### Console mode {#console}
 
@@ -746,10 +817,18 @@ see them, start the process in [console mode](#console).
   Entitled tiers: config filesystem historian iec104 proxy
   config       SERVICE_RUNNING
   historian    SERVICE_RUNNING
+  filesystem   SERVICE_RUNNING
+  modbus       not installed
+  iec104       SERVICE_RUNNING
+  iec61850     not installed
+  opc          not installed
+  vidicon      not installed
+  proxy        SERVICE_RUNNING
   ```
 
   The processes on the `Entitled tiers` line are listed in alphabetical
-  order. A running service shows `SERVICE_RUNNING`, a stopped one
+  order. Below it, without `--tiers`, come all nine processes in their start
+  order: a running service shows `SERVICE_RUNNING`, a stopped one
   `SERVICE_STOPPED`, and one the computer does not have `not installed`.
 * **Process logs** — see [Logging](#logging). Why a process stopped (license,
   certificate) is written to its log; an error in the parameter file is not —
@@ -1133,8 +1212,18 @@ On a new or rebuilt computer:
    to each other. `apply` registers and starts the services, and keeps the
    restored databases and certificate. If the site's other computers name this
    one in `--central` by an address that has changed, run `stop` there and
-   then `apply` with the new address.
-5. Check the result: `scada-setup status`.
+   then `apply` with the new address. If this computer runs protocol
+   processes, was set up with `--advertise` and its address changed, give
+   `--advertise` the new address.
+5. Create the inbound firewall rules again — the backup does not contain
+   them (see
+   [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)).
+   If the address of this computer changed, also correct the `remoteip`
+   lists of the rules on the site's other Server computers.
+6. If this is the central computer and its address or name changed, enter
+   the new one in the `Server` field of the login dialog of each Client
+   (see [Client login]({{ '/en/getting-started/' | relative_url }}#client-start)).
+7. Check the result: `scada-setup status`.
 
 With a new certificate, third-party OPC UA clients that trusted the old one
 have to be set up again.

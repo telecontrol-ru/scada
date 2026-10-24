@@ -154,12 +154,26 @@ running protocol processes, giving them the central computer's address:
 rem Central computer:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers config,historian,filesystem,proxy --svc-password <password> --root-password <root password>
 rem Computer running protocol processes:
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers modbus,iec104 --central 10.0.0.10 --svc-password <password>
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers modbus,iec104 --central 10.0.0.10 --advertise 10.0.0.11 --svc-password <password>
 ```
 
 The protocol processes need no root password: `scada-config` keeps their
-accounts. `--central` is required on a computer without `scada-config`. The
-remaining links between processes are set up automatically. All
+accounts. `--central` is required on a computer without `scada-config`.
+
+**Decide `--advertise` before the first `apply` on each protocol computer.**
+A computer set up with `--central` reports its *computer name* to
+`scada-proxy`, and `scada-proxy` connects to that computer's processes by
+that name. Unless the central computer resolves the name of every protocol
+computer (check with `ping <computer name>` on the central computer), give
+each protocol computer its own IP address as `--advertise`, as in the example
+(10.0.0.11 is the protocol computer's own address). Otherwise the devices of
+that computer never appear in the Client. The
+[Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate)
+records the computer's addresses only when it is created: if you add
+`--advertise` later, also replace the certificate so that it carries the new
+address.
+
+The remaining links between processes are set up automatically. All
 `scada-setup` commands are described in the
 [Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
 
@@ -191,8 +205,11 @@ the passwords to `apply`), upgrades and restores included:
 * without `--central`, on a computer without `scada-config`, both commands
   refuse to run;
 * without `--license` both commands look for the license at
-  `%ProgramData%\Telecontrol\SCADA Server\license.json`, and `apply` also
-  writes that path into the parameter files and services.
+  `%ProgramData%\Telecontrol\SCADA Server\license.json`, and `apply` writes
+  that path into the parameter files (but not into the services);
+* give `--license` as a full path, beginning with the drive letter:
+  `scada-setup` hands the path to the processes as written, and a relative
+  path does not lead them to the same file.
 
 `stop`, `status` and `remove` without `--tiers` act on every Server service
 the computer has, so they need no `--tiers` or `--central`. `status`,
@@ -389,6 +406,13 @@ to the Server, allow it port 4840 from its address only (see
 Ports 2001–2008 of the other processes accept user sign-ins too, but Clients
 do not need them: keep them closed.
 
+**WARNING: never open port 2006 (`scada-filesystem`).** `scada-filesystem`
+keeps its own copy of the configuration, and on a new installation — and
+after a [migration from version 2.5](#upgrade-2-5), which does not replace
+it — that copy is the demo database, whose users «Клиент 1» … «Клиент 10»
+and `guest` have no passwords. On a new installation, replace it along with
+the other copies as described in [Preparing the project](#project).
+
 ## Preparing the project {#project}
 
 **The configuration of a new installation is a demo project.** The
@@ -404,23 +428,34 @@ delete it thinking it is the real `root`**: neither the password nor the
 rights of the built-in account depend on it. Until the configuration is
 replaced,
 the `scada-iec104` process, if installed, takes port 2404 and works with the
-demo devices. **Before going live**, either replace the configuration with
-the project's (below), or delete the demo devices, objects and users in the
-Client (see [Development]({{ '/en/development/' | relative_url }})).
+demo devices. **Before going live, replace the configuration with the
+project's** (below).
 
-If you have a ready project configuration database (a version 2.6
-`configuration.sqlite3`), put it in the `Configuration` folders of three
-processes, each of which works with its own copy: `scada-config` serves the
-configuration to the protocol processes, `scada-proxy` checks Client user
-names and passwords against it, and `scada-historian` reads the archive list
-and the archive assigned to each object from it.
+The configuration is kept in four copies, one per process, each in its
+process's `Configuration` folder: `scada-config` serves the configuration to
+the protocol processes, `scada-proxy` checks Client user names and passwords
+against it, `scada-historian` reads the archive list and the archive assigned
+to each object from it, and `scada-filesystem` checks the sign-ins on its
+port 2006 against it. Every copy starts as the demo project, so **replace all
+four**.
+
+**WARNING:** deleting the demo devices, objects and users in the Client is
+not a dependable way to remove them in this version: it has not been
+verified that a change made in the Client reaches every copy. If you go that
+way anyway, check afterwards that nothing listens on port 2404 any more
+(`netstat -ano | findstr :2404` on the computer of `scada-iec104` prints
+nothing) and that «Клиент 1» can no longer sign in; if either check fails,
+replace the configuration as below.
+
+To put a ready project configuration database (a version 2.6
+`configuration.sqlite3`) in place, on the central computer:
 
 1. Stop the processes:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
-2. Copy the file into the `config\Configuration`, `proxy\Configuration` and
-   `historian\Configuration` folders under
-   `%ProgramData%\Telecontrol\SCADA Server`, replacing the databases `apply`
-   created.
+2. Copy the file into the `config\Configuration`, `proxy\Configuration`,
+   `historian\Configuration` and `filestore\Configuration` folders under
+   `%ProgramData%\Telecontrol\SCADA Server` (`filestore` is the folder of
+   `scada-filesystem`), replacing the databases `apply` created.
 3. Run `scada-setup apply` with the same
    [computer's parameters](#host-parameters) and passwords as at
    installation. It keeps the copied databases and adds the `svc` service
@@ -492,8 +527,8 @@ If the `Sign in automatically next time` box is ticked, the Client reuses the sa
 
 **Until the configuration is replaced, what you see is the demo project**
 (see [Preparing the project](#project)): its objects, devices and the users
-«Клиент 1» … «Клиент 10» and `guest` are demo data. Delete them or replace
-the configuration before the system goes live.
+«Клиент 1» … «Клиент 10» and `guest` are demo data. Replace the
+configuration as described there before the system goes live.
 
 After you sign in:
 
@@ -523,9 +558,15 @@ These steps upgrade version 2.6 and later. A version 2.5 or earlier Server
 was a single process with a single service, and its data has to be moved into
 the version 2.6 processes — see [below](#upgrade-2-5).
 
-Before upgrading, make a backup — see
-[Backup]({{ '/en/server/' | relative_url }}#backup). Then, on each computer,
-from an elevated command prompt:
+**Before every upgrade, back up every Server computer** — see
+[Backup]({{ '/en/server/' | relative_url }}#backup). That backup is the only
+way back: the installer refuses to install an older version over a newer
+one, so a failed upgrade is undone by reinstalling the older version and
+restoring the backup (see
+[Rolling back a failed upgrade]({{ '/en/server/' | relative_url }}#rollback-upgrade)).
+
+**On the Server computers** — the central computer first, then each
+computer running protocol processes — from an elevated command prompt:
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
@@ -538,6 +579,13 @@ installation, and the same `svc` password. The installer replaces only the
 executables; `apply` rewrites the parameter files (hand edits to them are
 lost) and leaves the data alone. On computers running only protocol
 processes, `--root-password` may be omitted.
+
+**On the operator workstations** install the new package only, with no
+`scada-setup` commands (see [Installing the Client](#client-install)):
+
+```bat
+msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
+```
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
@@ -589,12 +637,18 @@ On the computer where the 2.5 Server ran:
 The old `Configuration`, `History` and `FileSystem` folders are neither
 changed nor deleted.
 
+The migration does not carry the configuration into `scada-filesystem`'s
+copy (`filestore\Configuration`): it stays the demo database, with the
+password-less demo users. Never open its port 2006 (see
+[Network preparation](#network)).
+
 ## Uninstalling {#uninstall}
 
 Before uninstalling the program, remove the services with
 `scada-setup remove --tiers <this computer's processes>`: the installer
 removes neither the services, nor their registry settings with the `svc` and
-`root` passwords, nor the data folders and the certificate's private key.
+`root` passwords, nor the data folders and the certificate's private key, nor
+the firewall rules created in [Network preparation](#network).
 Then uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль)
 in *Control Panel — Programs and Features*. The steps are in
 [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
@@ -638,6 +692,21 @@ read the message.</dd>
 computer's. Run <code>scada-setup stop</code> there, then <code>apply</code>
 with the original <code>svc</code> password (see <a href="{{ '/en/server/' | relative_url }}#svc">The svc
 account</a>).</dd>
+
+<dt>The devices of a protocol computer never appear</dt>
+<dd>The Client does not show the devices served by a computer running
+protocol processes, although <code>scada-setup status</code> there shows them
+running. <code>scada-proxy</code> connects to that computer by the name it
+reported; if the central computer cannot resolve that name (check with
+<code>ping &lt;computer name&gt;</code> on the central computer), run
+<code>scada-setup stop</code> on the protocol computer, then <code>apply</code>
+with its <a href="#host-parameters">computer's parameters</a> plus
+<code>--advertise &lt;its IP address&gt;</code>, and write the option down. For
+the new address to be in the
+<a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
+too, delete both certificate files before that <code>apply</code>.
+Also check that its firewall lets the central computer reach the OPC UA ports
+of its processes (see <a href="#network">Network preparation</a>).</dd>
 
 <dt>Every process stopped after the license file was replaced</dt>
 <dd>The file was missing or only partly written when it was checked. Put a

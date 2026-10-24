@@ -29,6 +29,26 @@ own account requires the current password; someone else's (an administrator
 reset) does not. The server sets what a password must satisfy — see
 [Password policy]({{ '/en/client/workbench/#password-policy' | relative_url }}).
 
+**For the administrator:**
+
+* **Never change or delete the `svc` user.** It is the service account the
+  Server processes connect to each other with; changing it breaks the links
+  between them (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
+* **The `root` user in the list of a new installation is not the built-in
+  `root` account.** It comes with the demo project and can never sign in:
+  signing in as `root` always uses the built-in account. Changing or
+  deleting this user does not affect the built-in account.
+* **A `root` password set in this window does not last.** Each Server
+  process writes the password given to `scada-setup apply` as
+  `--root-password` again every time it starts. Change the root password
+  with `scada-setup` instead (see
+  [Root password]({{ '/en/getting-started/' | relative_url }}#root-password)).
+* **The built-in `root` account allows one session at a time.** When `root`
+  signs in a second time, from another workstation for example, the Client
+  says the user name is already in use and offers to disconnect the open
+  session; answering yes disconnects the first `root` session. Give each
+  administrator a user of their own rather than sharing `root`.
+
 ## Access rights
 
 An account's Rights property is two independent permissions:
