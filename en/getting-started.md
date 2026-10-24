@@ -521,7 +521,18 @@ The "Security and certificates" disclosure (the security mode, the client
 certificate and private key) appears only for the "OPC UA" type; with the
 "Telecontrol" type there is nothing to fill in.
 
-If the `Sign in automatically next time` box is ticked, the Client reuses the saved credentials on the next startup. On Windows, hold `Ctrl` while launching the Client to sign in with other credentials once; other operating systems have no such bypass.
+If the `Sign in automatically next time` box is ticked, the Client stores the
+name and password on this computer and no longer waits for input in the
+sign-in window: on every start, and after *Disconnect from Server* and
+*Connect to Server...*, it signs the last account straight in.
+
+> **Caution.** Do not tick this box on a shared operator workstation: the
+> incoming operator would end up under the outgoing operator's account. On
+> Windows clear it like this: hold `Ctrl` while starting the Client — the
+> sign-in window opens with the box cleared — and sign in. On macOS automatic
+> sign-in cannot be bypassed; only the workstation's administrator can clear
+> the setting (see
+> [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login)).
 
 ## First steps after login
 

@@ -128,7 +128,7 @@ last.</dd>
 <dd>Choose the page's icon; "None" restores the position number.</dd>
 
 <dt>Delete page</dt>
-<dd>Delete the page and its layout. Kept apart from the other items so it is
+<dd>Delete the page and its layout. In this page-button menu (but not in the main <i>Page</i> menu, where <i>Delete</i> sits right under <i>New</i>) it is kept apart from the other items so it is
 not reached by habit. The page is deleted at once, with <b>no
 confirmation</b>, and its windows do not go to the recycle list of closed
 windows, so they cannot be restored from the <i>Window</i> menu. Save any

@@ -11,8 +11,8 @@ permalink: /en/client/display/
 * TOC
 {:toc}
 
-The `Display` window shows Modus schematics (`.sde` and `.xsde` files) stored
-on the Server. The client draws them with its own display module; the
+The `Display` window shows Modus schematics (`.sde` and `.xsde` files) and
+Vidicon schematics (`.vds` files) stored on the Server. The client draws them with its own display module; the
 ActiveXeme component is neither needed nor used. The **Display** menu
 lists the available schematics.
 
@@ -25,21 +25,28 @@ lists the available schematics.
 
 > **Caution.** In this version schematics open and display **without live
 > values**: the display module draws a schematic as its designer drew
-> it and does not bind its shapes to objects. Colours, switch positions and
+> it and does not show the objects' state on it. Colours, switch positions and
 > numbers on the schematic do not change with the state of the equipment.
-> Watch values and quality in tables, in the
-> [object panel]({{ '/en/client/' | relative_url }}#object-panel) and in the
-> [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector), and
+> Watch values and quality in tables and in the
+> [object panel]({{ '/en/client/' | relative_url }}#object-panel), and
 > alarms in the [event panel]({{ '/en/client/' | relative_url }}#events-panel)
 > and the status bar.
 
 ## Working with a schematic {#working}
 
-Clicking a shape bound to an object selects that object: the
-[Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) shows its
-value and quality, and the object's commands are in the **Item** menu.
-Double-clicking a shape acknowledges the selected object's unacknowledged
-events. Clicking empty space on the schematic clears the selection.
+What a click does depends on the kind of schematic.
+
+* **Modus schematics** (`.sde`, `.xsde`). In this version a click on a shape
+  does **not** select an object you can work with: the schematic's shapes are
+  not linked to objects. To issue a command, acknowledge an event or read a
+  value, pick the object in the
+  [object tree]({{ '/en/client/' | relative_url }}#object-panel) or a table.
+* **Vidicon schematics** (`.vds`) — opened from the same **Display** menu. A
+  click on a shape bound to an object selects that object — its commands are
+  in the **Item** menu — and adds it to the "Measurements" panel. A
+  double-click does nothing: acknowledge events in the event panel.
+
+Clicking empty space on the schematic clears the selection.
 
 > **Caution.** Clicking a shape that has **no** object behind it moves the
 > selection frame to it, but the **previous** object stays selected.

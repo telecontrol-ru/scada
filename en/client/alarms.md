@@ -214,6 +214,13 @@ unacknowledged. Run from any other window, it acknowledges every
 unacknowledged event the client receives and every client message — but not
 events below the [severity threshold](#threshold).
 
+> **Caution.** *Acknowledge All* is in the context menu of every window.
+> Outside the event panel and the event journal it acknowledges **every**
+> Server event the client has received, across the whole system — at once,
+> with **no confirmation**, and for every workstation: acknowledgement is
+> recorded on the Server. Acknowledge from the event panel or the journal. See
+> [Common commands]({{ '/en/client/' | relative_url }}#common-commands).
+
 Client messages are acknowledged on this workstation only: they are not sent
 to the Server and do not appear at other workstations.
 

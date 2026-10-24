@@ -17,6 +17,29 @@ Main client window:
 
 ![]({{ '/img/workbench-window.png' | relative_url }})
 
+## Limitations of version 2.6 {#limitations}
+
+Read this list before working at an operator workstation. Details are behind
+the links; the limitations of the whole release are collected under
+[Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
+
+* **Schematics show no live values** — colours, switch positions and numbers
+  on a schematic do not change with the equipment. Watch values in tables and
+  in the object tree. See [Display]({{ '/en/client/display/' | relative_url }}).
+* **After an orderly close of the connection by the Server (for example, when
+  it is restarted) the client does not reconnect by itself** — reconnect with
+  *More → Connect to Server...*. See [Connection to the Server](#connection).
+* **The *Disconnect from Server* command does not load the new user's profile** — hand
+  over by closing the client. See [Shift handover](#shift-change).
+* **The spoken announcement cannot be turned off from the client.** See
+  [Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
+* **The *Acknowledge All* command outside the event panel and the journal acknowledges
+  every event in the system** — for every workstation and with no
+  confirmation. See [Common commands](#common-commands).
+* **With "Sign in automatically next time" ticked the sign-in window never
+  waits again** — not after *Disconnect from Server*, not after a restart. See
+  [Automatic sign-in](#auto-login).
+
 ## Main areas
 
 The main window contains the title bar, the main menu and a status bar.
@@ -96,10 +119,19 @@ The status bar shows:
 ## Pages and windows
 
 The central workspace is divided into pages. A client session can have
-multiple pages, but only one is visible at a time. Pages can be created,
-renamed, duplicated, deleted, and switched from the `Page` menu, or from the
-page buttons on the
+multiple pages, but only one is visible at a time. Pages are switched from
+the list in the `Page` menu, or with the page buttons on the
 [section rail]({{ '/en/client/workbench/#activity-bar' | relative_url }}).
+
+The `Page` menu holds its commands in this order:
+
+1. `New` — create a page;
+2. `Delete` — delete the current page;
+3. `Duplicate` — copy the page with its content;
+4. `Rename` — rename the page.
+
+In the main menu `Delete` sits right under `New`, with nothing between them —
+take care not to slip when choosing `New`.
 
 > **Caution.** *Page → Delete* takes effect at once, with **no
 > confirmation**, and the deleted page's windows do **not** go to the
@@ -148,6 +180,9 @@ event panel shows "Connection to server established. Login successful."
 **Connecting by hand.** *More → Disconnect from Server* and *More → Connect to
 Server...* end the session and open the sign-in window. Only one of them is
 available at a time: the first while connected, the second while disconnected.
+With "Sign in automatically next time" ticked, the sign-in window does not
+wait for input: the client signs the previous account straight back in (see
+[Automatic sign-in](#auto-login)).
 
 **Session ended from another workstation.** If someone signs in with the same
 account on another computer and ends your session (see
@@ -168,15 +203,21 @@ another workstation.", «Отключено от сервера … С этим�
 
 Each operator works under their own account: the event journal records who
 acknowledged an event and whose action caused it, and the workstation's
-settings and pages are kept in the user's profile on the Server.
+settings and pages are kept in the user's profile. The profile is saved on
+this computer; in addition, the client saves it on the Server when it closes.
+Do not count on pages and settings appearing by themselves in the client on
+another computer.
 
 To hand over a shift:
 
-1. The outgoing operator makes sure the status bar reads "Connected" and
+1. "Sign in automatically next time" must be off at this workstation —
+   otherwise the incoming operator never sees the sign-in window and ends up
+   under the outgoing operator's account (see [Automatic sign-in](#auto-login)).
+2. The outgoing operator makes sure the status bar reads "Connected" and
    closes **all** of the client's main windows (if several were opened with
    *Window → New*). When the last one is closed, the client saves the
    profile on the Server, ends the session and exits.
-2. The incoming operator starts the client again and enters their own name
+3. The incoming operator starts the client again and enters their own name
    and password in the sign-in window.
 
 > **Caution.** Closing one of several main windows does **not** end the
@@ -203,15 +244,35 @@ not follow the account to another workstation.
 If the sign-in window is closed, the client stays disconnected; sign in with
 *More → Connect to Server...*.
 
-On a shared workstation leave "Sign in automatically next time" unticked:
-with it, the client signs the last account in by itself on the next start. On
-Windows, hold *Ctrl* while starting the client to skip automatic sign-in once;
-other operating systems have no such bypass.
-
 If the account is not allowed several sessions at once and is already in use
 on another computer, signing in asks "The specified username is already in use
 by another session. Disconnect the open session and continue?". Answering yes
 ends the session on the other computer, whose client then stays disconnected.
+
+### Automatic sign-in {#auto-login}
+
+The "Sign in automatically next time" box in the sign-in window stores the
+name and password on this computer. While it is ticked, the sign-in window
+**no longer waits for input**: on every start of the client, and after *More
+→ Disconnect from Server* and *Connect to Server...*, the client signs the last
+account straight in.
+
+> **Caution.** Never tick this box on a shared operator workstation. With it,
+> the incoming operator works under the outgoing operator's account: events
+> are acknowledged and commands issued in somebody else's name.
+
+How to clear the box:
+
+* **Windows.** Hold *Ctrl* while starting the client — the sign-in window
+  appears with the box cleared. Sign in under your own account: the client
+  then remembers that automatic sign-in is off. The client's own hint mentions
+  *Ctrl* on every platform, but it works only on Windows.
+* **macOS.** Automatic sign-in cannot be bypassed from the client. Ask the
+  workstation's administrator: the setting (together with the stored password)
+  is kept in the macOS user's file
+  `~/Library/Application Support/Telecontrol/SCADA Client/settings.json`, and
+  the administrator has to delete that file or set `AutoLogin` in it to
+  `false`.
 
 ## Commands {#commands}
 
@@ -223,6 +284,11 @@ the selection is greyed out, and hovering it shows why.
 and *Delete* (*⌘C* and *⌘V* on macOS). *Delete* asks for confirmation from the
 keyboard too. A key acts only when its command applies to the selection; in a
 text field or a table, *Ctrl+C* still copies the text of the cells.
+
+**Keys on macOS.** This manual names keys as on Windows. On macOS press *⌘*
+instead of *Ctrl* in shortcuts: *Ctrl+K* is *⌘K*, and selecting several rows
+with *Ctrl*-click is *⌘*-click. The *Delete* key on a Mac laptop keyboard is
+*fn+⌫*.
 
 ### Object commands
 
@@ -282,7 +348,7 @@ retransmission table — the rules by which selected objects are forwarded to
 upper-level systems. See
 [Transmission rules]({{ '/en/client/workbench/#transmission' | relative_url }}).
 
-### Common commands
+### Common commands {#common-commands}
 
 Common commands include printing the active window, opening the event window,
 and *Acknowledge All*. With the event journal or the event panel active it
@@ -292,6 +358,15 @@ event the client receives and every client message. Events below the
 [severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold) are
 not received by the client, so this command does not acknowledge them (see
 [Event panel](#events-panel)).
+
+> **Caution.** *Acknowledge All* is in the context menu of **every** window —
+> a table, a graph or the object tree, for example. Outside the event panel
+> and the event journal it acknowledges **every** Server event the client has
+> received — across the whole system, not only the objects in that window —
+> and it runs at once, with **no confirmation**. Acknowledgement is recorded on
+> the Server, so those events stop being unacknowledged at every other
+> workstation too. Acknowledge from the [event panel](#events-panel) or the
+> event journal, where the command acts only on the events shown.
 
 ## Control {#control}
 
@@ -339,6 +414,16 @@ If the object has a control permission condition, the dialog has a
 "Condition:" row. It reads "Satisfied" or "Unsatisfied" and updates live.
 While the condition is unsatisfied (or its value is bad), "Execute" is
 disabled.
+
+### Before a control command {#control-checklist}
+
+1. Check the object's name on the first line of the "Control" dialog (the
+   window title just says "Control" and does not name the object).
+2. Check the object in a table: its "Quality" column must read "Good" (see
+   [Reading values and colours](#quality-legend)).
+3. Make sure the status bar reads "Connected".
+4. If the command ended in an error, check the object's present state before
+   retrying (see [Command result](#control-result)).
 
 ### Command confirmation {#control-confirmation}
 
@@ -502,10 +587,26 @@ input, <code>[Б]</code> blocked, <code>[2]</code> backup channel,
 violation. The full list is in
 <a href="{{ '/en/architecture/' | relative_url }}#quality-flags">Quality flags</a>.</dd>
 
+<dt>The "Quality" column in a table</dt>
+<dd>The value's quality in words (the Russian client shows the Russian
+labels):
+<ul>
+<li>"Good" («Достоверно», green) — the value is good;</li>
+<li>"Uncertain" («Неопределённо», amber) — the value is stale, the
+<code>[У]</code> flag; the row's cell text is amber too;</li>
+<li>"Bad" («Недостоверно», red) — the bad flag, or no connection
+<code>[С]</code>, a connection failure <code>[Н]</code> or a configuration
+error <code>[К]</code>; the row's cell text is red too;</li>
+<li>"No data" («Нет данных») — no value has arrived yet.</li>
+</ul>
+Unlike the "?", this column does take a lost connection and staleness into
+account, so check the object here before a control command.</dd>
+
 <dt>The dot beside a value in the object tree</dt>
 <dd>Green — the value is good; red — bad; <b>blinking yellow</b> — the object
 has an unacknowledged event (the row's background blinks yellow with it).
-There is no separate colour for "uncertain" quality. No dot is drawn until a
+There is no separate dot colour for "uncertain" quality — the table's
+"Quality" column shows it. No dot is drawn until a
 value has arrived, and groups have none — a group shows its device's
 connection state instead.</dd>
 
@@ -526,7 +627,7 @@ column. See <a href="{{ '/en/client/events/' | relative_url }}#severity">Severit
 
 Yellow means different things in different places: in the object tree it is an
 unacknowledged event on the object, in the journal it is the "Warning"
-severity.
+severity, in a table it is the "Uncertain" quality.
 
 ## Equipment panel
 
