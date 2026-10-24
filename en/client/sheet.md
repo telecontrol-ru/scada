@@ -63,8 +63,20 @@ changed.
 
 ## Cell blinking
 
-Cells whose values have changed can blink to draw the operator's
-attention.
+A cell linked to an object blinks while that object has unacknowledged
+events, and stops once they are acknowledged. A change of value by itself
+does not make a cell blink. Cells do not blink in edit mode.
+
+## Summary and graph for a cell {#open}
+
+To open a summary or a graph for a cell's object, select **one** cell and
+choose *Summary* or *Graph*.
+
+**WARNING: in this version, with several cells selected, the *Summary* and
+*Graph* commands open no window.** Select cells one at a time; to build a
+summary or graph of several objects, select them in the
+[object panel]({{ '/en/client/' | relative_url }}#object-panel) or collect them
+in a [portfolio]({{ '/en/client/portfolio/' | relative_url }}).
 
 ## Translation status
 

@@ -19,8 +19,9 @@ with related information:
 * `Value` — the current value;
 * `Quality` — the value's quality mark;
 * `Trend` — a mini-graph of the object's recent values;
-* `Source Timestamp`, `Server Timestamp` — when the value was received from
-  the device and on the Server;
+* `Source Timestamp` — the time the value refers to at its source (for
+  example, a timestamp sent by the device), not when it was received;
+* `Server Timestamp` — when the Server received the value;
 * `Change Time` — when the value last changed;
 * `Event` — the most recent unacknowledged system event for the object;
 * `Source` — what the row is bound to: an object identifier or a formula.

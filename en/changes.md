@@ -38,7 +38,7 @@ This version is not yet published on the releases page.
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
 
-1. When the Client closes, the user profile (pages, window layout, portfolios, settings) is also saved in the account's profile on the Server, at every access level. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}#storage).
+1. When the Client closes, it saves the user profile (pages, window layout, portfolios, settings) not only on this computer but also on the Server, in the account's profile, at every access level. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}#storage).
 
 1. *Acknowledge All* in the [Event journal]({{ '/en/client/events/' | relative_url }}) acknowledges only the events shown: events hidden by a zone, severity or object filter stay unacknowledged.
 
@@ -55,6 +55,16 @@ This version is not yet published on the releases page.
 1. The [Table]({{ '/en/client/table/' | relative_url }}) window has new `Quality`, `Trend` and `Source` columns; columns can be hidden from the header context menu.
 
 1. The [CSV export]({{ '/en/client/export/' | relative_url }}) dialog has an *Expand grouped rows* option for the event journal.
+
+1. Configuration export and import (*More — Export Configuration...* and *Import Configuration...*) use the OPC UA NodeSet (XML) format instead of version 2.5.7's CSV table. CSV files exported by version 2.5 cannot be imported: a version 2.5 Server's configuration is moved over by `scada-setup migrate`. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) and [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+
+1. Event severity is a number from 1 to 1000 instead of the former scale up to 100: *Critical* is 800 and above, *Warning* from 600. Severity set in object properties and the severity of archived events are recalculated once (multiplied by 10), as is the minimum severity saved in the profile. See [Severity]({{ '/en/client/events/' | relative_url }}#severity).
+
+1. The [Event journal]({{ '/en/client/events/' | relative_url }}) has a filter bar above the journal (*Period*, *Min. severity*, *Unacknowledged only*) and an area list on the left with each area's count of unacknowledged events. See [Period]({{ '/en/client/events/' | relative_url }}#period) and [Filters]({{ '/en/client/events/' | relative_url }}#filters).
+
+1. The *Audit log* window shows who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
+
+1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. The module ships as a separate library; without it a display window shows "No display runtime is installed." In this version displays are shown without live values. See [Display]({{ '/en/client/display/' | relative_url }}).
 
 1. The Client interface is available in English, and the appearance is chosen from the *Colour scheme* list — see [Settings]({{ '/en/client/workbench/' | relative_url }}#settings) and [Appearance]({{ '/en/client/workbench/' | relative_url }}#appearance).
 

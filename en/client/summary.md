@@ -74,14 +74,19 @@ restored and the rest are **silently** dropped.
 
 ## Aggregation interval {#interval}
 
-The row length is chosen with the commands *1-Minute*, *5 min*, *15 min*,
-*30 min*, *1-Hour*, *12 hours* and *1-Day*. Intervals are aligned to local
+The row length is chosen in the *Interval* submenu — in the summary's
+context menu, or in the **Item** menu while the summary window is active:
+the commands *1-Minute*, *5 min*, *15 min*, *30 min*, *1-Hour*, *12 hours*
+and *1-Day*. Intervals are aligned to local
 time: hourly intervals start on the hour, daily ones at midnight. If the
 computer's time zone observes daylight saving time, in the summer months the
 day boundary (and that of 12-hour intervals) is shifted by an hour from
 midnight.
 
 ## Aggregation function {#function}
+
+The function is chosen in the *Function* submenu — in the summary's context
+menu or in the **Item** menu.
 
 The functions work on the **changes recorded in the archive** within the
 interval — on individual points, not on how long each value was in force.

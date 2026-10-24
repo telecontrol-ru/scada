@@ -26,15 +26,19 @@ context menu.
 
 ### Export options
 
-During export, the client shows a dialog for CSV format parameters:
+The client first asks for the file. The file name defaults to the window
+title (with colons replaced by hyphens). It then shows a dialog for CSV format parameters:
 
 <dl>
 
 <dt>Encoding</dt>
 <dd>
 
-* System encoding, used by default
-* Unicode (`UTF-8`)
+* System, used by default
+* Unicode (UTF-8)
+
+**WARNING: in this version the encoding choice has no effect.** With either
+choice the file is written in UTF-8 without a byte-order mark (BOM).
 
 </dd>
 
@@ -71,6 +75,17 @@ later exports.
 
 After export finishes, the client offers to open the file in the
 associated application.
+
+### Opening the file in Excel {#open-in-excel}
+
+Do not open the file by double-clicking it: Microsoft Excel then reads it in
+the Windows system code page, and non-Latin text such as Russian names turns
+into unreadable characters. Instead, in Excel choose *Data — From Text/CSV*,
+pick the file, and set *File Origin* to *65001: Unicode (UTF-8)* and
+*Delimiter* to the one chosen at export.
+
+In this version a text editor on Windows may show an empty line after each
+row of the file.
 
 ### What the file contains {#contents}
 

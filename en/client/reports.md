@@ -106,8 +106,9 @@ interval:
    added and removed with the check boxes in the object panel.
 3. Set the [period](#period), for example *Day*, or
    [last month](#last-month).
-4. Choose the aggregation interval (*1-Minute* to *1-Day*) and the
-   aggregation function — see [Summary]({{ '/en/client/summary/' | relative_url }}).
+4. In the summary's context menu (or the **Item** menu), choose the
+   aggregation interval in the *Interval* submenu (*1-Minute* to *1-Day*) and
+   the aggregation function in the *Function* submenu — see [Summary]({{ '/en/client/summary/' | relative_url }}).
    A summary holds at most 10,000 rows and **silently** stops at the last
    one: a month at a 1-minute interval ends around the 7th. Use an interval
    of at least 5 minutes for a month, and of at least 1 hour for anything
@@ -162,8 +163,9 @@ If a report is built from the same objects every time, collect them in a
 [portfolio]({{ '/en/client/portfolio/' | relative_url }}) (*Portfolio* in
 the Client's menus): a named set of objects. Select the portfolio and choose
 *Summary* to open a summary of all its objects. Portfolios are personal:
-other users do not see them. They are kept in your account's profile on the
-Server (see
+other users do not see them. They are kept in the user profile on this
+computer, and when the Client closes it also saves the profile on the Server
+(see
 [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage)).
 
 ## Events over a period

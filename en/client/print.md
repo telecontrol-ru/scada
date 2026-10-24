@@ -41,6 +41,11 @@ The printout contains **only the table**:
 * the data rows; for a summary, the start time of each interval on the left;
 * a page number at the bottom of each sheet.
 
+The event journal is printed **one row per event**, even where the window
+folds repeats into one row. The *Expand grouped rows* option of the
+[CSV export]({{ '/en/client/export/' | relative_url }}) dialog does not
+affect printing.
+
 **WARNING: from the [Table]({{ '/en/client/table/' | relative_url }}) window,
 the printout gets every column, hidden ones included** — the `Trend` column
 (empty on paper) and the `Source` column with formulas and object

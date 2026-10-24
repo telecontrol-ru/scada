@@ -34,8 +34,13 @@ resilient while the Server stays online.
 For operation, the system requires one computer for a single-machine
 deployment or multiple computers for a distributed deployment. The Server
 processes run on Windows 10 or newer or on Linux; the Client runs on
-Windows 10 or newer. The Client displays Modus diagrams itself; no
-additional component is needed for that. The
+Windows 10 or newer. In version 2.6 the Client displays Modus diagrams with
+its own display module, without the ActiveXeme component. That module is a
+separate library which may not yet be included in the Client installation:
+without it a diagram window shows the message "No display runtime is
+installed." — in that case contact Telecontrol. In this version diagrams
+are shown without live values (see
+[Display]({{ '/en/client/display/' | relative_url }})). The
 [Modus graphical editor](http://swman.ru/content/blogcategory/19/47/) is
 used to edit diagrams.
 
