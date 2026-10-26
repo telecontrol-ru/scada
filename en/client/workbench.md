@@ -168,8 +168,9 @@ tabs above the list — All, This client, Profile, This window.
 
 Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer only and which are in the user's profile,
-which the client also saves on the Server when it closes; do not count on
-those settings appearing by themselves in the client on another computer. Settings apply **immediately**: there is nothing to confirm, and the
+which the client also saves on the Server when it closes and loads from there
+at login, so profile settings follow the account to another computer (with
+the "Telecontrol" server type; not with "OPC UA"). Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
 scope are saved on this computer and, when the client exits, on the Server —
 not at the moment a setting changes. So close the client only while the

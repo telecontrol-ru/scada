@@ -42,12 +42,12 @@ On an installation made with `scada-setup`:
 * an archive cannot be assigned to an object from the Client — the Server
   rejects the change. Only objects that already have an archive assigned
   (for example, ones migrated from version 2.5) are archived;
-* after the service of a protocol process (for example,
-  *Telecontrol SCADA IEC 104*) is restarted, archiving of its objects' values
-  stops until the *Telecontrol SCADA Historian* service is restarted as well.
+* while the service of a protocol process (for example,
+  *Telecontrol SCADA IEC 104*) is stopped or restarting, its objects' values
+  are not archived; once the service starts, archiving resumes by itself.
 
 If a report for a recent period is empty while the object is working, tell
-the administrator: archiving may not have resumed after a service restart.
+the administrator: the object may have no archive assigned.
 
 ## Choosing a period {#period}
 
@@ -201,8 +201,8 @@ If a report is built from the same objects every time, collect them in a
 the Client's menus): a named set of objects. Select the portfolio and choose
 *Summary* to open a summary of all its objects. Portfolios are personal:
 other users do not see them. They are kept in the user profile on this
-computer, and when the Client closes it also saves the profile on the Server
-(see
+computer, and when the Client closes it also saves the profile on the Server,
+from where it loads it at login on another computer (see
 [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage)).
 
 ## Events over a period

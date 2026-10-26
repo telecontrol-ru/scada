@@ -180,9 +180,10 @@ otherwise it would end the session on the other workstation in turn.
 Each operator works under their own account: the event journal records who
 acknowledged an event and whose action caused it, and the workstation's
 settings and pages are kept in the user's profile. The profile is saved on
-this computer; in addition, the client saves it on the Server when it closes.
-Do not count on pages and settings appearing by themselves in the client on
-another computer.
+this computer; in addition, the client saves it on the Server when it closes
+and loads it from the Server at login, so pages and settings follow the
+account to another computer. This applies to the "Telecontrol" server type;
+with the "OPC UA" type the profile is kept on this computer only.
 
 To hand over a shift:
 

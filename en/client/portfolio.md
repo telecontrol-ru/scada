@@ -28,11 +28,12 @@ settings, not in the Server's configuration:
 * portfolios are **personal**: other users do not see them, and a portfolio
   cannot be handed to a colleague — they have to build their own;
 * the profile is saved on this computer; in addition, when the Client closes
-  it also saves the profile on the Server, in your account's profile. This
-  holds for every access level, rights "0 — Executive / viewer" included. Do
-  not count on your portfolios appearing by themselves in the Client on
-  another computer: if you work on several computers, be prepared to build a
-  portfolio on each of them.
+  it also saves the profile on the Server, in your account's profile, and at
+  login it loads the profile from there — so your portfolios are available on
+  any computer where you log in under your account. This holds for every
+  access level, rights "0 — Executive / viewer" included, and for the
+  "Telecontrol" server type; with the "OPC UA" type the profile, and the
+  portfolios with it, is kept on this computer only.
 
 ## Create a portfolio
 

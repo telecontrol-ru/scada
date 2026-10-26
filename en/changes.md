@@ -66,7 +66,7 @@ This version is not yet published on the releases page.
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
 
-1. The user profile (pages, window layout, portfolios, settings) is saved on this computer; in addition, when the Client closes it also saves the profile on the Server, in the account's profile, at every access level. Do not count on pages and portfolios appearing by themselves in the Client on another computer. See [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage).
+1. The user profile (pages, window layout, portfolios, settings) is saved on this computer; in addition, when the Client closes it also saves the profile on the Server, in the account's profile, at every access level, and at login it loads the profile from there — pages and portfolios follow the account to another computer (with the "Telecontrol" server type; with "OPC UA" the profile is kept on this computer only). See [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage).
 
 1. *Acknowledge All* in the [Event journal]({{ '/en/client/events/' | relative_url }}) acknowledges only the events shown: events hidden by a zone, severity or object filter stay unacknowledged.
 
@@ -144,8 +144,6 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. On a new installation archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).
 
-1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted. See [Where the data comes from]({{ '/en/client/reports/' | relative_url }}#archive).
-
 1. In a summary, *Time Average* and *Time Integral* do not count the start of the interval before its first recorded change: the value from the previous interval is not carried over. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
 
 1. A graph is printed and saved only as an image; its values are not exported to CSV or Excel. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
@@ -175,8 +173,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
-
-1. After the service of a protocol process restarts, the values of its objects in open Client windows may stop updating — restart the Client. See [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
 ## 2.5.7 {#v2-5-7}
 

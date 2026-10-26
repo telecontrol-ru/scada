@@ -31,8 +31,9 @@ an installation made with `scada-setup`:
   [`scada-setup migrate`]({{ '/en/server/' | relative_url }}#upgrade-2-5)) are
   archived, and the archives are listed in the *Databases* window;
 * after the service of a protocol process (for example,
-  *Telecontrol SCADA IEC 104*) restarts, its objects' values stop being
-  archived. Restart the *Telecontrol SCADA Historian* service after it.
+  *Telecontrol SCADA IEC 104*) restarts, archiving of its objects' values
+  resumes by itself, usually within a minute; the
+  *Telecontrol SCADA Historian* service needs no restart.
 
 To assign archives to new objects on a version 2.6 site, contact Telecontrol
 (mail@telecontrol.ru).

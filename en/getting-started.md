@@ -311,14 +311,14 @@ and the [computer's parameters](#host-parameters):
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
 ```
 
-If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
+If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
 **Adding a process.** Replace the file with the new license on every
 computer. On the computer that will run the new process, run
 `scada-setup apply` with that computer's full process list in `--tiers`, the
 new one included, and the same other options as at installation (see
 [Re-running apply]({{ '/en/server/' | relative_url }}#reapply)). Write the
-new list down. If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
+new list down. If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
 Parameter files written by `scada-setup` already contain
 `"license": {"require_gcp_binding": false}`. **If you write a parameter file by
@@ -616,9 +616,9 @@ in [`server.override.json`]({{ '/en/server/' | relative_url }}#server-override),
 which is preserved) and leaves the data alone. On computers running only protocol
 processes, `--root-password` may be omitted.
 
-On a site with several computers, once every computer running protocol
-processes is upgraded, restart the *Telecontrol SCADA Historian* service on the
-central computer and, as a precaution, have the operators restart the Client
+On a site with several computers, while the computers running protocol
+processes are being upgraded, their processes' objects are marked bad; once
+upgraded, they update and archive again by themselves
 (see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
 
 **On the operator workstations** install the new package only, with no
@@ -728,7 +728,7 @@ and run <code>scada-setup apply</code>.</dd>
 <code>svc</code> password on that computer differs from the central
 computer's. Run <code>scada-setup apply</code> there
 with the original <code>svc</code> password (see <a href="{{ '/en/server/' | relative_url }}#svc">The svc
-account</a>). If this computer has no <code>scada-proxy</code>, then restart the <em>Telecontrol SCADA Historian</em> service on the central computer and, as a precaution, have the operators restart the Client (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
+account</a>). If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt>The devices of a protocol computer never appear</dt>
 <dd>The Client does not show the devices served by a computer running
@@ -744,16 +744,16 @@ the new address to be in the
 too, delete both certificate files before that <code>apply</code>.
 Also check that its firewall lets the central computer reach the OPC UA ports
 of its processes (see <a href="#network">Network preparation</a>).
-Once the address is fixed, restart the <em>Telecontrol SCADA Historian</em>
-service on the central computer and, as a precaution, have the operators
-restart the Client (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After
-a protocol process restarts</a>).</dd>
+Once the address is fixed, the <em>Telecontrol SCADA Historian</em> service
+needs no restart: the archive starts receiving those objects' values by
+itself. If Client windows showing this computer's objects were open before
+the fix, have the operators restart the Client as a precaution.</dd>
 
 <dt>Every process stopped after the license file was replaced</dt>
 <dd>The file was missing or only partly written when it was checked. Put a
 valid file in place (see <a href="#license">Replacing the license file</a>)
 and run <code>scada-setup start</code> with the
-<a href="#host-parameters">computer's parameters</a>. If this computer has no <code>scada-proxy</code>, then restart the <em>Telecontrol SCADA Historian</em> service on the central computer and, as a precaution, have the operators restart the Client (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
+<a href="#host-parameters">computer's parameters</a>. If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt><code>scada-setup start</code> stops with an error</dt>
 <dd>It was run without <code>--tiers</code> (or without
@@ -768,13 +768,15 @@ computer does not have. Run it again with the
 expired license, replace the file — no restart is needed.</dd>
 
 <dt>Values are no longer archived</dt>
-<dd>After a protocol process's service restarts (for example
-<em>Telecontrol SCADA IEC 104</em>), automatic restarts after a failure
-included, its objects' values stop being archived. Restart the
-<em>Telecontrol SCADA Historian</em> service; if the values of those objects
-have also stopped updating in open Client windows, restart the Client. See
-<a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol
-process restarts</a>.</dd>
+<dd>While a protocol process's service (for example
+<em>Telecontrol SCADA IEC 104</em>) is stopped or restarting, automatic
+restarts after a failure included, its objects' values are not archived.
+Once the process starts, archiving resumes by itself, usually within a
+minute; neither <em>Telecontrol SCADA Historian</em> nor the Client needs a
+restart (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a
+protocol process restarts</a>). If archiving has not resumed, check
+<code>scada-setup status</code> on that process's computer and contact
+Telecontrol.</dd>
 
 <dt>Schematics do not open</dt>
 <dd>If the display window says "No display runtime is installed.", the
