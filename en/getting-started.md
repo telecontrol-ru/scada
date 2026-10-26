@@ -311,13 +311,15 @@ and the [computer's parameters](#host-parameters):
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
 ```
 
+If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
+
 **Adding a process.** Replace the file with the new license on every
 computer. On the computer that will run the new process, stop the processes
 (`scada-setup stop`) and run `scada-setup apply` with that computer's full
 process list in `--tiers`, the new one included, and the same other options
 as at installation: `apply` does not restart running services (see
 [Re-running apply]({{ '/en/server/' | relative_url }}#reapply)). Write the
-new list down.
+new list down. If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
 Parameter files written by `scada-setup` already contain
 `"license": {"require_gcp_binding": false}`. **If you write a parameter file by
@@ -523,6 +525,7 @@ certificate and private key) appears only for the "OPC UA" type; with the
 
 In the "Most secure available" and "Sign and encrypt" modes the Client checks
 the Server's identity by its certificate:
+{: #server-certificate-check}
 
 * The Client's own certificate and private key are optional: if the fields are
   empty, the Client creates its own certificate on the first connection.
@@ -577,6 +580,13 @@ After you sign in:
    creating a user, check straight away that you can sign in as that user;
    if you cannot, contact Telecontrol.
 
+   **WARNING:** in version 2.6 an account created in the Client can only
+   view data — even with *Permissions* = 3. Rights come only from role
+   membership, and the Client cannot add an account to a role. If operators
+   need control or configuration rights, contact Telecontrol before the site
+   goes live (see
+   [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
+
    **WARNING:** the user list contains the `svc` service account. Do not
    change or delete it: the Server processes connect to each other through
    it (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
@@ -611,6 +621,11 @@ installation, and the same `svc` password. The installer replaces only the
 executables; `apply` rewrites the parameter files (hand edits to them are
 lost) and leaves the data alone. On computers running only protocol
 processes, `--root-password` may be omitted.
+
+On a site with several computers, once every computer running protocol
+processes is upgraded, restart the *Telecontrol SCADA Historian* service on the
+central computer and, as a precaution, have the operators restart the Client
+(see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
 
 **On the operator workstations** install the new package only, with no
 `scada-setup` commands (see [Installing the Client](#client-install)):
@@ -723,7 +738,7 @@ read the message.</dd>
 <code>svc</code> password on that computer differs from the central
 computer's. Run <code>scada-setup stop</code> there, then <code>apply</code>
 with the original <code>svc</code> password (see <a href="{{ '/en/server/' | relative_url }}#svc">The svc
-account</a>).</dd>
+account</a>). If this computer has no <code>scada-proxy</code>, then restart the <em>Telecontrol SCADA Historian</em> service on the central computer and, as a precaution, have the operators restart the Client (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt>The devices of a protocol computer never appear</dt>
 <dd>The Client does not show the devices served by a computer running
@@ -738,13 +753,17 @@ the new address to be in the
 <a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
 too, delete both certificate files before that <code>apply</code>.
 Also check that its firewall lets the central computer reach the OPC UA ports
-of its processes (see <a href="#network">Network preparation</a>).</dd>
+of its processes (see <a href="#network">Network preparation</a>).
+Once the address is fixed, restart the <em>Telecontrol SCADA Historian</em>
+service on the central computer and, as a precaution, have the operators
+restart the Client (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After
+a protocol process restarts</a>).</dd>
 
 <dt>Every process stopped after the license file was replaced</dt>
 <dd>The file was missing or only partly written when it was checked. Put a
 valid file in place (see <a href="#license">Replacing the license file</a>)
 and run <code>scada-setup start</code> with the
-<a href="#host-parameters">computer's parameters</a>.</dd>
+<a href="#host-parameters">computer's parameters</a>. If this computer has no <code>scada-proxy</code>, then restart the <em>Telecontrol SCADA Historian</em> service on the central computer and, as a precaution, have the operators restart the Client (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt><code>scada-setup start</code> stops with an error</dt>
 <dd>It was run without <code>--tiers</code> (or without
@@ -762,8 +781,10 @@ expired license, replace the file — no restart is needed.</dd>
 <dd>After a protocol process's service restarts (for example
 <em>Telecontrol SCADA IEC 104</em>), automatic restarts after a failure
 included, its objects' values stop being archived. Restart the
-<em>Telecontrol SCADA Historian</em> service. See
-<a href="{{ '/en/server/' | relative_url }}#monitoring">Monitoring</a>.</dd>
+<em>Telecontrol SCADA Historian</em> service; if the values of those objects
+have also stopped updating in open Client windows, restart the Client. See
+<a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol
+process restarts</a>.</dd>
 
 <dt>Schematics do not open</dt>
 <dd>If the display window says "No display runtime is installed.", the

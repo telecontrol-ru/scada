@@ -42,10 +42,23 @@ process that stopped because it has no license exits normally and is not
 restarted — start it with `scada-setup start` and the
 [computer's parameters](#scada-setup-options).
 
-**WARNING:** after a protocol process's service restarts, automatically
-included, its objects' values stop being archived. Restart the
-*Telecontrol SCADA Historian* service afterwards (see
-[Monitoring](#monitoring)).
+#### After a protocol process restarts {#edge-restart}
+
+**WARNING:** when the service of a protocol process restarts while
+`scada-proxy` keeps running — automatically after a failure included, or
+when the processes are stopped and started on a computer without
+`scada-proxy` — its objects' values stop being archived, and the values of
+its objects in open Client windows may stop updating. So after such a
+restart:
+
+1. restart the *Telecontrol SCADA Historian* service (in a typical
+   installation, on the central computer);
+2. as a precaution, have the operators restart the Client.
+
+When `scada-proxy` and `scada-historian` restarted with it (for example,
+`scada-setup stop` and `start` on a single-computer installation), the
+Historian starts afresh and the Clients reconnect by themselves (see
+[Connection to the Server]({{ '/en/client/' | relative_url }}#connection)). See also [Monitoring](#monitoring).
 
 ### Setting up with scada-setup {#scada-setup}
 
@@ -171,7 +184,7 @@ run `apply`, which starts them again:
 ```
 
 Do the same when changing the `root` password, when adding a process to the
-computer, and when restoring the `svc` password after a mismatch.
+computer, and when restoring the `svc` password after a mismatch. If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts](#edge-restart).
 
 #### Removing services and data {#remove}
 
@@ -590,7 +603,9 @@ The license is checked at startup and then every 5 seconds:
   when the file is missing or only partly written at the moment it is
   checked. The service then exits normally and Windows does **not** restart
   it — once the file is fixed, start the processes with `scada-setup start`
-  and the [computer's parameters](#scada-setup-options). A license whose
+  and the [computer's parameters](#scada-setup-options) (on a computer
+  without `scada-proxy`, then see
+  [After a protocol process restarts](#edge-restart)). A license whose
   validity period has not started yet counts as not valid too.
 * **The license could not be verified** (for example, the Google Cloud
   metadata server did not answer) — the process keeps running but serves no
@@ -650,11 +665,13 @@ PostgreSQL is also supported:
 
 ### Migration from GigaBASE {#migration}
 
-GigaBASE support was removed starting with version 2.1. Older
-configurations must be exported with the version 2.0 administration
-utility and imported into SQLite before the current Server is used. The
-utility is not published on the releases page; request it from
-Telecontrol (mail@telecontrol.ru).
+GigaBASE support was removed starting with version 2.1, and
+`scada-setup migrate` moves an SQLite configuration only. If a site's
+configuration is still kept in GigaBASE, first convert it to SQLite and run a
+version 2.5 Server on it, and only then run `scada-setup migrate` (see
+[Upgrading from version 2.5](#upgrade-2-5)). The conversion needs the
+version 2.0 administration utility; it is not published on the releases page
+— request it from Telecontrol (mail@telecontrol.ru).
 
 ## Historical databases {#history}
 
@@ -925,7 +942,10 @@ the registry).
 * When the passwords differ, the protocol process keeps running but gets no
   configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Stop
   the processes on that computer (`scada-setup stop`) and run `apply` with
-  the original `svc` password (see [Re-running apply](#reapply)).
+  the original `svc` password (see [Re-running apply](#reapply)), then
+  restart the *Telecontrol SCADA Historian* service on the central computer
+  and, as a precaution, have the operators restart the Client (see
+  [After a protocol process restarts](#edge-restart)).
 
 ## OPC UA server {#opcua}
 
@@ -1016,6 +1036,10 @@ since, or use a certificate from your own certificate authority:
 3. Run `scada-setup apply` with the same
    [computer's parameters](#scada-setup-options) and passwords as at
    installation: a missing pair is created again, and the processes start.
+4. If this computer has no `scada-proxy`, restart the
+   *Telecontrol SCADA Historian* service on the central computer and, as a
+   precaution, have the operators restart the Client (see
+   [After a protocol process restarts](#edge-restart)).
 
 You can also create a self-signed pair of your own with
 [OpenSSL](https://www.openssl.org/) (not part of Windows; it comes, for
@@ -1088,7 +1112,11 @@ Further restrictions go in the `opcua.security` block:
 `"require_encryption_for_password": true` forbids sending a password
 unencrypted, and `"require_trusted_client_cert": true` keeps the process
 from starting without a trusted-certificate folder. Anonymous sign-in is
-always offered. The desktop Client does not verify the Server's certificate.
+always offered. The desktop Client checks no Server certificate when it signs
+in with the "Telecontrol" type (TCP port 2000); when it signs in with the
+"OPC UA" type in the "Most secure available" or "Sign and encrypt" mode it checks the certificate, and asks
+you to confirm trust in it on the first connection (see
+[Checking the Server's certificate]({{ '/en/getting-started/' | relative_url }}#server-certificate-check)).
 
 **WARNING:** the Server processes connect to each other unsecured and send
 the `svc` password unencrypted, so **`"allow_none": false` and
@@ -1147,6 +1175,8 @@ rem and C:\Program Files\Telecontrol SCADA\data\Certificates
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
 ```
 
+If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts](#edge-restart).
+
 A restore also needs the `svc` password, the `root` password, and the
 [computer's parameters](#scada-setup-options) — the `--tiers`, `--central`,
 `--advertise` and `--license` (and `--data-root` and `--install-root`, if
@@ -1186,6 +1216,10 @@ On the same computer:
 3. Start the processes: `scada-setup start` with the
    [computer's parameters](#scada-setup-options).
 4. Check the result: `scada-setup status`.
+5. If this computer has no `scada-proxy`, restart the
+   *Telecontrol SCADA Historian* service on the central computer and, as a
+   precaution, have the operators restart the Client (see
+   [After a protocol process restarts](#edge-restart)).
 
 On a new or rebuilt computer:
 
@@ -1224,6 +1258,10 @@ On a new or rebuilt computer:
    the new one in the `Server` field of the login dialog of each Client
    (see [Client login]({{ '/en/getting-started/' | relative_url }}#client-start)).
 7. Check the result: `scada-setup status`.
+8. If this computer has no `scada-proxy`, restart the
+   *Telecontrol SCADA Historian* service on the central computer and, as a
+   precaution, have the operators restart the Client (see
+   [After a protocol process restarts](#edge-restart)).
 
 With a new certificate, third-party OPC UA clients that trusted the old one
 have to be set up again.

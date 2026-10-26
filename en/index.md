@@ -17,8 +17,9 @@ permalink: /en/
 > or upgrading, read the version 2.6
 > [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
 > — in particular, the display module may not be included in the Client
-> installation, and on a new
-> installation archives cannot be assigned to objects from the Client.
+> installation, on a new installation archives cannot be assigned to
+> objects from the Client, and an account created in the Client can only
+> view data ([Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
 
 Telecontrol SCADA is supervisory control and data acquisition software
 for collecting field data, presenting it to operators, issuing control
@@ -35,8 +36,10 @@ and events — and so any report or summary over the archive — also needs
 `scada-historian`. See
 [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)
 and [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
-Any number of Clients can connect over TCP/IP, and client sessions remain
-resilient while the Server stays online.
+Any number of Clients can connect over TCP/IP. When the connection is
+lost — including after the Server is restarted or stopped — the Client
+reconnects by itself (see
+[Connection to the Server]({{ '/en/client/' | relative_url }}#connection)).
 
 For operation, the system requires one computer for a single-machine
 deployment or multiple computers for a distributed deployment. The Server
@@ -70,7 +73,9 @@ Example of a distributed deployment:
 * Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows (on Linux on request)
 * Modus [displays]({{ '/en/client/display/' | relative_url }}) with live
   switch positions and values; for the limitations of version 2.6 see
-  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade)
+  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+  Before upgrading, check your site's schematics in a 2.6 Client: the
+  bindings have not yet been tried on the schematics of working sites
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
   [summaries]({{ '/en/client/summary/' | relative_url }}) with archive

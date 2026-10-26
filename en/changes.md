@@ -36,6 +36,8 @@ This version is not yet published on the releases page.
 
 1. The configuration of a new installation is a demo project (objects with emulation, IEC 60870-5-104 links, archives, the users «Клиент 1» … «Клиент 10» and `guest`). Before going live, replace it with the project's configuration or delete the demo data. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
+1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
+
 ### Client
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
@@ -62,7 +64,7 @@ This version is not yet published on the releases page.
 
 1. The [CSV export]({{ '/en/client/export/' | relative_url }}) dialog has an *Expand grouped rows* option for the event journal.
 
-1. Fixed: CSV export honours the chosen encoding. On Windows, *System* writes the file in the Windows code page and *Unicode (UTF-8)* writes UTF-8 with a byte-order mark, so Microsoft Excel opens the file by double-clicking it without garbling Russian text. See [Export to CSV]({{ '/en/client/export/' | relative_url }}).
+1. Fixed: CSV export honours the chosen encoding. On Windows, *System* writes the file in the Windows code page and *Unicode (UTF-8)* writes UTF-8 with a byte-order mark, so Microsoft Excel opens the file by double-clicking it without garbling Russian text. The default delimiter is the comma `,`; for Excel with Russian regional settings to split the values into columns, choose the semicolon `;` in the export dialog. See [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
 
 1. Configuration export and import (*More — Export Configuration...* and *Import Configuration...*) use the OPC UA NodeSet (XML) format instead of version 2.5.7's CSV table. CSV files exported by version 2.5 cannot be imported: a version 2.5 Server's configuration is moved over by `scada-setup migrate`. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) and [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 
@@ -78,6 +80,12 @@ This version is not yet published on the releases page.
 
 1. The `Multiple Create…` command opens a wizard that creates several data objects at once from one name and address pattern. See [Bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create).
 
+1. A printout of a table, a summary or another window opens with a header: the window title, the period (for a window that has one), for a summary the aggregation function and interval, and the print time. See [Printing]({{ '/en/client/print/' | relative_url }}).
+
+1. A summary shows at most 10 000 intervals. When the period is longer, a notice above the summary reads "The summary is limited to 10000 rows and ends at …", and the printout header repeats it. See [Summary]({{ '/en/client/summary/' | relative_url }}).
+
+1. A custom period whose start is not before its end is refused: *OK* stays unavailable until the period is corrected.
+
 1. The Client interface is available in English, and the appearance is chosen from the *Colour scheme* list — see [Settings]({{ '/en/client/workbench/' | relative_url }}#settings) and [Appearance]({{ '/en/client/workbench/' | relative_url }}#appearance).
 
 ### Known limitations {#known-limitations}
@@ -86,7 +94,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
 
-1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties, limits, or a shape blinking on an alarm. If a site's displays rely on these, check the displays before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties, limits, or a shape blinking on an alarm. If a site's displays rely on these, check the displays before upgrading. The bindings have not yet been tried on the schematics of working sites, so in any case open your site's schematics in a 2.6 Client before upgrading the workstations. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. The display module is a separate library that may not be included in the Client installation; without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 
@@ -124,6 +132,8 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The license is issued for a term; after it expires the Server processes refuse requests. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
+1. An account created in the Client can only view data: rights come only from role membership, and the Client cannot add an account to a role. If new users need control or configuration rights, contact Telecontrol before the site goes live. See [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights).
+
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
 1. Installing the Server on Linux is available on request: there is no Linux package. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
@@ -145,6 +155,8 @@ Read this list before buying and before upgrading: each limitation is described 
 1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
+
+1. After the service of a protocol process restarts, the values of its objects in open Client windows may stop updating — restart the Client. See [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
 ## 2.5.7 {#v2-5-7}
 
