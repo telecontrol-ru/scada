@@ -502,10 +502,11 @@ The `Server` row has two fields. On the left is the list of server types
 (shown only when the Client supports more than one type): choose
 **"Telecontrol"**.
 
-> **Caution.** The "OPC UA" type connects the Client over OPC UA. In the
-> current version a Client connected with this type **does not reconnect by
-> itself** after the connection is lost: restart the Client to restore it. Use
-> the "Telecontrol" type to work with the SCADA Server.
+> **Caution.** The "OPC UA" type connects the Client over OPC UA. After the
+> connection is lost the Client reconnects by itself, as with the
+> "Telecontrol" type (see
+> [Connection to the Server]({{ '/en/client/' | relative_url }}#connection)).
+> Use the "Telecontrol" type to work with the SCADA Server.
 
 On the right, enter the host name or IP address of the computer running
 `scada-proxy` only if it is a different computer. Otherwise, leave the field

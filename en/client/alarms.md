@@ -58,11 +58,8 @@ status bar's highest severity. The tiles and the tone count the same events,
 so the tone does not sound while the tiles read zero. Acknowledge client
 messages in the event panel just like the Server's events.
 
-> **Caution.** Events below the [severity threshold](#threshold) are not
-> received by the client at all: they are not in the count, the tiles or the
-> event panel, and they raise no annunciation of any kind. "Check the count"
-> does not help for them. Keep the threshold at *All* on an operator
-> workstation.
+The event panel's [severity threshold](#threshold) does not affect the count,
+the tiles or annunciation: an event below it is hidden from the panel only.
 
 ## The event panel opens by itself
 
@@ -160,7 +157,7 @@ speech-synthesis voice the switch is shown disabled.
 ## What is always visible
 
 The status bar shows the number of unacknowledged events ("Events: N",
-client messages included), the current severity threshold ("Severity: N") and
+client messages included), the event panel's severity threshold ("Severity: N") and
 the highest severity among the Server's unacknowledged events.
 
 The context strip at the top shows the "Critical N", "Warning N" and
@@ -176,27 +173,25 @@ The tiles stay in place either way.
 
 ## Severity threshold {#threshold}
 
-The severity threshold sets which events the client receives from the Server as
-current events. For this workstation, an event below the threshold might as
-well not have happened:
+The severity threshold of the "Current Events" panel hides events below it
+from that panel. It acts **on the panel only**: the client still receives every
+event, and an event below the threshold
 
-* it is not in the "Current Events" panel or in a journal showing current
-  events, and it does not open the panel;
-* it is not in the "Events: N" count or in the context strip's tiles and
-  indicators;
-* it does not sound the tone or the spoken announcement, and does not flash the
-  window;
-* the object's dot in the object tree does not blink for it;
-* *Acknowledge All* and an object's *Acknowledge* do not acknowledge it.
+* is in the "Events: N" count and in the context strip's tiles and indicators;
+* sounds the tone and the spoken announcement and flashes the window under the
+  usual rules;
+* makes the object's dot in the object tree blink;
+* is acknowledged by *More → Acknowledge All* in the main menu and by an
+  object's *Acknowledge*;
+* is shown in the [event journal]({{ '/en/client/events/' | relative_url }}),
+  which has a severity filter of its own.
 
-Such events are still recorded on the Server and can be seen in the
-[event journal]({{ '/en/client/events/' | relative_url }}) for a period once it
-loads — when the journal window opens or the period changes.
+The panel's own *Acknowledge All* acknowledges only the events the panel shows,
+so it leaves events below the threshold unacknowledged.
 
 > **Caution.** The threshold is kept in the profile and stays in force until
-> *All* is chosen. Do not raise it on an operator workstation: the operator
-> will neither see nor hear events below it. If an expected event did not
-> appear, check "Severity: N" in the status bar first.
+> *All* is chosen. If the tiles or the count show an event the panel does not,
+> check "Severity: N" in the status bar first — it is the panel's threshold.
 
 To change it, right-click in the "Current Events" panel, choose
 **Severity → Custom...** and enter the minimum severity (0 means all events);
@@ -211,8 +206,8 @@ rows at once. There is no keyboard shortcut for acknowledgement.
 *Acknowledge All* in the event journal and the event panel acknowledges only
 the events shown: events hidden by an area, severity or object filter stay
 unacknowledged. *More → Acknowledge All* in the main menu works differently —
-across the whole system and for every workstation, except events below the
-[severity threshold](#threshold); see
+across the whole system and for every workstation, including events below the
+panel's [severity threshold](#threshold); see
 [Common commands]({{ '/en/client/' | relative_url }}#common-commands).
 
 Client messages are acknowledged on this workstation only: they are not sent

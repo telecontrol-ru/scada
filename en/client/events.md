@@ -28,14 +28,14 @@ arrives and hides once every event is acknowledged — controlled by the
 
 The *Severity* group of the panel's context menu sets the
 [severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold):
-*All* loads every event, *Custom...* only those at or above the severity you
+*All* shows every event, *Custom...* only those at or above the severity you
 enter. The threshold is remembered and stays in force until you choose *All*.
 
-> **Caution.** The threshold acts on more than the panel. The client does not
-> receive events below it as current events at all: they are not in the count
-> or the tiles, they do not sound the tone or the spoken announcement, and
-> *Acknowledge All* does not acknowledge them. See
-> [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold).
+The threshold acts on this panel only: events below it are in the count and
+the tiles, sound the tone and the spoken announcement, and are acknowledged by
+*More → Acknowledge All* in the main menu. The panel's own *Acknowledge All*
+acknowledges only the events it shows. See
+[Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold).
 
 ## Event journal
 

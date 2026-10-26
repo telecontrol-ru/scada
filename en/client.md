@@ -28,10 +28,6 @@ the links; the limitations of the whole release are collected under
 * **The alarm tone is off for every new account** — turn it on under each
   operator's account. See
   [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
-* **The severity threshold hides events completely** — an event below it
-  does not appear in the event panel and sounds no alarm, and the threshold
-  is kept in the profile. See
-  [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold).
 
 ## Main areas
 
@@ -98,10 +94,10 @@ The status bar shows:
 * the number of unacknowledged events, "Events: N" (the client's own messages
   are included in it), and the highest severity among the Server's
   unacknowledged events
-* the severity threshold ("Severity: N"). The client does not show or count
-  events below the threshold at all: they are not in the current-events panel,
-  the count or the tiles, and they do not sound the tone or the spoken
-  announcement. It is changed from the current-events panel's context menu,
+* the current-events panel's severity threshold ("Severity: N"). It hides
+  events from that panel only: the count, the tiles, the tone, the spoken
+  announcement, window flashing and *More → Acknowledge All* take every event
+  into account. It is changed from the current-events panel's context menu,
   *Severity → Custom...*; see
   [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold)
 * the active user name
@@ -210,13 +206,13 @@ To hand over a shift:
 
 The profile is written to the Server only when the client exits and on *More
 → Disconnect from Server*. If saving it fails (for example, because there is
-no connection to the Server), the client reports "Failed to save the profile
-to the server; it is kept on this computer only" («Не удалось сохранить
-профиль на сервере; он сохранён только на этом компьютере»). On exit that
-message is posted into a client that is already closing, so it is usually
-not seen. Close the client only while the status bar reads "Connected";
-otherwise changes to pages and settings are not written to the Server and
-stay on this computer only.
+no connection to the Server), the client asks before it ends the session, in a
+"Profile Save" («Сохранение профиля») box: "Failed to save the profile to the
+server; it is kept on this computer only. Try again? Choose No to continue
+without the server copy." *Yes* tries the save again — press it once the
+connection is back. *No* ends the session without the Server copy: changes to
+pages and settings stay on this computer only. So close the client while the
+status bar reads "Connected".
 
 > **Caution.** Do not hand over with *More → Disconnect from Server*. In the
 > current version, after that command and a sign-in under another account the
@@ -338,8 +334,9 @@ severity and object filters. In the *More* menu and the
 [command palette]({{ '/en/client/workbench/' | relative_url }}#palette) it
 acknowledges every unacknowledged event the client receives and every client
 message, after a confirmation. Other windows' context menus do not carry it. Events below the
+event panel's
 [severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold) are
-not received by the client, so this command does not acknowledge them (see
+acknowledged too: the threshold hides them from the panel only (see
 [Event panel](#events-panel)).
 
 > **Caution.** *More → Acknowledge All* acknowledges **every** Server event

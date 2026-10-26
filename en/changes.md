@@ -70,7 +70,7 @@ This version is not yet published on the releases page.
 
 1. With the *Control Success Message* setting on, the Client reports a successful [control]({{ '/en/client/' | relative_url }}#control-result) or [manual input]({{ '/en/client/' | relative_url }}#manual-input) command.
 
-1. In the [event panel]({{ '/en/client/' | relative_url }}#events-panel), *Severity — All* removes the threshold that was set, and the panel loads every event again.
+1. In the [event panel]({{ '/en/client/' | relative_url }}#events-panel), *Severity — All* removes the threshold that was set, and the panel shows every event again. The threshold acts on the panel only: the count, the tiles and annunciation take every event into account. See [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold).
 
 1. Fixed: reopening the *Period* dialog with the *Time* box cleared no longer moves the end of the period a day later. See [A report for last month]({{ '/en/client/reports/' | relative_url }}#last-month).
 
