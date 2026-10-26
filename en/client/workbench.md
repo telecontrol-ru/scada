@@ -428,9 +428,11 @@ Table changes take effect without restarting the client.
 A Vidicon display window (`.vds` files) carries a toolbar (a connection pill,
 zoom / fit / 100% / export) and two bay strips below it: "Measurements" — the
 values of the signals whose shapes the operator has clicked, with their update
-times — and "Recent events" — the unacknowledged events of **the whole
-system** (not only this display's objects), up to the 50 latest, with their
-severity, time, object and message. The diagram geometry is unchanged. Modus
+times — and "Recent events" — the unacknowledged events of **this display's
+objects**, up to the 50 latest, with their severity, time, object and message.
+Events of the rest of the system are in the event panel. If the installed
+display module is older than the client and does not report the display's
+objects, the strip lists the events of the whole system. The diagram geometry is unchanged. Modus
 schematics (`.sde`, `.xsde`) have no such toolbar or strips; see
 [Display]({{ '/en/client/display/' | relative_url }}).
 
