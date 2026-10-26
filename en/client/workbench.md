@@ -171,13 +171,11 @@ ones are kept on this computer only and which are in the user's profile,
 which the client also saves on the Server when it closes; do not count on
 those settings appearing by themselves in the client on another computer. Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
-scope are kept in the user's profile on the Server. The profile is written to
-the Server when the client exits and on *More → Disconnect from Server*, not
-at the moment a setting changes. If the profile cannot be saved on the
-Server, the client reports "Failed to save the profile to the server; it is
-kept on this computer only" — but on exit that message appears in a client
-that is already closing and is usually not seen. So close the client only
-while the status bar reads "Connected".
+scope are saved on this computer and, when the client exits, on the Server —
+not at the moment a setting changes. So close the client only while the
+status bar reads "Connected"; what happens when the profile cannot be saved
+on the Server is described under
+[Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
 | Category | Settings |
 |---|---|
@@ -441,9 +439,10 @@ while the client is connected and turns to a red "Offline" while it is
 disconnected; see
 [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
 
-> **Caution.** In this version the schematics themselves show no live
-> values — read values and their quality in the "Measurements" strip and in
-> the [Inspector](#inspector).
+> **Caution.** In this version Vidicon schematics (`.vds`) themselves show no
+> live values — read values and their quality in the "Measurements" strip and
+> in the [Inspector](#inspector). Modus schematics do show live values; see
+> [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 ## Inspector {#inspector}
 

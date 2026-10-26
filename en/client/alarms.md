@@ -16,7 +16,9 @@ severity tiles, opening the event panel, flashing the window, a tone and a
 spoken message. The count and the tiles are always on; the rest are switched
 on and off on the settings screen: **Settings → Settings… → Events & alarms**.
 
-These preferences live in the user's profile on the Server.
+These preferences live in the user's profile, which is saved on this computer
+and, when the client exits, on the Server (see
+[Shift handover]({{ '/en/client/' | relative_url }}#shift-change)).
 
 ## Which events raise the alarm {#escalation}
 
@@ -86,7 +88,7 @@ operator acknowledges them, and they hold the panel open.
 
 With the option off, the panel stays on screen until the operator closes it.
 
-## The alarm tone
+## The alarm tone {#tone}
 
 **Sound Alarm on Event** (off by default).
 
@@ -208,17 +210,10 @@ rows at once. There is no keyboard shortcut for acknowledgement.
 
 *Acknowledge All* in the event journal and the event panel acknowledges only
 the events shown: events hidden by an area, severity or object filter stay
-unacknowledged. *More → Acknowledge All* in the main menu acknowledges every
-unacknowledged event the client receives and every client message — but not
-events below the [severity threshold](#threshold). Other windows' context
-menus do not carry the command.
-
-> **Caution.** *More → Acknowledge All* acknowledges **every** Server event the
-> client has received, across the whole system and for every workstation:
-> acknowledgement is recorded on the Server. The client first asks for
-> confirmation and states how many events; "No" is the default answer.
-> Acknowledge from the event panel or the journal. See
-> [Common commands]({{ '/en/client/' | relative_url }}#common-commands).
+unacknowledged. *More → Acknowledge All* in the main menu works differently —
+across the whole system and for every workstation, except events below the
+[severity threshold](#threshold); see
+[Common commands]({{ '/en/client/' | relative_url }}#common-commands).
 
 Client messages are acknowledged on this workstation only: they are not sent
 to the Server and do not appear at other workstations.

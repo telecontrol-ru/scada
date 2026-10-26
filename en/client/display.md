@@ -66,7 +66,9 @@ What a click does depends on the kind of schematic.
 * **Vidicon schematics** (`.vds`) — opened from the same **Display** menu. A
   click on a shape bound to an object selects that object — its commands are
   in the **Item** menu — and adds it to the "Measurements" panel. A
-  double-click does nothing: acknowledge events in the event panel.
+  double-click does nothing: acknowledge events in the event panel. A Vidicon
+  schematic window shows no live values on the schematic itself: read them in
+  the "Measurements" panel and in the Inspector.
 
 Clicking a shape that has no object behind it, or empty space on the
 schematic, clears the selection: the **Item** menu commands, the Inspector and

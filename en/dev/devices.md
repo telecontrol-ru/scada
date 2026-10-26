@@ -95,7 +95,12 @@ After creating a direction and a device, make sure data is flowing:
    address) — the Client reports an error naming the cause, for example
    "Wrong IEC 60870-5 information object address". Most often this means the object address in the Client
    does not match the one in the device. Watch shows the device's reply with
-   its cause of transmission. For IEC 61850 devices also check that values
+   its cause of transmission. If the device answers with a negative
+   confirmation under any other cause (for example, it refuses the command
+   because of its own interlock), the Client reports "IEC 60870-5 protocol
+   error" («Ошибка протокола МЭК-60870»); Watch shows that reply too. In this
+   version the Client also reports an IEC 61850 device's refusal to carry out
+   a command as "IEC 60870-5 protocol error". For IEC 61850 devices also check that values
    arrive through every report control block you created, and that a
    select-before-operate (SBO) device's objects have not had two-stage
    control turned off (see [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)).

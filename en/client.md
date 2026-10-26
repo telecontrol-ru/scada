@@ -25,15 +25,13 @@ the links; the limitations of the whole release are collected under
 
 * **The *Disconnect from Server* command does not load the new user's profile** — hand
   over by closing the client. See [Shift handover](#shift-change).
-* **The spoken announcement cannot be turned off from the client.** See
-  [Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
-* **The *More → Acknowledge All* command acknowledges every event in the
-  system** — for every workstation; the client asks for confirmation first
-  and states how many events. See [Common commands](#common-commands).
-* **With "Sign in automatically next time" ticked the client signs the last
-  account in by itself at start** — to sign in as yourself, hold *Ctrl* (on
-  macOS, *Option*) while starting it, or press *Cancel* while the sign-in is
-  in progress. See [Automatic sign-in](#auto-login).
+* **The alarm tone is off for every new account** — turn it on under each
+  operator's account. See
+  [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
+* **The severity threshold hides events completely** — an event below it
+  does not appear in the event panel and sounds no alarm, and the threshold
+  is kept in the profile. See
+  [Severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold).
 
 ## Main areas
 
@@ -170,9 +168,8 @@ event panel shows "Connection to server established. Login successful."
 **Connecting by hand.** *More → Disconnect from Server* and *More → Connect to
 Server...* end the session and open the sign-in window. Only one of them is
 available at a time: the first while connected, the second while disconnected.
-The sign-in window these commands open always waits for input, even with
-"Sign in automatically next time" ticked: no password is filled in, and you
-sign in by entering a name and password (see [Automatic sign-in](#auto-login)).
+The sign-in window these commands open always waits for a name and password
+(see [Automatic sign-in](#auto-login)).
 
 **Session ended from another workstation.** If someone signs in with the same
 account on another computer and ends your session (see
@@ -197,7 +194,9 @@ To hand over a shift:
    otherwise the client signs the outgoing operator's account in by itself at
    start. If it is ticked, the incoming operator holds *Ctrl* (on macOS,
    *Option*) while starting the client, or presses *Cancel* while the sign-in
-   is in progress (see [Automatic sign-in](#auto-login)).
+   is in progress, **clears the box**, and only then signs in — otherwise the
+   client stores the incoming operator's password instead (see
+   [Automatic sign-in](#auto-login)).
 2. The outgoing operator makes sure the status bar reads "Connected" and
    closes **all** of the client's main windows (if several were opened with
    *Window → New*). When the last one is closed, the client saves the
@@ -255,8 +254,9 @@ How to sign in under another account, or clear the box:
   your own account: the client then remembers that automatic sign-in is off.
 * **Press *Cancel* in the sign-in window while automatic sign-in is in
   progress.** The sign-in stops and the window waits for input; a second
-  *Cancel* closes the window (at start, the client too). To stop automatic
-  sign-in for good, clear the box before signing in.
+  *Cancel* closes the window (at start, the client too). The box **stays
+  ticked**: clear it before signing in, or the client stores the password of
+  whoever signs in and goes on signing that account in automatically.
 
 ## Commands {#commands}
 
@@ -386,12 +386,17 @@ If the object has a control permission condition, the dialog has a
 While the condition is unsatisfied (or its value is bad), "Execute" is
 disabled.
 
+> **Caution.** Only the client's "Control" window checks the condition; the
+> Server does not. A command arriving another way — over retransmission or
+> from an OPC UA client — is carried out even while the condition is
+> unsatisfied. It is no substitute for an interlock in the device itself.
+
 ### Before a control command {#control-checklist}
 
 1. Check the object's name on the first line of the "Control" dialog (the
    window title just says "Control" and does not name the object).
-2. Check the object in a table: its "Quality" column must read "Good" (see
-   [Reading values and colours](#quality-legend)).
+2. Make sure the "Current value:" line shows none of [С], [Н], [К], [У] and
+   no "?" (see [Reading values and colours](#quality-legend)).
 3. Make sure the status bar reads "Connected".
 4. If the command ended in an error, check the object's present state before
    retrying (see [Command result](#control-result)).
@@ -434,10 +439,9 @@ IEC 60870-5 (SELECT/EXECUTE):
 3. **Execute.** Answering yes sends the execute command, and the device
    switches the circuit it already reserved.
 
-Answering no sends a cancel, so the selection is released at once instead of
-staying armed until the device's own select timeout expires. Drivers that do
-not implement cancel reject it; that rejection is not surfaced to the
-operator, because the selection lapses on the device timeout regardless.
+Answering no sends no execute command. In this version the selection on the
+device is **not** released at once: it stays armed until the device's own
+select timeout expires.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.
@@ -566,7 +570,9 @@ error <code>[К]</code>; the row's cell text is red too;</li>
 <li>"No data" («Нет данных») — no value has arrived yet.</li>
 </ul>
 Unlike the "?", this column does take a lost connection and staleness into
-account, so check the object here before a control command.</dd>
+account. The "Control" dialog and the confirmation box show them as the
+letters [С], [Н], [К], [У], and the Inspector as "Bad" (see
+<a href="#control-checklist">Before a control command</a>).</dd>
 
 <dt>The dot beside a value in the object tree</dt>
 <dd>Green — the value is good; red — bad; <b>blinking yellow</b> — the object

@@ -68,7 +68,9 @@ reopen the display in the Client.
 
 To bind a discrete or measured object to a display, define an alias for
 the object in its Properties window (the Alias field), opened with
-`Properties` from the object's context menu.
+`Properties` from the object's context menu. An alias may consist of Latin
+and Cyrillic letters, digits and the underscore `_`, must start with a letter
+or `_`, and must not contain spaces.
 
 After the alias is defined, bind it to a display element. Discrete objects
 are bound to elements that have the `положение` ("position") property, and
@@ -84,7 +86,16 @@ The value of `ключ_привязки` can be a
 single alias — the same as in tables.
 
 For an arbitrary property binding, use an expression such as
-`property_name=alias`. The 2.6 Client shows bindings of the *положение*,
+`property_name=alias`. Several bindings of one element are separated by `;`.
+
+> **Caution.** The value of `ключ_привязки` is split into bindings at
+> **every** `;`, and each binding into a property and a formula at the
+> **first** `=`. So a formula in `ключ_привязки` cannot contain `;`, and when
+> it contains `=` the property must be named explicitly:
+> `положение=!(TS.1 = TS.2)`, not `!(TS.1 = TS.2)` — otherwise the property
+> becomes `!(TS.1`.
+
+The 2.6 Client shows bindings of the *положение*,
 *текст* and *значение_базовое* properties; a binding of any other property is
 kept in the display but not shown in the Client.
 
