@@ -27,12 +27,13 @@ the links; the limitations of the whole release are collected under
   over by closing the client. See [Shift handover](#shift-change).
 * **The spoken announcement cannot be turned off from the client.** See
   [Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
-* **The *Acknowledge All* command outside the event panel and the journal acknowledges
-  every event in the system** — for every workstation and with no
-  confirmation. See [Common commands](#common-commands).
-* **With "Sign in automatically next time" ticked the sign-in window never
-  waits again** — not after *Disconnect from Server*, not after a restart. See
-  [Automatic sign-in](#auto-login).
+* **The *More → Acknowledge All* command acknowledges every event in the
+  system** — for every workstation; the client asks for confirmation first
+  and states how many events. See [Common commands](#common-commands).
+* **With "Sign in automatically next time" ticked the client signs the last
+  account in by itself at start** — to sign in as yourself, hold *Ctrl* (on
+  macOS, *Option*) while starting it, or press *Cancel* while the sign-in is
+  in progress. See [Automatic sign-in](#auto-login).
 
 ## Main areas
 
@@ -169,9 +170,9 @@ event panel shows "Connection to server established. Login successful."
 **Connecting by hand.** *More → Disconnect from Server* and *More → Connect to
 Server...* end the session and open the sign-in window. Only one of them is
 available at a time: the first while connected, the second while disconnected.
-With "Sign in automatically next time" ticked, the sign-in window does not
-wait for input: the client signs the previous account straight back in (see
-[Automatic sign-in](#auto-login)).
+The sign-in window these commands open always waits for input, even with
+"Sign in automatically next time" ticked: no password is filled in, and you
+sign in by entering a name and password (see [Automatic sign-in](#auto-login)).
 
 **Session ended from another workstation.** If someone signs in with the same
 account on another computer and ends your session (see
@@ -193,8 +194,10 @@ another computer.
 To hand over a shift:
 
 1. "Sign in automatically next time" must be off at this workstation —
-   otherwise the incoming operator never sees the sign-in window and ends up
-   under the outgoing operator's account (see [Automatic sign-in](#auto-login)).
+   otherwise the client signs the outgoing operator's account in by itself at
+   start. If it is ticked, the incoming operator holds *Ctrl* (on macOS,
+   *Option*) while starting the client, or presses *Cancel* while the sign-in
+   is in progress (see [Automatic sign-in](#auto-login)).
 2. The outgoing operator makes sure the status bar reads "Connected" and
    closes **all** of the client's main windows (if several were opened with
    *Window → New*). When the last one is closed, the client saves the
@@ -235,26 +238,25 @@ ends the session on the other computer, whose client then stays disconnected.
 
 The "Sign in automatically next time" box in the sign-in window stores the
 name and password on this computer. While it is ticked, the sign-in window
-**no longer waits for input**: on every start of the client, and after *More
-→ Disconnect from Server* and *Connect to Server...*, the client signs the last
-account straight in.
+does not wait for input **when the client starts**: the client signs the last
+account straight in. The sign-in window opened by *More → Disconnect from
+Server* and *Connect to Server...* always waits for input: the stored password
+is not filled in there. Clearing the box and signing in also makes the client
+forget the stored password.
 
 > **Caution.** Never tick this box on a shared operator workstation. With it,
 > the incoming operator works under the outgoing operator's account: events
 > are acknowledged and commands issued in somebody else's name.
 
-How to clear the box:
+How to sign in under another account, or clear the box:
 
-* **Windows.** Hold *Ctrl* while starting the client — the sign-in window
-  appears with the box cleared. Sign in under your own account: the client
-  then remembers that automatic sign-in is off. The client's own hint mentions
-  *Ctrl* on every platform, but it works only on Windows.
-* **macOS.** Automatic sign-in cannot be bypassed from the client. Ask the
-  workstation's administrator: the setting (together with the stored password)
-  is kept in the macOS user's file
-  `~/Library/Application Support/Telecontrol/SCADA Client/settings.json`, and
-  the administrator has to delete that file or set `AutoLogin` in it to
-  `false`.
+* **Hold *Ctrl* while starting the client** (on macOS, *Option* ⌥) — the
+  sign-in window appears with the box cleared and no password. Sign in under
+  your own account: the client then remembers that automatic sign-in is off.
+* **Press *Cancel* in the sign-in window while automatic sign-in is in
+  progress.** The sign-in stops and the window waits for input; a second
+  *Cancel* closes the window (at start, the client too). To stop automatic
+  sign-in for good, clear the box before signing in.
 
 ## Commands {#commands}
 
@@ -330,22 +332,24 @@ upper-level systems. See
 ### Common commands {#common-commands}
 
 Common commands include printing the active window, opening the event window,
-and *Acknowledge All*. With the event journal or the event panel active it
-acknowledges only the events that window shows, after its area, severity and
-object filters; from any other window it acknowledges every unacknowledged
-event the client receives and every client message. Events below the
+and *Acknowledge All*. In the context menu of the event journal and the event
+panel it acknowledges only the events that window shows, after its area,
+severity and object filters. In the *More* menu and the
+[command palette]({{ '/en/client/workbench/' | relative_url }}#palette) it
+acknowledges every unacknowledged event the client receives and every client
+message, after a confirmation. Other windows' context menus do not carry it. Events below the
 [severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold) are
 not received by the client, so this command does not acknowledge them (see
 [Event panel](#events-panel)).
 
-> **Caution.** *Acknowledge All* is in the context menu of **every** window —
-> a table, a graph or the object tree, for example. Outside the event panel
-> and the event journal it acknowledges **every** Server event the client has
-> received — across the whole system, not only the objects in that window —
-> and it runs at once, with **no confirmation**. Acknowledgement is recorded on
-> the Server, so those events stop being unacknowledged at every other
-> workstation too. Acknowledge from the [event panel](#events-panel) or the
-> event journal, where the command acts only on the events shown.
+> **Caution.** *More → Acknowledge All* acknowledges **every** Server event
+> the client has received — across the whole system, not only the objects in
+> the active window. The client first asks "Acknowledge all N unacknowledged
+> events? Every alarm on the whole system is acknowledged, for every
+> workstation."; "No" is the default answer. Acknowledgement is recorded on the
+> Server, so those events stop being unacknowledged at every other workstation
+> too. Acknowledge from the [event panel](#events-panel) or the event journal,
+> where the command acts only on the events shown.
 
 ## Control {#control}
 

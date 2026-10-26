@@ -208,15 +208,16 @@ rows at once. There is no keyboard shortcut for acknowledgement.
 
 *Acknowledge All* in the event journal and the event panel acknowledges only
 the events shown: events hidden by an area, severity or object filter stay
-unacknowledged. Run from any other window, it acknowledges every
+unacknowledged. *More → Acknowledge All* in the main menu acknowledges every
 unacknowledged event the client receives and every client message — but not
-events below the [severity threshold](#threshold).
+events below the [severity threshold](#threshold). Other windows' context
+menus do not carry the command.
 
-> **Caution.** *Acknowledge All* is in the context menu of every window.
-> Outside the event panel and the event journal it acknowledges **every**
-> Server event the client has received, across the whole system — at once,
-> with **no confirmation**, and for every workstation: acknowledgement is
-> recorded on the Server. Acknowledge from the event panel or the journal. See
+> **Caution.** *More → Acknowledge All* acknowledges **every** Server event the
+> client has received, across the whole system and for every workstation:
+> acknowledgement is recorded on the Server. The client first asks for
+> confirmation and states how many events; "No" is the default answer.
+> Acknowledge from the event panel or the journal. See
 > [Common commands]({{ '/en/client/' | relative_url }}#common-commands).
 
 Client messages are acknowledged on this workstation only: they are not sent

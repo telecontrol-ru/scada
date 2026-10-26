@@ -543,17 +543,17 @@ The certificates are kept in the `pki` folder of the Client's user data:
 trusting a Server, delete its certificate from the `trusted` subfolder.
 
 If the `Sign in automatically next time` box is ticked, the Client stores the
-name and password on this computer and no longer waits for input in the
-sign-in window: on every start, and after *Disconnect from Server* and
-*Connect to Server...*, it signs the last account straight in.
+name and password on this computer and does not wait for input in the
+sign-in window at each start: it signs the last account straight in. The
+sign-in window opened by *Disconnect from Server* and *Connect to Server...*
+always waits for input.
 
-> **Caution.** Do not tick this box on a shared operator workstation: the
-> incoming operator would end up under the outgoing operator's account. On
-> Windows clear it like this: hold `Ctrl` while starting the Client — the
-> sign-in window opens with the box cleared — and sign in. On macOS automatic
-> sign-in cannot be bypassed; only the workstation's administrator can clear
-> the setting (see
-> [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login)).
+> **Caution.** Do not tick this box on a shared operator workstation: at start
+> the Client would sign in under the outgoing operator's account. To sign in
+> under your own and clear the box, hold `Ctrl` (on macOS, `Option`) while
+> starting the Client — the sign-in window opens with the box cleared — and
+> sign in. You can also press *Cancel* while automatic sign-in is in progress
+> (see [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login)).
 
 ## First steps after login
 

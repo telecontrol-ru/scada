@@ -44,6 +44,10 @@ This version is not yet published on the releases page.
 
 1. *Acknowledge All* in the [Event journal]({{ '/en/client/events/' | relative_url }}) acknowledges only the events shown: events hidden by a zone, severity or object filter stay unacknowledged.
 
+1. The common *Acknowledge All* command, which acknowledges every event in the system, is now in the *More* menu and runs — from there and from the command palette — only after a confirmation stating how many events it acknowledges. See [Common commands]({{ '/en/client/' | relative_url }}#common-commands).
+
+1. The sign-in window opened by *Disconnect from Server* and *Connect to Server...* always waits for input — automatic sign-in happens only when the Client starts. It can now be bypassed on macOS too (with the *Option* key), and with *Cancel* while the sign-in is in progress. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
+
 1. When the Server refuses an acknowledgement (for example, for lack of rights), the event panel shows an error message and the acknowledgement can be retried.
 
 1. With the *Control Success Message* setting on, the Client reports a successful [control]({{ '/en/client/' | relative_url }}#control-result) or [manual input]({{ '/en/client/' | relative_url }}#manual-input) command.
@@ -140,9 +144,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
-1. *Acknowledge All* outside the event journal and event panel acknowledges every unacknowledged event at once, without confirmation. See [Commands]({{ '/en/client/' | relative_url }}#commands).
-
-1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
+1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 ## 2.5.7 {#v2-5-7}
 
