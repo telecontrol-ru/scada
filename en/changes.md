@@ -58,6 +58,8 @@ This version is not yet published on the releases page.
 
 1. The [CSV export]({{ '/en/client/export/' | relative_url }}) dialog has an *Expand grouped rows* option for the event journal.
 
+1. Fixed: CSV export honours the chosen encoding. On Windows, *System* writes the file in the Windows code page and *Unicode (UTF-8)* writes UTF-8 with a byte-order mark, so Microsoft Excel opens the file by double-clicking it without garbling Russian text. See [Export to CSV]({{ '/en/client/export/' | relative_url }}).
+
 1. Configuration export and import (*More — Export Configuration...* and *Import Configuration...*) use the OPC UA NodeSet (XML) format instead of version 2.5.7's CSV table. CSV files exported by version 2.5 cannot be imported: a version 2.5 Server's configuration is moved over by `scada-setup migrate`. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) and [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 
 1. Event severity is a number from 1 to 1000 instead of the former scale up to 100: *Critical* is 800 and above, *Warning* from 600. Severity set in object properties and the severity of archived events are recalculated once (multiplied by 10), as is the minimum severity saved in the profile. See [Severity]({{ '/en/client/events/' | relative_url }}#severity).
@@ -113,8 +115,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. Graphs cannot be printed or exported. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
 
 1. *Export to Excel* works only on Windows with Microsoft Excel, and only when the Client was started with `--excel`. See [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
-
-1. The encoding choice in CSV export has no effect: the file is always written in UTF-8. See [Export to CSV]({{ '/en/client/export/' | relative_url }}).
 
 #### Installation and security {#limits-setup}
 

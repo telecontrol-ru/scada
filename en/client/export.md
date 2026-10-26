@@ -38,8 +38,16 @@ by hyphens). It then shows a dialog for CSV format parameters:
 * System, used by default
 * Unicode (UTF-8)
 
-**WARNING: in this version the encoding choice has no effect.** With either
-choice the file is written in UTF-8 without a byte-order mark (BOM).
+On Windows, *System* is the Windows code page (Windows-1251 on Russian
+Windows). That is the encoding Microsoft Excel assumes for a file without a
+byte-order mark, so such a file opens in Excel by double-clicking it.
+Characters the code page does not have are written as `?`. On macOS the
+system encoding is UTF-8, and the file is written as with *Unicode (UTF-8)*.
+
+*Unicode (UTF-8)* is UTF-8 with a byte-order mark (BOM), from which Excel
+recognises the encoding. Choose it when the data holds characters the system
+encoding does not have, or when the file will be opened on a computer with a
+different Windows language.
 
 </dd>
 
@@ -79,14 +87,13 @@ associated application.
 
 ### Opening the file in Excel {#open-in-excel}
 
-Do not open the file by double-clicking it: Microsoft Excel then reads it in
-the Windows system code page, and non-Latin text such as Russian names turns
-into unreadable characters. Instead, in Excel choose *Data — From Text/CSV*,
-pick the file, and set *File Origin* to *65001: Unicode (UTF-8)* and
-*Delimiter* to the one chosen at export.
-
-In this version a text editor on Windows may show an empty line after each
-row of the file.
+With either encoding the file opens in Microsoft Excel by double-clicking
+it, and non-Latin text such as Russian names reads correctly. Excel then takes
+the column delimiter from the Windows regional settings rather than from the
+file: if a row's values all land in one column, export again with the
+delimiter Windows uses (a semicolon `;` for Russian settings), or open the
+file with *Data — From Text/CSV* in Excel and set *Delimiter* to the one
+chosen at export.
 
 ### What the file contains {#contents}
 
