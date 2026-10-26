@@ -69,10 +69,10 @@ Data window and the event journal they mean:
 
 Summary, Data and the Event journal keep the chosen period with the window.
 
-**WARNING: check the dates in the *Time Range* dialog.** If *Start* is later
-than *End* (or, with times set, equal to it), the dialog accepts the period
-without a warning, and the window shows **the last hour** instead of the range
-you set.
+In the *Time Range* dialog *OK* is disabled while *Start* is not before
+*End*. With times set, the start must be strictly before the end; with dates
+only (the *Time* group's check box cleared), the start date may equal the end
+date — the period then covers that whole day.
 
 ### A report for last month {#last-month}
 
@@ -109,8 +109,11 @@ interval:
 4. In the summary's context menu (or the **Item** menu), choose the
    aggregation interval in the *Interval* submenu (*1-Minute* to *1-Day*) and
    the aggregation function in the *Function* submenu — see [Summary]({{ '/en/client/summary/' | relative_url }}).
-   A summary holds at most 10,000 rows and **silently** stops at the last
-   one: a month at a 1-minute interval ends around the 7th. Use an interval
+   A summary holds at most 10,000 rows. When the period needs more, the
+   summary stops at row 10,000 and a notice above the table says so: "The
+   summary is limited to 10000 rows and ends at <time>." («Сводка ограничена
+   10000 строками и заканчивается в <время>.»); the printout repeats it in its
+   header. A month at a 1-minute interval ends around the 7th. Use an interval
    of at least 5 minutes for a month, and of at least 1 hour for anything
    longer.
 5. Wait for the data to load: values still loading are shown in grey text.
@@ -121,8 +124,10 @@ interval:
 6. Save or print the result: CSV export
    ([Export and import]({{ '/en/client/export/' | relative_url }})) or
    [printing]({{ '/en/client/print/' | relative_url }}) with a preview. The
-   period and the aggregation function are not included in the printout or
-   the file — add them yourself. *Export to Excel* works only on Windows with
+   printout opens with a header: the window title, the period, the
+   aggregation function and interval ("Maximum, 1 hour", for example) and the
+   time it was printed. The CSV file does not include the period or the
+   aggregation function — add them yourself. *Export to Excel* works only on Windows with
    Microsoft Excel installed, and only when the Client was started with the
    `--excel` option — see [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
 

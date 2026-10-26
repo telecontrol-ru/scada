@@ -17,8 +17,8 @@ Client's `More` menu:
 ![]({{ '/img/files.png' | relative_url }})
 
 In the `Files` window, server-side schematic files can be organized into
-multiple nested folders (in this version a new folder cannot be created
-from the Client — see below). Double-clicking a selected schematic file opens
+multiple nested folders (see below for creating one). Double-clicking a
+selected schematic file opens
 it in the Client.
 
 ## Uploading a display to the Server
@@ -28,11 +28,10 @@ it in the Client.
    display file (`sde` or `xsde`) on your computer — it is sent to the
    Server.
 
-**WARNING: in this version `Create -> Folder` does not create a folder.**
-Like `Create -> File`, it opens the file picker and uploads the chosen file
-to the Server. Upload displays into the root of the `Files` window. Folders
-that already exist on the Server (for example, ones moved from version 2.5)
-are shown in the window as usual.
+`Create -> Folder` creates a folder named "New Folder" («Новая папка») in the
+selected folder; rename it afterwards. Folders that already exist on the
+Server (for example, ones moved from version 2.5) are shown in the window as
+usual.
 
 Uploading needs the Configure right.
 

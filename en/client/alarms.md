@@ -39,21 +39,22 @@ holds:
 
 The client's own messages ("Local Event") are events too: reports of a
 successful command, of the connection to the Server being lost and restored,
-of errors. An error message is critical and so sounds, while a warning — such
-as the loss of the connection to the Server — does not sound on its own.
+of errors. They count according to their severity:
 
-Client messages are counted **differently from the Server's events**:
-
-* they are in the status bar's "Events: N" count and count towards both
-  conditions above — including "more than ten";
-* they are **not** in the severity tiles ("Critical N", "Warning N",
+* **the client's warnings and errors** — the loss of the connection to the
+  Server or a failed reconnection, for example — count just like the Server's
+  events: in the severity tiles ("Critical N", "Warning N",
   "Unacknowledged N"), in the "Unacknowledged critical" and "Alarm flood"
-  indicators, or in the status bar's highest severity.
+  indicators, and towards both conditions above. An error message is critical
+  and so sounds, while a single warning does not sound on its own;
+* **the client's information messages** — a successful command or the
+  connection being restored, for example — are not in the tiles and sound
+  neither the tone nor the spoken message.
 
-So the tone can sound while the tiles read zero, or fewer than ten: after a few
-control commands with success messages and a few reconnections to the Server,
-for example. Acknowledge client messages in the event panel just like the
-Server's events.
+Every client message is in the status bar's "Events: N" count; none is in the
+status bar's highest severity. The tiles and the tone count the same events,
+so the tone does not sound while the tiles read zero. Acknowledge client
+messages in the event panel just like the Server's events.
 
 > **Caution.** Events below the [severity threshold](#threshold) are not
 > received by the client at all: they are not in the count, the tiles or the
@@ -120,19 +121,16 @@ silent on an alarm without saying so.
 
 **Flash Main Window on Event** (off by default).
 
-When unacknowledged events appear (after there were none), the client asks the
-desktop for attention **once**: the taskbar button flashes on Windows, the Dock
-icon bounces on macOS.
+Whenever a new unacknowledged event arrives, the client asks the desktop for
+attention: the taskbar button flashes on Windows, the Dock icon bounces on
+macOS. This happens on every arrival, including while older events are still
+unacknowledged.
 
 The request takes effect only if the client's window is **not** the active one
 at that moment, and the system withdraws it as soon as the window is brought to
-the front. The client makes a new request only after every event has been
-acknowledged and a new one arrives. So:
-
-* while events remain unacknowledged, new events do **not** flash the window —
-  even if the operator has switched to another program;
-* if the first event arrived while the client's window was active, there is no
-  flash at all until everything is acknowledged.
+the front. An event that arrives while the client's window is active does not
+flash it; the next event to arrive after the operator has switched to another
+program does.
 
 The window flash is only an extra cue; the status-bar count and the event panel
 are what reliably show unacknowledged events.
@@ -153,9 +151,9 @@ condition holds, and says nothing on acknowledgement. If the condition starts
 to hold again — a new critical event after the previous one was acknowledged,
 say — it speaks again.
 
-> **Caution.** In the current version there is no switch for spoken
-> announcements on the settings screen or in the command palette (*Ctrl+K*), so
-> they cannot be turned off from the client.
+Spoken announcements are switched on and off on the settings screen with
+**Speech** in **Events & alarms**, next to the tone. On a computer without a
+speech-synthesis voice the switch is shown disabled.
 
 ## What is always visible
 
@@ -164,13 +162,13 @@ client messages included), the current severity threshold ("Severity: N") and
 the highest severity among the Server's unacknowledged events.
 
 The context strip at the top shows the "Critical N", "Warning N" and
-"Unacknowledged N" tiles — for the Server's events. Beside the tiles appear:
+"Unacknowledged N" tiles — for the Server's events and the client's own
+warnings and errors. Beside the tiles appear:
 
-* **"Unacknowledged critical"** — a flashing indicator while at least one of
-  the Server's critical events (severity 800 and above) is unacknowledged. It
-  stops flashing once every critical event is acknowledged;
-* **"Alarm flood (N)"** — while more than ten of the Server's events are
-  unacknowledged.
+* **"Unacknowledged critical"** — a flashing indicator while at least one
+  critical event (severity 800 and above) is unacknowledged. It stops flashing
+  once every critical event is acknowledged;
+* **"Alarm flood (N)"** — while more than ten events are unacknowledged.
 
 The tiles stay in place either way.
 

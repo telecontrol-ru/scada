@@ -495,10 +495,9 @@ Interrogation and clock synchronisation run only while the direction's Data
 collection is on.
 
 An extra interrogation or clock synchronisation is requested with the Poll
-Device and Synchronize Clock commands. The device in the Equipment window
-does not offer them: they are in the Device submenu of the context menu of
-a data object bound to the device, and they act on the device that is that
-object's current source.
+Device and Synchronize Clock commands, in the Device submenu of the
+device's own context menu — in the Equipment window, for example. Data
+objects do not offer them.
 
 ### Retransmission to a dispatch centre {#retransmission}
 

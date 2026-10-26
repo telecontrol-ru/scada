@@ -79,7 +79,7 @@ The menu bar provides these main groups of commands:
 The settings screen groups the settings into categories:
 
 * **Appearance** — Language, Colour scheme and Style.
-* **Events & alarms** — *Sound Alarm on Event*, *Show Events on Arrival*,
+* **Events & alarms** — *Sound Alarm on Event*, *Speech*, *Show Events on Arrival*,
   *Hide Events on Acknowledge*, *Flash Main Window on Event*. See
   [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}).
 * **Control** — *Control Confirmation* (on by default) and *Control Success
@@ -126,18 +126,14 @@ the list in the `Page` menu, or with the page buttons on the
 The `Page` menu holds its commands in this order:
 
 1. `New` — create a page;
-2. `Delete` — delete the current page;
-3. `Duplicate` — copy the page with its content;
-4. `Rename` — rename the page.
+2. `Duplicate` — copy the page with its content;
+3. `Rename` — rename the page;
+4. `Delete` — delete the current page, kept last behind a separator.
 
-In the main menu `Delete` sits right under `New`, with nothing between them —
-take care not to slip when choosing `New`.
-
-> **Caution.** *Page → Delete* takes effect at once, with **no
-> confirmation**, and the deleted page's windows do **not** go to the
-> recycle list of closed windows: they cannot be restored from the `Window`
-> menu. Save any window you need to Favourites first (`Window -> Add to
-> Favourites`, below).
+*Page → Delete* asks for confirmation first. The deleted page's windows go
+to the recycle list of closed windows and can be restored from the `Window`
+menu. The recycle list keeps the 10 most recently closed windows, so a page
+with more windows than that cannot be restored in full.
 
 Windows and panels can be arranged freely inside a page. They can be
 docked side by side, stacked as tabs, or restored from the `Window`
@@ -167,13 +163,11 @@ event panel shows "Connection to server established. Login successful."
 («Соединение с сервером установлено. Вход выполнен.»).
 
 > **Caution.** One connection-lost warning does not sound the tone or the
-> spoken announcement, but each of them — like every client message — stays
-> unacknowledged and counts towards the "more than ten unacknowledged events"
+> spoken announcement, but each of them stays unacknowledged: it shows in the
+> "Warning" tile and counts towards the "more than ten unacknowledged events"
 > condition (see [Which events raise the
 > alarm]({{ '/en/client/alarms/' | relative_url }}#escalation)). Acknowledge
-> these messages in the event panel: the severity tiles do not show them, so
-> otherwise accumulated client messages sound an alarm-flood tone that the
-> tiles do not explain. While the status bar reads "Disconnected", no new
+> these messages in the event panel. While the status bar reads "Disconnected", no new
 > values or events arrive from the Server and control commands are not carried
 > out — do not act on the values on screen.
 
@@ -310,11 +304,6 @@ as:
   is blocked; see [Manual input](#manual-input))
 * *Control…* — a control command (see [Control](#control))
 * *Manual Input* (see [Manual input](#manual-input))
-* the *Device* submenu, with commands for the device the object takes its data
-  from: *Poll Device* (makes the Server run a forced full poll of the device)
-  and *Synchronize Clock* (makes the Server synchronize the device clock with
-  the Server clock). These commands are offered only on data objects — not on
-  the device itself in the equipment tree.
 
 If a matching window is already open for the same object, the client
 switches to it instead of opening a duplicate.
@@ -330,18 +319,21 @@ You can also:
 
 * enable communication with the device (*Enable*)
 * disable communication with the device (*Disable*)
+* in the *Device* submenu, *Poll Device* (makes the Server run a forced full
+  poll of the device) and *Synchronize Clock* (makes the Server synchronize the
+  device clock with the Server clock)
 
-> **Caution.** *Disable* takes effect at once, with **no confirmation**, and
-> changes the configuration: the device stays disabled — across Server
+> **Caution.** *Disable* asks for confirmation first, naming the device;
+> declining changes nothing. The command changes the configuration: the
+> device stays disabled — across Server
 > restarts and for every workstation — until *Enable*. The Control privilege
 > (the "Dispatcher" level) is enough for it. While the device is disabled the
 > Server does not communicate with it, and all of its objects carry the [С]
-> (no connection) flag. Before *Disable*, check that the right device is
-> selected, and remember to enable it again.
+> (no connection) flag. Before confirming *Disable*, check the device name in
+> the prompt, and remember to enable it again.
 
-A forced poll and clock synchronization are not offered here: they are in the
-*Device* submenu of a data object's context menu (see
-[Object commands](#object-commands)).
+A forced poll and clock synchronization are offered on devices only, not on
+data objects: select the device itself, for example in the equipment panel.
 
 For retransmission projects, the client edits a destination device's
 retransmission table — the rules by which selected objects are forwarded to
@@ -375,13 +367,6 @@ object's context menu, in the **Item** menu, or with the button in the
 [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector). It needs
 the Control privilege.
 
-> **Caution.** The command acts on the object selected **now**. Clicking a
-> shape on a schematic that has no object behind it moves the selection frame
-> to that shape, but the **previous** object stays selected — and *Control…*,
-> the **Item** menu, the Inspector and double-click acknowledgement all apply to
-> it. Before *Control…* and before a double-click, check the object's name in
-> the Inspector, and in the dialog that opens check the object's name again.
-
 The command opens the "Control" dialog: the object's name, "Current value:"
 and "New value:". For a discrete (TS) object the new value is picked from the
 list of states (the state opposite the current one is proposed); for an analog
@@ -392,23 +377,18 @@ the object's present state: if the state changes while the dialog is open, the
 proposal changes with it. Always set the new value explicitly — pick the state
 in the list or type the number — even when the proposal is what you want.
 
-Type a fractional number with a decimal **point**: `12.5`. A comma is not
-accepted — "12,5" is answered with "Incorrect floating point value."
-(«Указано некорректное значение с плавающей точкой.») and nothing is sent.
+A fractional number may be typed with either a decimal point or a decimal
+comma: `12.5` and `12,5` are the same.
 
-The "Control" dialog marks a bad present value with "?" after "Current
-value:", and the Inspector labels it "Bad".
-
-> **Caution.** In the current version the "Control" dialog, the confirmation
-> box and the Inspector do **not** show a lost device connection or a stale
-> value: for an object with no connection to its device (the [С] flag), a
-> connection failure ([Н]), a configuration error ([К]) or a stale value
-> ([У]) they show the last value received with no "?", and the Inspector
-> labels it "Good". Only the [object panel](#object-panel) (a red dot and
-> letters in square brackets before the value) and tables show it. Before a
-> command, check the object in the object panel or a table: if [С], [Н], [К]
-> or [У] precedes the value, or the dot is red, the equipment's present
-> state is unknown.
+The "Control" dialog shows the present value with its quality marks: "?"
+after a bad value, and the flag letters in square brackets before the value —
+[С] no connection, [У] stale, [Н] connection failure, [К] configuration error,
+[Р] manual input and the rest, the same letters as in the object tree and
+tables (see [Reading values and colours](#quality-legend)). The Inspector
+labels a value "Bad" when it is bad, and also when the device connection is
+lost, the value is stale, or there is a connection failure or a
+configuration error. If [С], [Н], [К] or [У] precedes the value, the equipment's present
+state is unknown.
 
 If the object has a control permission condition, the dialog has a
 "Condition:" row. It reads "Satisfied" or "Unsatisfied" and updates live.
@@ -433,11 +413,9 @@ shows a confirmation box: the object's name, "Present:" and "Command:" — the
 present and the commanded values — and the warning "This control command is
 sent to physical equipment and cannot be undone remotely. Send it?".
 
-> **Caution.** The confirmation box shows the present value **without** its
-> quality mark: a bad value carries no "?" there. Check that the value is good
-> before confirming — in the "Control" dialog — and check the device
-> connection and staleness in the object panel or a table (see the caution
-> above).
+The "Present:" value in the confirmation box carries the same quality marks
+as in the "Control" dialog: flag letters in square brackets before the value
+and "?" after a bad value. Check them before confirming.
 
 The box's default button is "No": pressing *Enter* **cancels** the command. To
 send it, choose "Yes".
@@ -494,24 +472,21 @@ or "Controlling...".
 > **Caution.** A failure does not always mean the command was not carried out.
 > On a timeout (`Bad_Timeout`) or a connection lost mid-command the device may
 > have received and executed the command while the answer never reached the
-> Server. Before retrying, check the object's present state in the
-> [object panel](#object-panel) or a table: make sure no [С], [Н], [К] or [У]
-> flag precedes the value, the dot is not red, and the value has not already
-> become the commanded one. The dialog and the Inspector will not do for this
-> check: in this version they show neither a lost device connection nor
-> staleness. A schematic will not tell you either: in this version it shows
-> no live values.
+> Server. Before retrying, check the object's present state — in the
+> "Control" dialog, the Inspector, the [object panel](#object-panel) or a
+> table: make sure no [С], [Н], [К] or [У] flag precedes the value, the value
+> is good, and it has not already become the commanded one. A schematic will
+> not do for this check: in this version it shows no live values.
 
 The same setting turns on messages for other successful operations —
 configuration edits, object creation, password changes, unblocking. A failure
 is always reported, whatever the setting.
 
-Success messages are client messages ("Local Event"): they stay unacknowledged
-in the event panel until the operator acknowledges them, and they count in the
-"Events: N" count and towards the "more than ten unacknowledged events"
-condition that sounds the tone. The severity tiles do not show them.
-Acknowledge them like any other event — otherwise, after a few commands, the
-alarm-flood tone can sound with no alarm in the tiles.
+Success messages are client information messages ("Local Event"): they stay
+unacknowledged in the event panel until the operator acknowledges them and
+are in the "Events: N" count, but the severity tiles do not show them and they
+sound neither the tone nor the spoken announcement. Acknowledge them like any
+other event — otherwise they hold the event panel open.
 
 ### Manual input {#manual-input}
 
@@ -611,11 +586,10 @@ value has arrived, and groups have none — a group shows its device's
 connection state instead.</dd>
 
 <dt>The quality label in the Inspector</dt>
-<dd>"Good" or "Bad" beside the current value. <b>Caution:</b> in the current
-version the Inspector, like the "Control" dialog, takes only the bad flag
-into account; with a lost device connection ([С]), a connection failure
-([Н]), a configuration error ([К]) or a stale value ([У]) it shows "Good" and
-the value without "?". The object panel and tables show these flags.</dd>
+<dd>"Good" or "Bad" beside the current value. "Bad" is shown for a value
+carrying the bad flag, and also with a lost device connection ([С]), a
+connection failure ([Н]), a configuration error ([К]) or a stale value
+([У]).</dd>
 
 <dt>Row colour in the journal and the event panel</dt>
 <dd>The event's severity: a red fill is "Critical" (800 and above), a yellow

@@ -171,15 +171,12 @@ window:
 >
 > | Group in the window (Russian UI) | Field label in the window | Field in this manual |
 > |---|---|---|
-> | Primary input («Основной ввод») | Device | Device |
-> | Primary input («Основной ввод») | Channel | Channel |
-> | Backup input («Резервный ввод») | Device (backup) | Backup device |
-> | Backup input («Резервный ввод») | Channel (backup) | Backup channel |
-> | Output («Вывод») | Device (control) | Control device |
-> | Output («Вывод») | Channel (control) | Control channel |
->
-> In this version the Russian Client also shows these six field labels in
-> English.
+> | Primary input («Основной ввод») | Device («Устройство») | Device |
+> | Primary input («Основной ввод») | Channel («Канал») | Channel |
+> | Backup input («Резервный ввод») | Device (backup) («Устройство (резерв)») | Backup device |
+> | Backup input («Резервный ввод») | Channel (backup) («Канал (резерв)») | Backup channel |
+> | Output («Вывод») | Device (control) («Устройство (управление)») | Control device |
+> | Output («Вывод») | Channel (control) («Канал (управление)») | Control channel |
 
 The main parameter groups are:
 

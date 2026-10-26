@@ -61,8 +61,11 @@ start of the interval is not carried over from the previous interval.
 
 A summary holds at most 10,000 rows.
 
-**WARNING:** if the period contains more than 10,000 intervals, the summary
-**silently** ends at row 10,000. For example, *Month* with a 1-minute
+If the period contains more than 10,000 intervals, the summary ends at row
+10,000, and a notice above the table says so: "The summary is limited to
+10000 rows and ends at <time>." («Сводка ограничена 10000 строками и
+заканчивается в <время>.»); the printout repeats it in its header. For
+example, *Month* with a 1-minute
 interval stops about 6.9 days after the start of the month, and with a
 5-minute interval about 34 days after it. For a week or a month choose an
 interval of 5 minutes or longer, and for anything longer than a month 1 hour
@@ -131,12 +134,15 @@ number, without the object's units or format.
 
 A summary can be [printed]({{ '/en/client/print/' | relative_url }}) and
 [exported]({{ '/en/client/export/' | relative_url }}) to CSV. The printout and
-the file contain the table and the row labels, but not the period, the
-interval or the aggregation function — note them in the file name or on the
-printout.
+the file contain the table and the row labels. The printout opens with a
+header: the window title, "Period: <start> – <end>", the aggregation
+function and interval ("Maximum, 1 hour", for example) and "Printed: <time>".
+The CSV file does not include the period, the interval or the aggregation
+function — note them in the file name.
 
-In the CSV file the interval-start column is headed `Time`; on the printout
-it has no heading. The printout is not split into pages by width: a summary
+In both the printout and the CSV file the interval-start column is headed
+"Time (interval start)" («Время (начало интервала)»). The printout is not
+split into pages by width: a summary
 of many objects is squeezed to the width of one page, so its columns become
 narrow and their text wraps. For a wide summary choose landscape orientation,
 or export it to CSV.

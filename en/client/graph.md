@@ -25,11 +25,9 @@ For each trend line the [legend](#legend) shows the object's current value, and 
 When several signals are added to one graph window, the client creates
 separate graph areas with their own value scales.
 
-**WARNING: keep to at most 9 areas in one graph window.** In this version a
-graph with 10 or more areas loses the lines of its 10th and later areas the
-next time it is opened (for example, after the Client restarts), leaving
-those areas empty. If you have more objects, open a second graph window for
-them.
+One graph window holds at most 10 areas; the next time it is opened (for
+example, after the Client restarts) the graph comes back with all its lines.
+If you have more objects, open a second graph window for them.
 
 To inspect the same object in tabular form, open
 [`Data`]({{ '/en/client/data/' | relative_url }}) from the graph

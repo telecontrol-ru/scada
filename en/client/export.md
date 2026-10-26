@@ -26,8 +26,9 @@ context menu.
 
 ### Export options
 
-The client first asks for the file. The file name defaults to the window
-title (with colons replaced by hyphens). It then shows a dialog for CSV format parameters:
+The client first asks for the file. It proposes the folder of the last
+export, and the file name defaults to the window title (with colons replaced
+by hyphens). It then shows a dialog for CSV format parameters:
 
 <dl>
 
@@ -100,14 +101,13 @@ Columns*).
 The window title, and a summary's period and aggregation function, are not
 written to the file — put them in the file name.
 
-**WARNING: from the [Table]({{ '/en/client/table/' | relative_url }}) window,
-the file gets every column, hidden ones included.** The `Trend` column is
-always empty in the file, and the `Source` column holds formulas and object
-identifiers. Delete the columns you do not need in the file yourself. The
-same applies to export to Excel.
+From the [Table]({{ '/en/client/table/' | relative_url }}) window the file
+gets only the visible columns, in their on-screen order. Hidden columns — the
+`Source` column with formulas and object identifiers, for example — are not
+exported. The same applies to export to Excel.
 
 In a summary, the first column, holding the interval start time, is headed
-`Time`.
+"Time (interval start)" («Время (начало интервала)»).
 
 The file holds what the window shows when you give the command. Export a
 summary once it has finished loading — see

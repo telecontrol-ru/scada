@@ -46,15 +46,10 @@ What a click does depends on the kind of schematic.
   in the **Item** menu — and adds it to the "Measurements" panel. A
   double-click does nothing: acknowledge events in the event panel.
 
-Clicking empty space on the schematic clears the selection.
-
-> **Caution.** Clicking a shape that has **no** object behind it moves the
-> selection frame to it, but the **previous** object stays selected.
-> *Control…*, the **Item** menu, the Inspector and double-click
-> acknowledgement then apply to that earlier object, not to the framed shape.
-> Before *Control…* and before a double-click, always check the object's name
-> in the Inspector (and, in the "Control" dialog, the object's name there). To
-> start again, click empty space on the schematic — that clears the selection.
+Clicking a shape that has no object behind it, or empty space on the
+schematic, clears the selection: the **Item** menu commands, the Inspector and
+acknowledgement then apply to no object — not to the one selected before
+either.
 
 ## Open the display for a selected object
 

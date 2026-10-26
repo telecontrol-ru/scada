@@ -69,11 +69,6 @@ does not make a cell blink. Cells do not blink in edit mode.
 
 ## Summary and graph for a cell {#open}
 
-To open a summary or a graph for a cell's object, select **one** cell and
-choose *Summary* or *Graph*.
-
-**WARNING: in this version, with several cells selected, the *Summary* and
-*Graph* commands open no window.** Select cells one at a time; to build a
-summary or graph of several objects, select them in the
-[object panel]({{ '/en/client/' | relative_url }}#object-panel) or collect them
-in a [portfolio]({{ '/en/client/portfolio/' | relative_url }}).
+To open a summary or a graph for a cell's object, select the cell and choose
+*Summary* or *Graph*. With a range of cells selected, the summary or graph
+opens with the objects of all the selected cells.

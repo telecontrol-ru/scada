@@ -30,10 +30,10 @@ Right-clicking any column header opens the list of columns: clear a check box
 to hide that column, and set it to bring the column back. The last visible
 column cannot be hidden. The set of visible columns is saved with the window.
 
-**WARNING:** hidden columns still go into the
-[printout]({{ '/en/client/print/' | relative_url }}#contents) and the
-[export]({{ '/en/client/export/' | relative_url }}#contents) — those always
-contain every column of the table.
+The [printout]({{ '/en/client/print/' | relative_url }}#contents) and the
+[export]({{ '/en/client/export/' | relative_url }}#contents) contain only the
+visible columns, in their on-screen order; hidden columns are neither printed
+nor exported.
 
 Selecting a row activates object-specific commands in the **Item** menu.
 Right-clicking opens a context menu for the selected object and row.

@@ -28,8 +28,9 @@ The workbench regions:
   "Unacknowledged N" (highlighted while alarms are active), and beside them a
   flashing "Unacknowledged critical" indicator while a critical event is
   unacknowledged and an "Alarm flood (N)" indicator while more than ten events
-  are unacknowledged. The tiles and indicators count the Server's events only;
-  the client's own messages are counted by "Events: N" in the status strip (see
+  are unacknowledged. The tiles and indicators count the Server's events and
+  the client's own warnings and errors; the client's information messages are
+  counted only by "Events: N" in the status strip (see
   [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}#escalation)).
   The user, the connection state and the server address are not shown here —
   they appear in the status strip only.
@@ -128,11 +129,12 @@ last.</dd>
 <dd>Choose the page's icon; "None" restores the position number.</dd>
 
 <dt>Delete page</dt>
-<dd>Delete the page and its layout. In this page-button menu (but not in the main <i>Page</i> menu, where <i>Delete</i> sits right under <i>New</i>) it is kept apart from the other items so it is
-not reached by habit. The page is deleted at once, with <b>no
-confirmation</b>, and its windows do not go to the recycle list of closed
-windows, so they cannot be restored from the <i>Window</i> menu. Save any
-window you need to Favourites first.</dd>
+<dd>Delete the page and its layout. It comes last and is kept apart from the
+other items — in this menu and in the main <i>Page</i> menu — so it is not
+reached by habit. The client asks for confirmation before deleting. The
+deleted page's windows go to the recycle list of closed windows and can be
+restored from the <i>Window</i> menu; the list keeps the 10 most recently
+closed windows.</dd>
 
 </dl>
 
@@ -179,13 +181,13 @@ while the status bar reads "Connected".
 | Category | Settings |
 |---|---|
 | Appearance | Language, Colour scheme, Style |
-| Events & alarms | Sound Alarm on Event, Show Events on Arrival, Hide Events on Acknowledge, Flash Main Window on Event — see [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}) |
+| Events & alarms | Sound Alarm on Event, Speech, Show Events on Arrival, Hide Events on Acknowledge, Flash Main Window on Event — see [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}) |
 | Control | Control Confirmation, Control Success Message — see [Control]({{ '/en/client/' | relative_url }}#control) |
 | Workspace | Status Bar |
 | Displays | Show Modus topology; the Open Displays Folder action |
 
-The current version has no switch for spoken announcements, neither on the
-settings screen nor in the command palette — see
+*Speech* switches the spoken announcement on and off; on a computer without a
+speech-synthesis voice it is shown disabled — see
 [Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
 
 ## Appearance {#appearance}
@@ -424,7 +426,7 @@ Table changes take effect without restarting the client.
 
 ![]({{ '/img/substation-display.png' | relative_url }})
 
-A Vidicon display window (`.vds` files) carries a toolbar (a "Live" label,
+A Vidicon display window (`.vds` files) carries a toolbar (a connection pill,
 zoom / fit / 100% / export) and two bay strips below it: "Measurements" — the
 values of the signals whose shapes the operator has clicked, with their update
 times — and "Recent events" — the unacknowledged events of **the whole
@@ -433,15 +435,14 @@ severity, time, object and message. The diagram geometry is unchanged. Modus
 schematics (`.sde`, `.xsde`) have no such toolbar or strips; see
 [Display]({{ '/en/client/display/' | relative_url }}).
 
-> **Caution.** "Live" is a fixed label, not a connection indicator: it stays
-> green even when the connection to the Server is lost. Only the status bar
-> shows the connection state ("Connected" / "Disconnected") — do not hide
-> it; see
-> [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
-> In this version the schematics themselves show no live values — read values
-> in the "Measurements" strip and in the Inspector, and a lost device
-> connection or a stale value in the object tree or a table (see
-> [Inspector](#inspector)).
+The connection pill follows the connection to the Server: it reads "Live"
+while the client is connected and turns to a red "Offline" while it is
+disconnected; see
+[Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
+
+> **Caution.** In this version the schematics themselves show no live
+> values — read values and their quality in the "Measurements" strip and in
+> the [Inspector](#inspector).
 
 ## Inspector {#inspector}
 
@@ -451,8 +452,10 @@ The Inspector panel (on the right) reflects the active window's current
 selection:
 
 - the object's name and its address — a node identifier or a formula;
-- the current value in large type with its quality flag ("Good" / "Bad" —
-  see the caution below);
+- the current value in large type with its quality flag ("Good" / "Bad").
+  "Bad" is shown not only for a value carrying the bad flag but also when the
+  device connection is lost ([С]), on a connection failure ([Н]) or a
+  configuration error ([К]), and when the value is stale ([У]);
 - the time of the last update;
 - the signal's limits — every configured band ("HiHi", "Hi", "Lo", "LoLo").
   The band the current value has crossed is coloured and labelled, so it is
@@ -464,19 +467,11 @@ selection:
   cannot be controlled (a computed expression or a folder, for example), the
   signal has no output channel, or the session lacks the Control privilege.
 
-> **Caution.** In the current version the Inspector shows "Good" even when the
-> device connection is lost or the value is stale: it labels a value "Bad"
-> only when the value carries the bad flag. A lost connection ([С]), a
-> connection failure ([Н]), a configuration error ([К]) and staleness ([У])
-> are shown only by the object tree (a red dot and letters before the value)
-> and by tables. Check the object there before a control command and after a
-> failed one; see [Control]({{ '/en/client/' | relative_url }}#control).
-
 Selecting a table row — including a formula row — fills the Inspector; the
 value keeps updating while the row stays selected. Clicking a shape bound to
 an object on a schematic display selects that object in the Inspector as well.
-Clicking a shape with no object behind it leaves the **previous** object in
-the Inspector — check the name there before running commands; see
+Clicking a shape with no object behind it, or empty space on the schematic,
+clears the selection; see
 [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working).
 
 ![]({{ '/img/inspector-event.png' | relative_url }})

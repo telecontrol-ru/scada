@@ -35,9 +35,12 @@ to:
 
 ## What the printout contains {#contents}
 
-The printout contains **only the table**:
+The printout contains:
 
-* the column headers, on the first row;
+* a header: the window title; for a window with a period, "Period: <start> –
+  <end>"; for a summary, the aggregation function and interval ("Maximum,
+  1 hour", for example); "Printed: <time>";
+* the column headers, on the first row of the table;
 * the data rows; for a summary, the start time of each interval on the left;
 * a page number at the bottom of each sheet.
 
@@ -46,21 +49,16 @@ folds repeats into one row. The *Expand grouped rows* option of the
 [CSV export]({{ '/en/client/export/' | relative_url }}) dialog does not
 affect printing.
 
-**WARNING: from the [Table]({{ '/en/client/table/' | relative_url }}) window,
-the printout gets every column, hidden ones included** — the `Trend` column
-(empty on paper) and the `Source` column with formulas and object
-identifiers. To print only the columns you need, export the table to CSV,
-delete the extra columns and print the file from another program.
+From the [Table]({{ '/en/client/table/' | relative_url }}) window the
+printout gets only the visible columns, in their on-screen order. Hidden
+columns — the `Source` column with formulas and object identifiers, for
+example — are not printed.
 
 The table continues onto further pages by rows. It is **not** split by
 width: every column is squeezed to the page width, so a wide table (a summary
 of many objects, for example) prints in narrow columns with wrapped text.
 Choose landscape orientation in the print preview, or export the data to
-CSV. **The window title,
-the period and the aggregation function are not printed.** If the report
-needs them, write them on the printout, or export the data to CSV
-([Export and import]({{ '/en/client/export/' | relative_url }})) and lay out
-the report in another program.
+CSV ([Export and import]({{ '/en/client/export/' | relative_url }})).
 
 The printout holds what the window shows when you give the command. Print a
 summary once it has finished loading — see
