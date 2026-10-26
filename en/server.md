@@ -171,10 +171,9 @@ the services with the new settings, without touching data.
 
 #### Re-running apply on running processes {#reapply}
 
-A process reads its parameter file and its service settings (the `svc` and
-`root` passwords, the license path) only when it starts. So **`apply`
-restarts a running service whose parameter file or service settings
-changed** — after a new `--root-password`, another `--license`, a different
+A process reads its parameter file, the `svc` and `root` passwords and the
+license path only when it starts. So **`apply` restarts a running service
+when any of them changed** — after a new `--root-password`, another `--license`, a different
 `--central` or `--advertise`, for example — together with this computer's
 services that depend on it (all the others depend on *Telecontrol SCADA
 Config*). Services with nothing changed keep running. There is no need to
