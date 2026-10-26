@@ -23,9 +23,6 @@ Read this list before working at an operator workstation. Details are behind
 the links; the limitations of the whole release are collected under
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
-* **Schematics show no live values** — colours, switch positions and numbers
-  on a schematic do not change with the equipment. Watch values in tables and
-  in the object tree. See [Display]({{ '/en/client/display/' | relative_url }}).
 * **After an orderly close of the connection by the Server (for example, when
   it is restarted) the client does not reconnect by itself** — reconnect with
   *More → Connect to Server...*. See [Connection to the Server](#connection).
@@ -293,8 +290,7 @@ as:
 * [Table]({{ '/en/client/table/' | relative_url }})
 * [Display]({{ '/en/client/display/' | relative_url }}) — opens the Modus
   schematic that contains the object, or switches to it if it is already open.
-  The object's shape is **not** selected or highlighted on it; find it on the
-  schematic yourself
+  The object's shape is selected on it
 * [Data]({{ '/en/client/data/' | relative_url }})
 * [Summary]({{ '/en/client/summary/' | relative_url }})
 * [Event journal]({{ '/en/client/events/' | relative_url }})
@@ -475,8 +471,8 @@ or "Controlling...".
 > Server. Before retrying, check the object's present state — in the
 > "Control" dialog, the Inspector, the [object panel](#object-panel) or a
 > table: make sure no [С], [Н], [К] or [У] flag precedes the value, the value
-> is good, and it has not already become the commanded one. A schematic will
-> not do for this check: in this version it shows no live values.
+> is good, and it has not already become the commanded one. A schematic is
+> not enough for this check: it does not show the [С], [Н], [К] and [У] flags.
 
 The same setting turns on messages for other successful operations —
 configuration edits, object creation, password changes, unblocking. A failure

@@ -23,24 +23,46 @@ lists the available schematics.
 > установлен.») — in that case contact Telecontrol (see
 > [When a schematic is not shown](#not-shown)).
 
-> **Caution.** In this version schematics open and display **without live
-> values**: the display module draws a schematic as its designer drew
-> it and does not show the objects' state on it. Colours, switch positions and
-> numbers on the schematic do not change with the state of the equipment.
-> Watch values and quality in tables and in the
-> [object panel]({{ '/en/client/' | relative_url }}#object-panel), and
-> alarms in the [event panel]({{ '/en/client/' | relative_url }}#events-panel)
-> and the status bar.
+## Live values on a Modus schematic {#live-values}
+
+Shapes of a Modus schematic that the designer bound to SCADA objects (the
+`ключ_привязки` property — see
+[Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding)) show
+those objects' present state and update with it:
+
+* **A switching device** (a shape with the *положение*, "position", property)
+  is drawn closed or open from the value of its discrete (ТС) object: a
+  non-zero value is closed, zero is open. A breaker square is filled bright
+  green when closed and red when open.
+* **A text field** (a shape with the *текст*, "text", property) shows the
+  value of its measured (ТИТ) object the way a table does: with its units and
+  with a "?" mark on an unreliable value.
+* When a value is **unreliable** or the object is not connected, the
+  switching device is hatched in the bad-quality colour: its position on the
+  schematic is not confirmed at that moment. Until a value arrives, a device
+  stays in the position its designer drew, and a text field keeps its drawn
+  text.
+
+Shapes that are not bound are drawn as the designer drew them.
+
+> **Caution.** Compared with the 2.5.7 Client, a Modus schematic does **not**
+> show: a binding of an arbitrary shape property (*property_name=alias* with
+> a name other than *положение*, *текст* or *значение_базовое*), the object's
+> limits, or a shape blinking on an alarm. The breaker position colours are
+> the Modus default colours, not the ones set in the schematic's settings.
+> Learn about alarms from the
+> [event panel]({{ '/en/client/' | relative_url }}#events-panel) and the
+> status bar.
 
 ## Working with a schematic {#working}
 
 What a click does depends on the kind of schematic.
 
-* **Modus schematics** (`.sde`, `.xsde`). In this version a click on a shape
-  does **not** select an object you can work with: the schematic's shapes are
-  not linked to objects. To issue a command, acknowledge an event or read a
-  value, pick the object in the
-  [object tree]({{ '/en/client/' | relative_url }}#object-panel) or a table.
+* **Modus schematics** (`.sde`, `.xsde`). A click on a shape bound to an
+  object selects that object: the Inspector shows its value, and its commands
+  are in the **Item** menu. When several objects are bound to one shape, the
+  first is selected. A double-click acknowledges the selected object's
+  events.
 * **Vidicon schematics** (`.vds`) — opened from the same **Display** menu. A
   click on a shape bound to an object selects that object — its commands are
   in the **Item** menu — and adds it to the "Measurements" panel. A
@@ -51,7 +73,7 @@ schematic, clears the selection: the **Item** menu commands, the Inspector and
 acknowledgement then apply to no object — not to the one selected before
 either.
 
-## Open the display for a selected object
+## Open the display for a selected object {#goto-object}
 
 When an object is selected in the object panel or in a table, the user
 can open the display that contains that object with the `Display`
@@ -64,9 +86,13 @@ contains the selected object (when several do, one of them is opened).
 If a matching display is already open, the existing window is activated.
 Otherwise, a new display window is opened.
 
-The command only opens the schematic or brings it forward: the object's shape
-is **not** selected or highlighted on it. Find the shape yourself and, before
-running any command, click it and check the object's name in the Inspector.
+On the schematic, the shape bound to the object is selected — the same as
+clicking it.
+
+The client finds a schematic by the objects bound to its shapes, and it
+learns them when the schematic is opened and remembers them on the
+workstation. A schematic that has not yet been opened on this workstation may
+not be found — open the schematics you need from the **Display** menu once.
 
 If no display contains the selected object, the client shows "Display for item
 "…" was not found." («Мнемосхема для сигнала «…» не найдена.»).

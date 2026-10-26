@@ -66,7 +66,7 @@ This version is not yet published on the releases page.
 
 1. The *Audit log* window shows who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
 
-1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. In this version displays are shown **without live values** — see [Known limitations](#known-limitations) and [Display]({{ '/en/client/display/' | relative_url }}).
+1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Bindings of other properties, limits and blinking on an alarm are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
 
@@ -80,7 +80,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
 
-1. **Displays are shown without live values.** The 2.5.7 Client showed objects' current values and states on Modus displays; the 2.6 Client draws a display as the designer drew it — colours, switch positions and numbers do not change. A site whose operators work from displays loses that when it upgrades; such a site should stay on version 2.5.7 for now. See [Display]({{ '/en/client/display/' | relative_url }}).
+1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties, limits, or a shape blinking on an alarm. If a site's displays rely on these, check the displays before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. The display module is a separate library that may not be included in the Client installation; without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 

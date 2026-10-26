@@ -16,7 +16,8 @@ permalink: /en/
 > ([Licensing]({{ '/en/server/' | relative_url }}#licensing)). Before buying
 > or upgrading, read the version 2.6
 > [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
-> — in particular, displays are shown without live values, and on a new
+> — in particular, the display module may not be included in the Client
+> installation, and on a new
 > installation archives cannot be assigned to objects from the Client.
 
 Telecontrol SCADA is supervisory control and data acquisition software
@@ -67,8 +68,8 @@ Example of a distributed deployment:
 ## Key features
 
 * Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows (on Linux on request)
-* Modus [displays]({{ '/en/client/display/' | relative_url }}); in version 2.6
-  they are shown without live values — see
+* Modus [displays]({{ '/en/client/display/' | relative_url }}) with live
+  switch positions and values; for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade)
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
