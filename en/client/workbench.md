@@ -167,8 +167,9 @@ the categories down the left with the number of settings in each, and scope
 tabs above the list — All, This client, Profile, This window.
 
 Every setting carries a description and a scope label, so it is visible which
-ones are kept on this computer and which travel with the account in the
-profile. Settings apply **immediately**: there is nothing to confirm, and the
+ones are kept on this computer only and which are in the user's profile,
+which the client also saves on the Server when it closes; do not count on
+those settings appearing by themselves in the client on another computer. Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
 scope are kept in the user's profile on the Server. The profile is written to
 the Server when the client exits and on *More → Disconnect from Server*, not

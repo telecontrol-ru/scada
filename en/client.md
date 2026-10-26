@@ -225,8 +225,8 @@ to the server; it is kept on this computer only" («Не удалось сохр
 профиль на сервере; он сохранён только на этом компьютере»). On exit that
 message is posted into a client that is already closing, so it is usually
 not seen. Close the client only while the status bar reads "Connected";
-otherwise changes to pages and settings stay on this computer only and do
-not follow the account to another workstation.
+otherwise changes to pages and settings are not written to the Server and
+stay on this computer only.
 
 > **Caution.** Do not hand over with *More → Disconnect from Server*. In the
 > current version, after that command and a sign-in under another account the
