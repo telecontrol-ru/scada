@@ -78,25 +78,24 @@ to change or remove services `scada-setup` created — `scada-setup apply` and
 Windows.** If the result of any command differs from what this page
 describes, report that to Telecontrol (mail@telecontrol.ru).
 
-**Run `scada-setup` from an elevated command prompt, and always by its full
-path:**
+**Run `scada-setup` from an elevated command prompt** (except `status`,
+`generate` and `migrate` without `--execute`):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" <command> <options>
 ```
 
-The installer does not add the program's folder to `PATH`, and `scada-setup`
-looks for its templates relative to the path it was invoked by; typed
-without a path, it may not find them. If for some reason you cannot invoke it
-by its full path, name the installation folder explicitly:
-`--install-root "C:\Program Files\Telecontrol SCADA"`.
+The installer does not add the program's folder to `PATH`, so outside that
+folder call the program by its full path. `scada-setup` finds its templates
+in the installation folder, the one above the folder holding
+`scada-setup.exe`, wherever it is invoked from.
 
 | Command | Does | Needs admin |
 |---|---|:-:|
 | `apply` | Write parameter files and databases, create the [Server certificate](#opcua-certificate) if there is none, register and start the processes' services | yes |
-| `status` | License summary and each process's service state | yes |
+| `status` | License summary and each process's service state | no |
 | `start` / `stop` | Start / stop this computer's services in order | yes |
-| `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the processes' data too — see the [warning](#remove)) | yes |
+| `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the data of the processes named in `--tiers` too — see [Removing services and data](#remove)) | yes |
 | `generate --output <dir>` | Write the parameter files only, for inspection | no |
 | `migrate [--execute]` | Move a version 2.5 Server's data over — see [Upgrading from version 2.5](#upgrade-2-5) | with `--execute` |
 
@@ -113,9 +112,9 @@ the installer: objects with emulation, two enabled IEC 60870-5-104 links (one
 of them accepts connections on port 2404 of this computer — the
 `scada-iec104` process takes that port, if it is installed), two archives,
 and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Every
-one of the four copies — in the `Configuration` folders of `config`, `proxy`,
-`historian` and `filestore` — starts as this demo project. Before going live,
-replace all four with the project's configuration (see
+one of the three copies — in the `Configuration` folders of `config`, `proxy`
+and `historian` — starts as this demo project. Before going live, replace all
+three with the project's configuration (see
 [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project)):
 deleting the demo data in the Client has not been verified to reach every
 copy.
@@ -147,12 +146,13 @@ copy.
   environment variable) — the [root password](#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config`,
   `scada-proxy`, `scada-historian` or `scada-filesystem`.
-* `--data-root`, `--install-root` — the data folder and the installation
-  folder, when they are not the standard ones.
+* `--data-root` — the data folder, when it is not the standard one.
+* `--install-root` — the installation folder. There is no need to give it:
+  it defaults to the folder above the one holding `scada-setup.exe`.
 
 **`scada-setup` does not remember its options.** Write down each computer's
-`--tiers`, `--central`, `--advertise`, `--license` and, if you gave them,
-`--data-root` and `--install-root` at installation, and
+`--tiers`, `--central`, `--advertise`, `--license` and, if you gave it,
+`--data-root` at installation, and
 give them to every `apply` and `start` on it, upgrades and restores
 included:
 
@@ -170,33 +170,35 @@ the services with the new settings, without touching data.
 
 #### Re-running apply on running processes {#reapply}
 
-**`apply` does not restart services that are already running:** it leaves a
-running service as it is, and the service keeps working with its old
-settings. A new `root` password (`--root-password`), another license file
-(`--license`), a different `--central` or `--advertise`, and rewritten
-parameter files take effect only after the process restarts. So, when you
-change anything on a running installation, stop the processes first and then
-run `apply`, which starts them again:
+A process reads its parameter file and its service settings (the `svc` and
+`root` passwords, the license path) only when it starts. So **`apply`
+restarts a running service whose parameter file or service settings
+changed** — after a new `--root-password`, another `--license`, a different
+`--central` or `--advertise`, for example — together with this computer's
+services that depend on it (all the others depend on *Telecontrol SCADA
+Config*). Services with nothing changed keep running. There is no need to
+stop the processes before `apply`:
 
 ```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
 ```
 
-Do the same when changing the `root` password, when adding a process to the
-computer, and when restoring the `svc` password after a mismatch. If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts](#edge-restart).
+This is how to change the `root` password, add a process to the computer,
+and restore the `svc` password after a mismatch. A restart interrupts the
+service for a moment: while `scada-proxy` restarts, Clients lose their
+connection to the Server. If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts](#edge-restart).
 
 #### Removing services and data {#remove}
 
 `remove` stops and unregisters the services; the processes' data stays.
 
-**WARNING: `remove --purge-data` without `--tiers` irreversibly deletes the
-data of all nine processes**, without asking for confirmation: the `config`,
-`proxy`, `historian`, `filestore`, `modbus`, `iec104`, `iec61850`, `opc` and
-`vidicon` folders in `%ProgramData%\Telecontrol\SCADA Server` — the
-configuration, user passwords, archives, display files and logs. Make a
-[backup](#backup) before using `--purge-data`, and always give `--tiers`
-with exactly the processes whose data must be deleted.
+With `--purge-data` the command also irreversibly deletes, without asking
+for confirmation, the data folders of the processes named in `--tiers`
+(`config`, `proxy`, `historian`, `filestore` and so on in
+`%ProgramData%\Telecontrol\SCADA Server`) — the configuration, user
+passwords, archives, display files and logs. Without `--tiers`,
+`remove --purge-data` does nothing and reports an error. Make a
+[backup](#backup) before using `--purge-data`.
 
 #### Your own parameters: server.override.json {#server-override}
 
@@ -253,11 +255,9 @@ its own copy: `scada-config` hands it to the protocol processes, `scada-proxy`
 checks Client user names and passwords against it, and `scada-historian`
 reads its historical databases and object assignments from it.
 
-**`scada-filesystem`'s copy (`filestore\Configuration`) is not migrated**: it
-stays the demo database `apply` created, whose users «Клиент 1» …
-«Клиент 10» and `guest` have no passwords, and `scada-filesystem` accepts
-sign-ins against it on port 2006. Never open that port (see
-[Network preparation]({{ '/en/getting-started/' | relative_url }}#network)).
+The configuration is not carried into `scada-filesystem`'s database
+(`filestore\Configuration`): that process needs only the `svc` service
+account, and `apply` keeps only that account in its database.
 
 **The version 2.5 folders are only read**: the command changes and deletes
 nothing in them. That matters, because on first start the 2.6 processes
@@ -296,9 +296,11 @@ command prompt:
    Besides `config`, `historian`, `filesystem` and `proxy`, give `--tiers`
    **a protocol process for every protocol** the version 2.5 devices use (in
    the example IEC 60870-5-104, `iec104`; `modbus` for MODBUS, `iec61850` for
-   IEC 61850). The command does not warn when one is missing: the
-   configuration is carried over, but no data is collected from that
-   protocol's devices.
+   IEC 61850). When the version 2.5 configuration has enabled links or
+   devices of a protocol whose process is not given, the plan warns with a
+   line `WARNING: … will not run the '<process>' process`: the configuration
+   is carried over, but no data is collected from those devices unless the
+   process runs on another computer of the site.
 
    It lists what will be copied where, how much disk space that needs, which
    version 2.5 settings are not carried over and, under the heading
@@ -349,7 +351,7 @@ command prompt:
 * **after copying all the data** (the output has a `Copied` line for every
   line of the plan) — do not run `migrate` again: it would refuse, because
   the destination folders now exist. Fix the cause of the error and finish
-  with `stop` and `apply` with the same `--tiers` and passwords;
+  with `apply` with the same `--tiers` and passwords;
 * **part-way through copying** — delete the `config`, `proxy`, `historian`
   and `filestore` folders it created in
   `%ProgramData%\Telecontrol\SCADA Server` (leave the version 2.5
@@ -853,7 +855,7 @@ example an unknown level) is written to a log with the default settings in the
 ## Monitoring {#monitoring}
 
 * **Service and license state** — `scada-setup status` on each computer
-  (from an elevated command prompt): the license expiry, the processes it
+  (it needs no administrator rights): the license expiry, the processes it
   entitles, and the state of each process's service. It prints, for
   example:
 
@@ -934,9 +936,8 @@ takes the variable's value from `--root-password` (or the
 processes' Windows service settings — in plain text, in the registry (see
 the [warning](#stored-passwords) in the `scada-setup` description). On a computer running one of those
 processes, `apply` refuses to run without it. To change the root password,
-stop the processes (`scada-setup stop`) and run `apply` with the new value:
-`apply` does not restart running processes, which would keep accepting the
-old password (see [Re-running apply](#reapply)). Do not edit the generated parameter files,
+run `apply` with the new value: `apply` restarts the running processes it
+handed the new password to (see [Re-running apply](#reapply)). Do not edit the generated parameter files,
 which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
@@ -966,9 +967,8 @@ the registry).
 * **Do not change or delete the `svc` account** in the Client's *Users*
   window: that breaks the links between the processes too.
 * When the passwords differ, the protocol process keeps running but gets no
-  configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Stop
-  the processes on that computer (`scada-setup stop`) and run `apply` with
-  the original `svc` password (see [Re-running apply](#reapply)), then
+  configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Run
+  `apply` on that computer with the original `svc` password (see [Re-running apply](#reapply)), then
   restart the *Telecontrol SCADA Historian* service on the central computer
   and, as a precaution, have the operators restart the Client (see
   [After a protocol process restarts](#edge-restart)).
@@ -1202,8 +1202,8 @@ If this computer has no `scada-proxy` (protocol processes only), then restart th
 
 A restore also needs the `svc` password, the `root` password, and the
 [computer's parameters](#scada-setup-options) — the `--tiers`, `--central`,
-`--advertise` and `--license` (and `--data-root` and `--install-root`, if
-given) that `scada-setup apply` was run with on it;
+`--advertise` and `--license` (and `--data-root`, if given) that
+`scada-setup apply` was run with on it;
 none of them is in the backup.
 
 ### Configuration backup
@@ -1268,8 +1268,8 @@ On a new or rebuilt computer:
    restored databases, and with a different one the processes cannot connect
    to each other. `apply` registers and starts the services, and keeps the
    restored databases and certificate. If the site's other computers name this
-   one in `--central` by an address that has changed, run `stop` there and
-   then `apply` with the new address. If this computer runs protocol
+   one in `--central` by an address that has changed, run `apply` there with
+   the new address. If this computer runs protocol
    processes, was set up with `--advertise` and its address changed, give
    `--advertise` the new address.
 5. Create the inbound firewall rules again — the backup does not contain

@@ -156,8 +156,6 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The `svc` and `root` passwords given to `scada-setup apply` are stored in plain text in the Windows service settings in the registry. See [Passwords are stored in plain text]({{ '/en/server/' | relative_url }}#stored-passwords).
 
-1. `scada-setup apply` does not restart services that are running: a new `root` password and other options take effect only after a restart. See [Re-running apply]({{ '/en/server/' | relative_url }}#reapply).
-
 #### Working with the Client {#limits-client}
 
 1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
