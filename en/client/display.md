@@ -62,7 +62,11 @@ What a click does depends on the kind of schematic.
   object selects that object: the Inspector shows its value, and its commands
   are in the **Item** menu. When several objects are bound to one shape, the
   first is selected. A double-click acknowledges the selected object's
-  events.
+  events. Unlike the 2.5.7 Client, a double-click does not follow the shape's
+  *гиперссылка* (hyperlink) property to another schematic: open that one
+  from the **Display** menu. Bound shapes inside a Graphic Editor group have
+  not been checked in version 2.6 — see
+  [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 * **Vidicon schematics** (`.vds`) — opened from the same **Display** menu. A
   click on a shape bound to an object selects that object — its commands are
   in the **Item** menu — and adds it to the "Measurements" panel. A

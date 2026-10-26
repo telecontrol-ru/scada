@@ -88,12 +88,22 @@ single alias — the same as in tables.
 For an arbitrary property binding, use an expression such as
 `property_name=alias`. Several bindings of one element are separated by `;`.
 
-> **Caution.** The value of `ключ_привязки` is split into bindings at
-> **every** `;`, and each binding into a property and a formula at the
-> **first** `=`. So a formula in `ключ_привязки` cannot contain `;`, and when
-> it contains `=` the property must be named explicitly:
-> `положение=!(TS.1 = TS.2)`, not `!(TS.1 = TS.2)` — otherwise the property
-> becomes `!(TS.1`.
+A `;` or `=` separates bindings, or a property from its formula, only
+outside parentheses `( )`, quotes `" "` and a channel reference `{ }`. So
+a formula may contain them: `!(TS.1 = TS.2)` and
+`текст={MODBUS_DEVICES.1!INT16:40001;swapbytes}` are one binding each.
+
+> **Caution.** When a single word of letters, digits and `_` stands before
+> the first `=` outside parentheses, the Client takes it as the property
+> name. So write a comparison of an alias without a dot in parentheses:
+> `(TS_Q1 = 1)`, not `TS_Q1 = 1` — otherwise the property becomes `TS_Q1`.
+> The 2.5.7 Client split the value at every `;` and at the first `=`
+> anywhere, so formulas containing these characters work from version 2.6
+> only.
+
+Elements combined into a group in the Graphic Editor have not been checked
+in the 2.6 Client. If a bound element inside a group shows no value or
+cannot be selected with a click, ungroup it.
 
 The 2.6 Client shows bindings of the *положение*,
 *текст* and *значение_базовое* properties; a binding of any other property is
