@@ -50,14 +50,17 @@ choose `Properties`.
 
 ### Fields with a list of values {#enum-lists}
 
-**WARNING: in this version the fields with a list of values — a direction's
-Protocol and Mode, a TIT object's Conversion, a simulation signal's Type —
-may offer no choices.** Such a field then cannot be changed from the Client,
-and the default stated on this page applies. An IEC 60870-5 direction's
-protocol is set by the command that creates it (`IEC 60870-104 Link` or
-`IEC 60870-101 Link`), so an empty list does not get in the way there. If
-you need another value in such a field (for example the Modbus TCP protocol
-or Modbus retransmission mode), contact Telecontrol (mail@telecontrol.ru).
+A direction's Protocol and Mode, a TIT object's Conversion and a simulation
+signal's Type are chosen from a list of values. The Client builds the list
+from the type description the Server sends, so the choices are the same on
+every workstation; each field's default is given on this page. An
+IEC 60870-5 direction's protocol is set by the command that creates it
+(`IEC 60870-104 Link` or `IEC 60870-101 Link`).
+
+{: .note }
+> In early builds of this version such lists could offer no choices at all,
+> and the field could not be changed from the Client. If the lists are empty
+> on your site, upgrade the Server processes.
 
 ### Address map
 
@@ -98,9 +101,10 @@ After creating a direction and a device, make sure data is flowing:
    its cause of transmission. If the device answers with a negative
    confirmation under any other cause (for example, it refuses the command
    because of its own interlock), the Client reports "IEC 60870-5 protocol
-   error" («Ошибка протокола МЭК-60870»); Watch shows that reply too. In this
-   version the Client also reports an IEC 61850 device's refusal to carry out
-   a command as "IEC 60870-5 protocol error". For IEC 61850 devices also check that values
+   error" («Ошибка протокола МЭК-60870»); Watch shows that reply too. The
+   Client reports an IEC 61850 device's refusal to carry out a command as
+   "IEC 61850 protocol error" («Ошибка протокола МЭК-61850»). For IEC 61850
+   devices also check that values
    arrive through every report control block you created, and that a
    select-before-operate (SBO) device's objects have not had two-stage
    control turned off (see [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)).
@@ -115,16 +119,14 @@ Supported MODBUS function codes are described in
 <dl>
 
 <dt>Protocol</dt>
-<dd>RTU, ASCII or TCP. Default: RTU. See the
-<a href="#enum-lists">warning on list fields</a>. RTU and ASCII are for
+<dd>RTU, ASCII or TCP. Default: RTU. RTU and ASCII are for
 serial lines: RTU sends binary frames, ASCII sends text (a frame starts with
 «:» and ends with a line break). Choose the variant from the device's
 documentation: a device answers only the variant it is configured for.</dd>
 
 <dt>Mode</dt>
 <dd>Polling — the SCADA polls the devices (default); retransmission — the SCADA
-answers another system's requests. See the
-<a href="#enum-lists">warning on list fields</a>.</dd>
+answers another system's requests.</dd>
 
 <dt>Transport</dt>
 <dd>The communication channel: a serial port or a TCP/UDP network, set in the
@@ -360,8 +362,7 @@ direction (<code>IEC 60870-104 Link</code> or <code>IEC 60870-101 Link</code>).<
 <dd>Polling (default), retransmission or listening. In this version the
 direction's behaviour is decided mainly by Data collection and Transport: the
 SCADA polls the devices when data collection is on and answers another
-system's requests when it is off. Listening applies to IEC 60870-5-101 only.
-See the <a href="#enum-lists">warning on list fields</a>.</dd>
+system's requests when it is off. Listening applies to IEC 60870-5-101 only.</dd>
 
 <dt>Data collection</dt>
 <dd>Yes (default) — the SCADA is the controlling station: after connecting it
@@ -526,9 +527,7 @@ to.
      can connect;
    * Data collection = No — the SCADA will not send the DC interrogation or
      clock synchronisation commands;
-   * Mode — retransmission, if the list offers choices. For
-     IEC 60870-5-104 an empty list (see the [warning](#enum-lists)) does not
-     get in the way;
+   * Mode — retransmission;
    * k, w, t1–t3 and the field sizes — as agreed with the DC;
    * Disabled = No.
 
@@ -564,8 +563,7 @@ DC objects whose data another Server process receives (for example, the
 Modbus or IEC 61850 process) is not confirmed to work in this version; if
 you need it, contact Telecontrol (mail@telecontrol.ru).
 
-Modbus retransmission needs Mode = retransmission on the Modbus direction; if
-that list is empty, contact Telecontrol.
+Modbus retransmission needs Mode = retransmission on the Modbus direction.
 
 ## IEC 61850 devices {#iec-61850}
 

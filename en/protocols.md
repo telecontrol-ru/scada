@@ -51,14 +51,15 @@ Supported application-layer ASDU types include:
 | `M_SP_NA_1` | 1 | Single-point information (0 – OFF, 1 – ON) |
 | `M_SP_TA_1` | 2 | Single-point with timestamp |
 | `M_DP_NA_1` | 3 | Double-point information (0 – indeterminate or intermediate, 1 – OFF, 2 – ON, 3 – indeterminate); see the note below |
-| `M_BO_NA_1` | 7 | 32-bit bitstring — **not supported in this version**: values from these ASDUs do not reach objects |
-| `M_ME_NA_1` | 9 | Normalized measured value — arrives as a signed 16-bit integer, see the note below |
+| `M_BO_NA_1` | 7 | 32-bit bitstring — the TIT object receives an unsigned integer whose least significant bit is bit 1 of the string |
+| `M_ME_NA_1` | 9 | Normalized measured value — scaled to the −1…+1 range, see the note below |
 | `M_ME_NB_1` | 11 | Scaled measured value (signed 16-bit integer) |
 | `M_ME_TB_1` | 12 | Scaled measured value (integer) with timestamp |
 | `M_ME_NC_1` | 13 | Short floating-point measured value (float) |
 | `M_IT_NA_1` | 15 | Integrated total (int32) |
 | `M_SP_TB_1` | 30 | Single-point with CP56Time2a |
 | `M_DP_TB_1` | 31 | Double-point with CP56Time2a |
+| `M_BO_TB_1` | 33 | 32-bit bitstring with CP56Time2a — as `M_BO_NA_1` |
 | `M_ME_TD_1` | 34 | Normalized value with CP56Time2a — as `M_ME_NA_1` |
 | `M_ME_TE_1` | 35 | Scaled value (integer) with CP56Time2a |
 | `M_ME_TF_1` | 36 | Float value with CP56Time2a |
@@ -69,17 +70,22 @@ Supported application-layer ASDU types include:
 | `C_CI_NA_1` | 101 | Counter interrogation |
 | `C_CS_NA_1` | 103 | Time synchronization |
 | `C_RP_NA_1` | 105 | Reset process |
-| `P_ME_NA_1` | 110 | Parameter write, normalized (16-bit integer) |
+| `P_ME_NA_1` | 110 | Parameter write, normalized (−1…+1) |
 | `P_ME_NB_1` | 111 | Parameter write, scaled (16-bit integer) |
 | `P_ME_NC_1` | 112 | Parameter write, short floating point (float) |
 
-**WARNING:** in this version normalized values (`M_ME_NA_1`, `M_ME_TD_1`)
-are not converted to the −1…+1 range: the TIT object receives the signed
-16-bit integer exactly as transmitted (1.0 arrives as 32767, −1.0 as
-−32768). To get the normalized value, create a TIT object without a device
-and enter a [formula]({{ '/en/formulas/' | relative_url }}) in its Channel
-field, for example `{IEC_DEV.1!115} / 32768`, where `IEC_DEV.1` is the
-device identifier and 115 the information object address.
+Normalized values (`M_ME_NA_1`, `M_ME_TD_1`, `P_ME_NA_1`) are scaled to
+the −1…+1 range: the signed 16-bit integer the device sends is divided by
+32768, so the TIT object receives, for example, 0.5 rather than 16384. The
+largest value is 32767/32768 ≈ 0.99997; exactly +1.0 cannot be carried by
+this type. On retransmission the value is passed on without loss.
+
+{: .note }
+> Earlier versions delivered a normalized value as the raw integer (32767
+> rather than 1.0). If the project rescaled it with a formula such as
+> `{IEC_DEV.1!115} / 32768`, or with a linear conversion from
+> −32768…32767, remove that rescaling after the upgrade — otherwise the value
+> is divided twice.
 
 Double-point information (`M_DP_NA_1`, `M_DP_TB_1`) gives the TS object the
 value 1 only in position 2 (ON); in positions 0, 1 and 3 the object gets 0.
@@ -90,6 +96,15 @@ For control operations, Telecontrol SCADA uses:
 
 * `C_SC_NA_1` for discrete control objects
 * `P_ME_NC_1` for measured-value control objects
+
+With [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) of a TS
+object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then
+with the execute flag. If the operator declines to execute, the Server
+releases the selection: it repeats the same command with cause of
+transmission 8 (deactivation) and waits for the device's confirmation with
+cause 9. If the device refuses to release it, the Client reports the command
+as failed, and the selection stays in force until the device's own select
+timeout.
 
 The ASDU type can be overridden in the output field with the format
 `type:address`, where `type` is one of:
@@ -179,7 +194,8 @@ command value type from the device:
   `sbo-with-enhanced-security`), leave
   [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) enabled
   on the object (the default is Yes) — without the select stage the device
-  rejects the command;
+  rejects the command. If the operator declines to execute, the Server
+  releases the selection with the control model's Cancel service;
 * for direct control (`direct-with-normal-security`,
   `direct-with-enhanced-security`) both one-stage and two-stage commands
   work;
@@ -190,6 +206,12 @@ The command value must fit the object's `ctlVal` type: 0 or 1 for a
 boolean (SPC, DPC), an integer for INC. Any other value is rejected by the
 Server without being sent to the device. Analogue setpoints (class APC)
 and step control (class BSC) are not supported in this version.
+
+If the device refuses the select or the execute (for example, because of its
+own interlock or a control-model mismatch), the Client reports "IEC 61850
+protocol error" («Ошибка протокола МЭК-61850»); the device's answer is
+visible in the [Device watch]({{ '/en/client/device-watch/' | relative_url }})
+window.
 
 The Poll Device command requests a general interrogation (GI) through every
 report control block of the device.

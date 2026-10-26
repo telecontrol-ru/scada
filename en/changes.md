@@ -54,6 +54,14 @@ This version is not yet published on the releases page.
 
 1. MODBUS RTU: fixed waiting for a device's exception response — a command the device rejects is reported as an error at once, not after the response timeout. In retransmission mode, fixed receiving writes with 0x10 and added 0x06 and 0x0F.
 
+1. IEC 60870-5: ASDU types 7 and 33 (32-bit bitstring) are accepted, and normalized values are scaled to −1…+1. If the project divided a normalized value by 32768 with a formula or a conversion, remove that rescaling. See [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
+
+1. With two-stage control, an operator declining to execute releases the selection on an IEC 60870-5 or IEC 61850 device instead of leaving it until the device's timeout. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}).
+
+1. Fixed: an IEC 61850 device refusing a command is reported as "IEC 61850 protocol error", not as an IEC 60870 error.
+
+1. Fixed: the fields with a list of values — a direction's *Protocol* and *Mode*, a TIT object's *Conversion*, a simulation signal's *Type* — offer their choices again. See [Fields with a list of values]({{ '/en/dev/devices/' | relative_url }}#enum-lists).
+
 ### Client
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
@@ -122,11 +130,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
-1. IEC 60870-5: ASDU type 7 (32-bit string) is not supported, and normalized values are not scaled to −1…+1. See [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
-
-1. The *Protocol* and *Mode* lists of a link (and other fields with a list of values) can be empty — the default value then applies. See [Fields with a list of values]({{ '/en/dev/devices/' | relative_url }}#enum-lists).
-
-1. Retransmission: every new rule gets address 1, retransmitting objects of another Server process is not confirmed, and MODBUS retransmission needs a mode the list may not offer. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission: every new rule gets address 1, and retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 #### Archive and reports {#limits-archive}
 

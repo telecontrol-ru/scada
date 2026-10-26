@@ -221,7 +221,14 @@ command <code>C_SC_NA_1</code>; for other IEC 60870-5 commands and for MODBUS
 devices it is skipped and only EXECUTE is performed. For IEC 61850 devices
 the SELECT stage is sent to objects whose control model is SBO; for direct
 control only EXECUTE is performed. Set No if the device
-does not support select-before-operate.</dd>
+does not support select-before-operate.
+If the operator declines to execute after the select, the Server releases the
+selection on the device: for IEC 60870-5 by deactivating the
+<code>C_SC_NA_1</code> command (cause of transmission 8), for IEC 61850 with
+the Cancel service. MODBUS devices and the other IEC 60870-5 commands never
+receive a select stage, so there is nothing to release. If the device refuses
+to release the selection, it stays in force until the device's own select
+timeout.</dd>
 
 <dt>Lock</dt>
 <dd>Yes — the object ignores values from the device and keeps the value set by
@@ -274,10 +281,7 @@ The available formats can be managed from <code>More -&gt; Formats</code>.</dd>
 
 <dt>Transformation</dt>
 <dd>For measured values, defines how incoming data is processed. Default:
-None. <strong>WARNING: in this version the list may offer no choices</strong>,
-and then linear scaling cannot be switched on from the Client — see
-<a href="{{ '/en/dev/devices/' | relative_url }}#enum-lists">Fields with a list
-of values</a>.
+None.
   <dl>
   <dt>Linear</dt>
   <dd>Applies offset and scale transformation.</dd>
@@ -373,8 +377,7 @@ effect.
 
 Signals are created in the Simulated signals window (<code>More -&gt; Simulated
 signals</code>) with <code>Create -&gt; Simulation signal</code>. A signal has a Type — the
-waveform (default: random; the list may offer no choices, see
-<a href="{{ '/en/dev/devices/' | relative_url }}#enum-lists">Fields with a list of values</a>) —
+waveform (default: random; also ramp, step, sine or cosine) —
 Period, ms (60000), Phase, ms (0) and Update, ms (1000). See also
 <a href="{{ '/en/client/workbench/' | relative_url }}#simulation-items">Simulated signals</a>.</dd>
 
