@@ -245,12 +245,14 @@ and creates a *Клиент* (Client) shortcut on the desktop and in the
   administrator does not need the Client on that computer, delete the
   *Клиент* shortcut from the desktop.
 
-**WARNING:** if Telecontrol has given you a separate Client package, do not
-install it on a Server computer, nor the Server package on a computer with
-such a Client, without checking the procedure with Telecontrol
-(mail@telecontrol.ru): the packages share one Windows Installer upgrade code,
-so installing one of them may remove the other. This behaviour has not been
-verified.
+**WARNING:** if Telecontrol has given you a separate Client or Server
+package, do not install it on a computer that already has the
+`telecontrol-scada-<version>.msi` package, nor the other way round, without
+checking the procedure with Telecontrol (mail@telecontrol.ru). Each version
+2.6 package has its own Windows Installer upgrade code, so installing one does
+not remove another, but they all install into the same
+`C:\Program Files\Telecontrol SCADA` folder, and installing them together has
+not been verified.
 
 ### Displaying schematics {#displays}
 
@@ -691,13 +693,14 @@ password-less demo users. Never open its port 2006 (see
 
 ## Uninstalling {#uninstall}
 
-Before uninstalling the program, remove the services with
-`scada-setup remove --tiers <this computer's processes>`: the installer
-removes neither the services, nor their registry settings with the `svc` and
-`root` passwords, nor the data folders and the certificate's private key, nor
-the firewall rules created in [Network preparation](#network).
-Then uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль)
-in *Control Panel — Programs and Features*. The steps are in
+Uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль) in
+*Control Panel — Programs and Features*. The installer itself stops and
+removes the process services together with their registry settings (the
+`svc` and `root` passwords), and the folder holding the Server certificate
+and its private key. It leaves the `%ProgramData%\Telecontrol\SCADA Server`
+data folder and the firewall rules created in
+[Network preparation](#network) — delete those by hand. The steps, including
+how to keep the certificate for a reinstall, are in
 [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 ## Troubleshooting

@@ -136,6 +136,8 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
+1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. This has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+
 1. Installing the Server on Linux is available on request: there is no Linux package. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
 1. Each protocol process can run on one computer of the site only, and serves every device of its protocol. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).

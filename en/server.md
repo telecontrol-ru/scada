@@ -376,28 +376,24 @@ already installed`), and the version 2.5 *Telecontrol SCADA
 Server* service has already been removed by `migrate --execute`. On the same
 computer, from an elevated command prompt:
 
-1. Stop and remove the version 2.6 services — with the same `--tiers` as in
-   the migration, and **without** `--purge-data`:
-
-   ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers config,historian,filesystem,iec104,proxy
-   ```
-
-2. Uninstall version 2.6: the *ОИК Телеконтроль* program (publisher
+1. Uninstall version 2.6: the *ОИК Телеконтроль* program (publisher
    ООО Телеконтроль) in *Control Panel — Programs and Features*, or
    `msiexec /x telecontrol-scada-<version>.msi /qn /norestart /l*v uninstall.log`.
    `msiexec /x` needs the file of the very package that is installed; if
-   you do not have it, uninstall from the Control Panel.
-3. Install release 2.5.7 (`telecontrol-scada-2.5.7.msi` from the
+   you do not have it, uninstall from the Control Panel. The installer
+   itself stops and removes the version 2.6 services, and leaves the data in
+   `%ProgramData%\Telecontrol\SCADA Server` (see
+   [Uninstalling the Server](#uninstall)).
+2. Install release 2.5.7 (`telecontrol-scada-2.5.7.msi` from the
    [releases page]({{ '/en/getting-started/' | relative_url }}#download)) the
    way you installed version 2.5, and attach the HASP or Guardant hardware
    key.
-4. On **every workstation** that got the version 2.6 package in the
+3. On **every workstation** that got the version 2.6 package in the
    migration (step 7 above): uninstall the *ОИК Телеконтроль* program in
    *Control Panel — Programs and Features* and install the release 2.5.7
    Client the way it was installed before. The 2.5.7 installer refuses to
    install over version 2.6 on a workstation too.
-5. Check that the *Telecontrol SCADA Server* service is running, and connect
+4. Check that the *Telecontrol SCADA Server* service is running, and connect
    with a version 2.5 Client.
 
 `migrate` did not change the version 2.5 `Configuration`, `History` and
@@ -424,19 +420,24 @@ reached, from an elevated command prompt:
 1. Stop the processes:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
 2. Uninstall the newer version: the *ОИК Телеконтроль* program in
-   *Control Panel — Programs and Features*. The services and the data stay.
+   *Control Panel — Programs and Features*. The installer removes the
+   services and the `C:\Program Files\Telecontrol SCADA\data\Certificates`
+   folder with the Server certificate (see
+   [Uninstalling the Server](#uninstall)); the data folder stays. `apply`
+   creates the services again in step 5, and the certificate comes back from
+   the backup in step 4.
 3. Install the older version's package:
 
    ```bat
    msiexec /i telecontrol-scada-<older version>.msi /qn /norestart /l*v install.log
    ```
 
-4. Stop the processes again (`scada-setup stop`) — the services may have
-   started — and put back, from the backup taken **before the upgrade**, the
-   data folder (`%ProgramData%\Telecontrol\SCADA Server`, or the folder given
-   as `--data-root`), replacing what is there, and the
-   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder if it is
-   gone. Do not keep the data the newer version worked with: whether a newer
+4. Put back, from the backup taken **before the upgrade**, the data folder
+   (`%ProgramData%\Telecontrol\SCADA Server`, or the folder given as
+   `--data-root`), replacing what is there, and the
+   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder. If the
+   backup does not have it, `apply` creates a new certificate, and OPC UA
+   clients that trusted the old one must be made to trust the new one. Do not keep the data the newer version worked with: whether a newer
    version changes the databases when it first starts has not been verified,
    so only the pre-upgrade backup is known to suit the older version.
 5. Run `scada-setup apply` with the
@@ -451,32 +452,49 @@ commands).
 
 ### Uninstalling the Server {#uninstall}
 
-**Remove the services first, then the program.** The installer removes only
-what it installed: the services registered by `scada-setup` and their
-registry settings — with the `svc` and `root` passwords in plain text —
-remain, as do the data folders and the Server certificate's private key. From
-an elevated command prompt, on every Server computer:
+**The installer removes the services itself.** Before it deletes the
+program's files, it runs `scada-setup remove`: it stops and removes the
+services of every process together with their registry settings, which hold
+the `svc` and `root` passwords. It then deletes the
+`C:\Program Files\Telecontrol SCADA\data\Certificates` folder — the
+[Server certificate](#opcua-certificate) and its private key. The processes'
+data in `%ProgramData%\Telecontrol\SCADA Server` (configuration, users,
+archives, files, the license) stays. If `scada-setup remove` fails, the
+uninstall is cancelled and the program stays installed: services are never
+left without their programs.
 
-1. Remove the services:
+On every Server computer:
+
+1. [Back up](#backup) if you may need the data or the certificate. For OPC UA
+   clients to keep trusting the Server after a reinstall, save the
+   `data\Certificates` folder and put it back before `apply`, or uninstall
+   with the `SCADA_KEEP_CERTIFICATES=1` parameter (step 2), which leaves the
+   folder in place.
+2. Uninstall the program: the *ОИК Телеконтроль* program (publisher
+   ООО Телеконтроль) in *Control Panel — Programs and Features*, or from an
+   elevated command prompt:
 
    ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <this computer's processes>
+   msiexec /x telecontrol-scada-<version>.msi /qn /norestart /l*v uninstall.log
    ```
 
-2. Uninstall the program: the *ОИК Телеконтроль* program (publisher
-   ООО Телеконтроль) in *Control Panel — Programs and Features*, or
-   `msiexec /x telecontrol-scada-<version>.msi /qn /norestart /l*v uninstall.log`.
    `msiexec /x` needs the file of the very package that is installed; if
    you do not have it, uninstall from the Control Panel. The computer's
    Client is uninstalled with the program.
-3. [Back up](#backup) the data if you may need it, and delete the folders:
-   * `%ProgramData%\Telecontrol\SCADA Server` — the processes' data, the
-     license file and, if a migration from version 2.5 was done, the
-     version 2.5 folders;
-   * `C:\Program Files\Telecontrol SCADA\data\Certificates` — the
-     [Server certificate](#opcua-certificate) and its private key (if the
-     `C:\Program Files\Telecontrol SCADA` folder is still there after the
-     uninstall, delete it as a whole).
+
+   If the uninstall is cancelled with an error, look for the
+   `ScadaSetupRemoveServices` action in `uninstall.log`, and check the
+   services with
+   `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" status`.
+   If `scada-setup` itself does not start, remove the services with the
+   Windows tools and uninstall with the `SCADA_KEEP_SERVICES=1` parameter,
+   which skips that step:
+   `msiexec /x telecontrol-scada-<version>.msi SCADA_KEEP_SERVICES=1 /l*v uninstall.log`.
+3. If the data is no longer needed, delete the
+   `%ProgramData%\Telecontrol\SCADA Server` folder — the processes' data, the
+   license file and, if a migration from version 2.5 was done, the
+   version 2.5 folders. If the `C:\Program Files\Telecontrol SCADA` folder is
+   still there after the uninstall, delete it as a whole.
 4. Delete the firewall rules created in
    [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)
    (for a rule the computer does not have, `netsh` reports that no rules
