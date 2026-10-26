@@ -23,9 +23,6 @@ Read this list before working at an operator workstation. Details are behind
 the links; the limitations of the whole release are collected under
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
-* **After an orderly close of the connection by the Server (for example, when
-  it is restarted) the client does not reconnect by itself** — reconnect with
-  *More → Connect to Server...*. See [Connection to the Server](#connection).
 * **The *Disconnect from Server* command does not load the new user's profile** — hand
   over by closing the client. See [Shift handover](#shift-change).
 * **The spoken announcement cannot be turned off from the client.** See
@@ -151,7 +148,8 @@ warning "The server has not answered a ping for N ms…" («Сервер не о
 опрос уже N мс…»); when the Server answers again, the panel shows "The server
 is answering again." («Сервер снова отвечает.»).
 
-**Losing the connection.** When the connection to the Server drops, the client
+**Losing the connection.** When the connection to the Server drops — including
+when the Server is restarted or stopped — the client
 adds a warning to the event panel ("Connection to server … lost. …
 Reconnecting in N seconds.", «Соединение с сервером … потеряно. … Повторное
 подключение через N с.») and reconnects by itself: the first attempt after
@@ -180,15 +178,8 @@ account on another computer and ends your session (see
 [Shift handover](#shift-change)), the client says so in the event panel
 ("Disconnected from server … These credentials are being used to log in from
 another workstation.", «Отключено от сервера … С этими учётными данными
-выполнен вход на другом рабочем месте.») and does **not** reconnect by itself.
-
-> **Caution.** In the current version the client shows this same message for
-> **any** orderly close of the connection by the Server — for example, when
-> the Server is restarted or stopped — and does not reconnect then either. If
-> nobody signed in under your account on another workstation, the Server was
-> most likely restarted. While the status bar reads "Disconnected", no data
-> or events arrive: reconnect with *More → Connect to Server...* and sign in
-> under your own account.
+выполнен вход на другом рабочем месте.») and does **not** reconnect by itself —
+otherwise it would end the session on the other workstation in turn.
 
 ## Shift handover {#shift-change}
 

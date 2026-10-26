@@ -138,8 +138,6 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Working with the Client {#limits-client}
 
-1. After the Server closes the connection cleanly (for example, when it restarts), the Client does not reconnect by itself. See [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
-
 1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
 1. *Acknowledge All* outside the event journal and event panel acknowledges every unacknowledged event at once, without confirmation. See [Commands]({{ '/en/client/' | relative_url }}#commands).
