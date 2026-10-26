@@ -620,8 +620,9 @@ msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 
 Give `apply` the same [computer's parameters](#host-parameters) as at
 installation, and the same `svc` password. The installer replaces only the
-executables; `apply` rewrites the parameter files (hand edits to them are
-lost) and leaves the data alone. On computers running only protocol
+executables; `apply` rewrites the parameter files (keep your own parameters
+in [`server.override.json`]({{ '/en/server/' | relative_url }}#server-override),
+which is preserved) and leaves the data alone. On computers running only protocol
 processes, `--root-password` may be omitted.
 
 On a site with several computers, once every computer running protocol
@@ -729,12 +730,15 @@ written to the <a href="{{ '/en/server/' | relative_url }}#logging">process
 log</a>. See
 <a href="{{ '/en/server/' | relative_url }}#licensing">Licensing</a>.</dd>
 
-<dt>A service stops or keeps restarting, and the log shows nothing</dt>
+<dt>A service stops or keeps restarting after a parameter change</dt>
 <dd>Most likely the <code>server.json</code> parameter file has an error (for
-example after a hand edit). The process reports it before it starts writing
-its log — on the screen only. Start the process in
-<a href="{{ '/en/server/' | relative_url }}#console">console mode</a> and
-read the message.</dd>
+example after a hand edit): the
+<a href="{{ '/en/server/' | relative_url }}#logging">process log</a> — in the
+<code>Logs</code> folder beside the parameter file — has a
+<code>Can't load parameters file</code> or <code>Invalid log configuration</code>
+line describing it. Put your own parameters not in <code>server.json</code> but
+in <a href="{{ '/en/server/' | relative_url }}#server-override"><code>server.override.json</code></a>,
+and run <code>scada-setup apply</code>.</dd>
 
 <dt>Protocol processes get no configuration</dt>
 <dd>If a protocol process's log shows <code>Bad_UserAccessDenied</code>, the

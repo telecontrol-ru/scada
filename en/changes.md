@@ -32,6 +32,10 @@ This version is not yet published on the releases page.
 
 1. New data folders: each process has its own folder `%ProgramData%\Telecontrol\SCADA Server\<process>` with its `server.json` parameter file (the folder of `scada-filesystem` is `filestore`). The license is `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 
+1. A process's own parameters go in a `server.override.json` file beside `server.json`: `scada-setup apply` never changes it and lays it over the template, so they survive re-running `apply` and upgrades. See [Your own parameters]({{ '/en/server/' | relative_url }}#server-override).
+
+1. An error in the parameter file is written to the process log, not only printed to the screen; the lowest level of the log messages is set with the `log.severity` parameter (or `--log-severity`). See [Logging]({{ '/en/server/' | relative_url }}#logging).
+
 1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 
 1. The configuration of a new installation is a demo project (objects with emulation, IEC 60870-5-104 links, archives, the users «Клиент 1» … «Клиент 10» and `guest`). Before going live, replace it with the project's configuration or delete the demo data. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).

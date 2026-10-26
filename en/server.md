@@ -198,11 +198,27 @@ configuration, user passwords, archives, display files and logs. Make a
 [backup](#backup) before using `--purge-data`, and always give `--tiers`
 with exactly the processes whose data must be deleted.
 
-**WARNING:** `apply` writes every `server.json` afresh from a template, and
-**all** hand edits to it are lost — on every `apply`, every upgrade included.
-If you changed parameters by hand (for example the [log sizes](#logging)),
-keep a copy of the edited file, and after each `apply` make the changes again
-and restart the process.
+#### Your own parameters: server.override.json {#server-override}
+
+**WARNING:** `apply` writes every `server.json` afresh from a template — on
+every `apply`, every upgrade included — so **do not edit `server.json`**. Put
+your own parameters (for example the [log sizes](#logging)) in a
+`server.override.json` file in the same process folder: `apply` never changes
+it, and lays it over the template every time it writes `server.json`. Blocks
+(JSON objects) are merged key by key, any other value (a string, a number, a
+list) replaces the template's value whole, and a `null` value removes the
+parameter. For example, to make the log files larger this file is enough:
+
+```json
+{ "log": { "max_file_size": 50 } }
+```
+
+An error in `server.override.json` stops `apply` with a message naming the
+file. If the existing `server.json` differs from the one being written (for
+example because it was edited by hand), `apply` keeps the old file as
+`server.json.bak` — move your changes from it into `server.override.json`. A
+running process reads its parameters only when it starts: after changing
+`server.override.json`, run `apply` and restart the process.
 
 #### Passwords are stored in plain text {#stored-passwords}
 
@@ -514,23 +530,17 @@ For diagnostics, a Server process can run in a console window: it works as
 the service does and prints its log to the screen. The installer creates no
 shortcut for this.
 
-This is the only way to see an **error in the `server.json` parameter
-file**: the process reports it before it starts writing its log files, so a
-service with such an error stops (and is restarted by Windows) without
-leaving an entry in the [log](#logging).
-
 1. Stop the process's service (for example *Telecontrol SCADA IEC 104*): the
    process and its service cannot run at the same time — they use the same
    ports and files.
 2. Open an elevated command prompt: without administrator rights the process
    cannot read the [Server certificate](#opcua-certificate)'s private key and
    does not start.
-3. Set the passwords the service gets from `scada-setup`, and start the
+3. Set the `svc` password the service gets from `scada-setup`, and start the
    process with its parameter file:
 
    ```bat
    set SCADA_SVC_PASSWORD=<svc password>
-   set SCADA_ROOT_PASSWORD=<root password>
    "C:\Program Files\Telecontrol SCADA\bin\scada-iec104.exe" --param "%ProgramData%\Telecontrol\SCADA Server\iec104\server.json"
    ```
 
@@ -542,14 +552,10 @@ leaving an entry in the [log](#logging).
    with `scada-setup start` and the
    [computer's parameters](#scada-setup-options).
 
-**WARNING:** started without the `SCADA_ROOT_PASSWORD` variable,
-`scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`
-**sets the `root` account's password to empty** — their parameter files
-contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and a configured
-password is written on every start (see [Root password](#root-password)).
-Give `SCADA_ROOT_PASSWORD` the same password as `apply`. Without
-`SCADA_SVC_PASSWORD` the process cannot connect to the other processes.
-Protocol processes do not need `SCADA_ROOT_PASSWORD`.
+Without `SCADA_SVC_PASSWORD` the process cannot connect to the other
+processes. Console mode does not need `SCADA_ROOT_PASSWORD`: without it the
+process leaves the `root` password the service stored unchanged (see
+[Root password](#root-password)).
 
 ## Command-line options
 
@@ -563,6 +569,7 @@ The most important server startup options are:
 | `--param <path>` | Use a specific parameter file. The default on Windows is `%ProgramData%\Telecontrol\SCADA <process>\<name>.json` (for example `%ProgramData%\Telecontrol\SCADA IEC 104\scada-iec104.json`); on Linux it is `<name>.json` in the `data` directory beside the executable's directory |
 | `--name <name>` | Override the Windows service name, so several services of one process can coexist on a machine |
 | `--display-name <name>` | Override the service display name and the console window title |
+| `--log-severity <level>` | Lowest level of the log messages, as the [`log.severity`](#logging) parameter; takes priority over it |
 
 Processes installed by `scada-setup` are started with a `--param` naming
 `%ProgramData%\Telecontrol\SCADA Server\<process folder>\server.json`.
@@ -829,16 +836,19 @@ Each process writes text log files named
 | `log.max_file_size` | `10` | Maximum size of one log file in MB |
 | `log.max_total_size` | `100` | Maximum total log size in MB |
 | `log.max_count` | `1000` | Maximum number of log files |
-| `log.console_severity` | — | Lowest level of the messages printed **to the screen** in [console mode](#console): `Trace`, `Debug`, `Info`, `Warning`, `Error` or `Critical`. Does not affect the log files |
+| `log.severity` | — | Lowest level of the messages written to the log files (and anywhere else): `Trace`, `Debug`, `Info`, `Warning`, `Error` or `Critical`. Not set — messages of every level are written to the files |
+| `log.console_severity` | — | Lowest level of the messages printed **to the screen** in [console mode](#console), from the same values. Does not affect the log files |
 
 A new file is started when the current one reaches its maximum size, and
 every day at midnight. Old files are deleted automatically when the total
-size or file count limit is exceeded. The level of the messages written to
-the files is not configurable.
+size or file count limit is exceeded.
 
-Errors in the parameter file itself (and in its `log` block) are found before
-the process starts writing its log, and are printed to the screen only: to
-see them, start the process in [console mode](#console).
+If the parameter file cannot be read (for example after a mistake while
+editing it), the process writes the reason to a log in the `Logs` folder
+beside the parameter file — for processes installed by `scada-setup` that is
+their usual log folder — and does not start. An error in the `log` block (for
+example an unknown level) is written to a log with the default settings in the
+`log.dir` folder.
 
 ## Monitoring {#monitoring}
 
@@ -866,8 +876,7 @@ see them, start the process in [console mode](#console).
   order: a running service shows `SERVICE_RUNNING`, a stopped one
   `SERVICE_STOPPED`, and one the computer does not have `not installed`.
 * **Process logs** — see [Logging](#logging). Why a process stopped (license,
-  certificate) is written to its log; an error in the parameter file is not —
-  only [console mode](#console) shows it.
+  certificate, an error in the parameter file) is written to its log.
 * **Links between processes** — if a protocol process's log shows
   `Bad_UserAccessDenied`, its computer was given a different `svc` password
   (see [The svc account](#svc)).
@@ -936,10 +945,9 @@ its own database; each of them has its own `root` account: `scada-config`,
 processes receive their configuration from `scada-config` and do not use
 this parameter (they log a message saying so).
 
-**WARNING:** a process gets the `SCADA_ROOT_PASSWORD` variable from its
-service. Started outside the service (for example in
-[console mode](#console)) without that variable, it gives `root` an empty
-password.
+A process gets the `SCADA_ROOT_PASSWORD` variable from its service. Started
+without that variable (for example in [console mode](#console)), it leaves
+the stored `root` password unchanged and writes a warning to its log.
 
 ## The svc account {#svc}
 
@@ -1140,9 +1148,6 @@ you to confirm trust in it on the first connection (see
 the `svc` password unencrypted, so **`"allow_none": false` and
 `"require_encryption_for_password": true` break the links between the
 processes** — do not set them in an installation made by `scada-setup`.
-Besides, `scada-setup` sets none of these parameters, and every
-`scada-setup apply` (upgrades included) writes the parameter files afresh,
-losing parameters added by hand.
 
 ## OPC client on Windows {#opc-classic}
 
@@ -1292,10 +1297,9 @@ in this section). Its default location is given under
 
 **WARNING:** on Windows the parameter files are written by
 [`scada-setup`](#scada-setup), and every `scada-setup apply` — every upgrade
-included — writes them afresh from templates. **Any parameter changed in
-`server.json` by hand is lost.** If you change parameters by hand, keep a
-copy of the edited file, and after each `apply` make the changes again and
-restart the process.
+included — writes them afresh from templates. **Do not edit `server.json`**:
+put your own parameters in `server.override.json` in the same folder, which
+`apply` lays over the template (see [Your own parameters](#server-override)).
 
 These substitution variables can be used in the file:
 
