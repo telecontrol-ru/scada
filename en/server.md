@@ -218,9 +218,10 @@ parameter. For example, to make the log files larger this file is enough:
 An error in `server.override.json` stops `apply` with a message naming the
 file. If the existing `server.json` differs from the one being written (for
 example because it was edited by hand), `apply` keeps the old file as
-`server.json.bak` — move your changes from it into `server.override.json`. A
-running process reads its parameters only when it starts: after changing
-`server.override.json`, run `apply` and restart the process.
+`server.json.bak` — move your changes from it into `server.override.json`.
+After changing `server.override.json`, run `apply`: when that changes the
+process's parameter file, `apply` restarts its service (see
+[Re-running apply](#reapply)).
 
 #### Passwords are stored in plain text {#stored-passwords}
 
