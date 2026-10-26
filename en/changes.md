@@ -88,7 +88,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Protocols and retransmission {#limits-protocols}
 
-1. IEC 61850: control commands and *Poll Device* do not work, and double-point positions (`Pos`) are read wrongly. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+1. IEC 61850: analogue setpoints (class APC) and step control (class BSC) are not supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 1. MODBUS: writing is reliable only for coils and for whole unsigned 16-bit registers. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 

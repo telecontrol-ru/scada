@@ -144,42 +144,55 @@ spontaneous reports of changes. Messages about the block subscription and
 its dataset are shown in the
 [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window.
 
-**WARNING: changing an RCB can crash the `scada-iec61850` process.** In
-this version any change to a report control block, or to its IEC 61850
-device, while both are enabled recreates them on the Server, and the
-`scada-iec61850` process may terminate abnormally — until it restarts, no
-data arrives from any IEC 61850 device. An RCB Address whose functional
-constraint is neither `RP` nor `BR` crashes it too. So:
-
-1. Create the blocks and set their Address while the device has
-   Disabled = Yes.
-2. Type the functional constraint in the address exactly as `RP` or `BR`
-   (Latin capitals).
-3. Enable the device (Disabled = No) last, once every block's address is
-   set.
-4. Plan later changes to an RCB or to the device for a maintenance window:
-   they may restart the process.
+Report control blocks can be created, changed and deleted at any time,
+including on an enabled device: the Server resubscribes to the block
+without restarting the process. A block's Address must carry the
+functional constraint `RP` or `BR`; the Server does not subscribe a block
+with any other functional constraint, and says so in the Device watch
+window.
 
 Object binding uses MMS addresses in the format
 `LogicalDevice/LogicalNode$FC$DataObject`. TS objects bind to `FC=ST`
 objects, TIT objects to `FC=MX` objects.
 
-**WARNING:** in this version only the following are read correctly:
+Values are read as follows:
 
-* single-point status (class SPS, boolean `stVal`) for TS objects;
+* `FC=ST` status with a boolean `stVal` (classes SPS, SPC) as on/off;
+* double-point positions (classes DPS and DPC, for example `Pos`, type
+  Dbpos): the TS object shows "on" only in the ON position; the
+  intermediate and bad positions show as "off", as for IEC 60870-5
+  double-point information. The object can be bound either to the data
+  object (`LD0/XCBR1$ST$Pos`) or to its `stVal` attribute
+  (`LD0/XCBR1$ST$Pos$stVal`), whichever is a member of the block's dataset;
+* integer status (for example classes INS, INC) as a number;
 * `FC=MX` measurements with a floating-point value (`mag.f`, for example
   class MV) for TIT objects.
 
-Double-point positions (classes DPS and DPC, for example `Pos`, type
-Dbpos) are read wrongly: the TS object always shows "on" when bound to the
-data object, or gets no value when bound to `stVal`. Do not use such
-objects to show switchgear positions; if you need this, contact
-Telecontrol LLC (mail@telecontrol.ru).
+Remote control is sent to a controllable data object (classes SPC, DPC,
+INC). The object's control address may name the data object in the CO or
+the ST functional constraint — `LD0/CSWI1$CO$Pos`, `LD0/CSWI1$ST$Pos` or
+`LD0/CSWI1$ST$Pos$stVal`: in every case the command addresses the data
+object `Pos`. The Server reads the control model (`ctlModel`) and the
+command value type from the device:
 
-**WARNING:** in this version remote control (`FC=CO`) and the Poll Device
-command do not work for IEC 61850 devices: the Server rejects them with an
-error. Switchgear cannot be controlled through an IEC 61850 device in this
-version.
+* for a select-before-operate device (SBO, `sbo-with-normal-security` or
+  `sbo-with-enhanced-security`), leave
+  [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) enabled
+  on the object (the default is Yes) — without the select stage the device
+  rejects the command;
+* for direct control (`direct-with-normal-security`,
+  `direct-with-enhanced-security`) both one-stage and two-stage commands
+  work;
+* an object whose model is `status-only` takes no commands; the Server
+  rejects them.
+
+The command value must fit the object's `ctlVal` type: 0 or 1 for a
+boolean (SPC, DPC), an integer for INC. Any other value is rejected by the
+Server without being sent to the device. Analogue setpoints (class APC)
+and step control (class BSC) are not supported in this version.
+
+The Poll Device command requests a general interrogation (GI) through every
+report control block of the device.
 
 **WARNING:** only UTC timestamps are supported. If the device uses a
 different time zone, value updates will be affected.

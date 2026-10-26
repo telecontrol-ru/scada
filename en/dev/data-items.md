@@ -217,7 +217,9 @@ commands.</dd>
 <code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
 stage. Default: Yes. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code>; for other IEC 60870-5 commands and for MODBUS
-devices it is skipped and only EXECUTE is performed. Set No if the device
+devices it is skipped and only EXECUTE is performed. For IEC 61850 devices
+the SELECT stage is sent to objects whose control model is SBO; for direct
+control only EXECUTE is performed. Set No if the device
 does not support select-before-operate.</dd>
 
 <dt>Lock</dt>

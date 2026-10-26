@@ -95,11 +95,10 @@ After creating a direction and a device, make sure data is flowing:
    address) — the Client reports an error naming the cause, for example
    "Wrong IEC 60870-5 information object address". Most often this means the object address in the Client
    does not match the one in the device. Watch shows the device's reply with
-   its cause of transmission. Skip this step for IEC 61850 devices: remote control
-   does not work for them in this version (see
-   [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)). Instead,
-   check that values arrive through every report control block you
-   created.
+   its cause of transmission. For IEC 61850 devices also check that values
+   arrive through every report control block you created, and that a
+   select-before-operate (SBO) device's objects have not had two-stage
+   control turned off (see [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)).
 
 ## MODBUS devices {#mbDevice}
 
@@ -569,19 +568,16 @@ the device model, for example `LD0/LLN0$RP$urcbA01` (unbuffered) or
 `LD0/LLN0$BR$brcbA01` (buffered). The device model appears in the Model
 subtree.
 
-**WARNING:** set the RCB Address while the device has Disabled = Yes, type
-the functional constraint exactly as `RP` or `BR`, and enable the device
-last. In this version changing an RCB or the device while they are enabled,
-or an Address with any other functional constraint, can crash the
-`scada-iec61850` process; plan later changes for a maintenance window. See
-[IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+The functional constraint in a block's Address is `RP` or `BR`; the
+Server does not subscribe a block with any other. Blocks can be changed on
+an enabled device too.
 
 **Without a report control block the device's objects receive no values**:
 the Server gets IEC 61850 data only from reports, and an object receives a
 value only if its address matches a member of the dataset of one of the
-created blocks exactly. For the setup procedure and this version's
-limitations (remote control, Poll Device and double-point positions do not
-work) see [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+created blocks exactly. For the setup procedure, the supported data
+classes and remote control see
+[IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 Any model node exposes its bindable address through the `Properties`
 command in the context menu.
