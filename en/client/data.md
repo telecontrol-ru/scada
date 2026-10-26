@@ -43,5 +43,7 @@ opens over the span from the first to the last selected row.
 The window can be [printed]({{ '/en/client/print/' | relative_url }}) and
 [exported]({{ '/en/client/export/' | relative_url }}) to CSV with the *Print*
 and *Export to CSV* commands. The printout and the file contain the rows in
-the current sort order, but not the object name or the period — add them
-yourself.
+the current sort order. The printout opens with a header: the window title
+(the object name), "Period: <start> – <end>" and "Printed: <time>". The
+CSV file does not include the object name or the period — put them in the
+file name.

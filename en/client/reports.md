@@ -125,9 +125,14 @@ interval:
    ([Export and import]({{ '/en/client/export/' | relative_url }})) or
    [printing]({{ '/en/client/print/' | relative_url }}) with a preview. The
    printout opens with a header: the window title, the period, the
-   aggregation function and interval ("Maximum, 1 hour", for example) and the
+   aggregation function and interval ("Maximum, 1-Hour", for example) and the
    time it was printed. The CSV file does not include the period or the
-   aggregation function — add them yourself. *Export to Excel* works only on Windows with
+   aggregation function — add them yourself.
+   By default the CSV file separates columns with a comma `,`, while
+   Microsoft Excel with Russian regional settings expects a semicolon: if
+   the file will be opened in Excel, choose the delimiter `;` in the export
+   dialog — see [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
+   *Export to Excel* works only on Windows with
    Microsoft Excel installed, and only when the Client was started with the
    `--excel` option — see [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
 
@@ -182,8 +187,8 @@ over 7 days:
    need, for example *Average* or *Maximum*.
 4. Wait until no grey values are left in the table, choose *Print*, and pick
    landscape orientation in the print preview.
-5. Write the period, interval and function on the printout: they are not
-   printed.
+5. Check the period, function and interval in the printout header: they
+   are printed automatically.
 
 ## A standing set of objects
 

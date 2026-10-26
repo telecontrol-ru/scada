@@ -136,7 +136,7 @@ A summary can be [printed]({{ '/en/client/print/' | relative_url }}) and
 [exported]({{ '/en/client/export/' | relative_url }}) to CSV. The printout and
 the file contain the table and the row labels. The printout opens with a
 header: the window title, "Period: <start> – <end>", the aggregation
-function and interval ("Maximum, 1 hour", for example) and "Printed: <time>".
+function and interval ("Maximum, 1-Hour", for example) and "Printed: <time>".
 The CSV file does not include the period, the interval or the aggregation
 function — note them in the file name.
 

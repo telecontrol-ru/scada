@@ -90,7 +90,7 @@ associated application.
 With either encoding the file opens in Microsoft Excel by double-clicking
 it, and non-Latin text such as Russian names reads correctly. Excel then takes
 the column delimiter from the Windows regional settings rather than from the
-file: if a row's values all land in one column, export again with the
+file, while the Client separates columns with a comma `,` by default: if a row's values all land in one column, export again with the
 delimiter Windows uses (a semicolon `;` for Russian settings), or open the
 file with *Data — From Text/CSV* in Excel and set *Delimiter* to the one
 chosen at export.

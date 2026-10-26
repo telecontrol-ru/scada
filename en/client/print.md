@@ -39,7 +39,10 @@ The printout contains:
 
 * a header: the window title; for a window with a period, "Period: <start> –
   <end>"; for a summary, the aggregation function and interval ("Maximum,
-  1 hour", for example); "Printed: <time>";
+  1-Hour", for example; when the summary is
+  [limited to 10,000 rows]({{ '/en/client/summary/' | relative_url }}#limits),
+  they are followed by "The summary is limited to 10000 rows and ends at
+  <time>."); "Printed: <time>";
 * the column headers, on the first row of the table;
 * the data rows; for a summary, the start time of each interval on the left;
 * a page number at the bottom of each sheet.
