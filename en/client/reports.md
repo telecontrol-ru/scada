@@ -132,15 +132,15 @@ interval:
    Microsoft Excel with Russian regional settings expects a semicolon: if
    the file will be opened in Excel, choose the delimiter `;` in the export
    dialog — see [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
-   *Export to Excel* works only on Windows with
-   Microsoft Excel installed, and only when the Client was started with the
-   `--excel` option — see [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
+   *Export to Excel* is offered only on Windows, on a computer with
+   Microsoft Excel installed — see [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
 
 How each function is computed is described under
 [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
-In short: *Sum* and *Average* are computed over recorded changes, not over
-time, so they give neither energy nor a time-weighted average; invalid values
-are included; *Maximum* over negative values currently shows about 0.
+In short: invalid values are left out; *Average* is the arithmetic mean of
+the recorded values, while *Time Average* and *Time Integral* take into
+account how long each value held; the integral is in the engineering unit
+times seconds (kW·s for power in kW).
 
 An empty cell means the archive holds no recorded change of the value in
 that interval. That also happens when data exists but the value did not
@@ -158,22 +158,26 @@ change during the whole interval — see
    excursions.
 4. For aggregated values, switch to the summary with the *Summary* command in
    the object's context menu. The minimum, maximum and average in the
-   [graph legend]({{ '/en/client/graph/' | relative_url }}#legend) count only
-   good-quality values over the visible part of the graph, while the summary
-   counts bad-quality values too, so for the same interval they can differ.
+   [graph legend]({{ '/en/client/graph/' | relative_url }}#legend) count
+   valid values over the visible part of the graph, while the summary counts
+   per interval, so for the same period they can differ.
 
-A graph cannot be printed or exported. To keep the values, open the *Data*
-or *Summary* window from the graph and print or export that. From a graph
-these commands open a window for the **selected line** only; to get a summary
-of all the graph's objects at once, build it from the object panel — see
+A graph can be [printed or saved as an image]({{ '/en/client/graph/' | relative_url }}#print-export)
+— as it is shown on screen. That does not keep its numbers: to keep the
+values, open the *Data* or *Summary* window from the graph and print or
+export that. From a graph these commands open a window for the **selected
+line** only; to get a summary of all the graph's objects at once, build it
+from the object panel — see
 [A weekly report of several objects](#week-print). A graph shows at most
 10,000 points at a time: over a long period the time scale is narrowed
 automatically.
 
 ## A weekly report of several objects, printed {#week-print}
 
-A graph cannot be printed, so a "graph-like" report — several objects'
-values over a week — is printed as a summary. For example, three objects
+Several objects' curves over a week can be printed straight from the graph
+— set the period and choose *Print* (see
+[Graph printing and export]({{ '/en/client/graph/' | relative_url }}#print-export)).
+When the report needs numbers, print a summary. For example, three objects
 over 7 days:
 
 1. Select all three objects in the object panel and choose *Summary* — one
@@ -184,7 +188,7 @@ over 7 days:
    shows the week from Monday until now.
 3. In the *Interval* submenu choose *1-Hour* — 168 rows, one per hour — and
    the [function]({{ '/en/client/summary/' | relative_url }}#function) you
-   need, for example *Average* or *Maximum*.
+   need, for example *Time Average* or *Maximum*.
 4. Wait until no grey values are left in the table, choose *Print*, and pick
    landscape orientation in the print preview.
 5. Check the period, function and interval in the printout header: they
@@ -220,11 +224,12 @@ So that you do not look for them, the Client has no
 * report templates or scheduled reports — a summary is opened and set up by
   hand each time (the window keeps its period, interval and function);
 * comparison of two periods in one summary or on one graph;
-* printing or export of graphs;
-* consumption or energy per interval: a summary computes neither
-  time-weighted totals nor time-weighted averages (see
-  [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function)).
-  If the object is a cumulative counter, the consumption per interval can be
+* CSV export of a graph: a graph is printed and saved only as an image, and
+  its values are kept from the *Data* and *Summary* windows;
+* consumption of a cumulative counter per interval. Energy from a power
+  measurement comes from *Time Integral* (in kW·s — divide by 3600 for kWh;
+  see [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function)).
+  If the object is a cumulative counter, the consumption per interval is
   taken as the difference of the *Last* (or *First*) values of neighbouring
   rows. An empty cell then means that the counter did not change in that
   interval, not a zero reading: use the last non-empty value above it;

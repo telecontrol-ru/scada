@@ -91,9 +91,16 @@ midnight.
 The function is chosen in the *Function* submenu — in the summary's context
 menu or in the **Item** menu.
 
-The functions work on the **changes recorded in the archive** within the
-interval — on individual points, not on how long each value was in force.
-Values flagged as invalid are counted the same as valid ones.
+The Server (its archive process) computes the functions from the **changes
+recorded in the archive** within the interval. **Invalid values are left
+out**: a value flagged invalid, offline, stale or misconfigured is skipped.
+When the interval holds no valid value, the cell stays empty (*Count* shows
+0).
+
+*First*, *Last*, *Count*, *Minimum*, *Maximum* and *Average* work on the
+individual recorded points. *Time Average* and *Time Integral* take into
+account how long each value was in force: a value holds from the moment it
+was recorded until the next recorded change or the end of the interval.
 
 <dl>
 
@@ -104,31 +111,44 @@ Values flagged as invalid are counted the same as valid ones.
 <dd>The last recorded value in the interval. This is the default.</dd>
 
 <dt>Count</dt>
-<dd>The number of recorded changes in the interval.</dd>
+<dd>The number of valid recorded changes in the interval.</dd>
 
 <dt>Minimum</dt>
-<dd>The smallest recorded value.</dd>
+<dd>The smallest valid recorded value.</dd>
 
 <dt>Maximum</dt>
-<dd>The largest recorded value. <b>WARNING:</b> because of a defect, when
-every value in the interval is negative it shows about 0 instead of the real
-maximum.</dd>
-
-<dt>Sum</dt>
-<dd>The plain sum of the recorded values. It is <b>not</b> energy and not a
-time integral: a value that stayed unchanged for a long time enters the sum
-once, while one that changed often enters it many times.</dd>
+<dd>The largest valid recorded value.</dd>
 
 <dt>Average</dt>
-<dd>The arithmetic mean of the recorded values, ignoring how long each value
-was in force. For measurements archived only on change it can differ
-noticeably from a time-weighted average.</dd>
+<dd>The arithmetic mean of the valid recorded values, ignoring how long each
+value was in force. For measurements archived only on change, choose
+<i>Time Average</i>.</dd>
+
+<dt>Time Average</dt>
+<dd>The time-weighted mean: each value is weighted by how long it was in
+force. If, within an hour, the value was 10 for 15 minutes and then 30 for 45
+minutes, the time average is 25 while <i>Average</i> is 20.</dd>
+
+<dt>Time Integral</dt>
+<dd>The area under the value's curve over the interval — the value times how
+long it held, in <b>seconds</b>. For power in kW that is kW·s: divide by 3600
+to get energy in kWh. In the example above the integral is 10·900 + 30·2700 =
+90,000. Earlier versions called this function <i>Sum</i> and added up the
+recorded values; saved windows that used <i>Sum</i> now show the
+integral.</dd>
 
 </dl>
 
-Cell values are shown in the object's display format and engineering units
-(*Sum* in the same units as the measurement itself). *Count* is a plain
-number, without the object's units or format.
+**The start of the interval before its first recorded change is not
+counted.** The value in force when the interval began is not carried over
+from the previous one, so if the value first changed at 10:20, the
+10:00–11:00 interval starts at 10:20 for *Time Average* and *Time Integral*,
+and the integral covers less than the full hour. An interval in which the
+value never changed stays empty (see [Rows and empty cells](#rows)).
+
+Cell values are shown in the object's display format and engineering units.
+*Count* and *Time Integral* are plain numbers, without the object's units or
+format: the integral's unit is the engineering unit times a second.
 
 ## Printing and export {#print-export}
 

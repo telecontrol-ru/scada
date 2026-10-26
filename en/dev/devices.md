@@ -546,11 +546,18 @@ to.
    straight into the Address column. The table is described in
    [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission).
 
-   **WARNING: every new rule gets address 1.** Give each rule the address
-   agreed with the DC as soon as you tick its object — otherwise every
-   object reaches the DC under the same address. `Multiple Create` does not
-   create transmission rules in this version, so tick the objects one at a
-   time.
+   **WARNING: a rule created by ticking an object gets address 1.** Give it
+   the address agreed with the DC as soon as you tick the object — otherwise
+   every object reaches the DC under the same address.
+
+   Many rules with consecutive addresses are easier to create at once: open
+   a [Table]({{ '/en/client/table/' | relative_url }}) (or a summary, a
+   portfolio) with the objects to send, select their rows and choose
+   `Create -> Transmission Rules...` in the context menu. The
+   [bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
+   wizard opens: pick this device in "Receiving device", and set "IOA start"
+   and "IOA step" on the pattern step. The wizard creates one rule per
+   selected object, in the order of their identifiers.
 5. Open the port in the firewall of the computer running the Server's
    IEC 104 process.
 6. Check: once the DC connects, the

@@ -104,6 +104,14 @@ This version is not yet published on the releases page.
 
 1. The `Multiple Create…` command opens a wizard that creates several data objects at once from one name and address pattern. See [Bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create).
 
+1. Transmission rules are created in bulk: select the objects in a table, summary or portfolio and choose `Create -> Transmission Rules...` — the wizard creates a rule per object with consecutive addresses. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
+1. Summary: *Maximum* over negative values is computed correctly (it used to show about 0); invalid values are no longer counted; a *Time Average* function is added, and *Sum* is replaced by *Time Integral*, which gives, for example, energy from power. Saved windows that used *Sum* show the integral. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
+
+1. A graph can be printed (to PDF as well) and saved as a PNG image. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
+
+1. *Export to Excel* is offered on any Windows computer with Microsoft Excel installed; the `--excel` start-up option is no longer needed. See [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
+
 1. A printout of a table, a summary or another window opens with a header: the window title, the period (for a window that has one), for a summary the aggregation function and interval, and the print time. See [Printing]({{ '/en/client/print/' | relative_url }}).
 
 1. A summary shows at most 10 000 intervals. When the period is longer, a notice above the summary reads "The summary is limited to 10000 rows and ends at …", and the printout header repeats it. See [Summary]({{ '/en/client/summary/' | relative_url }}).
@@ -130,7 +138,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
-1. Retransmission: every new rule gets address 1, and retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission: a rule created by ticking an object gets address 1 (bulk rule creation assigns consecutive addresses), and retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 #### Archive and reports {#limits-archive}
 
@@ -138,11 +146,11 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. After the service of a protocol process is restarted, archiving of its objects' values stops until the *Telecontrol SCADA Historian* service is restarted. See [Where the data comes from]({{ '/en/client/reports/' | relative_url }}#archive).
 
-1. In a summary, *Maximum* over negative values shows about 0, and *Sum* and *Average* are computed over recorded changes, not over time — a summary gives neither energy nor a time-weighted average. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
+1. In a summary, *Time Average* and *Time Integral* do not count the start of the interval before its first recorded change: the value from the previous interval is not carried over. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
 
-1. Graphs cannot be printed or exported. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
+1. A graph is printed and saved only as an image; its values are not exported to CSV or Excel. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
 
-1. *Export to Excel* works only on Windows with Microsoft Excel, and only when the Client was started with `--excel`. See [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
+1. *Export to Excel* is offered only on Windows, on a computer with Microsoft Excel installed. See [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
 
 #### Installation and security {#limits-setup}
 

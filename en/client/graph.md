@@ -169,8 +169,25 @@ using the object context menu.
 
 ## Printing and export {#print-export}
 
-A graph cannot be printed or exported — the `Print`, `Export to CSV` and
-`Export to Excel` commands are unavailable for a graph window. To keep the
-values, open the [Data]({{ '/en/client/data/' | relative_url }}) or
+A graph is printed and saved **as an image** — as it is shown on screen,
+with all its panes, lines, legend and cursors.
+
+* `Print` in the graph's context menu opens the print preview. The graph
+  prints on one sheet: a header at the top — the window title, "Period:
+  <start> – <end>" and "Printed: <time>" — and the graph below it, scaled to
+  the page width with its proportions kept. To print to a PDF file, choose a
+  PDF printer in the print dialog ("Microsoft Print to PDF" on Windows, for
+  example). See [Printing]({{ '/en/client/print/' | relative_url }}).
+* `Export -> Save as Image...` writes the graph to a PNG file the size of the
+  graph window on screen.
+
+The printout uses the on-screen colours: with a dark
+[appearance]({{ '/en/client/workbench/' | relative_url }}#appearance) the
+graph prints on a dark background. For paper, switch to a light colour scheme
+before printing.
+
+The `Export to CSV` and `Export to Excel` commands are unavailable for a graph
+window: they would not keep the graph's values. To keep the values, open the
+[Data]({{ '/en/client/data/' | relative_url }}) or
 [Summary]({{ '/en/client/summary/' | relative_url }}) window from the graph
 and print or export that.

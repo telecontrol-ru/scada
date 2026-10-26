@@ -16,8 +16,8 @@ The contents of the [Table]({{ '/en/client/table/' | relative_url }}),
 [Data]({{ '/en/client/data/' | relative_url }}),
 [Event journal]({{ '/en/client/events/' | relative_url }}) and
 [Device watch]({{ '/en/client/device-watch/' | relative_url }}) windows can
-be printed with print preview. Graphs, displays and user tables cannot be
-printed.
+be printed with print preview. A [graph]({{ '/en/client/graph/' | relative_url }}#print-export)
+prints as an image on one sheet. Displays and user tables cannot be printed.
 
 ## Start printing
 
@@ -46,6 +46,11 @@ The printout contains:
 * the column headers, on the first row of the table;
 * the data rows; for a summary, the start time of each interval on the left;
 * a page number at the bottom of each sheet.
+
+A graph prints differently: under the header (the window title, the period
+and the print time) comes the picture of the graph as on screen, scaled to
+the page width. See
+[Graph printing and export]({{ '/en/client/graph/' | relative_url }}#print-export).
 
 The event journal is printed **one row per event**, even where the window
 folds repeats into one row. The *Expand grouped rows* option of the

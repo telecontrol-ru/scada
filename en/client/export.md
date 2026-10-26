@@ -124,16 +124,14 @@ summary once it has finished loading — see
 
 The `Export to Excel` command opens the window's data in a new Microsoft
 Excel workbook. It is offered for the same windows as CSV export and writes
-the same cell text, but works only when both of these hold:
+the same cell text. The command exists only on Windows, and only on a
+computer with Microsoft Excel installed; elsewhere it is not in the menu. If
+Excel is installed but cannot be started, the export ends with the message
+"Export failed. Please check that Microsoft Excel is installed correctly."
 
-* the Client runs on Windows and Microsoft Excel is installed;
-* the Client was started with the `--excel` command-line option — for
-  example, append it to the *Target* field in the Client shortcut's
-  properties.
-
-Without `--excel` the command is unavailable. If Excel is not installed, the
-export ends with the message "Export failed. Please check that Microsoft
-Excel is installed correctly."
+Earlier versions showed the command only when the Client was started with
+the `--excel` option. The option is no longer needed; a shortcut that still
+carries it works as before.
 
 ## Configuration export and import
 

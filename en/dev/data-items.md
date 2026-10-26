@@ -71,11 +71,17 @@ objects from one pattern. It has three steps.
 <dl>
 
 <dt>Target and type</dt>
-<dd>"What to create" — data items. In this version the list has no
-"Transmission rules" entry: the wizard opened by <code>Multiple Create…</code>
-is given no source objects, and a rule forwards an existing object.
-Transmission rules are created by ticking objects in the object tree — see
-<a href="{{ '/en/dev/devices/' | relative_url }}#retransmission">Retransmission to a dispatch centre</a>.
+<dd>"What to create" — data items, or transmission rules. A rule forwards
+an existing object, so rules are created from a window where the source
+objects are selected: select the data items' rows in a
+<a href="{{ '/en/client/table/' | relative_url }}">Table</a>, a summary or a
+portfolio and choose <code>Create -> Transmission Rules...</code> in the
+context menu. Opened that way the wizard creates rules only, one per selected
+object, in the order of their identifiers. "Receiving device" picks the
+device the values are sent to — see
+<a href="{{ '/en/dev/devices/' | relative_url }}#retransmission">Retransmission to a dispatch centre</a>;
+it lists the devices that have a transmission table. The wizard opened by
+<code>Multiple Create…</code> creates data items only.
 For data items it also asks for the "Item type"
 (discrete or analog), the "Device" that is their source, and a "Source path
 template": the channel address on that device, with the same index tokens as
@@ -92,9 +98,11 @@ index tokens:
 <code>{n}</code> is the index in decimal, <code>{nn}</code> zero-padded to two
 digits, <code>{hex}</code> in hexadecimal. Any other text is copied verbatim,
 so "TS{n} current" at index 8 yields "TS8 current". The range comes from
-"Start index", "Count" and "Index step". Data items have no "IOA start" and
-"IOA step" fields: those belong to transmission rules, which the wizard does
-not create in this version.
+"Start index", "Count" and "Index step". Transmission rules also have "IOA
+start" and "IOA step" — the addresses the objects are sent under: the first
+rule gets the start address and each next one a step more. "Count" starts at
+the number of selected objects, and the "NodeId template" is empty so that
+the Server assigns the rules' identifiers itself.
 
 The "NodeId template" sets the new objects' identifiers in OPC UA form. The
 Server accepts only numeric identifiers in the object type's namespace:
