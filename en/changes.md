@@ -42,6 +42,12 @@ This version is not yet published on the releases page.
 
 1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
 
+1. Fixed: MODBUS writes (control) for every data type — FLOAT, DOUBLE, INT16, INT32, negative values — in the same format and word order as reading, honouring `;swapbytes` and `;swapwords`. A write to register bits changes only the selected bits, and a value that does not fit the channel's type is refused. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+
+1. The MODBUS ASCII variant is implemented. See [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus).
+
+1. MODBUS RTU: fixed waiting for a device's exception response — a command the device rejects is reported as an error at once, not after the response timeout. In retransmission mode, fixed receiving writes with 0x10 and added 0x06 and 0x0F.
+
 ### Client
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
@@ -108,11 +114,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. IEC 61850: analogue setpoints (class APC) and step control (class BSC) are not supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
-1. MODBUS: writing is reliable only for coils and for whole unsigned 16-bit registers. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
-
 1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
-
-1. MODBUS ASCII is not implemented. See [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus).
 
 1. IEC 60870-5: ASDU type 7 (32-bit string) is not supported, and normalized values are not scaled to −1…+1. See [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
 

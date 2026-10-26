@@ -116,9 +116,10 @@ Supported MODBUS function codes are described in
 
 <dt>Protocol</dt>
 <dd>RTU, ASCII or TCP. Default: RTU. See the
-<a href="#enum-lists">warning on list fields</a>. In this version the ASCII
-variant is not implemented: when it is selected the Server exchanges binary
-RTU frames, so a device that speaks only MODBUS ASCII will not answer.</dd>
+<a href="#enum-lists">warning on list fields</a>. RTU and ASCII are for
+serial lines: RTU sends binary frames, ASCII sends text (a frame starts with
+«:» and ends with a line break). Choose the variant from the device's
+documentation: a device answers only the variant it is configured for.</dd>
 
 <dt>Mode</dt>
 <dd>Polling — the SCADA polls the devices (default); retransmission — the SCADA
@@ -210,22 +211,25 @@ The protocol uses four logical register groups:
 
 The Command column gives the functions the Server sends: for reading and,
 after the slash, for writing. Holding registers are always written with
-`0x10`, even a single register; a coil with `0x05`.
+`0x10`, even a single register; a coil with `0x05`. The Server does not
+send `0x06` or `0x0F` when polling, so a device that accepts only those
+cannot be controlled from the SCADA.
 
-{: .warning }
-> **In this version writes (control) are reliable only for coils and for
-> whole unsigned 16-bit holding registers** (addresses such as `40001` or
-> `UINT16:40001`). Do not configure control on FLOAT, INT32, UINT32 or DOUBLE
-> addresses, for negative values, or on individual register bits
-> (`BOOL:40003:5`, `UINT16:40001:1+7`):
->
-> * the value written is converted to an unsigned integer, so the fractional
->   part is lost and negative and floating-point values are sent wrongly;
-> * at most two registers (32 bits) are written, so a DOUBLE is never written
->   whole;
-> * `;swapbytes` and `;swapwords` are ignored when writing;
-> * a write to register bits sends the mask of the selected bits whatever the
->   value being written, and clears all the other bits of the register.
+Control (writing) works on coils and holding registers. Discrete inputs and
+input registers are read-only: a command to such an address fails.
+
+A value is written in the same format and byte and word order it is read
+in from that address, `;swapbytes` and `;swapwords` included, so a value
+written to a channel address reads back unchanged. In detail:
+
+* integer types round the value to the nearest integer;
+* a value that does not fit the channel's type (for example −1 or 70000 for
+  UINT16, 300 for UINT8) is not sent to the device: the command fails;
+* a write to register bits (`BOOL:40003:5`, `UINT16:40001:9+7`) changes only
+  the selected bits: the Server first reads the register with `0x03`, then
+  writes it with `0x10`, keeping the other bits as read. If the device itself
+  changes the register between the read and the write, that change is
+  overwritten. For BOOL, 1 sets all the selected bits and 0 clears them.
 
 The decimal register number is not the same as the hexadecimal address
 carried in MODBUS frames. The difference between them is the group
@@ -285,8 +289,9 @@ Examples:
   high word
 * `UINT16:30001:1+7` — the low byte of input register `0x0000`
 * `UINT16:30001:9+7` — the high byte of input register `0x0000`
-* `BOOL:40003:5` — bit 5 of holding register `0x0002`, read with `0x03`. Do
-  not configure control on such an address (see the warning on writes above)
+* `BOOL:40003:5` — bit 5 of holding register `0x0002`, read with `0x03`. A
+  write changes only this bit: the register is read with `0x03` and written
+  with `0x10`
 * `1` — coil 0, read with `0x01` and written with `0x05`
 * `10001` — discrete input 0, read with `0x02`
 * `30001` — the same as `UINT16:30001`, an unsigned 16-bit integer; for a

@@ -20,8 +20,7 @@ Client.
 
 MODBUS is a master-slave communication protocol. Telecontrol SCADA
 supports MODBUS over RS-485, RS-422, RS-232, and Ethernet TCP/IP,
-covering MODBUS RTU and TCP deployments. The MODBUS ASCII variant is not
-implemented in this version.
+covering all three variants: MODBUS RTU, MODBUS ASCII and MODBUS TCP.
 
 The Server exchanges telemetry and control values through standard
 MODBUS function codes and maps them to SCADA objects. The table below
@@ -33,8 +32,9 @@ MODBUS function codes and maps them to SCADA objects. The table below
 > The SCADA does not use every function in the table: it reads with 0x01,
 > 0x02, 0x03 and 0x04, writes a single coil with 0x05, and writes holding
 > registers with 0x10, even a single one. Functions 0x06 and 0x0F are not
-> used; in retransmission mode the SCADA answers a request carrying one of
-> them with an ILLEGAL FUNCTION exception.
+> used when polling. In retransmission mode the SCADA accepts writes with
+> 0x05, 0x06, 0x0F and 0x10, and answers a request carrying any other
+> function with an ILLEGAL FUNCTION exception.
 
 See also the engineering reference for
 [MODBUS devices]({{ '/en/dev/devices/' | relative_url }}).
