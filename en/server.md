@@ -98,6 +98,7 @@ in the installation folder, the one above the folder holding
 | `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the data of the processes named in `--tiers` too — see [Removing services and data](#remove)) | yes |
 | `generate --output <dir>` | Write the parameter files only, for inspection | no |
 | `migrate [--execute]` | Move a version 2.5 Server's data over — see [Upgrading from version 2.5](#upgrade-2-5) | with `--execute` |
+| `set-password` | Change the `svc` and/or `root` password on this computer and restart its services — see [Changing the svc password](#svc-rotate) | yes |
 
 In its messages `scada-setup` calls the Server processes *tiers*: for
 example, `status` prints the line `Entitled tiers: config filesystem historian …` — the
@@ -141,7 +142,7 @@ copy.
   letter: the processes receive the path as written.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
-  and `migrate --execute`.
+  and `migrate --execute`; for `set-password`, the new password.
 * `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
   environment variable) — the [root password](#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config`,
@@ -183,8 +184,9 @@ stop the processes before `apply`:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
 ```
 
-This is how to change the `root` password, add a process to the computer,
-and restore the `svc` password after a mismatch. A restart interrupts the
+This is how to add a process to the computer. The `svc` and `root` passwords
+are changed by the `set-password` command, which restarts the services itself
+(see [Changing the svc password](#svc-rotate)). A restart interrupts the
 service for a moment: while `scada-proxy` restarts, Clients lose their
 connection to the Server. If this computer has no `scada-proxy` (protocol processes only), then restart the *Telecontrol SCADA Historian* service on the central computer and, as a precaution, have the operators restart the Client — see [After a protocol process restarts](#edge-restart).
 
@@ -223,14 +225,29 @@ After changing `server.override.json`, run `apply`: when that changes the
 process's parameter file, `apply` restarts its service (see
 [Re-running apply](#reapply)).
 
-#### Passwords are stored in plain text {#stored-passwords}
+#### Where the passwords are stored {#stored-passwords}
 
-**WARNING: the passwords given to `apply` are stored in plain text** — in the
-Windows service settings, in the `Environment` values of the registry keys
-`HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>`. Assume
-that anyone who signs in to Windows on that computer can read them: keep
-untrusted users from signing in to the Server computers, and do not combine a
-Server computer with an operator workstation. The Server installer puts the
+The `svc` and `root` passwords given to `apply` or `set-password` are stored
+in the file `%ProgramData%\Telecontrol\SCADA Server\secrets\service-secrets.dat`.
+The file is encrypted by Windows (DPAPI) and bound to the computer: it does
+not decrypt on another one. Only the system account the services run as and
+the computer's administrators can open the `secrets` folder. The services find
+the file through the `SCADA_SECRETS_FILE` variable in their settings, and the
+registry no longer holds the passwords.
+
+* **An administrator of the computer can read these passwords.** Do not give
+  untrusted people administrator rights on the Server computers.
+* **A Server installed by an earlier build of `scada-setup` keeps the
+  passwords in plain text** — in the `Environment` values of the registry keys
+  `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>`, where
+  anyone who signs in to Windows on that computer can read them. The first
+  `apply` or `set-password` after the update moves them into the file and
+  removes them from the registry.
+* **After moving the data to another computer** (for example when
+  [restoring](#backup)), run `apply` there with the same passwords: the copied
+  password file does not decrypt there.
+
+Do not combine a Server computer with an operator workstation. The Server installer puts the
 Client on the computer too, with a desktop shortcut — do not let operators
 work with it on a Server computer (see
 [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install)).
@@ -473,12 +490,11 @@ commands).
 
 **The installer removes the services itself.** Before it deletes the
 program's files, it runs `scada-setup remove`: it stops and removes the
-services of every process together with their registry settings, which hold
-the `svc` and `root` passwords. It then deletes the
+services of every process together with their registry settings. It then deletes the
 `C:\Program Files\Telecontrol SCADA\data\Certificates` folder — the
 [Server certificate](#opcua-certificate) and its private key. The processes'
 data in `%ProgramData%\Telecontrol\SCADA Server` (configuration, users,
-archives, files, the license) stays. If `scada-setup remove` fails, the
+archives, files, the license, the [password file](#stored-passwords)) stays. If `scada-setup remove` fails, the
 uninstall is cancelled and the program stays installed: services are never
 left without their programs.
 
@@ -933,12 +949,12 @@ through an environment variable as in the example above.
 `scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem`
 contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and `scada-setup apply`
 takes the variable's value from `--root-password` (or the
-`SCADA_SETUP_ROOT_PASSWORD` environment variable) and stores it in those
-processes' Windows service settings — in plain text, in the registry (see
-the [warning](#stored-passwords) in the `scada-setup` description). On a computer running one of those
+`SCADA_SETUP_ROOT_PASSWORD` environment variable) and stores it in the
+computer's encrypted [password file](#stored-passwords). On a computer running one of those
 processes, `apply` refuses to run without it. To change the root password,
-run `apply` with the new value: `apply` restarts the running processes it
-handed the new password to (see [Re-running apply](#reapply)). Do not edit the generated parameter files,
+run `scada-setup set-password --root-password <new password>`: the command
+stores the password and restarts the computer's services (see
+[Changing the svc password](#svc-rotate)). Do not edit the generated parameter files,
 which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
@@ -955,24 +971,55 @@ the stored `root` password unchanged and writes a warning to its log.
 
 The Server processes connect to each other as the `svc` service account
 (id 100). `scada-setup apply` creates it in the configuration databases and
-hands its password, from `--svc-password`, to the processes through the
-Windows service settings (the `SCADA_SVC_PASSWORD` variable, in plain text in
-the registry).
+stores its password, from `--svc-password`, in the computer's
+[password file](#stored-passwords), where the processes read it.
+`scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem` write
+that password into their databases on every start, so **every computer of the
+site must be given the same `svc` password**.
 
-* **The password is written to the databases once only** — on the processes'
-  first start. Later `apply` runs do not change it: an `apply` with a
-  different `--svc-password` hands the processes the new password while the
-  databases keep the old one, and the processes stop connecting to each
-  other. **This version has no way to change the `svc` password.** Give every
-  `apply`, on every computer, the original password.
 * **Do not change or delete the `svc` account** in the Client's *Users*
-  window: that breaks the links between the processes too.
+  window: that breaks the links between the processes. A changed `svc`
+  password is replaced by the configured one the next time the central
+  computer's processes start. A deleted account is restored by `apply`: on the
+  central computer, stop the processes (`scada-setup stop`) and run `apply`
+  with the same `svc` password (see [Re-running apply](#reapply)).
 * When the passwords differ, the protocol process keeps running but gets no
   configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Run
-  `apply` on that computer with the original `svc` password (see [Re-running apply](#reapply)), then
-  restart the *Telecontrol SCADA Historian* service on the central computer
-  and, as a precaution, have the operators restart the Client (see
-  [After a protocol process restarts](#edge-restart)).
+  `set-password` on that computer with the central computer's `svc` password
+  (see [Changing the svc password](#svc-rotate)).
+
+### Changing the svc password {#svc-rotate}
+
+The `set-password` command stores the new password in the
+[password file](#stored-passwords) and restarts this computer's process
+services. From an elevated command prompt:
+
+```bat
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --svc-password <new password>
+```
+
+**Run it on every Server computer, in this order:**
+
+1. on the central computer (the one with `scada-config`) — its processes
+   write the new password into their databases and connect to each other
+   with it straight away;
+2. then on each computer of protocol processes. After the restart on such a
+   computer, restart the *Telecontrol SCADA Historian* service on the central
+   computer and, as a precaution, have the operators restart the Client (see
+   [After a protocol process restarts](#edge-restart)).
+
+Until the command has run on a computer, its processes present the old
+password: they keep running but get no configuration, and the log shows
+`Bad_UserAccessDenied`. So change it on all computers in one go, in a
+maintenance window.
+
+With `--root-password <new password>` the command changes this computer's
+[root password](#root-password) the same way; both can be given together.
+If the Server was installed by an earlier build of `scada-setup` and the
+computer has no password file yet, the command requires both passwords — on a
+computer running `scada-config`, `scada-proxy`, `scada-historian` or
+`scada-filesystem` — and changes nothing until it has them: otherwise the
+`root` password would be lost when it leaves the registry.
 
 ## OPC UA server {#opcua}
 

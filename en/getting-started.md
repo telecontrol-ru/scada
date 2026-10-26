@@ -114,8 +114,8 @@ folder, typing `scada-setup` is enough.
    In `--tiers`, list this computer's processes (the example has every
    process on one computer, with IEC 60870-5-104). `<password>` is the
    password of the `svc` service account the processes use to connect to each
-   other. It must be the same on every computer of the site, and **it cannot
-   be changed later** (see
+   other. It must be the same on every computer of the site; to change it
+   later, run `scada-setup set-password` on every computer (see
    [The svc account]({{ '/en/server/' | relative_url }}#svc)).
    `<root password>` is the password of the built-in `root` account; see
    [Root password](#root-password).
@@ -138,13 +138,12 @@ In `scada-setup`'s messages the processes are called *tiers*: the line
 state of each process's service is printed (`SERVICE_RUNNING` means it is
 running).
 
-**WARNING: the `svc` and `root` passwords are stored in plain text.**
-`apply` writes them into the Windows service settings — the registry, in the
-`Environment` values of the
-`HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>` keys.
-Assume that anyone who signs in to Windows on that computer can read them:
-keep untrusted users from signing in to the Server computers, and do not
-make a Server computer an operator workstation. The Server installer puts
+**WARNING: an administrator of this computer can read the `svc` and `root`
+passwords.** `apply` stores them in an encrypted file that only the Server's
+services and administrators can open (see
+[Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords)).
+Do not give untrusted people administrator rights on the Server computers,
+and do not make a Server computer an operator workstation. The Server installer puts
 the Client on the computer too (see [Installing the Client](#client-install)).
 
 **Several computers.** Set up the central computer first, then the computers
@@ -582,7 +581,7 @@ After you sign in:
 
    **WARNING:** the user list contains the `svc` service account. Do not
    change or delete it: the Server processes connect to each other through
-   it (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
+   it. Only `scada-setup set-password` changes its password (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
 
 For the main operator interface, continue with
 [Client]({{ '/en/client/' | relative_url }}).
@@ -684,10 +683,10 @@ changed nor deleted.
 
 Uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль) in
 *Control Panel — Programs and Features*. The installer itself stops and
-removes the process services together with their registry settings (the
-`svc` and `root` passwords), and the folder holding the Server certificate
-and its private key. It leaves the `%ProgramData%\Telecontrol\SCADA Server`
-data folder and the firewall rules created in
+removes the process services together with their registry settings, and the
+folder holding the Server certificate and its private key. It leaves the
+`%ProgramData%\Telecontrol\SCADA Server` data folder (which also holds the
+`svc` and `root` password file) and the firewall rules created in
 [Network preparation](#network) — delete those by hand. The steps, including
 how to keep the certificate for a reinstall, are in
 [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).

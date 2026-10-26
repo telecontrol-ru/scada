@@ -386,10 +386,13 @@ If the object has a control permission condition, the dialog has a
 While the condition is unsatisfied (or its value is bad), "Execute" is
 disabled.
 
-> **Caution.** Only the client's "Control" window checks the condition; the
-> Server does not. A command arriving another way — over retransmission or
-> from an OPC UA client — is carried out even while the condition is
-> unsatisfied. It is no substitute for an interlock in the device itself.
+The Server checks the same condition on every command, including one that
+arrives over retransmission or from an OPC UA client, and refuses the command
+while the condition is unsatisfied. If the condition becomes unsatisfied
+while the dialog is open, the client reports that the command failed.
+
+> **Caution.** The condition is no substitute for an interlock in the device
+> itself.
 
 ### Before a control command {#control-checklist}
 

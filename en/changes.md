@@ -30,6 +30,12 @@ This version is not yet published on the releases page.
 
 1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
+1. The `svc` and `root` passwords are changed with the `scada-setup set-password` command, run on every Server computer starting with the central one. See [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate).
+
+1. The `svc` and `root` passwords are stored in an encrypted file that only the Server's services and the computer's administrators can open, not in plain text in the registry; the first `apply` or `set-password` moves them out of the registry. See [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords).
+
+1. The [Control condition]({{ '/en/dev/data-items/' | relative_url }}) is checked by the Server on every command, including one arriving over retransmission or from an OPC UA client, not only by the Client's Control window.
+
 1. New data folders: each process has its own folder `%ProgramData%\Telecontrol\SCADA Server\<process>` with its `server.json` parameter file (the folder of `scada-filesystem` is `filestore`). The license is `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 
 1. A process's own parameters go in a `server.override.json` file beside `server.json`: `scada-setup apply` never changes it and lays it over the template, so they survive re-running `apply` and upgrades. See [Your own parameters]({{ '/en/server/' | relative_url }}#server-override).
@@ -151,10 +157,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. The configuration of a new installation is a demo project with password-less users and enabled IEC 60870-5-104 links; replace it before going live. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 1. The OPC UA ports 4840–4848, over which the processes exchange data, are protected only by the firewall. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
-
-1. The password of the `svc` service account cannot be changed after installation. See [The svc account]({{ '/en/server/' | relative_url }}#svc).
-
-1. The `svc` and `root` passwords given to `scada-setup apply` are stored in plain text in the Windows service settings in the registry. See [Passwords are stored in plain text]({{ '/en/server/' | relative_url }}#stored-passwords).
 
 #### Working with the Client {#limits-client}
 

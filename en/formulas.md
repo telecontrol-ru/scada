@@ -73,8 +73,8 @@ exact text exists.
 device-channel reference works only when it is the whole formula. Inside an expression (for example
 `{IEC_DEV.1!115} * 2`) the Client in this version does not find it. Refer
 there to the object that receives its value from that channel. A control
-condition such as `{IEC_DEV.1!5} = 1` is therefore never met, and control of
-the object stays blocked.
+condition such as `{IEC_DEV.1!5} = 1` is therefore never met in the Client's
+Control window, and control of the object from that window stays blocked.
 
 ### A leading `=`
 
