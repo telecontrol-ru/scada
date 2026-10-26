@@ -89,12 +89,13 @@ After creating a direction and a device, make sure data is flowing:
    [Quality flags]({{ '/en/architecture/' | relative_url }}#quality-flags).
 5. For a controllable object, send a test command and check in Watch that the
    device confirmed it.
-   **WARNING:** for IEC 60870-5 the Client in this version reports success
-   even when the device rejected the command. Check the device's reply in
-   Watch: a cause of transmission 44–47 (`UNKNOWN_TYPE`, `UNKNOWN_COT`,
-   `UNKNOWN_DEVICE`, `UNKNOWN_ADDRESS` — unknown type, cause, common ASDU
-   address or object address) means the command was not executed, whatever
-   the Client reports. Skip this step for IEC 61850 devices: remote control
+   If an IEC 60870-5 device rejects the command — it answers with a cause
+   of transmission 44–47 (`UNKNOWN_TYPE`, `UNKNOWN_COT`, `UNKNOWN_DEVICE`,
+   `UNKNOWN_ADDRESS` — unknown type, cause, common ASDU address or object
+   address) — the Client reports an error naming the cause, for example
+   "Wrong IEC 60870-5 information object address". Most often this means the object address in the Client
+   does not match the one in the device. Watch shows the device's reply with
+   its cause of transmission. Skip this step for IEC 61850 devices: remote control
    does not work for them in this version (see
    [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850)). Instead,
    check that values arrive through every report control block you
