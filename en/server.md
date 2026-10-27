@@ -145,7 +145,7 @@ copy.
 * `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
   environment variable) — the [root password](#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config`,
-  `scada-proxy`, `scada-historian` or `scada-filesystem`.
+  `scada-proxy` or `scada-filesystem`.
 * `--data-root` — the data folder, when it is not the standard one.
 * `--install-root` — the installation folder. There is no need to give it:
   it defaults to the folder above the one holding `scada-setup.exe`.
@@ -259,17 +259,17 @@ Server* service — and kept its data in the `Configuration`, `History` and
 
 | Version 2.5 data | Copied to |
 |---|---|
-| Configuration `Configuration\configuration.sqlite3` | The `Configuration` folder of `config`, `proxy` and `historian` |
+| Configuration `Configuration\configuration.sqlite3` | The `Configuration` folder of `config` and `proxy` |
 | User passwords `Configuration\password.dat` | The same folders, beside each copy of the configuration |
 | History `History` | `historian\History` |
 | Schematic files `FileSystem` | `filestore\FileSystem` |
 
 All paths are relative to `%ProgramData%\Telecontrol\SCADA Server`; if the
 version 2.5 `server.json` named other folders, the command takes them from
-there. The configuration is copied to three processes because each works from
-its own copy: `scada-config` hands it to the protocol processes, `scada-proxy`
-checks Client user names and passwords against it, and `scada-historian`
-reads its historical databases and object assignments from it.
+there. The configuration is copied to two processes because each works from
+its own copy: `scada-config` hands it to the protocol processes and to
+`scada-historian` (the historical databases and object assignments), and
+`scada-proxy` checks Client user names and passwords against it.
 
 The configuration is not carried into `scada-filesystem`'s database
 (`filestore\Configuration`): that process needs only the `svc` service
@@ -955,9 +955,9 @@ which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
 its own database; each of them has its own `root` account: `scada-config`,
-`scada-proxy`, `scada-historian` and `scada-filesystem`. The protocol
-processes receive their configuration from `scada-config` and do not use
-this parameter (they log a message saying so).
+`scada-proxy` and `scada-filesystem`. The protocol processes and
+`scada-historian` receive their configuration from `scada-config` and do not
+use this parameter (they log a message saying so).
 
 A process gets the `SCADA_ROOT_PASSWORD` variable from its service. Started
 without that variable (for example in [console mode](#console)), it leaves
@@ -969,7 +969,7 @@ The Server processes connect to each other as the `svc` service account
 (id 100). `scada-setup apply` creates it in the configuration databases and
 stores its password, from `--svc-password`, in the computer's
 [password file](#stored-passwords), where the processes read it.
-`scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem` write
+`scada-config`, `scada-proxy` and `scada-filesystem` write
 that password into their databases on every start, so **every computer of the
 site must be given the same `svc` password**.
 
@@ -1012,7 +1012,7 @@ With `--root-password <new password>` the command changes this computer's
 [root password](#root-password) the same way; both can be given together.
 If the Server was installed by an earlier build of `scada-setup` and the
 computer has no password file yet, the command requires both passwords — on a
-computer running `scada-config`, `scada-proxy`, `scada-historian` or
+computer running `scada-config`, `scada-proxy` or
 `scada-filesystem` — and changes nothing until it has them: otherwise the
 `root` password would be lost when it leaves the registry.
 

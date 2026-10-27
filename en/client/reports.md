@@ -18,14 +18,8 @@ see [Roles and permissions]({{ '/en/architecture/' | relative_url }}#roles-and-p
 Everything described here is available with those rights, except
 acknowledging events, which needs the *Control* or *Configure* right.
 
-**Before relying on reports on a new version 2.6 installation, contact
-Telecontrol** (mail@telecontrol.ru): on a new installation archives cannot yet
-be assigned to objects from the Client (see
-[Where the data comes from](#archive) and
-[Archiving]({{ '/en/dev/history/' | relative_url }})), and without that,
-summaries, graphs and the Data window stay empty for past periods. The Server
-license is also issued for a term: after it expires the Server processes
-refuse requests, and reports stop working — see
+The Server license is issued for a term: after it expires the Server
+processes refuse requests, and reports stop working — see
 [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 ## Where the data comes from {#archive}
@@ -36,15 +30,9 @@ periods — not in a summary, not on a graph, not in the Data window.
 Archiving is set up by the engineer — see
 [Archiving]({{ '/en/dev/history/' | relative_url }}).
 
-**WARNING: in version 2.6 archiving cannot yet be set up from the Client.**
-On an installation made with `scada-setup`:
-
-* an archive cannot be assigned to an object from the Client — the Server
-  rejects the change. Only objects that already have an archive assigned
-  (for example, ones migrated from version 2.5) are archived;
-* while the service of a protocol process (for example,
-  *Telecontrol SCADA IEC 104*) is stopped or restarting, its objects' values
-  are not archived; once the service starts, archiving resumes by itself.
+While the service of a protocol process (for example,
+*Telecontrol SCADA IEC 104*) is stopped or restarting, its objects' values
+are not archived; once the service starts, archiving resumes by itself.
 
 If a report for a recent period is empty while the object is working, tell
 the administrator: the object may have no archive assigned.

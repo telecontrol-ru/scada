@@ -201,12 +201,7 @@ condition refer to the object by it.</dd>
 <dd>Selects the archive where object values are stored for later analysis
 in graphs, summaries, and the event journal. The retention depth belongs to
 the archive, not to the object. See
-<a href="{{ '/en/dev/history/' | relative_url }}">Archiving</a>.
-<strong>WARNING: in version 2.6 the Server refuses an archive assignment made
-from the Client</strong> on an installation made with <code>scada-setup</code> as
-separate processes; to assign archives to new objects, contact Telecontrol.
-Details are on the <a href="{{ '/en/dev/history/' | relative_url }}">Archiving</a>
-page.</dd>
+<a href="{{ '/en/dev/history/' | relative_url }}">Archiving</a>.</dd>
 
 <dt>Name</dt>
 <dd>The display name used everywhere in the system. Names do not have to

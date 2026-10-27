@@ -17,9 +17,7 @@ permalink: /en/
 > or upgrading, read the version 2.6
 > [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
 > — in particular, the display module may not be included in the Client
-> installation, on a new installation archives cannot be assigned to
-> objects from the Client, and an account created in the Client can only
-> view data ([Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
+> installation, and an account created in the Client can only view data ([Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
 
 Telecontrol SCADA is supervisory control and data acquisition software
 for collecting field data, presenting it to operators, issuing control

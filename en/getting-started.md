@@ -446,10 +446,11 @@ To put a ready project configuration database (a version 2.6
 
 1. Stop the processes:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
-2. Copy the file into the `config\Configuration`, `proxy\Configuration` and
-   `historian\Configuration` folders under
-   `%ProgramData%\Telecontrol\SCADA Server`, replacing the databases `apply`
-   created.
+2. Copy the file into the `config\Configuration` and `proxy\Configuration`
+   folders under `%ProgramData%\Telecontrol\SCADA Server`, replacing the
+   databases `apply` created. `scada-historian` keeps no configuration
+   database of its own: it receives the archives and their assignment to
+   objects from `scada-config`.
 3. Run `scada-setup apply` with the same
    [computer's parameters](#host-parameters) and passwords as at
    installation. It keeps the copied databases and adds the `svc` service

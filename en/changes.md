@@ -28,7 +28,7 @@ This version is not yet published on the releases page.
 
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
-1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy`, `scada-historian` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
+1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
 1. The `svc` and `root` passwords are changed with the `scada-setup set-password` command, run on every Server computer starting with the central one. See [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate).
 
@@ -141,8 +141,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. Retransmission: a rule created by ticking an object gets address 1 (bulk rule creation assigns consecutive addresses), and retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 #### Archive and reports {#limits-archive}
-
-1. On a new installation archiving cannot be set up from the Client: creating an archive and assigning one to an object are rejected by the Server. Objects that already have an archive assigned (for example, ones migrated from version 2.5) are archived. See [Archiving]({{ '/en/dev/history/' | relative_url }}).
 
 1. In a summary, *Time Average* and *Time Integral* do not count the start of the interval before its first recorded change: the value from the previous interval is not carried over. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
 

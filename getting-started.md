@@ -455,9 +455,10 @@ netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in actio
 
 1. Остановите процессы:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
-2. Скопируйте файл в папки `config\Configuration`, `proxy\Configuration` и
-   `historian\Configuration` внутри `%ProgramData%\Telecontrol\SCADA Server`,
-   заменив созданные `apply` базы.
+2. Скопируйте файл в папки `config\Configuration` и `proxy\Configuration`
+   внутри `%ProgramData%\Telecontrol\SCADA Server`, заменив созданные
+   `apply` базы. `scada-historian` своей базы конфигурации не хранит: архивы
+   и их назначение объектам он получает от `scada-config`.
 3. Выполните `scada-setup apply` с теми же
    [параметрами компьютера](#host-parameters) и паролями, что и при
    установке. Он сохраняет скопированные базы и добавляет в них служебную

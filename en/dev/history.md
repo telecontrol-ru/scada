@@ -19,29 +19,22 @@ periods from these archives.
 
 Everything on this page needs the *Configure* right.
 
-**WARNING: in version 2.6, archiving cannot yet be set up from the Client.**
-In version 2.6 the archives are kept by a separate process, `scada-historian`
-(see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers)), and on
-an installation made with `scada-setup`:
+In version 2.6 the archives are kept by a separate process,
+`scada-historian` (see
+[Server processes]({{ '/en/architecture/' | relative_url }}#tiers)), while the
+list of archives, their depth and which objects each one archives are part of
+the Server's configuration, which `scada-config` keeps like all the rest. So
+the changes described below take effect at once: a new archive starts
+filling, a new depth applies, and an object starts or stops being archived
+within a few seconds — no service needs restarting. Archive assignments moved
+from version 2.5 with
+[`scada-setup migrate`]({{ '/en/server/' | relative_url }}#upgrade-2-5) are
+kept.
 
-* creating an archive and assigning one to an object from the Client are
-  refused by the Server;
-* objects that already have an archive assigned (for example, ones moved
-  from version 2.5 with
-  [`scada-setup migrate`]({{ '/en/server/' | relative_url }}#upgrade-2-5)) are
-  archived, and the archives are listed in the *Databases* window;
-* after the service of a protocol process (for example,
-  *Telecontrol SCADA IEC 104*) restarts, archiving of its objects' values
-  resumes by itself, usually within a minute; the
-  *Telecontrol SCADA Historian* service needs no restart.
-
-To assign archives to new objects on a version 2.6 site, contact Telecontrol
-(mail@telecontrol.ru).
-
-The Client procedure below is how archives will be set up once a Server
-installed as separate processes accepts these commands. Already on a
-version 2.6 site, the *Databases* window lists the archives, and the
-[check](#checking) works for objects that already have an archive assigned.
+After the service of a protocol process (for example,
+*Telecontrol SCADA IEC 104*) restarts, archiving of its objects' values
+resumes by itself, usually within a minute; the
+*Telecontrol SCADA Historian* service needs no restart.
 
 ## The Server's archives
 

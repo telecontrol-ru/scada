@@ -352,8 +352,9 @@ Configuration is described in the Server section on
 
 The configuration stored on disk contains all SCADA objects, equipment
 structure, and users. It lives in a local database owned by
-`scada-config` (`scada-proxy`, `scada-historian` and `scada-filesystem` also
-keep configuration databases of their own). It is updated immediately when edited so that
+`scada-config` (`scada-proxy` and `scada-filesystem` also keep configuration
+databases of their own; `scada-historian`, like the protocol processes,
+receives its configuration from `scada-config`). It is updated immediately when edited so that
 changes are reflected across the running system without waiting for a
 manual save step.
 
