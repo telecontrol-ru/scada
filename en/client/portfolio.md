@@ -71,5 +71,9 @@ its portfolio or, when the portfolio itself is selected, deletes the whole
 portfolio. If an object is deleted from the system, it is automatically
 removed from all portfolios.
 
-**WARNING:** a portfolio is deleted at once, **without confirmation**, and
-this cannot be undone — the only way back is to build it again.
+The Client asks for confirmation first — for a portfolio, "Delete the
+portfolio "…" with its list of objects? This cannot be undone.", for an
+object, "Remove "…" from the portfolio "…"?" — and deletes only on yes.
+
+**WARNING:** a deletion cannot be undone — the only way back to a deleted
+portfolio is to build it again.

@@ -108,11 +108,10 @@ the Server assigns the rules' identifiers itself.
 
 The "NodeId template" sets the new objects' identifiers in OPC UA form. The
 Server accepts only numeric identifiers in the object type's namespace:
-<code>ns=1;i=…</code> for TS and <code>ns=2;i=…</code> for TIT. The value the
-wizard proposes (<code>ns=2;s=RTU.TS{n}.I</code>) is a string identifier, and
-the Server will not create such objects. <strong>The simplest is to clear the
-field:</strong> the Server then assigns free numbers itself, as it does for an
-ordinary create.
+<code>ns=1;i=…</code> for TS and <code>ns=2;i=…</code> for TIT; it does not
+accept string identifiers (such as <code>ns=2;s=…</code>). The field is empty
+by default (it shows "Assigned by the Server" in grey): the Server then assigns
+free numbers itself, as it does for an ordinary create.
 
 A live preview is built below — a row-number / Name / NodeId / IOA / Status
 grid. Status
@@ -268,16 +267,16 @@ references discrete-object aliases or their designations, such as
 Do not start it with <code>=</code>. The Server checks the condition on every
 control command to the object — from the Client's Control window, over
 retransmission from a dispatch centre, or from external OPC UA clients. While
-the condition is not met, its value is bad, or no value has arrived yet after
-start-up, the Server refuses the command, and the event journal records it as
-failed. Manual input is not restricted by the condition. The Control window
+the condition is not met or its value is bad, the Server refuses the command,
+and the event journal records it as failed. If no value of the condition has
+arrived yet (right after start-up, for example), the Server waits up to
+2 seconds for one and decides on it; if none arrives, the command is refused.
+Manual input is not restricted by the condition. The Control window
 checks the same condition in advance and does not let the command be sent.
-The condition does not replace an interlock in the device itself. Use a device-channel reference (for example
-<code>{IEC_DEV.1!5}</code>) only as the whole expression: inside an expression such as
-<code>{IEC_DEV.1!5} = 1</code> the Server resolves it and checks retransmitted and
-OPC UA commands against the condition, but the Client's Control window does
-not find it, treats the condition as unmet and blocks control from that
-window. So refer to the TS object that receives the channel's value instead.</dd>
+The condition does not replace an interlock in the device itself. The
+condition may refer to a device channel, inside an expression too, such as
+<code>{IEC_DEV.1!5} = 1</code>: the Control window and the Server evaluate it
+the same way.</dd>
 
 <dt>Stale timeout, s</dt>
 <dd>If the value is not updated within this interval, it is marked as

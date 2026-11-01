@@ -23,8 +23,6 @@ Read this list before working at an operator workstation. Details are behind
 the links; the limitations of the whole release are collected under
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
-* **The *Disconnect from Server* command does not load the new user's profile** — hand
-  over by closing the client. See [Shift handover](#shift-change).
 * **The alarm tone is off for every new account** — turn it on under each
   operator's account. See
   [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
@@ -190,7 +188,24 @@ opens the default profile: the previous operator's pages, portfolios and
 settings on this computer do not carry over to the new account. Only the
 position and size of the main windows are taken from the computer.
 
-To hand over a shift:
+To hand over a shift without closing the client:
+
+1. The outgoing operator makes sure the status bar reads "Connected" and
+   chooses *More → Disconnect from Server*. The client saves their profile on
+   the Server, ends the session and opens the sign-in window.
+2. The incoming operator enters their own name and password in the sign-in
+   window.
+3. The client closes the outgoing operator's pages and opens the incoming
+   operator's profile: their pages, portfolios, alarm tone, "Control
+   confirmation" setting and severity threshold. If the incoming account has
+   no profile on the Server yet, the default profile opens. Whatever the
+   incoming operator changes is saved into **their** profile.
+
+The sign-in window this command opens always waits for input: the outgoing
+operator's stored password is not filled in there (see
+[Automatic sign-in](#auto-login)).
+
+A shift can also be handed over by closing the client:
 
 1. "Sign in automatically next time" must be off at this workstation —
    otherwise the client signs the outgoing operator's account in by itself at
@@ -217,18 +232,15 @@ no connection to the Server), the client asks before it ends the session, in a
 server; it is kept on this computer only. Try again? Choose No to continue
 without the server copy." *Yes* tries the save again — press it once the
 connection is back. *No* ends the session without the Server copy: changes to
-pages and settings stay on this computer only. So close the client while the
-status bar reads "Connected".
+pages and settings stay on this computer only. So hand over while the status
+bar reads "Connected".
 
-> **Caution.** Do not hand over with *More → Disconnect from Server*. In the
-> current version, after that command and a sign-in under another account the
-> client keeps the **previous** operator's pages and settings, and on exit it
-> saves them into the **new** operator's profile — overwriting that
-> operator's own pages and settings on the Server. *Disconnect from Server* is
-> fine for signing in again under the same account.
-
-If the sign-in window is closed, the client stays disconnected; sign in with
-*More → Connect to Server...*.
+If the sign-in window is closed, the client stays disconnected with the
+outgoing operator's pages still on screen; sign in with *More → Connect to
+Server...*. If that sign-in is a different account — or it follows a
+disconnect whose sign-in window was closed — the client opens the signed-in
+account's profile in the same way. When the same account signs in again
+after a dropped connection, the open windows stay as they were.
 
 If the account is not allowed several sessions at once and is already in use
 on another computer, signing in asks "The specified username is already in use
@@ -447,8 +459,11 @@ IEC 60870-5 (SELECT/EXECUTE):
 
 Any answer other than yes — no, or closing the confirmation prompt — sends
 no execute command and releases the selection on the device (for IEC 60870-5
-by deactivating the command, for IEC 61850 with the Cancel service). If the
-device refuses the release, no error box is shown — the operator has already
+by deactivating the command, for IEC 61850 with the Cancel service). The
+selection is also released when the control window is closed (with *Esc* or
+the window's close button) while the select stage is still running: if the
+device accepts the select after all, the Client sends the release at once. If
+the device refuses the release, no error box is shown — the operator has already
 moved on — but the Client adds a message of its own to the current events
 panel: "Release of selection: <object> - <reason>. The device may stay
 selected until its own selection timeout expires." The selection stays armed

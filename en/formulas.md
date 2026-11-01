@@ -69,14 +69,9 @@ and `{u35_s1}` are not references. A Cyrillic `ТИТ.1` is neither a
 designation nor a channel reference — it is found only if an alias with that
 exact text exists.
 
-**WARNING:** in tables, user tables and the Control condition a
-device-channel reference works only when it is the whole formula. Inside an expression (for example
-`{IEC_DEV.1!115} * 2`) the Client in this version does not find it. Refer
-there to the object that receives its value from that channel. A control
-condition such as `{IEC_DEV.1!5} = 1` is therefore never met in the Client's
-Control window, and control of the object from that window stays blocked,
-even though the Server evaluates such a condition and lets retransmitted and
-external OPC UA commands through by it.
+A device-channel reference works both as the whole formula and inside an
+expression, such as `{IEC_DEV.1!115} * 2` or the control condition
+`{IEC_DEV.1!5} = 1`: the Client and the Server resolve it the same way.
 
 ### A leading `=`
 

@@ -76,6 +76,8 @@ This version is not yet published on the releases page.
 
 1. Fixed: the fields with a list of values — a direction's *Protocol* and *Mode*, a TIT object's *Conversion*, a simulation signal's *Type* — offer their choices again. See [Fields with a list of values]({{ '/en/dev/devices/' | relative_url }}#enum-lists).
 
+1. When no value of an object's Control condition has arrived yet (right after start-up, for example, or after an alias in the condition was renamed), the Server waits up to 2 seconds for one and decides on it rather than refusing the first command. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
+
 ### Client
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
@@ -146,6 +148,16 @@ This version is not yet published on the releases page.
 
 1. With two-stage control, a device refusing to release the selection is reported in the current events panel: the selection then stays in force until the device's select timeout. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
+1. Shift handover with *Disconnect from Server*: after a sign-in under another account the Client opens that account's profile — its pages, portfolios and settings — instead of keeping the previous operator's pages. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
+
+1. The Control window finds a device-channel reference inside a Control condition expression, such as `{IEC_DEV.1!5} = 1`, the same way the Server does, so control from the window is no longer blocked by such a condition; the same applies to tables and user tables. See [Formulas]({{ '/en/formulas/' | relative_url }}).
+
+1. With two-stage control, the selection on the device is also released when the Control window is closed during the select stage. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+
+1. Deleting a portfolio, or an object from one, asks for confirmation first. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}).
+
+1. In the bulk-create wizard the "NodeId template" field is empty by default, so the Server assigns the identifiers; the former default was one the Server refused. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
+
 ### Known limitations {#known-limitations}
 
 Read this list before buying and before upgrading: each limitation is described in detail on the page it links to.
@@ -199,8 +211,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
 #### Working with the Client {#limits-client}
-
-1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
