@@ -10,7 +10,7 @@ permalink: /en/server/
 * TOC
 {:toc}
 
-The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and, on request, on Linux (see [Linux deployment](#linux)).
+The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux (see [Linux deployment](#linux)).
 
 The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
 
@@ -79,6 +79,8 @@ are needed only for a hand-built setup without `scada-setup`; do not use them
 to change or remove services `scada-setup` created — `scada-setup apply` and
 `scada-setup remove` do that. The step-by-step installation is in
 [Getting started]({{ '/en/getting-started/' | relative_url }}).
+On Linux `scada-setup` does the same with systemd services — see
+[Linux deployment](#linux).
 
 **This version of `scada-setup` has not yet been tried on a site under
 Windows.** If the result of any command differs from what this page
@@ -113,18 +115,14 @@ processes the license allows, in alphabetical order — and errors read
 `the license does not entitle tier(s) …`. The names in these messages are the
 same as in the `--tiers` option.
 
-**A new installation starts with a demo project.** The configuration
-databases `apply` creates are copies of the demo configuration shipped with
-the installer: objects with emulation, two enabled IEC 60870-5-104 links (one
-of them accepts connections on port 2404 of this computer — the
-`scada-iec104` process takes that port, if it is installed), two archives,
-and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Both
-copies — in the `Configuration` folders of `config` and `proxy` — start as
-this demo project. Before going live, replace both with the project's
-configuration (see
-[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project)):
-deleting the demo data in the Client has not been verified to reach every
-copy.
+**A new installation starts from an empty project.** The configuration
+databases `apply` creates hold no objects, devices, links or users — only the
+`svc` service account; sign in with the built-in `root` account. With
+`--demo`, the first `apply` creates them from the demo configuration shipped
+with the installer (objects with emulation, IEC 60870-5-104 links, users
+with no passwords) and copies the demo schematics — for exploring only, see
+[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
+`apply` replaces no existing database, with `--demo` or without.
 
 #### Options {#scada-setup-options}
 
@@ -153,7 +151,12 @@ copy.
   environment variable) — the [root password](#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config`,
   `scada-proxy` or `scada-filesystem`.
-* `--data-root` — the data folder, when it is not the standard one.
+* `--demo` — `apply` only: create the configuration databases that do not
+  exist yet from the demo project rather than empty (see
+  [Demo project]({{ '/en/getting-started/' | relative_url }}#demo)).
+* `--data-root` — the data folder, when it is not the standard one
+  (`%ProgramData%\Telecontrol\SCADA Server` by default, `/var/lib/scada`
+  on Linux).
 * `--install-root` — the installation folder. There is no need to give it:
   it defaults to the folder above the one holding `scada-setup.exe`.
 
@@ -194,6 +197,12 @@ are changed by the `set-password` command, which restarts the services itself
 (see [Changing the svc password](#svc-rotate)). A restart interrupts the
 service for a moment: while `scada-proxy` restarts, Clients lose their
 connection to the Server. If this computer has no `scada-proxy` (protocol processes only), Clients keep their connection: those processes' objects are marked bad during the restart and then update and archive again by themselves — see [After a protocol process restarts](#edge-restart).
+
+A running process does not let its configuration database be changed.
+Normally a repeated `apply` has nothing to change in it, but if the `svc`
+service account was altered, `apply` prints `can't update the configuration
+DB of <process>: database is locked` and stops before starting the services: stop the services
+with `scada-setup stop` and run `apply` again.
 
 #### Removing services and data {#remove}
 
@@ -255,6 +264,14 @@ registry no longer holds the passwords.
 * **After moving the data to another computer** (for example when
   [restoring](#backup)), run `apply` there with the same passwords: the copied
   password file does not decrypt there.
+
+**On Linux** the passwords are kept in
+`/var/lib/scada/secrets/service-secrets.env`: it is **not encrypted**, but
+only `root` can open the `secrets` folder and read the file. systemd reads it
+when it starts each service and passes the passwords to the process in
+environment variables; the parameter files and service files carry no
+password. Do not give outsiders `root` rights on Server computers, and do not
+copy this file into backups others can read.
 
 Do not combine a Server computer with an operator workstation. The Server installer puts the
 Client on the computer too, with a desktop shortcut — do not let operators
@@ -624,28 +641,43 @@ Processes installed by `scada-setup` are started with a `--param` naming
 
 ### Linux deployment {#linux}
 
-The Server processes run on Linux, but this version publishes no Linux
-package, and on Linux `scada-setup` only writes parameter files (the
-`generate` command): it does not create the `svc` service account in the
-configuration databases, creates the [Server certificate](#opcua-certificate)
-only with the `--create-certificate` switch, and does not pass the `svc` and
-`root` passwords to the processes. **Installing the Server on Linux is
-available on request** — contact Telecontrol (mail@telecontrol.ru). The
-information below is for reference, for such an installation. The graphical
-Client is not supported on Linux.
+On Linux the Server is installed from a `.deb` package or a `.tar.gz`
+archive into `/opt/telecontrol-scada` and set up with the same `scada-setup`
+program (run it with `sudo`): `apply` creates the parameter files in
+`/var/lib/scada/<process>/server.json`, the configuration databases, the
+[Server certificate](#opcua-certificate) in
+`/opt/telecontrol-scada/data/Certificates`, and one systemd service per
+process — `/etc/systemd/system/scada-<process>.service` — then enables them
+and starts them in the right order; `status`, `start`, `stop`, `remove` and
+`set-password` manage those services. The step-by-step installation is in
+[Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
-#### Run from an archive
+* The services run as `root`, start at boot and are restarted 10 seconds
+  after a failure. As on Windows, on a computer with `scada-config` the other
+  services depend on `scada-config.service`, and `scada-proxy.service` also
+  on `scada-filesystem.service`: stopping a service stops the ones that
+  depend on it.
+* `apply` rewrites the service file on every run: put your own changes not
+  in it but in the `server.override.json` parameter file (see
+  [Your own parameters](#server-override)) or in a systemd drop-in
+  (`systemctl edit scada-<process>`).
+* A service's state is `systemctl status scada-<process>`; the process's
+  messages are `journalctl -u scada-<process>` and the log in the
+  `/var/lib/scada/<process>/Logs` folder.
+* `migrate --execute` is not available on Linux: the version 2.5 Server ran
+  on Windows only.
 
-Unpack the server distribution archive and start the executables of the
-processes you need (`scada-config`, `scada-iec104`, and so on). Each
-process reads its own parameter file `data/<name>.json`, where `data` is
-resolved from the executable's directory as `<program dir>/../data`, or
-the file passed with `--param`.
+#### Running without scada-setup
+
+The process executables can also be started by hand, for example in a
+Docker container. Each process reads its own parameter file
+`data/<name>.json`, where `data` is resolved from the executable's directory
+as `<program dir>/../data`, or the file passed with `--param`.
 
 Environment variables can be substituted into the parameter file
 (`$ENV{NAME}`, see the [parameter reference](#parameters)), for example to
 keep the [root password](#root-password) out of the file. Installation in
-Docker containers is also available on request.
+Docker containers is available on request.
 
 ## Licensing
 

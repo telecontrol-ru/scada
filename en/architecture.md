@@ -361,10 +361,8 @@ receives its configuration from `scada-config`). It is updated immediately when 
 changes are reflected across the running system without waiting for a
 manual save step.
 
-On a new installation the configuration is a demo project; before going
-live, replace it with the project's configuration (deleting the demo
-objects, devices and users in the Client is not dependable in this version) —
-see
+A new installation starts from an empty configuration, with no objects,
+devices or users; the demo project is installed on request — see
 [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 Configuration is edited with the built-in engineering tools, and

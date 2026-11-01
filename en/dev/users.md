@@ -37,8 +37,10 @@ reset) does not. The server sets what a password must satisfy — see
   between them. Its password is changed not here but with
   `scada-setup set-password` on every Server computer (see
   [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate)).
-* **The `root` user in the list of a new installation is not the built-in
-  `root` account.** It comes with the demo project and can never sign in:
+* **The `root` user in the demo project's list is not the built-in `root`
+  account.** It exists only in the
+  [demo project]({{ '/en/getting-started/' | relative_url }}#demo) and can
+  never sign in:
   signing in as `root` always uses the built-in account. Changing or
   deleting this user does not affect the built-in account.
 * **The built-in `root` account's password is not changed in this

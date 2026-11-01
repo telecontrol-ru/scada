@@ -15,9 +15,11 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 ## System requirements
 
-* Windows 10 or newer (Server and Client). Installing the Server on Linux
-  is available on request (see [Installation on Linux](#linux))
-* Windows administrator rights to install and set up the Server
+* Windows 10 or newer (Server and Client), or x86-64 Linux with systemd and
+  glibc 2.38 or newer, such as Ubuntu 24.04 (Server; see
+  [Installation on Linux](#linux))
+* Windows administrator rights (`root` on Linux) to install and set up the
+  Server
 * A TCP/IP network between the site's computers; Clients connect to the
   `scada-proxy` process on port 2000 (see [Network preparation](#network))
 * A license file issued for the Server processes you need (see [License](#license))
@@ -125,8 +127,10 @@ folder, typing `scada-setup` is enough.
 folder of `scada-filesystem` is named `filestore`), creates the
 [Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) in
 `C:\Program Files\Telecontrol SCADA\data\Certificates` unless one is already
-there, creates the configuration databases (never overwriting an existing
-one; `scada-filesystem`'s keeps only the `svc` service account), registers one Windows service per process, and starts them in the
+there, creates the configuration databases with an empty project (with `--demo`,
+with the demo project, see [Preparing the project](#project); it never
+overwrites an existing one; `scada-filesystem`'s keeps only the `svc`
+service account), registers one Windows service per process, and starts them in the
 right order. To check the result:
 
 ```bat
@@ -264,15 +268,69 @@ needs the Modus graphics editor.
 
 ## Installation on Linux {#linux}
 
-The Server processes run on Linux, but this version has neither a Linux
-package nor a tool that prepares a working installation: on Linux
-`scada-setup` only writes parameter files — it does not create the `svc`
-service account, creates the Server certificate only with the
-`--create-certificate` switch, and does not set the passwords.
-**Installing the Server on Linux is available on request** — contact
-Telecontrol (mail@telecontrol.ru).
+The Server ships for Linux as a package in two forms —
+`telecontrol-scada-server_<version>_amd64.deb` (Ubuntu, Debian) and the
+archive `telecontrol-scada-server-<version>-linux-amd64.tar.gz`. It holds the
+same processes as the Windows installer, except `scada-opc` and
+`scada-vidicon`, and the same `scada-setup` program. The package installs
+into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd and glibc
+2.38 or newer (verified on Ubuntu 24.04). The graphical Client is not
+supported on Linux: Windows Clients connect to a Linux Server just as they do
+to a Windows one.
 
-The graphical Client is not supported on Linux.
+Run every command as `root` (with `sudo`; `status` does not need it).
+
+1. Install the package:
+
+   ```sh
+   sudo apt install ./telecontrol-scada-server_<version>_amd64.deb
+   ```
+
+   or unpack the archive:
+
+   ```sh
+   sudo tar -xzf telecontrol-scada-server-<version>-linux-amd64.tar.gz -C /opt
+   ```
+
+2. Put the license file at `/var/lib/scada/license.json`.
+
+3. Decide which processes run on this computer, and
+   [write down the computer's parameters](#host-parameters).
+
+4. Run:
+
+   ```sh
+   sudo /opt/telecontrol-scada/bin/scada-setup apply --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
+   ```
+
+The options of `apply` and the other commands are the same as on Windows
+(see [Installation on Windows](#installation-on-windows) and
+[Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup));
+only the locations differ:
+
+* the data folder is `/var/lib/scada`: it holds the process folders
+  (`/var/lib/scada/<process>/server.json`; `filestore` for
+  `scada-filesystem`) and the license;
+* every process runs as a systemd service `scada-<process>.service` (for
+  example `scada-config.service`) that `apply` creates; the services start
+  at boot, are restarted after a failure, and run as `root`;
+* the `svc` and `root` passwords are kept in the file
+  `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
+  (see [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords));
+* `scada-setup status` prints each service's state as systemd names it:
+  `active` — running, `inactive` — stopped, `failed` — stopped on an error.
+  Service details are `systemctl status scada-config`, the process's
+  messages `journalctl -u scada-config` and the log in the
+  `/var/lib/scada/<process>/Logs` folder;
+* `migrate --execute` is not available on Linux: the version 2.5 Server ran
+  on Windows only.
+
+Removing the package (`sudo apt remove telecontrol-scada-server`) stops and
+removes the process services; the data in `/var/lib/scada` stays. For an
+archive installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove`
+first, then delete the `/opt/telecontrol-scada` folder. Upgrading the package
+(`apt install` of a newer `.deb`) restarts the running services with the new
+executables.
 
 ## License {#license}
 
@@ -419,38 +477,55 @@ do not need them: keep them closed.
 
 ## Preparing the project {#project}
 
-**The configuration of a new installation is a demo project.** The
-databases `apply` creates are copies of the demo configuration shipped with
-the installer: 41 analog and 52 discrete objects, emulation signals, two
-enabled IEC 60870-5-104 links (one of them accepts connections on port 2404
-of this computer), two archives, and the users «Клиент 1» … «Клиент 10» and
-`guest`, which have no passwords set. The demo project's user list also has
-a `root` user. It is not the built-in `root` account: signing in as `root`
-always uses the built-in account, with the password given as
-`--root-password`, and this user can never sign in. **Do not change or
-delete it thinking it is the real `root`**: neither the password nor the
-rights of the built-in account depend on it. Until the configuration is
-replaced,
-the `scada-iec104` process, if installed, takes port 2404 and works with the
-demo devices. **Before going live, replace the configuration with the
-project's** (below).
+**A new installation starts from an empty project.** The configuration
+databases `apply` creates hold no objects, devices, links or users: only the
+`svc` service account the processes use to connect to each other. Sign in to
+the Client with the built-in `root` account and the password given as
+`--root-password`. The protocol processes connect to nothing and take no
+device ports until you create links. Build the project's configuration in
+the Client (see [Development]({{ '/en/development/' | relative_url }})) or
+put a ready project database in place (below).
 
 The configuration is kept in two copies, in the `Configuration` folders of
 `scada-config` and `scada-proxy`: `scada-config` serves the configuration to
 the protocol processes and to `scada-historian` (the archive list and the
 archive assigned to each object), and `scada-proxy` checks Client user names
-and passwords against it. Both copies start as the demo project, so
-**replace both**. `scada-filesystem` has a database of its own too, in
-`filestore\Configuration`, but it holds only the `svc` service account:
+and passwords against it. `scada-filesystem` has a database of its own too,
+in `filestore/Configuration`, but it holds only the `svc` service account:
 `apply` removes everything else from it, and it needs no replacing.
 
-**WARNING:** deleting the demo devices, objects and users in the Client is
-not a dependable way to remove them in this version: it has not been
-verified that a change made in the Client reaches every copy. If you go that
-way anyway, check afterwards that nothing listens on port 2404 any more
-(`netstat -ano | findstr :2404` on the computer of `scada-iec104` prints
-nothing) and that «Клиент 1» can no longer sign in; if either check fails,
-replace the configuration as below.
+### Demo project {#demo}
+
+To explore the system without field equipment, install the demo project:
+add `--demo` to the first `apply` on the central computer. The configuration
+databases are then created from the demo configuration shipped with the
+installer: 41 analog and 52 discrete objects, emulation signals, two enabled
+IEC 60870-5-104 links (one of them accepts connections on port 2404 of this
+computer, which the `scada-iec104` process takes if installed), two
+archives, and the users «Клиент 1» … «Клиент 10» and `guest`, which **have
+no passwords set**. The demo schematics are copied into the file store of
+`scada-filesystem`.
+
+**Do not install the demo project on a Server reachable from the site
+network**: anyone can sign in as its users, with no password. The demo
+project's user list also has a `root` user. It is not the built-in `root`
+account: signing in as `root` always uses the built-in account, with the
+password given as `--root-password`, and this user can never sign in. Do
+not change or delete it thinking it is the real `root`.
+
+`--demo` acts only on configuration databases that do not exist yet: on a
+computer already set up, `apply --demo` replaces nothing and prints
+`Kept the existing configuration DB of …`. To go from the demo project to an
+empty one, stop the processes, delete the `configuration.sqlite3` files from
+the `config/Configuration` and `proxy/Configuration` folders of the data
+folder, and run `apply` without `--demo` with the same
+[computer's parameters](#host-parameters) and passwords. Delete the demo
+schematics from the `filestore/FileSystem` folder. Deleting the demo
+devices, objects and users in the Client is not a dependable way: it has not
+been verified that a change made in the Client reaches every copy of the
+configuration.
+
+### A ready project database {#project-db}
 
 To put a ready project configuration database (a version 2.6
 `configuration.sqlite3`) in place, on the central computer:
@@ -471,6 +546,10 @@ To put a ready project configuration database (a version 2.6
    site's `svc` password: this site then needs the same `svc` password, or
    the processes cannot connect to each other.
 
+On Linux the commands are the same — `sudo /opt/telecontrol-scada/bin/scada-setup stop`
+and `apply` — and the `config/Configuration` and `proxy/Configuration`
+folders are under `/var/lib/scada` (see [Installation on Linux](#linux)).
+
 Move a version 2.5 Server's configuration with `scada-setup migrate` instead:
 it also carries over the user passwords version 2.5 kept in a separate file
 (see [Upgrading from version 2.5](#upgrade-2-5)).
@@ -480,7 +559,8 @@ On each workstation, copy the schematic files (`.sde`) to
 [server-side file system]({{ '/en/server/' | relative_url }}#filesystem)
 if that feature is used.
 
-To explore the system without field equipment, give objects
+To explore the system without field equipment, install the
+[demo project](#demo) or give your project's objects
 [emulation]({{ '/en/architecture/' | relative_url }}#emulation).
 
 For project engineering details, see [Development]({{ '/en/development/' | relative_url }}).
@@ -565,10 +645,10 @@ always waits for input.
 
 ## First steps after login
 
-**Until the configuration is replaced, what you see is the demo project**
-(see [Preparing the project](#project)): its objects, devices and the users
-«Клиент 1» … «Клиент 10» and `guest` are demo data. Replace the
-configuration as described there before the system goes live.
+**In a new installation the project is empty:** the objects and equipment
+panels show nothing until you build the configuration or put a ready project
+database in place (see [Preparing the project](#project)). If the Server was
+set up with `--demo`, you see the [demo project](#demo).
 
 After you sign in:
 
