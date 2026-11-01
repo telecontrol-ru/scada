@@ -592,11 +592,11 @@ to.
    [Watch]({{ '/en/client/device-watch/' | relative_url }}) window shows the
    exchange, and the DC's general interrogation returns the object values.
 
-**WARNING:** retransmit objects whose values the same Server IEC 104
-process receives — for example, objects of IEC 60870-5 devices. Sending the
-DC objects whose data another Server process receives (for example, the
-Modbus or IEC 61850 process) is not confirmed to work in this version; if
-you need it, contact Telecontrol (mail@telecontrol.ru).
+Objects whose values another Server process receives — computed and
+simulated objects (computed by `scada-config`), objects of devices of another
+protocol or on another computer — are read by the IEC 104 process through
+`scada-proxy`. So **retransmitting them needs `scada-proxy` running**: while
+it is unavailable, such objects send the DC no new values.
 
 **A release of selection received from the DC is passed on to the source
 device.** If the DC selects an object for two-stage control and then abandons

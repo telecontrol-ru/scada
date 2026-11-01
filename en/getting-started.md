@@ -66,16 +66,34 @@ processes go on it too or on other computers of the site. What each process
 does, and the start order, are described in
 [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
 
-**Each protocol process is installed on one computer of the site only, and
-serves every device of its protocol.** It receives the whole configuration
-from `scada-config`: in this version the devices of one protocol cannot be
-split between computers. Different protocol processes may go on different
-computers (for example `scada-modbus` on one and `scada-iec104` on another).
+Different protocol processes may go on different computers (for example
+`scada-modbus` on one and `scada-iec104` on another). **The same protocol
+process may also be installed on several computers**, splitting the devices
+of its protocol between them — for example, with an `scada-iec104` next to
+each group of devices:
 
-**WARNING:** do not install the same protocol process (for example
-`scada-iec104`) on two computers: both processes would connect to every
-device of that protocol. Choose one computer for each process, one from
-which every device of its protocol can be reached.
+* a link's Computer property says which computer serves it (an IEC 61850
+  device, which has no link, has the property itself). It holds the computer
+  name `scada-setup` writes into that computer's configuration files — the
+  Windows computer name or the `--host-name` value; letter case does not
+  matter;
+* the devices of a link are served by the same computer as the link;
+* the links whose Computer is empty are served by the computer where
+  `scada-setup apply` ran **without** the `--assigned-links-only` option.
+  On every other computer running that process, run `apply` with
+  `--assigned-links-only`: such a computer serves only the links assigned to
+  it by name;
+* to move a link to another computer, change its Computer property in the
+  Client: the old computer closes the connection and the new one opens it,
+  with no process restart.
+
+Clients, the archive and retransmission work with the devices of every
+computer through `scada-proxy`, as with one Server.
+
+**WARNING:** among the computers running one protocol process,
+`--assigned-links-only` must be given on all but one. If neither of two
+computers has it, both open every link without a computer; if all have it,
+nobody serves those links.
 
 ## Installation on Windows
 

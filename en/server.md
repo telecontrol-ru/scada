@@ -157,6 +157,10 @@ Client take effect in every process.
 * `--demo` — `apply` only: create the configuration databases that do not
   exist yet from the demo project rather than empty (see
   [Demo project]({{ '/en/getting-started/' | relative_url }}#demo)).
+* `--assigned-links-only` — this computer's protocol processes serve only
+  the links whose Computer property names this computer, and leave the links
+  without a computer to the computer where `apply` ran without this option
+  (see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
 * `--data-root` — the data folder, when it is not the standard one
   (`%ProgramData%\Telecontrol\SCADA Server` by default, `/var/lib/scada`
   on Linux).

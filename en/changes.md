@@ -28,6 +28,12 @@ This version is not yet published on the releases page.
 
 1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
+1. The same protocol process can be installed on several computers, splitting the devices of its protocol between them: a link's Computer property names the computer that serves it, and the computers that serve only the links assigned to them run `scada-setup apply` with `--assigned-links-only`. A link moves to another computer when that property changes, with no restart. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
+
+1. Retransmission to a DC of objects whose values another Server process receives — computed and simulated objects, and objects of another protocol's devices: the retransmitting process reads them through `scada-proxy`. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
+1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
+
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
 1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
@@ -186,7 +192,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. MODBUS: by default the first register of a multi-register value is taken as the least significant word; a device that sends the most significant word first needs `;swapwords` or `;reversewords` on the address. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
-1. Retransmission: retransmitting objects of another Server process is not confirmed. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission: objects whose values another Server process receives are sent to the DC only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 #### Archive and reports {#limits-archive}
 
@@ -201,8 +207,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
 1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
-
-1. Each protocol process can run on one computer of the site only, and serves every device of its protocol. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
 1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read, and the process services run as `root`. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
 
