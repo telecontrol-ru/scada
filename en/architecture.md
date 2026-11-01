@@ -185,9 +185,10 @@ redundancy, computes formulas and emulated values, and notifies clients
 about object updates. In the reverse direction, it routes user commands
 back to the scanner for execution.
 
-After a protocol process restarts, its objects' latest values are not
-restored from history: the objects stay bad until the devices report new
-values (see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
+After a protocol process restarts, its archived objects take their latest
+values from history — with the quality and time they were archived with —
+and show them until the devices report new values (see
+[After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
 
 It also supports out-of-order values: data that belongs to an earlier
 timestamp than already received data is still processed and archived

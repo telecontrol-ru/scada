@@ -54,6 +54,13 @@ windows update again and archiving resumes by itself. Neither the
 *Telecontrol SCADA Historian* service nor the Client needs to be restarted
 for this.
 
+When the process starts, its objects take their latest values from history:
+until the devices report new values, an object shows the value, quality and
+time of its last archived sample. This applies to objects whose values are
+archived. If `scada-historian` is unavailable at that moment, the process
+waits for it for at most 10 seconds and starts without those values; the
+objects then stay bad until the devices report new values.
+
 When `scada-proxy` and `scada-historian` restarted with it (for example,
 `scada-setup stop` and `start` on a single-computer installation), the
 Historian starts afresh and the Clients reconnect by themselves (see
