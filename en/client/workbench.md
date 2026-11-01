@@ -397,9 +397,20 @@ tick an object and a rule for it appears in the table under the Object
 column; clearing the tick deletes the rule. The ticks in the tree always
 match the contents of the open table.
 
-Each new rule needs a destination address, typed directly into the table's
-Address column. The Object column is not editable — the source is set only by
-the tick in the tree.
+A new rule gets a destination address straight away — the next free one in
+this device's table: one more than the highest address, and address 1 for the
+first rule. Gaps in the numbering are not filled, since they may be spares
+agreed with the receiver. The lowest free address is taken only when the next
+one leaves the allowed range: for IEC 60870-5, the direction's Object address
+size; for Modbus, the register table holding the highest address (for example
+40001–50000). Check the address against the one agreed with the receiver; you
+can change it directly in the Address column. The Object column is not
+editable — the source is set only by the tick in the tree.
+
+The Status column marks a configuration fault: if several rules of a device
+share an address, each of them reads "Duplicate address" — the receiver cannot
+tell apart objects sent under one address. The Server does not reject such
+rules, so correct the addresses yourself.
 
 **WARNING: a rule created by ticking an object gets address 1.** Give it the
 address agreed with the destination straight away — otherwise every object is

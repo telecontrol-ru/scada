@@ -100,7 +100,9 @@ digits, <code>{hex}</code> in hexadecimal. Any other text is copied verbatim,
 so "TS{n} current" at index 8 yields "TS8 current". The range comes from
 "Start index", "Count" and "Index step". Transmission rules also have "IOA
 start" and "IOA step" — the addresses the objects are sent under: the first
-rule gets the start address and each next one a step more. "Count" starts at
+rule gets the start address and each next one a step more. "IOA start" is
+filled with the receiving device's next free address — the one a rule
+created by ticking an object would get. "Count" starts at
 the number of selected objects, and the "NodeId template" is empty so that
 the Server assigns the rules' identifiers itself.
 
@@ -115,7 +117,10 @@ ordinary create.
 A live preview is built below — a row-number / Name / NodeId / IOA / Status
 grid. Status
 marks each row "new", "exists" (such a node is already there) or "address out
-of range", and a "N new, M conflict" summary sits under the grid.</dd>
+of range", and a "N new, M conflict" summary sits under the grid. A rule whose
+address is already taken by a rule of the receiving device or by another row
+is marked "duplicate address", and the summary adds their count. Such rows are
+created; the address can be corrected afterwards in the transmission table.</dd>
 
 <dt>Review and create</dt>
 <dd>States how many rows will be created out of the total: "Will create N of

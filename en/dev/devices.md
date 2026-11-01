@@ -540,24 +540,37 @@ to.
    common ASDU address the DC uses for the SCADA — and Disabled = No.
 4. Select the device and open the `Transmission Table`. The table has no
    command to add a rule: a rule is created when you tick a SCADA object in
-   the object tree, and removed when you clear the tick. The table shows two
-   columns — Object (the SCADA object whose value is sent to the DC) and
-   Address (the information object address in the DC); type the address
+   the object tree, and removed when you clear the tick. The table shows the
+   columns Object (the SCADA object whose value is sent to the DC), Address
+   (the information object address in the DC) and Status; type the address
    straight into the Address column. The table is described in
    [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission).
 
-   **WARNING: a rule created by ticking an object gets address 1.** Give it
-   the address agreed with the DC as soon as you tick the object — otherwise
-   every object reaches the DC under the same address.
+   A rule created by ticking an object gets an address straight away: one
+   more than the highest address in this device's table, and address 1 for
+   the first rule. Gaps in the numbering are not filled, since they may be
+   spares agreed with the DC. If the next address does not fit the Object
+   address size in the direction's properties (up to 255 for 1 byte, up to
+   65,535 for 2 bytes), the rule gets the lowest free address instead.
+   Check the address against the one agreed with the DC and correct it in
+   the Address column if needed.
+
+   If several rules of a device share an address, the Status column of each
+   reads "Duplicate address": the DC cannot tell apart objects sent under one
+   address. The Server does not reject such rules, so correct the addresses
+   yourself.
 
    Many rules with consecutive addresses are easier to create at once: open
    a [Table]({{ '/en/client/table/' | relative_url }}) (or a summary, a
    portfolio) with the objects to send, select their rows and choose
    `Create -> Transmission Rules...` in the context menu. The
    [bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
-   wizard opens: pick this device in "Receiving device", and set "IOA start"
-   and "IOA step" on the pattern step. The wizard creates one rule per
-   selected object, in the order of their identifiers.
+   wizard opens: pick this device in "Receiving device", and check "IOA
+   start" and "IOA step" on the pattern step. The wizard fills "IOA start"
+   with the device's next free address. A row whose address is already taken
+   by a rule of the device or by another row is marked "duplicate address";
+   that rule is created too. The wizard creates one rule per selected object,
+   in the order of their identifiers.
 5. Open the port in the firewall of the computer running the Server's
    IEC 104 process.
 6. Check: once the DC connects, the

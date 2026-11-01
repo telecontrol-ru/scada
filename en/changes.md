@@ -108,6 +108,8 @@ This version is not yet published on the releases page.
 
 1. Transmission rules are created in bulk: select the objects in a table, summary or portfolio and choose `Create -> Transmission Rules...` — the wizard creates a rule per object with consecutive addresses. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
+1. A transmission rule created by ticking an object gets the device's next free address instead of address 1. Rules sharing an address are marked in the transmission table and in the bulk create wizard. See [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission).
+
 1. Summary: *Maximum* over negative values is computed correctly (it used to show about 0); invalid values are no longer counted; a *Time Average* function is added, and *Sum* is replaced by *Time Integral*, which gives, for example, energy from power. Saved windows that used *Sum* show the integral. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
 
 1. A graph can be printed (to PDF as well) and saved as a PNG image. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
@@ -150,7 +152,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
-1. Retransmission: a rule created by ticking an object gets address 1 (bulk rule creation assigns consecutive addresses), and retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission: retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 #### Archive and reports {#limits-archive}
 
