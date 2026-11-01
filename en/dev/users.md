@@ -41,11 +41,16 @@ reset) does not. The server sets what a password must satisfy — see
   `root` account.** It comes with the demo project and can never sign in:
   signing in as `root` always uses the built-in account. Changing or
   deleting this user does not affect the built-in account.
-* **A `root` password set in this window does not last.** Each Server
-  process writes the password from the computer's encrypted
-  [password file]({{ '/en/server/' | relative_url }}#stored-passwords) again
-  every time it starts. Change the root password with
-  `scada-setup set-password --root-password <new password>` instead (see
+* **The built-in `root` account's password is not changed in this
+  window.** On a Server installed with `scada-setup` the root password is
+  kept in the computer's encrypted
+  [password file]({{ '/en/server/' | relative_url }}#stored-passwords), and
+  each Server process writes it again every time it starts. So the Server
+  refuses a root password change made from the Client, and the Client
+  reports the refusal in the event journal, naming the command that changes
+  it. Change the root password with
+  `scada-setup set-password --root-password <new password>` on every Server
+  computer (see
   [Root password]({{ '/en/getting-started/' | relative_url }}#root-password)).
 * **The built-in `root` account allows one session at a time.** When `root`
   signs in a second time, from another workstation for example, the Client

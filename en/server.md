@@ -235,6 +235,10 @@ registry no longer holds the passwords.
 
 * **An administrator of the computer can read these passwords.** Do not give
   untrusted people administrator rights on the Server computers.
+* **Only `scada-setup set-password` changes the passwords in this file.** A
+  root password change from the Client is refused (see
+  [Root password](#root-password)), and an `svc` password changed from the
+  Client is replaced by the one in the file the next time the processes start.
 * **A Server installed by a pre-release build of version 2.6 may keep the
   passwords in plain text** — in the `Environment` values of the registry keys
   `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>`, where
@@ -937,9 +941,14 @@ is written to the log). Set a password before the Server is reachable
 over the network.
 
 A configured value is authoritative: it is written on every start and
-replaces any password stored earlier, including one changed from the
-Client. To keep the password out of the file in plain text, pass it
-through an environment variable as in the example above.
+replaces any password stored earlier. So while the parameter is set, the
+process refuses a root password change made from the Client or an OPC UA
+client (status `Bad_NotWritable`), and the Client reports the refusal in
+the event journal, naming the `scada-setup set-password` command. The
+other accounts' passwords change as usual. Without the parameter, a root
+password changed from the Client is kept. To keep the password out of the
+file in plain text, pass it through an environment variable as in the
+example above.
 
 **On Windows, `scada-setup` sets it**: the parameter files it writes for
 `scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem`

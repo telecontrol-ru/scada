@@ -347,9 +347,11 @@ So:
   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --root-password <new password>
   ```
 
-  The command stores the new password and restarts this computer's process
-  services. A password changed from the Client is replaced by the stored one
-  the next time the process starts;
+  on every computer running one of those processes. The command stores the
+  new password and restarts this computer's process services;
+* **the root password is not changed from the Client**: the Server refuses
+  such a change and the Client reports it in the event journal, rather than
+  accepting a password that the next start of the process would replace;
 * give the current root password on every later `apply`, upgrades included.
 
 See [Root password]({{ '/en/server/' | relative_url }}#root-password).
