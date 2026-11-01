@@ -552,7 +552,9 @@ is not offered.
 
 The Users window reads the server's standard account list and shows, for each
 account: its name, description, **roles**, and whether it is enabled. A
-disabled account cannot log in.
+disabled account cannot log in; `Enable Account` and `Disable Account` in the
+context menu switch it. The list updates itself when accounts or roles
+change.
 
 The Roles column *is* the permission model: the server grants rights by role. An account may hold several roles
 at once, and their permissions combine. "None" means the account holds no

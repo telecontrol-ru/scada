@@ -84,7 +84,7 @@ This version is not yet published on the releases page.
 
 ### Client
 
-1. `Roles...` on a user in the Users window assigns and removes an account's roles; only roles grant rights at sign-in. The Permissions property (0–3), which granted nothing, is no longer in the property window. See [Assigning roles]({{ '/en/dev/users/#assign-roles' | relative_url }}).
+1. `Roles...` on a user in the Users window assigns and removes an account's roles; only roles grant rights at sign-in. The Permissions property (0–3), which granted nothing, is no longer in the property window. `Enable Account` and `Disable Account` allow and stop sign-in, and the server does not let the Client delete, rename, disable or otherwise change the `svc` service account. See [Assigning roles]({{ '/en/dev/users/#assign-roles' | relative_url }}).
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
 

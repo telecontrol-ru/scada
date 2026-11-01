@@ -675,9 +675,9 @@ After you sign in:
    configuration (see
    [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
 
-   **WARNING:** the user list contains the `svc` service account. Do not
-   change or delete it: the Server processes connect to each other through
-   it. Only `scada-setup set-password` changes its password (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
+   The user list contains the `svc` service account: the Server processes
+   connect to each other through it, and the server does not let the Client
+   change it. Only `scada-setup set-password` changes its password (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
 
 For the main operator interface, continue with
 [Client]({{ '/en/client/' | relative_url }}).

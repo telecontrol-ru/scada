@@ -1049,12 +1049,13 @@ stores its password, from `--svc-password`, in the computer's
 that password into their databases on every start, so **every computer of the
 site must be given the same `svc` password**.
 
-* **Do not change or delete the `svc` account** in the Client's *Users*
-  window: that breaks the links between the processes. A changed `svc`
-  password is replaced by the configured one the next time the central
-  computer's processes start. A deleted account is restored by `apply`: on the
-  central computer, stop the processes (`scada-setup stop`) and run `apply`
-  with the same `svc` password (see [Re-running apply](#reapply)).
+* **The `svc` account cannot be changed in the Client's *Users* window**:
+  the server refuses to delete, rename or disable it, or to change its
+  password or roles, because that would break the links between the
+  processes. If it is missing anyway (for example from a database copied
+  from another site), `apply` restores it: on the central computer, stop the
+  processes (`scada-setup stop`) and run `apply` with the same `svc` password
+  (see [Re-running apply](#reapply)).
 * When the passwords differ, the protocol process keeps running but gets no
   configuration, and its [log](#logging) shows `Bad_UserAccessDenied`. Run
   `set-password` on that computer with the central computer's `svc` password

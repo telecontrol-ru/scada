@@ -25,6 +25,11 @@ To create a new user, choose `Create -> User` from the window's context menu.
 
 To delete a user, choose `Delete` from the user context menu.
 
+To stop a user signing in without deleting the account, choose
+`Disable Account` from the user context menu; `Enable Account` lets it sign
+in again. The Status column shows which. A disabled user's session that is
+already open is not closed.
+
 To assign roles to a user, choose `Roles...` from the user context menu (see
 [Assigning roles](#assign-roles)).
 
@@ -35,9 +40,10 @@ reset) does not. The server sets what a password must satisfy — see
 
 **For the administrator:**
 
-* **Never change or delete the `svc` user.** It is the service account the
-  Server processes connect to each other with; changing it breaks the links
-  between them. Its password is changed not here but with
+* **The `svc` user is the service account** the Server processes connect to
+  each other with. The server does not let the Client change it: it cannot
+  be deleted, renamed or disabled, nor its password or roles changed, and
+  `Delete` is not offered for it. Its password is changed with
   `scada-setup set-password` on every Server computer (see
   [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate)).
 * **The `root` user in the demo project's list is not the built-in `root`
