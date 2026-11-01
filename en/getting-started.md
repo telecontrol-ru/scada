@@ -486,13 +486,16 @@ device ports until you create links. Build the project's configuration in
 the Client (see [Development]({{ '/en/development/' | relative_url }})) or
 put a ready project database in place (below).
 
-The configuration is kept in two copies, in the `Configuration` folders of
-`scada-config` and `scada-proxy`: `scada-config` serves the configuration to
-the protocol processes and to `scada-historian` (the archive list and the
-archive assigned to each object), and `scada-proxy` checks Client user names
-and passwords against it. `scada-filesystem` has a database of its own too,
-in `filestore/Configuration`, but it holds only the `svc` service account:
-`apply` removes everything else from it, and it needs no replacing.
+The configuration is kept in one copy, in the `config/Configuration` folder
+of `scada-config`. The other processes read it from `scada-config`: the
+protocol processes their devices and objects, `scada-historian` the archive
+list and the archive assigned to each object, and `scada-proxy` the names,
+passwords and roles of Client users. So a configuration change made in the
+Client — creating, renaming and deleting objects, devices and users, and
+assigning roles — takes effect in every process at once. `scada-filesystem`
+has a database of its own, in `filestore/Configuration`, but it holds only
+the `svc` service account: `apply` removes everything else from it, and it
+needs no replacing.
 
 ### Demo project {#demo}
 
@@ -516,14 +519,15 @@ not change or delete it thinking it is the real `root`.
 `--demo` acts only on configuration databases that do not exist yet: on a
 computer already set up, `apply --demo` replaces nothing and prints
 `Kept the existing configuration DB of …`. To go from the demo project to an
-empty one, stop the processes, delete the `configuration.sqlite3` files from
-the `config/Configuration` and `proxy/Configuration` folders of the data
-folder, and run `apply` without `--demo` with the same
-[computer's parameters](#host-parameters) and passwords. Delete the demo
-schematics from the `filestore/FileSystem` folder. Deleting the demo
-devices, objects and users in the Client is not a dependable way: it has not
-been verified that a change made in the Client reaches every copy of the
-configuration.
+empty one, stop the processes, delete the `configuration.sqlite3` file from
+the `config/Configuration` folder of the data folder, and run `apply`
+without `--demo` with the same [computer's parameters](#host-parameters) and
+passwords. Delete the demo schematics from the `filestore/FileSystem`
+folder. You can also delete the demo devices, objects and users in the
+Client: the change reaches every process. Either way, check afterwards that
+nothing listens on port 2404 any more (`netstat -ano | findstr :2404` on the
+computer of `scada-iec104` prints nothing) and that «Клиент 1» can no longer
+sign in.
 
 ### A ready project database {#project-db}
 
@@ -532,23 +536,23 @@ To put a ready project configuration database (a version 2.6
 
 1. Stop the processes:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
-2. Copy the file into the `config\Configuration` and `proxy\Configuration`
-   folders under `%ProgramData%\Telecontrol\SCADA Server`, replacing the
-   databases `apply` created. `scada-historian` keeps no configuration
-   database of its own: it receives the archives and their assignment to
-   objects from `scada-config`.
+2. Copy the file into the `config\Configuration` folder under
+   `%ProgramData%\Telecontrol\SCADA Server`, replacing the database `apply`
+   created. The other processes keep no configuration database of their
+   own. A `proxy\Configuration` folder left by an earlier 2.6 build is no
+   longer used.
 3. Run `scada-setup apply` with the same
    [computer's parameters](#host-parameters) and passwords as at
-   installation. It keeps the copied databases and adds the `svc` service
-   account (id 100) to them, without which the processes cannot connect to
+   installation. It keeps the copied database and adds the `svc` service
+   account (id 100) to it, without which the processes cannot connect to
    each other. **A project user with id 100 is replaced by the `svc`
    account.** A database taken from another version 2.6 site keeps that
    site's `svc` password: this site then needs the same `svc` password, or
    the processes cannot connect to each other.
 
 On Linux the commands are the same — `sudo /opt/telecontrol-scada/bin/scada-setup stop`
-and `apply` — and the `config/Configuration` and `proxy/Configuration`
-folders are under `/var/lib/scada` (see [Installation on Linux](#linux)).
+and `apply` — and the `config/Configuration` folder is under
+`/var/lib/scada` (see [Installation on Linux](#linux)).
 
 Move a version 2.5 Server's configuration with `scada-setup migrate` instead:
 it also carries over the user passwords version 2.5 kept in a separate file
@@ -662,14 +666,13 @@ After you sign in:
 1. Create user accounts with `More -> Users`, and work under them rather
    than as `root`. See
    [User configuration]({{ '/en/dev/users/' | relative_url }}). After
-   creating a user, check straight away that you can sign in as that user;
-   if you cannot, contact Telecontrol.
+   creating a user and setting a password, check that you can sign in as
+   that user.
 
-   **WARNING:** in version 2.6 an account created in the Client can only
-   view data — even with *Permissions* = 3. Rights come only from role
-   membership, and the Client cannot add an account to a role. If operators
-   need control or configuration rights, contact Telecontrol before the site
-   goes live (see
+   An account's rights come only from its **roles**: a new account can only
+   view data until it is given roles. Assign them with `Roles...` from the
+   user's context menu: `Operator` for control, `ConfigureAdmin` for
+   configuration (see
    [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
 
    **WARNING:** the user list contains the `svc` service account. Do not

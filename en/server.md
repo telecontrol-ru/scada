@@ -122,7 +122,10 @@ databases `apply` creates hold no objects, devices, links or users — only the
 with the installer (objects with emulation, IEC 60870-5-104 links, users
 with no passwords) and copies the demo schematics — for exploring only, see
 [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
-`apply` replaces no existing database, with `--demo` or without.
+`apply` replaces no existing database, with `--demo` or without. The
+configuration is kept in one copy, by `scada-config`; the other processes,
+`scada-proxy` included, read it from `scada-config`, so changes made in the
+Client take effect in every process.
 
 #### Options {#scada-setup-options}
 
@@ -149,8 +152,8 @@ with no passwords) and copies the demo schematics — for exploring only, see
   and `migrate --execute`; for `set-password`, the new password.
 * `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
   environment variable) — the [root password](#root-password), required by
-  `apply` and `migrate --execute` on a computer running `scada-config`,
-  `scada-proxy` or `scada-filesystem`.
+  `apply` and `migrate --execute` on a computer running `scada-config` or
+  `scada-filesystem`.
 * `--demo` — `apply` only: create the configuration databases that do not
   exist yet from the demo project rather than empty (see
   [Demo project]({{ '/en/getting-started/' | relative_url }}#demo)).
@@ -287,8 +290,8 @@ Server* service — and kept its data in the `Configuration`, `History` and
 
 | Version 2.5 data | Copied to |
 |---|---|
-| Configuration `Configuration\configuration.sqlite3` | The `Configuration` folder of `config` and `proxy` |
-| User passwords `Configuration\password.dat` | The same folders, beside each copy of the configuration |
+| Configuration `Configuration\configuration.sqlite3` | `config\Configuration` |
+| User passwords `Configuration\password.dat` | The same folder, beside the configuration |
 | History `History` | `historian\History` |
 | Schematic files `FileSystem` | `filestore\FileSystem` |
 
@@ -414,7 +417,7 @@ The migration does not start, and the command says why, when:
 * the version 2.5 configuration database cannot be read
   (`Can't read the 2.5 configuration database …`) — stop the version 2.5
   *Telecontrol SCADA Server* service and run the command again;
-* none of `config`, `proxy` and `historian` is selected on this computer;
+* `config` is not selected on this computer;
 * the data has already been moved (the destination folders exist — the
   command never overwrites them);
 * there is not enough disk space.
@@ -1011,7 +1014,7 @@ file in plain text, pass it through an environment variable as in the
 example above.
 
 **On Windows, `scada-setup` sets it**: the parameter files it writes for
-`scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem`
+`scada-config` and `scada-filesystem`
 contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and `scada-setup apply`
 takes the variable's value from `--root-password` (or the
 `SCADA_SETUP_ROOT_PASSWORD` environment variable) and stores it in the
@@ -1023,10 +1026,11 @@ stores the password and restarts the computer's services (see
 which the next `apply` rewrites.
 
 Set the parameter on **every** process that keeps the configuration in
-its own database; each of them has its own `root` account: `scada-config`,
-`scada-proxy` and `scada-filesystem`. The protocol processes and
-`scada-historian` receive their configuration from `scada-config` and do not
-use this parameter (they log a message saying so).
+its own database; each of them has its own `root` account: `scada-config`
+and `scada-filesystem`. The protocol processes, `scada-historian` and
+`scada-proxy` receive their configuration from `scada-config` and do not
+use this parameter (they log a message saying so); a `root` sign-in through
+`scada-proxy` is checked against `scada-config`'s `root` password.
 
 A process takes the `SCADA_ROOT_PASSWORD` value from the computer's
 [password file](#stored-passwords), which it finds through the
@@ -1041,7 +1045,7 @@ The Server processes connect to each other as the `svc` service account
 (id 100). `scada-setup apply` creates it in the configuration databases and
 stores its password, from `--svc-password`, in the computer's
 [password file](#stored-passwords), where the processes read it.
-`scada-config`, `scada-proxy` and `scada-filesystem` write
+`scada-config` and `scada-filesystem` write
 that password into their databases on every start, so **every computer of the
 site must be given the same `svc` password**.
 
@@ -1087,7 +1091,7 @@ With `--root-password <new password>` the command changes this computer's
 [root password](#root-password) the same way; both can be given together.
 If the Server was installed by a pre-release build of version 2.6 and the
 computer has no password file yet, the command requires both passwords — on a
-computer running `scada-config`, `scada-proxy` or
+computer running `scada-config` or
 `scada-filesystem` — and changes nothing until it has them: otherwise the
 `root` password would be lost when it leaves the registry.
 
@@ -1320,10 +1324,9 @@ none of them is in the backup.
 
 ### Configuration backup
 
-The SQLite configuration databases are in the `Configuration` folders of
-`config`, `proxy`, `historian` and `filestore`. The main configuration is
-`scada-config`'s (`config\Configuration`); Client user names and passwords
-are checked against `scada-proxy`'s copy (`proxy\Configuration`).
+The configuration is an SQLite database in the `config\Configuration` folder
+of `scada-config`; the other processes read it from there. The
+`filestore\Configuration` folder holds only the `svc` service account.
 
 For PostgreSQL, use the standard PostgreSQL backup tools such as
 `pg_dump`.
@@ -1421,6 +1424,6 @@ writes the files into the given folder and installs nothing. Writing a
 parameter file from scratch is not recommended — among other things it has to
 contain the [`license`](#licensing) block with
 `"require_gcp_binding": false` (outside Google Cloud),
-[`security.rootPassword`](#root-password) for `scada-config`, `scada-proxy`,
-`scada-historian` and `scada-filesystem`, and an enabled
+[`security.rootPassword`](#root-password) for `scada-config` and
+`scada-filesystem`, and an enabled
 [`opcua`](#opcua) block, over which the processes exchange data.

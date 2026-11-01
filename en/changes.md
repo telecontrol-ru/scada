@@ -30,7 +30,7 @@ This version is not yet published on the releases page.
 
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
-1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
+1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
 1. `scada-setup start`, like `stop`, acts only on the services installed on this computer: processes named in `--tiers` or in the license that are not installed here are skipped with a message. See [The computer's parameters]({{ '/en/getting-started/' | relative_url }}#host-parameters).
 
@@ -41,6 +41,8 @@ This version is not yet published on the releases page.
 1. The [Control condition]({{ '/en/dev/data-items/' | relative_url }}) is checked by the Server on every command, including one arriving over retransmission or from an OPC UA client, not only by the Client's Control window.
 
 1. New data folders: each process has its own folder `%ProgramData%\Telecontrol\SCADA Server\<process>` with its `server.json` parameter file (the folder of `scada-filesystem` is `filestore`). The license is `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+
+1. The configuration is kept in one copy, by `scada-config`: `scada-proxy`, `scada-historian` and the protocol processes read it from `scada-config`, so a change made in the Client — objects, devices, users, their passwords and roles — takes effect in every process at once. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 1. A process's own parameters go in a `server.override.json` file beside `server.json`: `scada-setup apply` never changes it and lays it over the template, so they survive re-running `apply` and upgrades. See [Your own parameters]({{ '/en/server/' | relative_url }}#server-override).
 
@@ -81,6 +83,8 @@ This version is not yet published on the releases page.
 1. When no value of an object's Control condition has arrived yet (right after start-up, for example, or after an alias in the condition was renamed), the Server waits up to 2 seconds for one and decides on it rather than refusing the first command. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
 
 ### Client
+
+1. `Roles...` on a user in the Users window assigns and removes an account's roles; only roles grant rights at sign-in. The Permissions property (0–3), which granted nothing, is no longer in the property window. See [Assigning roles]({{ '/en/dev/users/#assign-roles' | relative_url }}).
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
 
@@ -194,8 +198,6 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Version 2.6 does not read the version 2.5 HASP or Guardant key: on upgrading, it is exchanged for a license using the `TIERS=…` line that the `scada-setup migrate` plan prints. See [Exchanging the hardware key]({{ '/en/server/' | relative_url }}#license-exchange).
 
-1. An account created in the Client can only view data: rights come only from role membership, and the Client cannot add an account to a role. If new users need control or configuration rights, contact Telecontrol before the site goes live. See [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights).
-
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
 1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
@@ -213,8 +215,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
-
-1. It has not been verified that a configuration change made in the Client reaches every copy of the configuration on the Server. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 ## 2.5.7 {#v2-5-7}
 

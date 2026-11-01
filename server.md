@@ -113,6 +113,9 @@ permalink: /server/
 демонстрационные мнемосхемы — только для ознакомления, смотрите
 [Подготовка проекта]({{ '/getting-started/' | relative_url }}#project).
 Существующие БД `apply` не заменяет ни с `--demo`, ни без него.
+Конфигурация хранится в одной копии — у `scada-config`; остальные процессы,
+в том числе `scada-proxy`, читают ее у `scada-config`, поэтому изменения,
+внесенные в Клиенте, действуют во всех процессах.
 
 #### Параметры {#scada-setup-options}
 
@@ -140,8 +143,8 @@ permalink: /server/
   пароль.
 * `--root-password <пароль>` (или переменная окружения
   `SCADA_SETUP_ROOT_PASSWORD`) — [пароль root](#root-password), обязателен
-  для `apply` и `migrate --execute` на компьютере с `scada-config`,
-  `scada-proxy` или `scada-filesystem`.
+  для `apply` и `migrate --execute` на компьютере с `scada-config` или
+  `scada-filesystem`.
 * `--demo` — только для `apply`: создать конфигурационные БД, которых еще
   нет, из демонстрационного проекта, а не пустыми (смотрите
   [Демонстрационный проект]({{ '/getting-started/' | relative_url }}#demo)).
@@ -278,8 +281,8 @@ Server* — и хранили его данные в папках `Configuration
 
 | Данные версии 2.5 | Куда копируются |
 |---|---|
-| Конфигурация `Configuration\configuration.sqlite3` | В папку `Configuration` процессов `config` и `proxy` |
-| Пароли пользователей `Configuration\password.dat` | Туда же, рядом с каждой копией конфигурации |
+| Конфигурация `Configuration\configuration.sqlite3` | `config\Configuration` |
+| Пароли пользователей `Configuration\password.dat` | Туда же, рядом с конфигурацией |
 | Архивы `History` | `historian\History` |
 | Файлы мнемосхем `FileSystem` | `filestore\FileSystem` |
 
@@ -406,8 +409,7 @@ Server* — и хранили его данные в папках `Configuration
 * конфигурационную БД версии 2.5 не удалось прочитать
   (`Can't read the 2.5 configuration database …`) — остановите службу
   *Telecontrol SCADA Server* версии 2.5 и повторите команду;
-* на этом компьютере не выбран ни один из процессов `config`, `proxy` и
-  `historian`;
+* на этом компьютере не выбран процесс `config`;
 * данные уже были перенесены (папки назначения существуют — команда никогда
   их не перезаписывает);
 * на диске недостаточно места.
@@ -960,9 +962,9 @@ sqlite> select count(*) from SystemEventType;
 
 Заданное значение имеет приоритет: оно записывается при каждом запуске и заменяет пароль, сохраненный ранее. Поэтому, пока параметр задан, процесс отказывает в смене пароля `root` из Клиента или клиента OPC UA (код `Bad_NotWritable`), а Клиент сообщает об отказе в журнале событий и называет команду `scada-setup set-password`. Пароли остальных учетных записей меняются как обычно. Если параметр не задан, пароль `root`, измененный из Клиента, сохраняется. Чтобы пароль не хранился в файле открытым текстом, передавайте его через переменную окружения, как в примере выше.
 
-**Под Windows пароль задает `scada-setup`**: файлы параметров, которые он создает для `scada-config`, `scada-proxy` и `scada-filesystem`, содержат `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, а значение переменной `scada-setup apply` берет из параметра `--root-password` (или переменной окружения `SCADA_SETUP_ROOT_PASSWORD`) и сохраняет в зашифрованном [файле паролей](#stored-passwords) компьютера. На компьютере с одним из этих процессов `apply` без пароля не выполняется. Чтобы сменить пароль `root`, выполните `scada-setup set-password --root-password <новый пароль>`: команда сохраняет пароль и перезапускает службы компьютера (смотрите [Смена пароля svc](#svc-rotate)). Править созданные файлы параметров не нужно — при следующем `apply` они создаются заново.
+**Под Windows пароль задает `scada-setup`**: файлы параметров, которые он создает для `scada-config` и `scada-filesystem`, содержат `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, а значение переменной `scada-setup apply` берет из параметра `--root-password` (или переменной окружения `SCADA_SETUP_ROOT_PASSWORD`) и сохраняет в зашифрованном [файле паролей](#stored-passwords) компьютера. На компьютере с одним из этих процессов `apply` без пароля не выполняется. Чтобы сменить пароль `root`, выполните `scada-setup set-password --root-password <новый пароль>`: команда сохраняет пароль и перезапускает службы компьютера (смотрите [Смена пароля svc](#svc-rotate)). Править созданные файлы параметров не нужно — при следующем `apply` они создаются заново.
 
-Параметр задается **каждому** процессу, который хранит конфигурацию в собственной базе данных, — у каждого из них своя учетная запись `root`: это `scada-config`, `scada-proxy` и `scada-filesystem`. Процессы протокольного уровня и `scada-historian` получают конфигурацию от `scada-config` и этот параметр не используют (об этом выводится сообщение в журнал).
+Параметр задается **каждому** процессу, который хранит конфигурацию в собственной базе данных, — у каждого из них своя учетная запись `root`: это `scada-config` и `scada-filesystem`. Процессы протокольного уровня, `scada-historian` и `scada-proxy` получают конфигурацию от `scada-config` и этот параметр не используют (об этом выводится сообщение в журнал); вход под `root` через `scada-proxy` проверяется паролем `root` процесса `scada-config`.
 
 Значение `SCADA_ROOT_PASSWORD` процесс берет из [файла паролей](#stored-passwords) компьютера, который находит по переменной `SCADA_SECRETS_FILE` в параметрах своей службы; если файла или пароля в нем нет — из одноименной переменной окружения. Если запустить процесс без них (например, в [консольном режиме](#console)), процесс оставляет сохраненный пароль `root` без изменений и записывает предупреждение в журнал.
 
@@ -972,7 +974,7 @@ sqlite> select count(*) from SystemEventType;
 `svc` (идентификатор 100). `scada-setup apply` создает ее в конфигурационных
 БД, а ее пароль из `--svc-password` сохраняет в [файле
 паролей](#stored-passwords) компьютера, откуда его берут процессы.
-`scada-config`, `scada-proxy` и `scada-filesystem`
+`scada-config` и `scada-filesystem`
 записывают этот пароль в свои БД при каждом запуске, поэтому **на всех
 компьютерах объекта должен быть задан один и тот же пароль `svc`**.
 
@@ -1019,7 +1021,7 @@ sqlite> select count(*) from SystemEventType;
 root](#root-password) этого компьютера; оба параметра можно указать вместе.
 Если Сервер установлен предварительной сборкой версии 2.6 и файла паролей на
 компьютере еще нет, команда требует оба пароля — на компьютере с
-`scada-config`, `scada-proxy` или `scada-filesystem` —
+`scada-config` или `scada-filesystem` —
 и ничего не меняет, пока их не получит: иначе пароль `root` после переноса
 из реестра потерялся бы.
 
@@ -1247,10 +1249,9 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 
 ### Резервное копирование конфигурации
 
-Конфигурационные БД SQLite хранятся в папках `Configuration` процессов
-`config`, `proxy`, `historian` и `filestore`. Основная конфигурация — у
-`scada-config` (`config\Configuration`); по копии `scada-proxy`
-(`proxy\Configuration`) проверяются имена и пароли пользователей Клиента.
+Конфигурация хранится в БД SQLite в папке `config\Configuration` процесса
+`scada-config`; другие процессы читают ее оттуда. В папке
+`filestore\Configuration` — только служебная учетная запись `svc`.
 
 При использовании PostgreSQL используйте стандартные средства резервного копирования PostgreSQL (`pg_dump`).
 
@@ -1337,6 +1338,6 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 записывает файлы в указанную папку и ничего не устанавливает. Составлять
 файл параметров с нуля не рекомендуется — в нем должны быть, в частности,
 блок [`license`](#licensing) с `"require_gcp_binding": false` (вне Google
-Cloud), [`security.rootPassword`](#root-password) у процессов `scada-config`,
-`scada-proxy`, `scada-historian` и `scada-filesystem` и включенный
+Cloud), [`security.rootPassword`](#root-password) у процессов `scada-config` и
+`scada-filesystem` и включенный
 [`opcua`](#opcua), по которому процессы обмениваются данными.

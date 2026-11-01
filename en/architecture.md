@@ -73,7 +73,7 @@ Control commands, manual value entry and limit changes need the Control right, i
 
 Users authenticate with a name and password. The Server grants the session rights from the roles the account is a member of and checks each request against them; the roles determine access to control operations, manual value entry, engineering tools, and user administration.
 
-**WARNING:** in this version an account's Permissions property grants nothing, and the Client cannot make a new account a member of a role: a user created in the Client can only view data. Accounts that existed before the upgrade keep their rights. See [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights).
+An administrator assigns an account's roles in the Client, with `Roles...` on the user; a new account with no roles can only view data. Accounts that existed before the upgrade keep their rights. See [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights).
 
 For user setup details, see
 [User configuration]({{ '/en/dev/users/' | relative_url }}).
@@ -355,9 +355,9 @@ Configuration is described in the Server section on
 
 The configuration stored on disk contains all SCADA objects, equipment
 structure, and users. It lives in a local database owned by
-`scada-config` (`scada-proxy` and `scada-filesystem` also keep configuration
-databases of their own; `scada-historian`, like the protocol processes,
-receives its configuration from `scada-config`). It is updated immediately when edited so that
+`scada-config` (`scada-filesystem` has a database of its own too, holding
+only the `svc` service account; `scada-proxy`, `scada-historian` and the
+protocol processes receive their configuration from `scada-config`). It is updated immediately when edited so that
 changes are reflected across the running system without waiting for a
 manual save step.
 

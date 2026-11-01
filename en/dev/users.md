@@ -17,13 +17,16 @@ account holding the Configure right (the `ConfigureAdmin` role).
 
 ![]({{ '/img/users.png' | relative_url }})
 
-Double-clicking a user row starts editing its properties: the name, the
-description and the permissions. In this version the Permissions
-property grants nothing — see [Access rights](#access-rights).
+Double-clicking a user row starts editing its properties: the name and the
+description. A user's rights come from roles — see
+[Access rights](#access-rights).
 
 To create a new user, choose `Create -> User` from the window's context menu.
 
 To delete a user, choose `Delete` from the user context menu.
+
+To assign roles to a user, choose `Roles...` from the user context menu (see
+[Assigning roles](#assign-roles)).
 
 To change a password, choose `Set password` from the user context menu. Your
 own account requires the current password; someone else's (an administrator
@@ -96,19 +99,33 @@ The configuration, conversely, is changed only with the Configure right. The
 one exception is a device's Enable and Disable commands: taking a device out
 of service and back needs only the Control right.
 
-**WARNING: in this version an account's Permissions property (Russian UI:
-«Права») grants nothing.** You can still enter a value (0–3), but at sign-in
-the server grants rights from roles alone. A user created in the Client with
-Permissions = 3 can only view data after signing in: the Roles column of the
-Users window shows None («Нет»). This version has no way in the Client to make
-a new account a member of `Operator` or `ConfigureAdmin` — the Roles window is
-read-only, and the `scada-setup` installer assigns no roles. If a new user
-needs control or configuration rights, contact Telecontrol
-(mail@telecontrol.ru) in advance, before the site goes into service.
+### Assigning roles {#assign-roles}
+
+An administrator — an account with the Configure right — assigns an
+account's roles. In the Users window, select the user and choose `Roles...`
+from its context menu. The window that opens has the roles the user already
+holds checked; check the ones needed (for example `Operator` and
+`ConfigureAdmin` for level 3), clear the rest and press OK. The server
+records every change in the [audit log]({{ '/en/client/workbench/#audit-log' | relative_url }}).
+
+The change takes effect at the user's next sign-in: a session already open
+keeps its previous rights.
+
+Roles are assigned by account **name**:
+
+* after renaming a user, assign the roles again — under the new name the
+  user holds none;
+* before deleting a user, remove all of its roles: otherwise an account
+  created later with the same name receives them.
+
+A new account holds no roles and can only view data after signing in. The
+Permissions property (Russian UI: «Права», 0–3), which set the level in
+earlier versions, is no longer in the property window: only roles grant
+rights.
 
 Accounts that existed before the upgrade to this version, including those
 migrated from version 2.5, keep their rights: on its first start the server
-converts their Permissions value, once, into membership of `Operator` and
+converts their former Permissions value, once, into membership of `Operator` and
 `ConfigureAdmin`. The `root` account keeps full rights regardless of roles.
 
 ## Roles {#roles}
@@ -132,10 +149,9 @@ the roles that the
 workbench's Access rights panel show; the panel derives from them what the
 account may view, control and configure.
 
-Role membership can be inspected in the
-[Roles]({{ '/en/client/workbench/#roles' | relative_url }}) window. It is
-read-only: changing a role's membership is a privileged operation performed on
-the server.
+The [Roles]({{ '/en/client/workbench/#roles' | relative_url }}) window shows
+role membership; it is changed with `Roles...` on a user (see
+[Assigning roles](#assign-roles)).
 
 Sign-ins and every action on accounts, passwords and role membership —
 successful or refused — are recorded in the

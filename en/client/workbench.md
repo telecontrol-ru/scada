@@ -563,8 +563,9 @@ be read, which is not the same thing.
 
 The Roles window lists every role on the server together with its members. The
 Type column distinguishes standard roles, which cannot be deleted, from custom
-roles created in this installation. The window is read-only: changing a role's
-membership is a privileged operation performed on the server.
+roles created in this installation. The window itself is read-only: an
+account's roles are assigned in the Users window with `Roles...` on the user
+(see [Assigning roles]({{ '/en/dev/users/#assign-roles' | relative_url }})).
 
 ### Password policy {#password-policy}
 
