@@ -185,6 +185,11 @@ and loads it from the Server at login, so pages and settings follow the
 account to another computer. This applies to the "Telecontrol" server type;
 with the "OPC UA" type the profile is kept on this computer only.
 
+The first time an account with no profile on the Server signs in, the client
+opens the default profile: the previous operator's pages, portfolios and
+settings on this computer do not carry over to the new account. Only the
+position and size of the main windows are taken from the computer.
+
 To hand over a shift:
 
 1. "Sign in automatically next time" must be off at this workstation —
