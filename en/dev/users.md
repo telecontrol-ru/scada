@@ -111,12 +111,10 @@ records every change in the [audit log]({{ '/en/client/workbench/#audit-log' | r
 The change takes effect at the user's next sign-in: a session already open
 keeps its previous rights.
 
-Roles are assigned by account **name**:
-
-* after renaming a user, assign the roles again — under the new name the
-  user holds none;
-* before deleting a user, remove all of its roles: otherwise an account
-  created later with the same name receives them.
+Roles follow the account: when a user is renamed the server moves its roles
+to the new name, and when a user is deleted it removes them — an account
+created later with the same name receives none. The server does the same
+with the user's profile (the pages and settings saved on the server).
 
 A new account holds no roles and can only view data after signing in. The
 Permissions property (Russian UI: «Права», 0–3), which set the level in
