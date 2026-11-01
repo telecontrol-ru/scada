@@ -301,7 +301,8 @@ command prompt:
 
 1. Obtain a version 2.6 license (a `license.json` file) from Telecontrol and
    put it at `%ProgramData%\Telecontrol\SCADA Server\license.json`. Version
-   2.6 does not use the HASP or Guardant hardware key.
+   2.6 does not use the HASP or Guardant hardware key: Telecontrol exchanges
+   it for a license — see [Exchanging the hardware key](#license-exchange).
 2. Back up the whole `%ProgramData%\Telecontrol\SCADA Server` folder.
 3. Unpack the version 2.6 package into a temporary folder — this **does not
    install it**, and the 2.5 Server keeps running — and find
@@ -410,6 +411,25 @@ If version 2.5 had the OPC client or the Vidicon integration enabled, in
 version 2.6 these are the separate `scada-opc` and `scada-vidicon` processes,
 and the license must include them. `migrate` says so in its list of settings
 not carried over.
+
+#### Exchanging the hardware key {#license-exchange}
+
+Version 2.6 does not read the Guardant or HASP key; Telecontrol exchanges it
+for a signed license. The migration plan (step 4) needs no license, and its
+notes end with a request line such as:
+
+```text
+TIERS=config,historian,filesystem,iec104,proxy
+```
+
+Send that line to Telecontrol together with the hardware key's serial number,
+and you receive a long-dated `license.json` naming those processes. The line
+lists everything the version 2.5 Server ran — `config`, `historian` and
+`proxy`, `filesystem` if the file store was enabled, the process for every
+protocol the version 2.5 devices use, and `opc` and `vidicon` if the OPC client
+or the Vidicon integration was enabled — plus every process given to
+`--tiers`. One license covers every computer of the site, so the line names
+the site's processes, not only this computer's.
 
 ### Rolling back to version 2.5 {#rollback-2-5}
 
@@ -665,13 +685,14 @@ The license is checked at startup and then every 5 seconds:
   requests. Once the license file is replaced, service resumes without a
   restart.
 
-**WARNING:** with an expired license, `scada-setup` treats all nine processes
-as licensed (and warns that the license is outside its validity window):
-`apply` without `--tiers` installs every one of them on the computer.
-`scada-setup apply` does not accept a license whose validity period has not
-started yet.
+With an expired license `scada-setup` warns that it has expired but still
+goes by the processes the license names: `apply` without `--tiers` installs
+exactly those. `scada-setup apply` does not accept a license whose validity
+period has not started yet.
 
-`scada-setup status` shows when the license expires. During the last 30
+`scada-setup status` shows the license id and when the license expires. The
+id names whom the license was issued to; quote it when asking Telecontrol
+about the license. During the last 30
 days the Server also raises a daily system event about the expiry, but it is
 visible only in the Client.
 
@@ -884,7 +905,7 @@ example an unknown level) is written to a log with the default settings in the
   example:
 
   ```text
-  License: C:\ProgramData\Telecontrol\SCADA Server\license.json (expires 2027-01-31T00:00:00Z)
+  License: C:\ProgramData\Telecontrol\SCADA Server\license.json (onprem-example-20260131, expires 2027-01-31T00:00:00Z)
   Entitled tiers: config filesystem historian iec104 proxy
   config       SERVICE_RUNNING
   historian    SERVICE_RUNNING

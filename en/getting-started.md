@@ -283,15 +283,16 @@ whose validity period has not started yet is accepted neither by the
 processes nor by `scada-setup`.
 
 **Expiry.** `scada-setup status` shows when the license ends (the line
-`License: … (expires …)`; an expired one shows `OUTSIDE VALIDITY WINDOW`).
+`License: … (<license id>, expires …)`; an expired one shows `EXPIRED` and the
+date). The license id names whom the license was issued to; quote it when
+asking Telecontrol about the license.
 Check it yourself: the Server warns of the coming expiry only as system events
 in the Client, during the last 30 days. Once the license has expired, the
 processes keep running but refuse Client requests until the license is
 replaced.
 
-**WARNING:** with an expired license, `scada-setup` treats all nine
-processes as licensed: `apply` without `--tiers` installs every one of them
-on the computer. Always give `--tiers`.
+With an expired license `scada-setup` warns but still goes by the processes
+the license names: `apply` without `--tiers` installs exactly those.
 
 **Replacing the license file.** Running processes re-read the file every 5
 seconds and pick up a new license without a restart. So replace the file in

@@ -24,7 +24,7 @@ This version is not yet published on the releases page.
 
 1. One package, `telecontrol-scada-<version>.msi`, carries every Server process, `scada-setup` and the Client; the operator workstations get the same package, without `scada-setup`. See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
-1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
@@ -167,6 +167,8 @@ Read this list before buying and before upgrading: each limitation is described 
 #### Installation and security {#limits-setup}
 
 1. The license is issued for a term; after it expires the Server processes refuse requests. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+
+1. Version 2.6 does not read the version 2.5 HASP or Guardant key: on upgrading, it is exchanged for a license using the `TIERS=…` line that the `scada-setup migrate` plan prints. See [Exchanging the hardware key]({{ '/en/server/' | relative_url }}#license-exchange).
 
 1. An account created in the Client can only view data: rights come only from role membership, and the Client cannot add an account to a role. If new users need control or configuration rights, contact Telecontrol before the site goes live. See [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights).
 
