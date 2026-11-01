@@ -102,8 +102,9 @@ object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then
 with the execute flag. If the operator declines to execute, the Server
 releases the selection: it repeats the same command with cause of
 transmission 8 (deactivation) and waits for the device's confirmation with
-cause 9. If the device refuses to release it, the Client does not report
-it, and the selection stays in force until the device's own select timeout.
+cause 9. If the device refuses to release it, the selection stays in force
+until the device's own select timeout, and the Client says so in the current
+events panel.
 
 The ASDU type can be overridden in the output field with the format
 `type:address`, where `type` is one of:

@@ -447,10 +447,15 @@ IEC 60870-5 (SELECT/EXECUTE):
 
 Any answer other than yes — no, or closing the confirmation prompt — sends
 no execute command and releases the selection on the device (for IEC 60870-5
-by deactivating the command, for IEC 61850 with the Cancel service). The
-Client does not report the outcome of the release: if the device refuses it,
-no error is shown, and the selection stays armed until the device's own
-select timeout expires.
+by deactivating the command, for IEC 61850 with the Cancel service). If the
+device refuses the release, no error box is shown — the operator has already
+moved on — but the Client adds a message of its own to the current events
+panel: "Release of selection: <object> - <reason>. The device may stay
+selected until its own selection timeout expires." The selection stays armed
+until that timeout. The message is always shown, whatever the setting for
+reporting successful control. Objects whose device never receives a select
+stage (MODBUS, and IEC 60870-5 commands other than <code>C_SC_NA_1</code>) have
+nothing to release, and give no message.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

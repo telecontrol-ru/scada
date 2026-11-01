@@ -231,8 +231,9 @@ selection on the device: for IEC 60870-5 by deactivating the
 <code>C_SC_NA_1</code> command (cause of transmission 8), for IEC 61850 with
 the Cancel service. MODBUS devices and the other IEC 60870-5 commands never
 receive a select stage, so there is nothing to release. If the device refuses
-to release the selection, the Client does not report it, and the selection
-stays in force until the device's own select timeout.</dd>
+to release the selection, it stays in force until the device's own select
+timeout, and the Client says so in the current events panel (see
+<a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage control</a>).</dd>
 
 <dt>Lock</dt>
 <dd>Yes — the object ignores values from the device and keeps the value set by

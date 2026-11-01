@@ -122,6 +122,8 @@ This version is not yet published on the releases page.
 
 1. The Client interface is available in English, and the appearance is chosen from the *Colour scheme* list — see [Settings]({{ '/en/client/workbench/' | relative_url }}#settings) and [Appearance]({{ '/en/client/workbench/' | relative_url }}#appearance).
 
+1. With two-stage control, a device refusing to release the selection is reported in the current events panel: the selection then stays in force until the device's select timeout. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+
 ### Known limitations {#known-limitations}
 
 Read this list before buying and before upgrading: each limitation is described in detail on the page it links to.
@@ -189,8 +191,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. A summary with more than 1,000 columns restores only the first 1,000 when reopened; the rest disappear without warning. See [Summary]({{ '/en/client/summary/' | relative_url }}).
 
 1. It has not been verified that a configuration change made in the Client reaches every copy of the configuration on the Server. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
-
-1. With two-stage control, the Client does not report a device refusing to release the selection: the selection stays in force until the device's select timeout. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
 ## 2.5.7 {#v2-5-7}
 
