@@ -163,9 +163,9 @@ copy.
 give them to every `apply` and `start` on it, upgrades and restores
 included:
 
-* `start` without `--tiers` tries to start every process in the license and
-  stops with an error at the first process whose service the computer does
-  not have; it does not start the processes after it;
+* `start` without `--tiers` takes every process in the license, starts those
+  whose services the computer has, and prints
+  `Skipped <process>: not installed on this host` for the rest;
 * `apply` without `--tiers` installs every process in the license on the
   computer. `remove --tiers <the extra processes>` removes the extra services
   (without `--purge-data` their data stays);

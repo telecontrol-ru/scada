@@ -32,6 +32,8 @@ This version is not yet published on the releases page.
 
 1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
+1. `scada-setup start`, like `stop`, acts only on the services installed on this computer: processes named in `--tiers` or in the license that are not installed here are skipped with a message. See [The computer's parameters]({{ '/en/getting-started/' | relative_url }}#host-parameters).
+
 1. The `svc` and `root` passwords are changed with the `scada-setup set-password` command, run on every Server computer starting with the central one. See [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate).
 
 1. The `svc` and `root` passwords are stored in an encrypted file that only the Server's services and the computer's administrators can open, not in plain text in the registry; the first `apply` or `set-password` moves them out of the registry. See [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords).

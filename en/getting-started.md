@@ -198,8 +198,9 @@ the passwords to `apply`), upgrades and restores included:
 
 * without `--tiers` both commands take **every** process in the license:
   `apply` installs processes that do not belong on the computer, and `start`
-  stops with an error at the first process whose service the computer does
-  not have, leaving the processes after it unstarted;
+  starts only those whose services the computer has, printing
+  `Skipped <process>: not installed on this host` for the rest; if the
+  computer has none of those services, `start` ends with an error;
 * without `--central`, on a computer without `scada-config`, both commands
   refuse to run;
 * without `--license` both commands look for the license at
