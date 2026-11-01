@@ -109,6 +109,18 @@ The 2.6 Client shows bindings of the *положение*,
 *текст* and *значение_базовое* properties; a binding of any other property is
 kept in the display but not shown in the Client.
 
+A shape's *гиперссылка* (hyperlink) property names the schematic a
+double-click on it opens in the Client (when the shape's object has no
+unacknowledged events). Give the file name of a Modus schematic (`.sde` or
+`.xsde`) relative to the folder holding the schematic itself, for example
+`Seti320.sde` or `../Substations/T_1.sde`; the file must be in the Server's
+schematics folder.
+
+The Client draws a breaker's position with the fill colours that the
+switching-device table in the schematic's settings defines for a closed and
+an open breaker. When the table defines no colour, or a transparent one, the
+breaker is filled bright green when closed and red when open.
+
 ![]({{ '/img/modus-f11-bus.png' | relative_url }})
 
 To bind several properties, separate them with `;`, for example:
@@ -136,3 +148,17 @@ An example of the menu (captured from an earlier Client version, where the
 menu was called «Схема»):
 
 ![]({{ '/img/menu-scheme.png' | relative_url }})
+
+## Vidicon displays {#vidicon}
+
+The Client shows Vidicon displays — files with the *vds* extension — in the
+same `Display` window. A shape takes an object's value through its tags: in
+each tag (the shape's *Tag* section) the *Raw* field holds the object's
+address, for example `{VIDICON.Share.1\Substation.TS.Breaker 1}`, and the
+shape's formulas read the tag's value (`Tag.State`) — that is how a breaker
+changes colour and a disconnector moves its blade. The Client subscribes to
+each address the way it does to a formula in a table, and re-evaluates the
+shape's formulas whenever the value changes. A value field whose formula is
+`Tag.<tag name>` shows the value as a table does, with its units.
+
+See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).

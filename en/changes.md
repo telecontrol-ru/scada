@@ -114,7 +114,9 @@ This version is not yet published on the releases page.
 
 1. The *Audit log* window shows sign-ins and who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
 
-1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Bindings of other properties, limits and blinking on an alarm are not shown, breaker positions take the standard Modus colours, and a double-click does not follow a hyperlink to another schematic — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values) and [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working).
+1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Breakers are filled with the colours from the schematic's settings, a shape with unacknowledged events blinks a frame, and a double-click on a shape with no unacknowledged events follows its *гиперссылка* (hyperlink) property to another schematic. Bindings of other properties and limits are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+
+1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
 
@@ -164,13 +166,9 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
 
-1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties, limits, or a shape blinking on an alarm. If a site's displays rely on these, check the displays before upgrading. The bindings have not yet been tried on the schematics of working sites, so in any case open your site's schematics in a 2.6 Client before upgrading the workstations. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties or limits. If a site's displays rely on these, check the displays before upgrading. The bindings have not yet been tried on the schematics of working sites, so in any case open your site's schematics in a 2.6 Client before upgrading the workstations. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
-1. Breaker positions on Modus displays take the standard Modus colours, not those set in the display's settings. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
-
-1. A double-click on a Modus display shape does not follow its hyperlink to another schematic as in 2.5.7: open the other schematic from the **Display** menu. Bound shapes inside a Graphic Editor group have not been tried in version 2.6. See [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working) and [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
-
-1. Vidicon schematics (`.vds`) show no live values on the schematic itself: the Measurements panel and the inspector show them. See [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working).
+1. Bound shapes inside a Modus Graphic Editor group have not been tried in version 2.6. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
 1. The display module is a separate library that may not be included in the Client installation; without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 

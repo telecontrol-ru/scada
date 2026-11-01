@@ -32,8 +32,10 @@ those objects' present state and update with it:
 
 * **A switching device** (a shape with the *положение*, "position", property)
   is drawn closed or open from the value of its discrete (ТС) object: a
-  non-zero value is closed, zero is open. A breaker square is filled bright
-  green when closed and red when open.
+  non-zero value is closed, zero is open. A breaker square is filled with the
+  colours the schematic's settings define for a closed and an open breaker;
+  when the schematic defines none, bright green when closed and red when
+  open.
 * **A text field** (a shape with the *текст*, "text", property) shows the
   value of its measured (ТИТ) object the way a table does: with its units and
   with a "?" mark on an unreliable value.
@@ -42,17 +44,32 @@ those objects' present state and update with it:
   schematic is not confirmed at that moment. Until a value arrives, a device
   stays in the position its designer drew, and a text field keeps its drawn
   text.
+* When the object has **unacknowledged events**, a frame in the critical
+  alarm colour blinks around the shape until the events are acknowledged (by
+  double-clicking the shape, see [Working with a schematic](#working), or in
+  the event panel).
 
 Shapes that are not bound are drawn as the designer drew them.
 
 > **Caution.** Compared with the 2.5.7 Client, a Modus schematic does **not**
-> show: a binding of an arbitrary shape property (*property_name=alias* with
-> a name other than *положение*, *текст* or *значение_базовое*), the object's
-> limits, or a shape blinking on an alarm. The breaker position colours are
-> the Modus default colours, not the ones set in the schematic's settings.
-> Learn about alarms from the
-> [event panel]({{ '/en/client/' | relative_url }}#events-panel) and the
-> status bar.
+> show a binding of an arbitrary shape property (*property_name=alias* with a
+> name other than *положение*, *текст* or *значение_базовое*) or the object's
+> limits.
+
+## Live values on a Vidicon schematic {#live-values-vidicon}
+
+Shapes of a Vidicon schematic whose tags name an object's address show that
+object's present value and update with it, the way their designer drew them:
+a breaker changes colour, a disconnector moves its blade, a value field shows
+the value with its units and with a "?" mark on an unreliable value. Until a
+value arrives, a shape stays as it was saved in the schematic.
+
+When the object has unacknowledged events, a frame in the critical alarm
+colour blinks around the shape until the events are acknowledged in the
+event panel.
+
+Fields whose formula uses the address's description or units functions show
+the text saved in the schematic.
 
 ## Working with a schematic {#working}
 
@@ -62,17 +79,19 @@ What a click does depends on the kind of schematic.
   object selects that object: the Inspector shows its value, and its commands
   are in the **Item** menu. When several objects are bound to one shape, the
   first is selected. A double-click acknowledges the selected object's
-  events. Unlike the 2.5.7 Client, a double-click does not follow the shape's
-  *гиперссылка* (hyperlink) property to another schematic: open that one
-  from the **Display** menu. Bound shapes inside a Graphic Editor group have
+  events; when there are no unacknowledged events and the shape has a
+  *гиперссылка* (hyperlink) property, a double-click opens the Modus
+  schematic it names, as in the 2.5.7 Client. The schematic is looked for
+  relative to the folder of the open one; a link to a file outside the
+  Server's schematics folder is not opened. Bound shapes inside a Graphic Editor group have
   not been checked in version 2.6 — see
   [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 * **Vidicon schematics** (`.vds`) — opened from the same **Display** menu. A
   click on a shape bound to an object selects that object — its commands are
   in the **Item** menu — and adds it to the "Measurements" panel. A
-  double-click does nothing: acknowledge events in the event panel. A Vidicon
-  schematic window shows no live values on the schematic itself: read them in
-  the "Measurements" panel and in the Inspector.
+  double-click does nothing: acknowledge events in the event panel. The
+  shapes show live values on the schematic itself — see
+  [Live values on a Vidicon schematic](#live-values-vidicon).
 
 Clicking a shape that has no object behind it, or empty space on the
 schematic, clears the selection: the **Item** menu commands, the Inspector and
