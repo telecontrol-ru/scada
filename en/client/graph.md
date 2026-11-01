@@ -169,8 +169,9 @@ using the object context menu.
 
 ## Printing and export {#print-export}
 
-A graph is printed and saved **as an image** — as it is shown on screen,
-with all its panes, lines, legend and cursors.
+A graph is printed and saved as an image — as it is shown on screen, with
+all its panes, lines, legend and cursors — and its values are exported to CSV
+and Excel.
 
 * `Print` in the graph's context menu opens the print preview. The graph
   prints on one sheet: a header at the top — the window title, "Period:
@@ -186,8 +187,12 @@ The printout uses the on-screen colours: with a dark
 graph prints on a dark background. For paper, switch to a light colour scheme
 before printing.
 
-The `Export to CSV` and `Export to Excel` commands are unavailable for a graph
-window: they would not keep the graph's values. To keep the values, open the
-[Data]({{ '/en/client/data/' | relative_url }}) or
-[Summary]({{ '/en/client/summary/' | relative_url }}) window from the graph
-and print or export that.
+The `Export to CSV` and `Export to Excel` commands write the values of every
+line of the graph over the **time range visible on screen**. The first column
+is "Time", followed by one column per line, headed with its name. Each row is
+a moment at which at least one line recorded a value; a line's cell is filled
+only when that line recorded a value at that very moment — no values are
+filled in between. To export another range, scroll or zoom the graph first.
+See [Export]({{ '/en/client/export/' | relative_url }}). For values
+aggregated by interval use the
+[Summary]({{ '/en/client/summary/' | relative_url }}) window.

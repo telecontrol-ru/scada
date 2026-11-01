@@ -116,10 +116,10 @@ interval:
    aggregation function and interval ("Maximum, 1-Hour", for example) and the
    time it was printed. The CSV file does not include the period or the
    aggregation function — add them yourself.
-   By default the CSV file separates columns with a comma `,`, while
-   Microsoft Excel with Russian regional settings expects a semicolon: if
-   the file will be opened in Excel, choose the delimiter `;` in the export
-   dialog — see [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
+   On the first export the Client proposes the column delimiter of the
+   Windows regional settings — the one Microsoft Excel on that computer
+   expects (a semicolon `;` for Russian settings); see
+   [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
    *Export to Excel* is offered only on Windows, on a computer with
    Microsoft Excel installed — see [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
 
@@ -134,6 +134,9 @@ An empty cell means the archive holds no recorded change of the value in
 that interval. That also happens when data exists but the value did not
 change during the whole interval — see
 [Rows and empty cells]({{ '/en/client/summary/' | relative_url }}#rows).
+*Time Average* and *Time Integral* are the exception: they take the value in
+force from the start of the interval, so an interval without changes is not
+empty for them.
 
 ## Analysing a graph
 
@@ -151,10 +154,10 @@ change during the whole interval — see
    per interval, so for the same period they can differ.
 
 A graph can be [printed or saved as an image]({{ '/en/client/graph/' | relative_url }}#print-export)
-— as it is shown on screen. That does not keep its numbers: to keep the
-values, open the *Data* or *Summary* window from the graph and print or
-export that. From a graph these commands open a window for the **selected
-line** only; to get a summary of all the graph's objects at once, build it
+— as it is shown on screen — and the values of all its lines over the
+visible range exported to CSV or Excel. For values aggregated by interval use
+the *Summary* window: from a graph the *Summary* command opens it for the
+**selected line** only; to get a summary of all the graph's objects at once, build it
 from the object panel — see
 [A weekly report of several objects](#week-print). A graph shows at most
 10,000 points at a time: over a long period the time scale is narrowed
@@ -212,8 +215,6 @@ So that you do not look for them, the Client has no
 * report templates or scheduled reports — a summary is opened and set up by
   hand each time (the window keeps its period, interval and function);
 * comparison of two periods in one summary or on one graph;
-* CSV export of a graph: a graph is printed and saved only as an image, and
-  its values are kept from the *Data* and *Summary* windows;
 * consumption of a cumulative counter per interval. Energy from a power
   measurement comes from *Time Integral* (in kW·s — divide by 3600 for kWh;
   see [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function)).

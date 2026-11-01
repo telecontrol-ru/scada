@@ -132,6 +132,14 @@ This version is not yet published on the releases page.
 
 1. A summary shows at most 10 000 intervals. When the period is longer, a notice above the summary reads "The summary is limited to 10000 rows and ends at …", and the printout header repeats it. See [Summary]({{ '/en/client/summary/' | relative_url }}).
 
+1. A summary holds at most 1,000 columns; objects beyond that are not added, and a notice above the summary says "The summary is limited to 1000 columns; <number> items were not added." — also when a window saved with more columns is opened. Such columns used to disappear on reopen without warning. See [Summary size]({{ '/en/client/summary/' | relative_url }}#limits).
+
+1. In a summary, *Time Average* and *Time Integral* take the value in force when the interval began — including one recorded before the period — and an interval in which the value did not change shows that value instead of an empty cell. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
+
+1. A graph's values are exported to CSV and Excel: every line over the visible time range, one column per line. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
+
+1. CSV export proposes the column delimiter of the Windows regional settings on first use (a semicolon for Russian settings), so the file opens in Excel in columns. See [Export to CSV]({{ '/en/client/export/' | relative_url }}#open-in-excel).
+
 1. A custom period whose start is not before its end is refused: *OK* stays unavailable until the period is corrected.
 
 1. The Client interface is available in English, and the appearance is chosen from the *Colour scheme* list — see [Settings]({{ '/en/client/workbench/' | relative_url }}#settings) and [Appearance]({{ '/en/client/workbench/' | relative_url }}#appearance).
@@ -166,10 +174,6 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Archive and reports {#limits-archive}
 
-1. In a summary, *Time Average* and *Time Integral* do not count the start of the interval before its first recorded change: the value from the previous interval is not carried over. See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
-
-1. A graph is printed and saved only as an image; its values are not exported to CSV or Excel. See [Printing and export of a graph]({{ '/en/client/graph/' | relative_url }}#print-export).
-
 1. *Export to Excel* is offered only on Windows, on a computer with Microsoft Excel installed. See [Export to Excel]({{ '/en/client/export/' | relative_url }}#excel).
 
 #### Installation and security {#limits-setup}
@@ -201,8 +205,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
-
-1. A summary with more than 1,000 columns restores only the first 1,000 when reopened; the rest disappear without warning. See [Summary]({{ '/en/client/summary/' | relative_url }}).
 
 1. It has not been verified that a configuration change made in the Client reaches every copy of the configuration on the Server. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 

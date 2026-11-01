@@ -54,8 +54,10 @@ holds the values from 10:00 to 11:00.
 An empty cell means that **the archive holds no recorded change of the value
 in that interval**. That is not necessarily missing data: if the value did
 not change during the whole interval, the archive holds nothing for it and
-the cell stays empty — for the *Last* function too. The value in force at the
-start of the interval is not carried over from the previous interval.
+the cell stays empty — for the *Last* function too. *Time Average* and *Time
+Integral* are the exception: for them the value in force at the start of the
+interval is carried over from the previous one, and an interval without
+changes shows it (see [Aggregation function](#function)).
 
 ## Summary size {#limits}
 
@@ -71,9 +73,12 @@ interval stops about 6.9 days after the start of the month, and a custom
 interval of 5 minutes or longer, and for anything longer than a month 1 hour
 or longer; 1 hour or 1 day is usually enough for a report.
 
-More than 1,000 columns can be added, but when a saved window is opened
-again (for example after the Client restarts) only the first 1,000 are
-restored and the rest are **silently** dropped.
+A summary holds at most 1,000 columns. Objects beyond that are not added,
+and a notice above the table says so: "The summary is limited to 1000
+columns; <number> items were not added." («Сводка ограничена 1000 столбцами;
+не добавлено элементов: <число>.»). The same notice appears when a saved
+window holds more than 1,000 columns (an earlier Client version could save
+one): the first 1,000 are restored.
 
 ## Aggregation interval {#interval}
 
@@ -139,12 +144,17 @@ integral.</dd>
 
 </dl>
 
-**The start of the interval before its first recorded change is not
-counted.** The value in force when the interval began is not carried over
-from the previous one, so if the value first changed at 10:20, the
-10:00–11:00 interval starts at 10:20 for *Time Average* and *Time Integral*,
-and the integral covers less than the full hour. An interval in which the
-value never changed stays empty (see [Rows and empty cells](#rows)).
+**The start of the interval before its first recorded change is
+counted.** For *Time Average* and *Time Integral* an interval starts from the
+value recorded last before it — even when that was in the previous interval
+or before the summary's period. If the value was 40 and changed to 10 at
+10:20, the 10:00–11:00 interval counts 40 for 20 minutes and 10 for 40
+minutes. An interval in which the value never changed shows the value that
+held throughout it. The last value holds to the end of the period, but not
+past the present moment. If the last value before the interval is not good,
+or the archive has none, the time before the first change is not counted.
+Earlier versions did not count the start of the interval before its first
+change, and left an interval without changes empty.
 
 Cell values are shown in the object's display format and engineering units.
 *Count* and *Time Integral* are plain numbers, without the object's units or

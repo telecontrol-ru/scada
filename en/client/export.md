@@ -16,10 +16,13 @@ permalink: /en/client/export/
 Data from the [Table]({{ '/en/client/table/' | relative_url }}),
 [Summary]({{ '/en/client/summary/' | relative_url }}),
 [Data]({{ '/en/client/data/' | relative_url }}),
+[Graph]({{ '/en/client/graph/' | relative_url }}),
 [Event journal]({{ '/en/client/events/' | relative_url }}) and
 [Device watch]({{ '/en/client/device-watch/' | relative_url }}) windows
-can be exported to a CSV file. Graphs, displays and user tables cannot be
-exported.
+can be exported to a CSV file. A graph exports the values of its lines over
+the visible time range — see
+[Graph: printing and export]({{ '/en/client/graph/' | relative_url }}#print-export).
+Displays and user tables cannot be exported.
 
 To export data, choose the `Export to CSV` command in the window's
 context menu.
@@ -54,12 +57,19 @@ different Windows language.
 <dt>Delimiter</dt>
 <dd>
 
-* Comma `,`, used by default
+* Comma `,`
 * Semicolon `;`
 * Colon `:`
 * Tab
 * Space
 * A custom character
+
+The first export proposes the list separator of the Windows regional
+settings — the one Excel on that computer splits the file on: a semicolon `;`
+for Russian settings, a comma `,` for English (US). On macOS the delimiter
+follows the system's decimal separator: a semicolon `;` when the decimal
+separator is a comma, a comma `,` otherwise. The chosen delimiter is saved
+and proposed from then on. Earlier versions always proposed a comma.
 
 </dd>
 
@@ -90,7 +100,10 @@ associated application.
 With either encoding the file opens in Microsoft Excel by double-clicking
 it, and non-Latin text such as Russian names reads correctly. Excel then takes
 the column delimiter from the Windows regional settings rather than from the
-file, while the Client separates columns with a comma `,` by default: if a row's values all land in one column, export again with the
+file. The Client proposes exactly that delimiter on the first export, so
+the file opens in columns. If a row's values all land in one column (for
+example, the file was exported with another delimiter or is opened on a
+computer with different regional settings), export again with the
 delimiter Windows uses (a semicolon `;` for Russian settings), or open the
 file with *Data — From Text/CSV* in Excel and set *Delimiter* to the one
 chosen at export.
