@@ -25,7 +25,7 @@ it in the Client.
 
 1. Open the `Files` window (`More -> Files`).
 2. Choose `Create -> File` from the window's context menu. Pick the
-   display file (`sde` or `xsde`) on your computer — it is sent to the
+   display file (`sde`, `xsde` or `vds`) on your computer — it is sent to the
    Server.
 
 `Create -> Folder` creates a folder named "New Folder" («Новая папка») in the

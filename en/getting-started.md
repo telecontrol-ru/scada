@@ -266,7 +266,8 @@ needs the Modus graphics editor.
 The Server processes run on Linux, but this version has neither a Linux
 package nor a tool that prepares a working installation: on Linux
 `scada-setup` only writes parameter files — it does not create the `svc`
-service account or the certificate, and does not set the passwords.
+service account, creates the Server certificate only with the
+`--create-certificate` switch, and does not set the passwords.
 **Installing the Server on Linux is available on request** — contact
 Telecontrol (mail@telecontrol.ru).
 
@@ -335,14 +336,20 @@ least one of `scada-config`, `scada-proxy`, `scada-historian` and
 `scada-filesystem`, `apply` refuses to run without it: each of those processes
 has its own `root` account, which would otherwise accept an empty password.
 
-`scada-setup` stores the password in the Windows service settings of those
-processes rather than in the parameter files, and the processes write it again
-on every start. So:
+`scada-setup` stores the password in the computer's encrypted
+[password file]({{ '/en/server/' | relative_url }}#stored-passwords) rather
+than in the parameter files, and the processes write it again on every start.
+So:
 
-* **to change the root password, run `scada-setup apply` with the new
-  `--root-password`** — `apply` restarts the running services it handed the
-  new password to. A password changed from the Client is replaced by the one
-  given to `apply` the next time the process starts;
+* **to change the root password, run from an elevated command prompt**
+
+  ```bat
+  "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --root-password <new password>
+  ```
+
+  The command stores the new password and restarts this computer's process
+  services. A password changed from the Client is replaced by the stored one
+  the next time the process starts;
 * give the current root password on every later `apply`, upgrades included.
 
 See [Root password]({{ '/en/server/' | relative_url }}#root-password).
@@ -424,12 +431,12 @@ the `scada-iec104` process, if installed, takes port 2404 and works with the
 demo devices. **Before going live, replace the configuration with the
 project's** (below).
 
-The configuration is kept in three copies, one per process, each in its
-process's `Configuration` folder: `scada-config` serves the configuration to
-the protocol processes, `scada-proxy` checks Client user names and passwords
-against it, and `scada-historian` reads the archive list and the archive
-assigned to each object from it. Every copy starts as the demo project, so
-**replace all three**. `scada-filesystem` has a database of its own too, in
+The configuration is kept in two copies, in the `Configuration` folders of
+`scada-config` and `scada-proxy`: `scada-config` serves the configuration to
+the protocol processes and to `scada-historian` (the archive list and the
+archive assigned to each object), and `scada-proxy` checks Client user names
+and passwords against it. Both copies start as the demo project, so
+**replace both**. `scada-filesystem` has a database of its own too, in
 `filestore\Configuration`, but it holds only the `svc` service account:
 `apply` removes everything else from it, and it needs no replacing.
 
@@ -611,7 +618,7 @@ msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 ```
 
 Give `apply` the same [computer's parameters](#host-parameters) as at
-installation, and the same `svc` password. The installer replaces only the
+installation, and the current `svc` password. The installer replaces only the
 executables; `apply` rewrites the parameter files (keep your own parameters
 in [`server.override.json`]({{ '/en/server/' | relative_url }}#server-override),
 which is preserved) and leaves the data alone. On computers running only protocol
@@ -674,7 +681,7 @@ On the computer where the 2.5 Server ran:
    finish with `apply` with the same `--tiers` and passwords (see
    [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5)).
 6. Install the version 2.6 Client on **every** workstation (see
-   [Displaying schematics](#displays)): whether a version 2.5 Client works
+   [Installing the Client](#client-install)): whether a version 2.5 Client works
    with a 2.6 Server has not been verified.
 7. Check the result from the Client.
 
@@ -727,9 +734,9 @@ and run <code>scada-setup apply</code>.</dd>
 <dt>Protocol processes get no configuration</dt>
 <dd>If a protocol process's log shows <code>Bad_UserAccessDenied</code>, the
 <code>svc</code> password on that computer differs from the central
-computer's. Run <code>scada-setup apply</code> there
-with the original <code>svc</code> password (see <a href="{{ '/en/server/' | relative_url }}#svc">The svc
-account</a>). If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
+computer's. Run <code>scada-setup set-password --svc-password &lt;the central
+computer's current svc password&gt;</code> there (see
+<a href="{{ '/en/server/' | relative_url }}#svc-rotate">Changing the svc password</a>). If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt>The devices of a protocol computer never appear</dt>
 <dd>The Client does not show the devices served by a computer running
@@ -764,8 +771,10 @@ computer does not have. Run it again with the
 
 <dt>A process runs but refuses requests</dt>
 <dd>The license is not verified or has expired (the expiry is in the
-<code>scada-setup status</code> output). Outside Google Cloud, check that
-<code>"license": {"require_gcp_binding": false}</code> is set; for an
+<code>scada-setup status</code> output). If the process's parameter file was
+written by hand, check that it sets
+<code>"license": {"require_gcp_binding": false}</code> (<code>scada-setup</code>
+sets it itself); for an
 expired license, replace the file — no restart is needed.</dd>
 
 <dt>Values are no longer archived</dt>

@@ -99,13 +99,15 @@ Example of a distributed deployment:
   [Archiving]({{ '/en/dev/history/' | relative_url }})
 * [Event journal]({{ '/en/client/events/' | relative_url }}) with
   acknowledgement and importance-based highlighting
-* Redundancy support for information objects
+* [Redundancy]({{ '/en/architecture/' | relative_url }}#data-items) support for information objects
 * Role-based access control through
   [user administration]({{ '/en/dev/users/' | relative_url }})
 * Online engineering from any workstation, including
   [configuration export and import]({{ '/en/dev/excel/' | relative_url }})
 * [Device watch]({{ '/en/client/device-watch/' | relative_url }}) and
   [device metrics]({{ '/en/client/device-metrics/' | relative_url }})
-* [CSV export]({{ '/en/client/export/' | relative_url }}) and
+* [CSV]({{ '/en/client/export/' | relative_url }}) and
+  [Excel]({{ '/en/client/export/' | relative_url }}#excel) export,
   [printing]({{ '/en/client/print/' | relative_url }}) of tables,
-  summaries, the Data window and the event journal
+  summaries, the Data and Device watch windows and the event journal, and
+  [graph printing and saving as an image]({{ '/en/client/graph/' | relative_url }}#print-export)

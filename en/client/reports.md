@@ -12,10 +12,10 @@ permalink: /en/client/reports/
 {:toc}
 
 This page is for users who watch the site and prepare reports but neither
-control equipment nor change the configuration (rights "0 — Executive /
-viewer",
-see [Roles and permissions]({{ '/en/architecture/' | relative_url }}#roles-and-permissions)).
-Everything described here is available with those rights, except
+control equipment nor change the configuration — an account with neither
+the `Operator` nor the `ConfigureAdmin` role (see
+[Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
+Everything described here is available to such an account, except
 acknowledging events, which needs the *Control* or *Configure* right.
 
 The Server license is issued for a term: after it expires the Server

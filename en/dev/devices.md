@@ -570,6 +570,11 @@ DC objects whose data another Server process receives (for example, the
 Modbus or IEC 61850 process) is not confirmed to work in this version; if
 you need it, contact Telecontrol (mail@telecontrol.ru).
 
+**A release of selection received from the DC is not passed on to the source
+device.** If the DC selects an object for two-stage control and then abandons
+the command, the selection on the source device stays until the device's
+timeout.
+
 Modbus retransmission needs Mode = retransmission on the Modbus direction.
 
 ## IEC 61850 devices {#iec-61850}

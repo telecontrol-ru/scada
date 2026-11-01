@@ -95,7 +95,7 @@ in the installation folder, the one above the folder holding
 | `status` | License summary and each process's service state | no |
 | `start` / `stop` | Start / stop this computer's services in order | yes |
 | `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the data of the processes named in `--tiers` too — see [Removing services and data](#remove)) | yes |
-| `generate --output <dir>` | Write the parameter files only, for inspection | no |
+| `generate --tiers <list> --output <dir>` | Write the parameter files only, for inspection | no |
 | `migrate [--execute]` | Move a version 2.5 Server's data over — see [Upgrading from version 2.5](#upgrade-2-5) | with `--execute` |
 | `set-password` | Change the `svc` and/or `root` password on this computer and restart its services — see [Changing the svc password](#svc-rotate) | yes |
 
@@ -111,10 +111,10 @@ databases `apply` creates are copies of the demo configuration shipped with
 the installer: objects with emulation, two enabled IEC 60870-5-104 links (one
 of them accepts connections on port 2404 of this computer — the
 `scada-iec104` process takes that port, if it is installed), two archives,
-and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Every
-one of the three copies — in the `Configuration` folders of `config`, `proxy`
-and `historian` — starts as this demo project. Before going live, replace all
-three with the project's configuration (see
+and the users «Клиент 1» … «Клиент 10» and `guest` with no passwords. Both
+copies — in the `Configuration` folders of `config` and `proxy` — start as
+this demo project. Before going live, replace both with the project's
+configuration (see
 [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project)):
 deleting the demo data in the Client has not been verified to reach every
 copy.
@@ -123,8 +123,8 @@ copy.
 
 * `--tiers <list>` — this computer's processes, comma-separated. When it is
   absent, `apply`, `start` and `migrate` take **every process in the
-  license**, while `stop`, `status` and `remove` take every Server service
-  the computer has.
+  license**, while `stop`, `status`, `remove` and `set-password` take every
+  Server service the computer has. `generate` requires it.
 * `--central <address>` — the central computer's address; required by
   `apply`, `start` and `migrate` on a computer without `scada-config`.
 * `--advertise <address>` — this computer's address for the others. Without
@@ -235,7 +235,7 @@ registry no longer holds the passwords.
 
 * **An administrator of the computer can read these passwords.** Do not give
   untrusted people administrator rights on the Server computers.
-* **A Server installed by an earlier build of `scada-setup` keeps the
+* **A Server installed by a pre-release build of version 2.6 may keep the
   passwords in plain text** — in the `Environment` values of the registry keys
   `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>`, where
   anyone who signs in to Windows on that computer can read them. The first
@@ -626,7 +626,7 @@ The settings live in the `license` block of the parameter file:
 
 ```json
 "license": {
-    "file": "C:\\ProgramData\\Telecontrol\\license.json",
+    "file": "C:\\ProgramData\\Telecontrol\\SCADA Server\\license.json",
     "require_gcp_binding": false
 }
 ```
@@ -959,8 +959,11 @@ its own database; each of them has its own `root` account: `scada-config`,
 `scada-historian` receive their configuration from `scada-config` and do not
 use this parameter (they log a message saying so).
 
-A process gets the `SCADA_ROOT_PASSWORD` variable from its service. Started
-without that variable (for example in [console mode](#console)), it leaves
+A process takes the `SCADA_ROOT_PASSWORD` value from the computer's
+[password file](#stored-passwords), which it finds through the
+`SCADA_SECRETS_FILE` variable in its service settings; when there is no such
+file or no password in it, from the environment variable of the same name.
+Started without either (for example in [console mode](#console)), it leaves
 the stored `root` password unchanged and writes a warning to its log.
 
 ## The svc account {#svc}
@@ -987,8 +990,11 @@ site must be given the same `svc` password**.
 ### Changing the svc password {#svc-rotate}
 
 The `set-password` command stores the new password in the
-[password file](#stored-passwords) and restarts this computer's process
-services. From an elevated command prompt:
+[password file](#stored-passwords), restarts this computer's process services
+and starts every installed process service, **stopped ones included**. Do not
+run it while any process of this computer runs in [console mode](#console):
+that process's service would be started alongside it. From an elevated
+command prompt:
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --svc-password <new password>
@@ -1010,7 +1016,7 @@ maintenance window.
 
 With `--root-password <new password>` the command changes this computer's
 [root password](#root-password) the same way; both can be given together.
-If the Server was installed by an earlier build of `scada-setup` and the
+If the Server was installed by a pre-release build of version 2.6 and the
 computer has no password file yet, the command requires both passwords — on a
 computer running `scada-config`, `scada-proxy` or
 `scada-filesystem` — and changes nothing until it has them: otherwise the

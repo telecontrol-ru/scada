@@ -45,8 +45,9 @@ when the server data changes.
 
 Cell editing is available only in edit mode, which is switched on with the
 `Edit` command. The command is available only to users with the *Configure*
-right (rights 1 and 3); with rights "0 — Executive / viewer" the table is
-view-only. In edit mode, the context menu offers the background-color
+right (the `ConfigureAdmin` role, see
+[Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)); without
+it the table is view-only. In edit mode, the context menu offers the background-color
 command (see below).
 
 ## Formatting

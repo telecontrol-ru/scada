@@ -423,7 +423,7 @@ send it, choose "Yes".
 > with no pause for the operator. Do not turn this setting off at an operator
 > workstation.
 
-### Two-stage control
+### Two-stage control {#two-stage}
 
 When an object has [two-stage control]({{ '/en/dev/data-items/' | relative_url }})
 enabled, the command reaches the device in two stages, as defined by
@@ -440,13 +440,12 @@ IEC 60870-5 (SELECT/EXECUTE):
 3. **Execute.** Answering yes sends the execute command, and the device
    switches the circuit it already reserved.
 
-Answering no sends no execute command and releases the selection on the
-device (for IEC 60870-5 by deactivating the command, for IEC 61850 with the
-Cancel service). If the device refuses to release it, the Client reports an
-error, and the selection stays armed until the device's own select timeout
-expires. If the command window is closed without answering the prompt, the
-selection is not released in this version and likewise lasts until that
-timeout.
+Any answer other than yes — no, or closing the confirmation prompt — sends
+no execute command and releases the selection on the device (for IEC 60870-5
+by deactivating the command, for IEC 61850 with the Cancel service). The
+Client does not report the outcome of the release: if the device refuses it,
+no error is shown, and the selection stays armed until the device's own
+select timeout expires.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

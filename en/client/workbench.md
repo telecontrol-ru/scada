@@ -386,8 +386,8 @@ rules, and the count updates as rules are added or removed.
 ### Protocol
 
 A rule's protocol follows from the destination device's type and is not
-chosen separately. **Modbus**, **IEC 60870-5-104** and **IEC 61850** are
-supported. A device whose type declares no transmittable items does not
+chosen separately. **Modbus** and **IEC 60870-5-101/104** are supported;
+the Server does not forward objects over IEC 61850. A device whose type declares no transmittable items does not
 appear in the destination rail.
 
 ### Creating a rule
@@ -400,6 +400,16 @@ match the contents of the open table.
 Each new rule needs a destination address, typed directly into the table's
 Address column. The Object column is not editable — the source is set only by
 the tick in the tree.
+
+**WARNING: a rule created by ticking an object gets address 1.** Give it the
+address agreed with the destination straight away — otherwise every object is
+sent under one address.
+
+Many rules with consecutive addresses are easier to create at once: select
+the objects' rows, for example in a [Table]({{ '/en/client/table/' | relative_url }}),
+and choose *Create — Transmission Rules...* from the context menu — this opens
+the [bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
+wizard.
 
 Selected rules are removed with the **Delete** command, which requires the
 delete-node permission.
@@ -564,8 +574,9 @@ is:
 
 ### Audit log {#audit-log}
 
-The Audit log window is the event journal narrowed to audit events: who did
-what to accounts, passwords and role membership. Both successful and refused
+The Audit log window is the event journal narrowed to audit events: who
+signed in and when, and who did what to accounts, passwords and role
+membership. Both successful and refused
 operations are recorded — a log showing only what succeeded cannot answer who
 *tried*.
 

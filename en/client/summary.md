@@ -66,8 +66,8 @@ If the period contains more than 10,000 intervals, the summary ends at row
 10000 rows and ends at <time>." («Сводка ограничена 10000 строками и
 заканчивается в <время>.»); the printout repeats it in its header. For
 example, *Month* with a 1-minute
-interval stops about 6.9 days after the start of the month, and with a
-5-minute interval about 34 days after it. For a week or a month choose an
+interval stops about 6.9 days after the start of the month, and a custom
+90-day period with a 5-minute interval about 34 days after its start. For a week or a month choose an
 interval of 5 minutes or longer, and for anything longer than a month 1 hour
 or longer; 1 hour or 1 day is usually enough for a report.
 

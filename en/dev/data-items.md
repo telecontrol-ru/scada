@@ -225,13 +225,14 @@ devices it is skipped and only EXECUTE is performed. For IEC 61850 devices
 the SELECT stage is sent to objects whose control model is SBO; for direct
 control only EXECUTE is performed. Set No if the device
 does not support select-before-operate.
-If the operator declines to execute after the select, the Server releases the
+If the operator declines to execute after the select (answers no or closes
+the confirmation prompt), the Server releases the
 selection on the device: for IEC 60870-5 by deactivating the
 <code>C_SC_NA_1</code> command (cause of transmission 8), for IEC 61850 with
 the Cancel service. MODBUS devices and the other IEC 60870-5 commands never
 receive a select stage, so there is nothing to release. If the device refuses
-to release the selection, it stays in force until the device's own select
-timeout.</dd>
+to release the selection, the Client does not report it, and the selection
+stays in force until the device's own select timeout.</dd>
 
 <dt>Lock</dt>
 <dd>Yes — the object ignores values from the device and keeps the value set by
@@ -267,9 +268,10 @@ failed. Manual input is not restricted by the condition. The Control window
 checks the same condition in advance and does not let the command be sent.
 The condition does not replace an interlock in the device itself. Use a device-channel reference (for example
 <code>{IEC_DEV.1!5}</code>) only as the whole expression: inside an expression such as
-<code>{IEC_DEV.1!5} = 1</code> the Client does not find it, the condition is never
-met and control stays blocked — refer to the TS object that receives the
-channel's value instead.</dd>
+<code>{IEC_DEV.1!5} = 1</code> the Server resolves it and checks retransmitted and
+OPC UA commands against the condition, but the Client's Control window does
+not find it, treats the condition as unmet and blocks control from that
+window. So refer to the TS object that receives the channel's value instead.</dd>
 
 <dt>Stale timeout, s</dt>
 <dd>If the value is not updated within this interval, it is marked as
@@ -306,8 +308,8 @@ minimum 0, maximum 65535.</dd>
 <dt>Alias</dt>
 <dd>A unique system-wide alias used in formulas, logical expressions,
 tables, graphs, and schematic bindings. Aliases may contain Cyrillic or
-Latin letters and digits, but no spaces, and must be no longer than 50
-characters. For a <a href="{{ '/en/formulas/' | relative_url }}">formula</a>
+Latin letters, digits and the underscore <code>_</code>, but no spaces. For
+a <a href="{{ '/en/formulas/' | relative_url }}">formula</a>
 to reach an alias, it must start with a letter or <code>_</code>.</dd>
 
 <dt>Severity (Russian UI: «Важность»)</dt>

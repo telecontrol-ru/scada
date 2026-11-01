@@ -32,7 +32,7 @@ The SCADA Server is not a single program but a set of processes. Each one is ins
 | `scada-proxy` | Telecontrol SCADA Proxy | Accepts Client connections and combines the other processes into one address space |
 | `scada-historian` | Telecontrol SCADA Historian | [Archiving](#archiving) of values and events; serves history |
 | `scada-filesystem` | Telecontrol SCADA Filesystem | [Server-side file system]({{ '/en/server/' | relative_url }}#filesystem) (displays and other files) |
-| `scada-modbus` | Telecontrol SCADA Modbus | Data acquisition over MODBUS RTU/TCP |
+| `scada-modbus` | Telecontrol SCADA Modbus | Data acquisition over MODBUS RTU/ASCII/TCP |
 | `scada-iec104` | Telecontrol SCADA IEC 104 | Data acquisition over IEC 60870-5-101/104 |
 | `scada-iec61850` | Telecontrol SCADA IEC 61850 | Data acquisition over IEC 61850 |
 | `scada-opc` | Telecontrol SCADA OPC | [OPC client](#opc-client-on-windows) (Windows only) |
@@ -126,6 +126,7 @@ Supported exchange protocols include:
 * IEC 60870-5-104
 * IEC 61850
 * MODBUS RTU
+* MODBUS ASCII
 * MODBUS TCP
 
 See the full protocol overview in
@@ -184,8 +185,9 @@ redundancy, computes formulas and emulated values, and notifies clients
 about object updates. In the reverse direction, it routes user commands
 back to the scanner for execution.
 
-When the Server restarts, the real-time subsystem restores the latest
-object values from history.
+After a protocol process restarts, its objects' latest values are not
+restored from history: the objects stay bad until the devices report new
+values (see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
 
 It also supports out-of-order values: data that belongs to an earlier
 timestamp than already received data is still processed and archived
@@ -359,8 +361,9 @@ changes are reflected across the running system without waiting for a
 manual save step.
 
 On a new installation the configuration is a demo project; before going
-live, replace it with the project's configuration or delete the demo
-objects, devices and users — see
+live, replace it with the project's configuration (deleting the demo
+objects, devices and users in the Client is not dependable in this version) —
+see
 [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 Configuration is edited with the built-in engineering tools, and

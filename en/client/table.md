@@ -53,8 +53,9 @@ related events for the object. The `Event` column shows the most
 recent unacknowledged system event, and a tooltip can preview the first
 few events.
 
-**With rights "0 — Executive / viewer" events cannot be acknowledged** (see
-[Roles and permissions]({{ '/en/architecture/' | relative_url }}#roles-and-permissions)):
+**An account with neither the `Operator` nor the `ConfigureAdmin` role
+cannot acknowledge events** (see
+[Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)):
 acknowledgement needs the *Control* or *Configure* right. For such a user the
 command looks available, but the Server rejects it: the events stay
 unacknowledged and the cell keeps blinking. Double-clicking a blinking row
@@ -83,10 +84,6 @@ selected) are greyed out:
 <a href="{{ '/en/client/data/' | relative_url }}">Data</a>,
 <a href="{{ '/en/client/summary/' | relative_url }}">Summary</a>, and
 <a href="{{ '/en/client/events/' | relative_url }}">Event journal</a>.</dd>
-
-<dt>Acknowledge all</dt>
-<dd>Acknowledges all active events for table objects. Has no effect with
-rights "0 — Executive / viewer".</dd>
 
 <dt>Rename (F2)</dt>
 <dd>Lets the user edit the formula or object reference for the selected

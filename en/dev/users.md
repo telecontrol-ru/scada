@@ -42,9 +42,10 @@ reset) does not. The server sets what a password must satisfy — see
   signing in as `root` always uses the built-in account. Changing or
   deleting this user does not affect the built-in account.
 * **A `root` password set in this window does not last.** Each Server
-  process writes the password given to `scada-setup apply` as
-  `--root-password` again every time it starts. Change the root password
-  with `scada-setup` instead (see
+  process writes the password from the computer's encrypted
+  [password file]({{ '/en/server/' | relative_url }}#stored-passwords) again
+  every time it starts. Change the root password with
+  `scada-setup set-password --root-password <new password>` instead (see
   [Root password]({{ '/en/getting-started/' | relative_url }}#root-password)).
 * **The built-in `root` account allows one session at a time.** When `root`
   signs in a second time, from another workstation for example, the Client
@@ -129,6 +130,6 @@ Role membership can be inspected in the
 read-only: changing a role's membership is a privileged operation performed on
 the server.
 
-Every action on accounts, passwords and role membership — successful or refused
-— is recorded in the
+Sign-ins and every action on accounts, passwords and role membership —
+successful or refused — are recorded in the
 [audit log]({{ '/en/client/workbench/#audit-log' | relative_url }}).

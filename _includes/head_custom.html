@@ -9,10 +9,7 @@ no way to decline. That is exactly the behaviour this file exists to avoid, so
 `analytics_measurement_id`.
 
 Nothing is fetched from Google until the reader accepts. The decision is kept
-in localStorage under the same key and the same record shape the web client
-uses (`web/apps/app/src/services/analytics.ts`), which is not incidental: the
-manual and the embedded client copy under /app/ are served from one origin, so
-one answer covers both and the reader is asked once rather than twice.
+in localStorage, so the reader is asked once.
 
 Kept in vanilla JS with no build step, matching the rest of this Jekyll site.
 {%- endcomment -%}

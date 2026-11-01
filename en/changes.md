@@ -26,6 +26,8 @@ This version is not yet published on the releases page.
 
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
+1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
 1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config`, `scada-proxy` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
@@ -44,7 +46,7 @@ This version is not yet published on the releases page.
 
 1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 
-1. The configuration of a new installation is a demo project (objects with emulation, IEC 60870-5-104 links, archives, the users «Клиент 1» … «Клиент 10» and `guest`). Before going live, replace it with the project's configuration or delete the demo data. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
+1. The configuration of a new installation is a demo project (objects with emulation, IEC 60870-5-104 links, archives, the users «Клиент 1» … «Клиент 10» and `guest`). Before going live, replace it with the project's configuration: deleting the demo data in the Client is not dependable in this version. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
 1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
 
@@ -96,9 +98,9 @@ This version is not yet published on the releases page.
 
 1. The [Event journal]({{ '/en/client/events/' | relative_url }}) has a filter bar above the journal (*Period*, *Min. severity*, *Unacknowledged only*) and an area list on the left with each area's count of unacknowledged events. See [Period]({{ '/en/client/events/' | relative_url }}#period) and [Filters]({{ '/en/client/events/' | relative_url }}#filters).
 
-1. The *Audit log* window shows who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
+1. The *Audit log* window shows sign-ins and who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
 
-1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Bindings of other properties, limits and blinking on an alarm are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Bindings of other properties, limits and blinking on an alarm are not shown, breaker positions take the standard Modus colours, and a double-click does not follow a hyperlink to another schematic — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values) and [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working).
 
 1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
 
@@ -128,6 +130,12 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties, limits, or a shape blinking on an alarm. If a site's displays rely on these, check the displays before upgrading. The bindings have not yet been tried on the schematics of working sites, so in any case open your site's schematics in a 2.6 Client before upgrading the workstations. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
+1. Breaker positions on Modus displays take the standard Modus colours, not those set in the display's settings. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+
+1. A double-click on a Modus display shape does not follow its hyperlink to another schematic as in 2.5.7: open the other schematic from the **Display** menu. Bound shapes inside a Graphic Editor group have not been tried in version 2.6. See [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working) and [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
+
+1. Vidicon schematics (`.vds`) show no live values on the schematic itself: the Measurements panel and the inspector show them. See [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working).
+
 1. The display module is a separate library that may not be included in the Client installation; without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 
 1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
@@ -135,6 +143,8 @@ Read this list before buying and before upgrading: each limitation is described 
 #### Protocols and retransmission {#limits-protocols}
 
 1. IEC 61850: analogue setpoints (class APC) and step control (class BSC) are not supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+
+1. IEC 61850: only UTC timestamps are supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
@@ -156,7 +166,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
-1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. This has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 1. Installing the Server on Linux is available on request: there is no Linux package. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
@@ -171,6 +181,14 @@ Read this list before buying and before upgrading: each limitation is described 
 1. After *Disconnect from Server* and logging in as another account, the previous operator's pages and settings remain — restart the Client at shift handover. See [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
+
+1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
+
+1. A summary with more than 1,000 columns restores only the first 1,000 when reopened; the rest disappear without warning. See [Summary]({{ '/en/client/summary/' | relative_url }}).
+
+1. It has not been verified that a configuration change made in the Client reaches every copy of the configuration on the Server. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
+
+1. With two-stage control, the Client does not report a device refusing to release the selection: the selection stays in force until the device's select timeout. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
 ## 2.5.7 {#v2-5-7}
 

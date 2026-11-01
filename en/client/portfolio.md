@@ -30,8 +30,9 @@ settings, not in the Server's configuration:
 * the profile is saved on this computer; in addition, when the Client closes
   it also saves the profile on the Server, in your account's profile, and at
   login it loads the profile from there — so your portfolios are available on
-  any computer where you log in under your account. This holds for every
-  access level, rights "0 — Executive / viewer" included, and for the
+  any computer where you log in under your account. This holds for any
+  [access rights]({{ '/en/dev/users/' | relative_url }}#access-rights), an
+  account with no roles included, and for the
   "Telecontrol" server type; with the "OPC UA" type the profile, and the
   portfolios with it, is kept on this computer only.
 

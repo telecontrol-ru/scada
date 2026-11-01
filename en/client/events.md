@@ -165,7 +165,7 @@ An object's event severity is set in its properties — see
 * **Client messages** ("Local Event") — for example about the connection to
   the Server and the results of operations.
 
-Administrators' actions (sign-ins, configuration changes) go to the audit log,
+Sign-ins and changes to accounts, passwords and roles go to the audit log,
 which only administrators can open — see
 [Operator workbench]({{ '/en/client/workbench/' | relative_url }}#audit-log).
 
@@ -174,5 +174,6 @@ which only administrators can open — see
 The journal can be exported to CSV or Excel (Excel on Windows only) and
 printed — see [Export and import]({{ '/en/client/export/' | relative_url }})
 and [Printing]({{ '/en/client/print/' | relative_url }}). Exports contain the
-events themselves: collapsed repeats are expanded, and the "●" mark is left
-out.
+events themselves: collapsed repeats are expanded by default (the *Expand
+grouped rows* option of the CSV export dialog; an Excel export always expands
+them), and the "●" mark is left out. A printout shows one row per event.

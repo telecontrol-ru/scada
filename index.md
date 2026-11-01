@@ -43,4 +43,4 @@ nav_order: 1
 * [Разграничение доступа]({{ '/dev/users/' | relative_url }}) по ролям пользователей
 * Конфигурирование во время работы с любого рабочего места, [экспорт и импорт конфигурации]({{ '/dev/excel/' | relative_url }})
 * [Наблюдение]({{ '/client/device-watch/' | relative_url }}) за каналами связи и [метрики устройств]({{ '/client/device-metrics/' | relative_url }})
-* [Экспорт]({{ '/client/export/' | relative_url }}) данных в CSV и [печать]({{ '/client/print/' | relative_url }}) таблиц, сводок, окна «Данные» и журнала событий
+* [Экспорт]({{ '/client/export/' | relative_url }}) данных в CSV и [Excel]({{ '/client/export/' | relative_url }}#excel), [печать]({{ '/client/print/' | relative_url }}) таблиц, сводок, окон «Данные» и «Наблюдение» и журнала событий, [печать графика и сохранение его как изображения]({{ '/client/graph/' | relative_url }}#print-export)

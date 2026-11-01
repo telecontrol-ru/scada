@@ -41,8 +41,9 @@ search:
   button: false
 
 # "Edit this page on GitHub" footer link.
-gh_edit_link: true
-gh_edit_link_text: "Править на GitHub"
+# Off: the repository below is a one-way generated export of the manual, so
+# an edit made there is overwritten by the next export.
+gh_edit_link: false
 gh_edit_repository: "https://github.com/telecontrol-ru/scada"
 gh_edit_branch: "main"
 gh_edit_view_mode: "tree"
