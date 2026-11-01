@@ -106,6 +106,16 @@ cause 9. If the device refuses to release it, the selection stays in force
 until the device's own select timeout, and the Client says so in the current
 events panel.
 
+In retransmission mode the Server receives the DC's commands itself. When the
+DC releases a selection (a command with cause of transmission 8 after a
+confirmed select), the Server releases the selection on the object's source
+device the same way and confirms the deactivation to the DC with cause 9 only
+once the source device has answered; if the device refuses, the confirmation
+is negative. A source that has no selection (for example, an object of a
+MODBUS device) confirms the release at once. Deactivating a command already
+being executed only stops the reply to the DC: the execution on the device
+cannot be undone.
+
 The ASDU type can be overridden in the output field with the format
 `type:address`, where `type` is one of:
 

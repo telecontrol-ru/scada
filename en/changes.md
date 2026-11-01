@@ -56,6 +56,10 @@ This version is not yet published on the releases page.
 
 1. The MODBUS ASCII variant is implemented. See [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus).
 
+1. MODBUS: the `;reversewords` address parameter reverses the order of a value's registers, so a DOUBLE sent most significant word first — the usual order — is read and written correctly; with `;swapbytes` and `;swapwords` it reaches every word order. The default order is unchanged. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+
+1. Retransmission over IEC 60870-5-104: a release of selection received from the DC is passed on to the source device, and the deactivation is confirmed to the DC once the device has answered. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
 1. MODBUS RTU: fixed waiting for a device's exception response — a command the device rejects is reported as an error at once, not after the response timeout. In retransmission mode, fixed receiving writes with 0x10 and added 0x06 and 0x0F.
 
 1. IEC 60870-5: ASDU types 7 and 33 (32-bit bitstring) are accepted, and normalized values are scaled to −1…+1. If the project divided a normalized value by 32768 with a formula or a conversion, remove that rescaling. See [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
@@ -152,9 +156,9 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. IEC 61850: only UTC timestamps are supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
-1. MODBUS: by default the first of two registers is taken as the low word, and DOUBLE values in the standard word order cannot be read. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+1. MODBUS: by default the first register of a multi-register value is taken as the least significant word; a device that sends the most significant word first needs `;swapwords` or `;reversewords` on the address. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
-1. Retransmission: retransmitting objects of another Server process is not confirmed. A release of selection received from the DC is not passed on to the source device. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission: retransmitting objects of another Server process is not confirmed. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 #### Archive and reports {#limits-archive}
 

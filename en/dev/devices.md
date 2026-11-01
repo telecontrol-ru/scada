@@ -184,15 +184,19 @@ device sends them; most devices send the high word first: `[Hi][Lo]`.
 > INT32 and UINT32 address, for example `FLOAT:30001;swapwords`. Before
 > commissioning, compare the value read against a known value on the device.
 
-Four MODBUS registers form a 64-bit value.
+Four MODBUS registers form a 64-bit DOUBLE value. By default the Server
+treats the first register as the **least** significant word here too. For a
+device that sends the most significant word first — the usual order — add
+`;reversewords`, for example `DOUBLE:40001;reversewords`. Every other order is
+reached by combining the parameters:
 
-{: .warning }
-> In this version a DOUBLE (64-bit) value is read correctly only from a device
-> that sends the words starting with the **least significant** one. The
-> standard order — most significant word first — cannot be read: for DOUBLE,
-> `;swapwords` swaps the words in pairs (first with second, third with fourth),
-> which does not produce that order. If the device allows it, transfer such
-> values as FLOAT instead.
+| The device sends the words | Address parameters |
+|:---|:---|
+| most significant first | `;reversewords` |
+| least significant first | none |
+| most significant first, bytes swapped within each register | `;reversewords;swapbytes` |
+| least significant first, bytes swapped within each register | `;swapbytes` |
+| in pairs, the pairs swapped (2-1-4-3) | `;swapwords` |
 
 Examples:
 
@@ -221,7 +225,8 @@ Control (writing) works on coils and holding registers. Discrete inputs and
 input registers are read-only: a command to such an address fails.
 
 A value is written in the same format and byte and word order it is read
-in from that address, `;swapbytes` and `;swapwords` included, so a value
+in from that address, `;swapbytes`, `;swapwords` and `;reversewords`
+included, so a value
 written to a channel address reads back unchanged. In detail:
 
 * integer types round the value to the nearest integer;
@@ -251,7 +256,7 @@ Depending on the register type, MODBUS values can be interpreted as:
 The full format contains one required field and several optional ones:
 
 ```text
-[type_data:]NUMBER[:bit[+bitcount]][;swapbytes][;swapwords]
+[type_data:]NUMBER[:bit[+bitcount]][;swapbytes][;swapwords][;reversewords]
 ```
 
 Fields:
@@ -273,6 +278,10 @@ Fields:
   value; it is needed for devices that send the high word first (see the
   warning under [MODBUS register addressing](#modbus-registers)). For DOUBLE
   it swaps the words in pairs
+* `;reversewords` reverses the order of all the value's registers, so the
+  first register is the most significant word. For FLOAT, INT32 and UINT32 it
+  is the same as `;swapwords`; for DOUBLE it is the way to read the most
+  significant word first
 
 Coils and discrete inputs (numbers 1–9999 and 10001–19999) accept only
 `BOOL`; the Server rejects an address such as `INT16:123`.
@@ -289,6 +298,9 @@ Examples:
 * `UINT32:41105;swapwords` — holding registers `0x0450` and `0x0451`,
   function `0x03`, as an unsigned 32-bit integer; register `0x0450` is the
   high word
+* `DOUBLE:40001;reversewords` — holding registers `0x0000`–`0x0003`,
+  function `0x03`, as an IEEE 754 double-precision float; register `0x0000`
+  is the most significant word
 * `UINT16:30001:1+7` — the low byte of input register `0x0000`
 * `UINT16:30001:9+7` — the high byte of input register `0x0000`
 * `BOOL:40003:5` — bit 5 of holding register `0x0002`, read with `0x03`. A
@@ -318,8 +330,8 @@ Fields:
   hexadecimal address plus one
 
 This format is used when the actual hexadecimal register address is
-higher than `0x270F`. `;swapbytes` and `;swapwords` are appended to it as to
-the full format, and the default word order is the same — the first register
+higher than `0x270F`. `;swapbytes`, `;swapwords` and `;reversewords` are
+appended to it as to the full format, and the default word order is the same — the first register
 is the low word.
 
 Examples:
@@ -586,10 +598,16 @@ DC objects whose data another Server process receives (for example, the
 Modbus or IEC 61850 process) is not confirmed to work in this version; if
 you need it, contact Telecontrol (mail@telecontrol.ru).
 
-**A release of selection received from the DC is not passed on to the source
+**A release of selection received from the DC is passed on to the source
 device.** If the DC selects an object for two-stage control and then abandons
-the command, the selection on the source device stays until the device's
-timeout.
+the command (cause of transmission 8, deactivation), the Server releases the
+selection on the source device and confirms the deactivation to the DC with
+cause 9 only once the device has answered. If the source device refuses to
+release it, the DC gets a negative confirmation and the selection on the
+device stays until the device's timeout. A source with no selection — for
+example, an object of a MODBUS device — has nothing to release, and the
+deactivation is confirmed at once. See
+[IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
 
 Modbus retransmission needs Mode = retransmission on the Modbus direction.
 
