@@ -68,6 +68,12 @@ This version is not yet published on the releases page.
 
 1. Fixed: an IEC 61850 device refusing a command is reported as "IEC 61850 protocol error", not as an IEC 60870 error.
 
+1. IEC 61850: analogue setpoints (class APC) and step control (class BSC) are supported, including select-before-operate and releasing the selection. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+
+1. Fixed: timestamps from first-edition IEC 61850 devices (type BinaryTime) are read correctly rather than as dates around 1970. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+
+1. IEC 61850 devices are no longer offered as retransmission destinations: the Server never served them. Retransmission rules created for them earlier are deleted on upgrade. See [IEC 61850 devices]({{ '/en/dev/devices/' | relative_url }}#iec-61850).
+
 1. Fixed: the fields with a list of values — a direction's *Protocol* and *Mode*, a TIT object's *Conversion*, a simulation signal's *Type* — offer their choices again. See [Fields with a list of values]({{ '/en/dev/devices/' | relative_url }}#enum-lists).
 
 ### Client
@@ -152,9 +158,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Protocols and retransmission {#limits-protocols}
 
-1. IEC 61850: analogue setpoints (class APC) and step control (class BSC) are not supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
-
-1. IEC 61850: only UTC timestamps are supported. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+1. IEC 61850: the device's clock must run on UTC — timestamps are not converted from local time. An APC setpoint whose device model carries both the `i` and `f` fields is not sent. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 1. MODBUS: by default the first register of a multi-register value is taken as the least significant word; a device that sends the most significant word first needs `;swapwords` or `;reversewords` on the address. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 

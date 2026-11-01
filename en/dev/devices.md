@@ -630,8 +630,18 @@ an enabled device too.
 the Server gets IEC 61850 data only from reports, and an object receives a
 value only if its address matches a member of the dataset of one of the
 created blocks exactly. For the setup procedure, the supported data
-classes and remote control see
+classes and remote control (analogue setpoints APC and step control BSC
+included) see
 [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
+
+The device's clock must run on UTC: IEC 61850 timestamps are sent in UTC
+and the Server does not shift them.
+
+An IEC 61850 device takes no
+[retransmission](#retransmission) rules: it is not offered in the
+Transmission table or in the bulk-create wizard. Rules created for IEC 61850
+devices by earlier versions were never served; on upgrade the Server deletes
+them and writes how many to the process log.
 
 Any model node exposes its bindable address through the `Properties`
 command in the context menu.

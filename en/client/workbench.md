@@ -387,7 +387,8 @@ rules, and the count updates as rules are added or removed.
 
 A rule's protocol follows from the destination device's type and is not
 chosen separately. **Modbus** and **IEC 60870-5-101/104** are supported;
-the Server does not forward objects over IEC 61850. A device whose type declares no transmittable items does not
+the Server does not forward objects over IEC 61850, and IEC 61850 devices do
+not appear in the destination rail. A device whose type declares no transmittable items does not
 appear in the destination rail.
 
 ### Creating a rule

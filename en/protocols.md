@@ -194,7 +194,7 @@ Values are read as follows:
   class MV) for TIT objects.
 
 Remote control is sent to a controllable data object (classes SPC, DPC,
-INC). The object's control address may name the data object in the CO or
+INC, APC, BSC). The object's control address may name the data object in the CO or
 the ST functional constraint — `LD0/CSWI1$CO$Pos`, `LD0/CSWI1$ST$Pos` or
 `LD0/CSWI1$ST$Pos$stVal`: in every case the command addresses the data
 object `Pos`. The Server reads the control model (`ctlModel`) and the
@@ -212,10 +212,23 @@ command value type from the device:
 * an object whose model is `status-only` takes no commands; the Server
   rejects them.
 
-The command value must fit the object's `ctlVal` type: 0 or 1 for a
-boolean (SPC, DPC), an integer for INC. Any other value is rejected by the
-Server without being sent to the device. Analogue setpoints (class APC)
-and step control (class BSC) are not supported in this version.
+The command value must fit the object's `ctlVal` type:
+
+* 0 or 1 for a boolean (SPC, DPC);
+* an integer for INC;
+* a number for an analogue setpoint (APC). The Server reads from the
+  device's model whether the setpoint is an integer (`i`) or a
+  floating-point number (`f`); an integer setpoint does not take a
+  fraction. A setpoint whose model carries both fields, `i` and `f`, is not
+  sent: the integer field is scaled by the object's own settings (`sVC`);
+* for step control (BSC, for example a transformer tap changer), the
+  command number: 1 is a step down (lower), 2 a step up (higher), 0 stop.
+  An on/off boolean does not fit such an object; use a control command
+  with a value.
+
+Any other value is rejected by the Server without being sent to the device.
+Select and its release (Cancel) work for APC and BSC the same way as for
+SPC and DPC.
 
 If the device refuses the select or the execute (for example, because of its
 own interlock or a control-model mismatch), the Client reports "IEC 61850
@@ -226,8 +239,16 @@ window.
 The Poll Device command requests a general interrogation (GI) through every
 report control block of the device.
 
-**WARNING:** only UTC timestamps are supported. If the device uses a
-different time zone, value updates will be affected.
+IEC 61850 timestamps are always UTC by the standard: the protocol has no
+time-zone field, and the Server does not shift them. The device's clock must
+therefore run on UTC, usually synchronised by SNTP. If the device's clock is
+set to local time, value and event timestamps are off by the difference from
+UTC; correct it in the device's settings. Timestamps from first-edition
+devices (type BinaryTime) are supported too.
+
+An IEC 61850 device cannot be a
+[retransmission]({{ '/en/dev/devices/' | relative_url }}#retransmission)
+destination: the IEC 61850 process only polls devices.
 
 See the [IEC 61850 article](https://en.wikipedia.org/wiki/IEC_61850) for a
 description of the protocol.
