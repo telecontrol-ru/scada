@@ -409,8 +409,11 @@ editable — the source is set only by the tick in the tree.
 
 The Status column marks a configuration fault: if several rules of a device
 share an address, each of them reads "Duplicate address" — the receiver cannot
-tell apart objects sent under one address. The Server does not reject such
-rules, so correct the addresses yourself.
+tell apart objects sent under one address, and a command it sends to that
+address reaches only one of the objects. The Server accepts and transmits such
+rules, but writes a "Duplicate destination address" warning for each repeat
+to the [log]({{ '/en/server/' | relative_url }}#logging) of the process that
+serves the device. Correct the addresses yourself.
 
 **WARNING: a rule created by ticking an object gets address 1.** Give it the
 address agreed with the destination straight away — otherwise every object is

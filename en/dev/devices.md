@@ -557,7 +557,10 @@ to.
 
    If several rules of a device share an address, the Status column of each
    reads "Duplicate address": the DC cannot tell apart objects sent under one
-   address. The Server does not reject such rules, so correct the addresses
+   address, and a DC command to that address reaches only one of them. The
+   Server accepts such rules but writes a "Duplicate destination address"
+   warning for each repeat to the IEC 104 process's
+   [log]({{ '/en/server/' | relative_url }}#logging). Correct the addresses
    yourself.
 
    Many rules with consecutive addresses are easier to create at once: open
