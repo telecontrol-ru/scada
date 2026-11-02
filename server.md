@@ -699,17 +699,17 @@ Docker-контейнерах выполняется по запросу.
 
 ```json
 "license": {
-    "file": "C:\\ProgramData\\Telecontrol\\SCADA Server\\license.json",
-    "require_gcp_binding": false
+    "file": "C:\\ProgramData\\Telecontrol\\SCADA Server\\license.json"
 }
 ```
 
 | Параметр | По умолчанию | Описание |
 |---|---|---|
 | `file` | `license.json` | Путь к файлу лицензии. Относительный путь отсчитывается от рабочей папки процесса, поэтому надежнее указывать абсолютный. Если параметр не задан, используется переменная окружения `SCADA_SERVER_LICENSE_FILE` |
-| `require_gcp_binding` | `true` | Проверять привязку лицензии к виртуальной машине Google Cloud. **Вне Google Cloud задайте `false`**, иначе лицензия не может быть проверена. Если параметр не задан, используется переменная окружения `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` |
 
-Файлы параметров, созданные [`scada-setup`](#scada-setup), уже содержат путь `%ProgramData%\Telecontrol\SCADA Server\license.json` (или заданный ключом `--license`) и `"require_gcp_binding": false`.
+Файлы параметров, созданные [`scada-setup`](#scada-setup), уже содержат путь `%ProgramData%\Telecontrol\SCADA Server\license.json` (или заданный ключом `--license`).
+
+Лицензия, выданная для виртуальной машины Google Cloud, проверяется только на этой машине. Любая другая лицензия не привязана к компьютеру, и для нее ничего настраивать не нужно. Параметр `require_gcp_binding` и переменная окружения `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` больше не действуют: если они остались в старом файле параметров, процесс пишет в журнал предупреждение и не учитывает их. Удалите их.
 
 Лицензия проверяется при запуске и затем каждые 5 секунд:
 
@@ -1431,7 +1431,7 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 компьютере без `scada-config` — также с `--central <адрес>`): она только
 записывает файлы в указанную папку и ничего не устанавливает. Составлять
 файл параметров с нуля не рекомендуется — в нем должны быть, в частности,
-блок [`license`](#licensing) с `"require_gcp_binding": false` (вне Google
-Cloud), [`security.rootPassword`](#root-password) у процессов `scada-config` и
+блок [`license`](#licensing) с путем к файлу лицензии,
+[`security.rootPassword`](#root-password) у процессов `scada-config` и
 `scada-filesystem` и включенный
 [`opcua`](#opcua), по которому процессы обмениваются данными.

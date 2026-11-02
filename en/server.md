@@ -707,17 +707,17 @@ The settings live in the `license` block of the parameter file:
 
 ```json
 "license": {
-    "file": "C:\\ProgramData\\Telecontrol\\SCADA Server\\license.json",
-    "require_gcp_binding": false
+    "file": "C:\\ProgramData\\Telecontrol\\SCADA Server\\license.json"
 }
 ```
 
 | Parameter | Default | Description |
 |---|---|---|
 | `file` | `license.json` | Path to the license file. A relative path resolves against the process's working directory, so an absolute path is safer. When the parameter is absent, the `SCADA_SERVER_LICENSE_FILE` environment variable is used |
-| `require_gcp_binding` | `true` | Check that the license is bound to this Google Cloud virtual machine. **Outside Google Cloud, set it to `false`**, or the license cannot be verified. When the parameter is absent, the `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` environment variable is used |
 
-Parameter files written by [`scada-setup`](#scada-setup) already carry the path `%ProgramData%\Telecontrol\SCADA Server\license.json` (or the one given with `--license`) and `"require_gcp_binding": false`.
+Parameter files written by [`scada-setup`](#scada-setup) already carry the path `%ProgramData%\Telecontrol\SCADA Server\license.json` (or the one given with `--license`).
+
+A license issued for a Google Cloud virtual machine verifies only on that machine. Any other license is bound to no computer and needs no setting. The `require_gcp_binding` parameter and the `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` environment variable no longer have any effect: if an older parameter file still has them, the process logs a warning and ignores them. Remove them.
 
 The license is checked at startup and then every 5 seconds:
 
@@ -1512,8 +1512,7 @@ with `scada-setup generate --tiers <processes> --output <folder>` (on a
 computer without `scada-config`, also with `--central <address>`): it only
 writes the files into the given folder and installs nothing. Writing a
 parameter file from scratch is not recommended — among other things it has to
-contain the [`license`](#licensing) block with
-`"require_gcp_binding": false` (outside Google Cloud),
+contain the [`license`](#licensing) block with the license file path,
 [`security.rootPassword`](#root-password) for `scada-config` and
 `scada-filesystem`, and an enabled
 [`opcua`](#opcua) block, over which the processes exchange data.

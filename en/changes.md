@@ -24,7 +24,7 @@ This version is not yet published on the releases page.
 
 1. One package, `telecontrol-scada-<version>.msi`, carries every Server process, `scada-setup` and the Client; the operator workstations get the same package, without `scada-setup`. See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
-1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 

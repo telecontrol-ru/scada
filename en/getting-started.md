@@ -414,10 +414,8 @@ new one included, and the same other options as at installation (see
 [Re-running apply]({{ '/en/server/' | relative_url }}#reapply)). Write the
 new list down. If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
-Parameter files written by `scada-setup` already contain
-`"license": {"require_gcp_binding": false}`. **If you write a parameter file by
-hand and the Server does not run on Google Cloud, set it yourself** —
-otherwise the process cannot verify its license and serves no requests. See
+A license issued for a Google Cloud virtual machine verifies only on that
+machine; any other license is bound to no computer and needs no setting. See
 [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 ## Root password
@@ -895,10 +893,10 @@ computer does not have. Run it again with the
 <dt>A process runs but refuses requests</dt>
 <dd>The license is not verified or has expired (the expiry is in the
 <code>scada-setup status</code> output). If the process's parameter file was
-written by hand, check that it sets
-<code>"license": {"require_gcp_binding": false}</code> (<code>scada-setup</code>
-sets it itself); for an
-expired license, replace the file — no restart is needed.</dd>
+written by hand, check the path in <code>"license": {"file": ...}</code>
+(<code>scada-setup</code> sets it itself). A license issued for a Google Cloud
+virtual machine does not verify on any other computer. For an expired
+license, replace the file — no restart is needed.</dd>
 
 <dt>Values are no longer archived</dt>
 <dd>While a protocol process's service (for example
