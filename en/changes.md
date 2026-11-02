@@ -26,7 +26,7 @@ This version is not yet published on the releases page.
 
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
-1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data stays. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data and the site certificate authority stay. The `SCADA_PURGE_CERTIFICATES=1` parameter (on Linux, `apt purge`) deletes the whole certificate folder, the authority included. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 1. The same protocol process can be installed on several computers, splitting the devices of its protocol between them: a link's Computer property names the computer that serves it, and the computers that serve only the links assigned to them run `scada-setup apply` with `--assigned-links-only`. A link moves to another computer when that property changes, with no restart. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
@@ -222,7 +222,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. `scada-config` (port 4841) accepts a secure connection with any certificate, and registering a process with it is not yet checked against the site certificate authority: anyone who reaches that port can register as a process of the site. Open port 4841 to the site's computers only. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
-1. The site certificate authority is kept only on the central computer, in the `data\Certificates\ca` folder. An uninstall without `SCADA_KEEP_CERTIFICATES=1`, deleting `/opt/telecontrol-scada` on Linux, or a restore without that folder makes the next `apply` create a new authority, and every other computer must then join again, after its certificate files are deleted. A computer's certificate is valid for 5 years, the certificate authority's for 10. See [Lifetime and a new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal).
+1. The site certificate authority is kept only on the central computer, in the `data\Certificates\ca` folder. An uninstall with `SCADA_PURGE_CERTIFICATES=1` (on Linux, `apt purge` or deleting `/opt/telecontrol-scada`), or a restore without that folder, makes the next `apply` create a new authority, and every other computer must then join again with `apply` and the new fingerprint in `--central-fingerprint`. A computer's certificate is valid for 5 years, the certificate authority's for 10. See [Lifetime and a new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal).
 
 1. The `svc` password may be at most 64 bytes long (a Cyrillic letter takes two): `scada-setup` refuses a longer one. See [scada-setup options]({{ '/en/server/' | relative_url }}#scada-setup-options).
 

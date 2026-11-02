@@ -195,7 +195,8 @@ site's certificate authority on the central computer, and its processes
 connect to the others encrypted. **Without it, this computer's processes
 cannot connect to the others at all**: the other processes accept neither
 unencrypted connections nor certificates the site's certificate authority
-did not issue; `apply` warns about it (see
+did not issue. So `apply` with `--central` but with neither
+`--central-fingerprint` nor `--insecure-links` fails and changes nothing (see
 [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
 Only a site whose computers are all set up with `--insecure-links` runs
 unencrypted.
@@ -249,8 +250,8 @@ the passwords to `apply`), upgrades and restores included:
   starts only those whose services the computer has, printing
   `Skipped <process>: not installed on this host` for the rest; if the
   computer has none of those services, `start` ends with an error;
-* without `--central`, on a computer without `scada-config`, both commands
-  refuse to run;
+* without `--central`, on a computer without `scada-config`, `apply`
+  refuses to run (`start` does not need it);
 * `apply` without `--assigned-links-only` on a computer where it was given
   makes that computer serve the links without a computer, and two computers
   open the same links;
@@ -417,12 +418,17 @@ running services with the new executables, but only `apply` rewrites the
 parameter files.
 
 **Uninstalling.** `sudo apt remove telecontrol-scada-server` stops and
-removes the process services; the data in `/var/lib/scada` stays. For an
-archive installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove`
-first, then delete the `/opt/telecontrol-scada` folder — which also deletes
-its `data/Certificates` folder with the computer's certificate and, on the
-central computer, the site certificate authority (the `ca` subfolder). If
-the program will be installed again, save that folder first (see
+removes the process services and the computer's certificate; the data in
+`/var/lib/scada` and the site certificate authority (on the central
+computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, so
+after a reinstall the other computers need not join again.
+`sudo apt purge telecontrol-scada-server` also deletes the whole
+`data/Certificates` folder, the certificate authority included — uninstall
+that way only when the computer leaves the site for good. For an archive
+installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
+then delete the `/opt/telecontrol-scada` folder; on the central computer, if
+the program will be installed again, first save the `data/Certificates/ca`
+subfolder and put it back before `apply` (see
 [A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
 
 ## License {#license}
@@ -462,7 +468,7 @@ such a service: once the file is in place, start the processes with `start`
 and the [computer's parameters](#host-parameters):
 
 ```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
 ```
 
 If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
@@ -680,7 +686,7 @@ order; `start` only with the [computer's parameters](#host-parameters):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
 ```
 
 For diagnostics, a process can be started in
@@ -884,17 +890,18 @@ changed nor deleted.
 
 Uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль) in
 *Control Panel — Programs and Features*. The installer itself stops and
-removes the process services together with their registry settings, and the
-folder holding the Server certificate and its private key. It leaves the
+removes the process services together with their registry settings, and
+this computer's Server certificate and its private key. It leaves the
 `%ProgramData%\Telecontrol\SCADA Server` data folder (which also holds the
 `svc` and `root` password file) and the firewall rules created in
 [Network preparation](#network) — delete those by hand.
 
-**On the central computer the site certificate authority is deleted with
-the certificate.** If you will install the program again, uninstall it with
-`msiexec /x telecontrol-scada-<version>.msi SCADA_KEEP_CERTIFICATES=1`, or
-save the `C:\Program Files\Telecontrol SCADA\data\Certificates` folder:
-otherwise every other computer of the site has to join again. The steps are
+**The installer leaves the site certificate authority on the central
+computer**, so after a reinstall the other computers need not join again.
+If the computer leaves the site for good, uninstall it with
+`msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1` —
+the whole `C:\Program Files\Telecontrol SCADA\data\Certificates` folder
+is then deleted, the certificate authority with it. The steps are
 in [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 A Client unpacked from the archive or disk image is removed by deleting its
 folder (on macOS, the app in *Applications*).
@@ -968,8 +975,7 @@ not have (<code>Skipped &lt;process&gt;: not installed on this host</code>),
 and fails with <code>none of the requested tier services is installed on
 this host</code> only when the computer has none of the requested services:
 <code>--tiers</code> names the wrong processes, or <code>apply</code> has not
-run on this computer yet. On a computer without <code>scada-config</code> the
-command refuses to run without <code>--central</code>. Run it again with the
+run on this computer yet. Run it again with the
 <a href="#host-parameters">computer's parameters</a>.</dd>
 
 <dt>A process runs but refuses requests</dt>

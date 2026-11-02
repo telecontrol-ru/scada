@@ -134,7 +134,7 @@ Client take effect in every process.
   license**, while `stop`, `status`, `remove` and `set-password` take every
   Server service the computer has. `generate` requires it.
 * `--central <address>` — the central computer's address; required by
-  `apply`, `start` and `migrate` on a computer without `scada-config`.
+  `apply`, `migrate` and `generate` on a computer without `scada-config`.
 * `--advertise <address>` — this computer's address for the others. Without
   it, a computer set up with `--central` reports its computer name, and
   `scada-proxy` connects to it by that name: give the IP address unless the
@@ -170,7 +170,10 @@ Client take effect in every process.
   `scada-config`: the fingerprint of the central computer's certificate, as
   `apply` printed it there. With it, the computer gets its certificate from
   the [site's certificate authority](#opcua-site-ca), and its processes
-  connect to the others encrypted. Requires `--svc-password`.
+  connect to the others encrypted. Requires `--svc-password`. If the
+  central computer has since got a new certificate authority (for example,
+  it was reinstalled with its authority deleted), `apply` with the new
+  fingerprint replaces this computer's certificate by itself.
 * `--insecure-links` — the processes connect to each other unencrypted, as
   in earlier versions: no certificate authority is created, and each
   computer gets a self-signed certificate. The firewall is then the only
@@ -546,9 +549,10 @@ reached, from an elevated command prompt:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
 2. Uninstall the newer version: the *ОИК Телеконтроль* program in
    *Control Panel — Programs and Features*. The installer removes the
-   services and the `C:\Program Files\Telecontrol SCADA\data\Certificates`
-   folder with the Server certificate (see
-   [Uninstalling the Server](#uninstall)); the data folder stays. `apply`
+   services and the Server certificate from the
+   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder (see
+   [Uninstalling the Server](#uninstall)); the data folder and the site
+   certificate authority stay. `apply`
    creates the services again in step 5, and the certificate comes back from
    the backup in step 4.
 3. Install the older version's package:
@@ -579,9 +583,13 @@ commands).
 
 **The installer removes the services itself.** Before it deletes the
 program's files, it runs `scada-setup remove`: it stops and removes the
-services of every process together with their registry settings. It then deletes the
-`C:\Program Files\Telecontrol SCADA\data\Certificates` folder — the
-[Server certificate](#opcua-certificate) and its private key. The processes'
+services of every process together with their registry settings. It then deletes
+this computer's [Server certificate](#opcua-certificate) and its private key
+from the `C:\Program Files\Telecontrol SCADA\data\Certificates` folder —
+the `ServerCertificate.pem` and `ServerPrivateKey.pem` files and the copies
+`apply` set aside. **The site certificate authority** — the `ca` subfolder
+on the central computer — **stays**: after a reinstall `apply` goes on using
+it, and the other computers' certificates stay valid. The processes'
 data in `%ProgramData%\Telecontrol\SCADA Server` (configuration, users,
 archives, files, the license, the [password file](#stored-passwords)) stays. If `scada-setup remove` fails, the
 uninstall is cancelled and the program stays installed: services are never
@@ -592,15 +600,16 @@ On every Server computer:
 1. [Back up](#backup) if you may need the data or the certificate. For OPC UA
    clients to keep trusting the Server after a reinstall, save the
    `data\Certificates` folder and put it back before `apply`, or uninstall
-   with the `SCADA_KEEP_CERTIFICATES=1` parameter (step 2), which leaves the
-   folder in place.
+   with the `SCADA_KEEP_CERTIFICATES=1` parameter (step 2), with which the
+   installer deletes nothing from the folder.
 
-   **On the central computer this folder also holds the site certificate
-   authority** (the `ca` subfolder with the `ca_key.pem` key). If you will
-   install the program again, uninstall with `SCADA_KEEP_CERTIFICATES=1`, or
-   save the `ca` folder and put it back before `apply`. Otherwise `apply`
-   creates a new certificate authority and every other computer of the site
-   has to join again (see
+   **If the computer leaves the site for good**, uninstall with the
+   `SCADA_PURGE_CERTIFICATES=1` parameter: the whole `data\Certificates`
+   folder is then deleted, on the central computer together with the site
+   certificate authority (the `ca` subfolder with the `ca_key.pem` key). On
+   the central computer do this only when the site is no longer needed:
+   after a reinstall `apply` creates a new certificate authority, and every
+   other computer of the site has to join again (see
    [A new certificate authority](#opcua-renewal)).
 2. Uninstall the program: the *ОИК Телеконтроль* program (publisher
    ООО Телеконтроль) in *Control Panel — Programs and Features*, or from an
@@ -625,8 +634,11 @@ On every Server computer:
 3. If the data is no longer needed, delete the
    `%ProgramData%\Telecontrol\SCADA Server` folder — the processes' data, the
    license file and, if a migration from version 2.5 was done, the
-   version 2.5 folders. If the `C:\Program Files\Telecontrol SCADA` folder is
-   still there after the uninstall, delete it as a whole.
+   version 2.5 folders. The `C:\Program Files\Telecontrol SCADA` folder stays
+   after the uninstall: it holds the `data\Certificates` folder with the site
+   certificate authority (on the central computer) and the certificates the
+   processes trust. Delete it as a whole only when the computer leaves the
+   site for good (or uninstall with `SCADA_PURGE_CERTIFICATES=1`).
 4. Delete the firewall rules created in
    [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)
    (for a rule the computer does not have, `netsh` reports that no rules
@@ -1179,7 +1191,9 @@ is always offered. So, still:
 `--central-fingerprint` gets a self-signed certificate, and on a site with a
 certificate authority its processes **cannot connect** to the others at all:
 those refuse unsecured connections and passwords sent unencrypted, and do not
-trust its certificate. `apply` warns about it. Only a site whose computers
+trust its certificate. So `apply` with `--central` but with neither
+`--central-fingerprint` nor `--insecure-links`, on a computer that has no
+certificate from the certificate authority yet, fails and changes nothing. Only a site whose computers
 are all set up with [`--insecure-links`](#scada-setup-options) runs
 unencrypted, sending the `svc` password in clear text; on such a site the
 firewall is the only protection.
@@ -1422,14 +1436,16 @@ authority this computer trusts, even when it is about to expire. So:
   computer's latest `apply` prints;
 * **a new certificate authority** appears when the `ca` subfolder on the
   central computer is deleted (to replace an expiring authority) or lost —
-  for example on a reinstall without `SCADA_KEEP_CERTIFICATES=1`. Every
-  computer's certificate was then issued by the old authority, and **every
-  other computer must join again**: delete its `ServerCertificate.pem` and
-  `ServerPrivateKey.pem` as above and run `apply` with the new fingerprint
-  from the central computer's `apply`. If those files are not deleted,
-  `apply` keeps the old certificate and the computer never connects. Until
-  a computer has joined again its connections fail, so join all of them in
-  one session.
+  for example by uninstalling with `SCADA_PURGE_CERTIFICATES=1` or by a
+  restore without that folder. Every computer's certificate was then issued
+  by the old authority, and **every other computer must join again**: run
+  `apply` on it with the [computer's parameters](#scada-setup-options) and
+  the new fingerprint from the central computer's `apply` in
+  `--central-fingerprint`. `apply` notices by itself that this computer's
+  certificate was not issued by the current authority, sets the old pair
+  aside with the `.previous-ca` extension and gets a new one; there is no
+  need to delete the certificate files by hand. Until a computer has joined
+  again its connections fail, so join all of them in one session.
 
 ## OPC client on Windows {#opc-classic}
 
@@ -1489,7 +1505,7 @@ running databases may be inconsistent. From an elevated command prompt:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
 rem copy %ProgramData%\Telecontrol\SCADA Server
 rem and C:\Program Files\Telecontrol SCADA\data\Certificates
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--central <address>] [--license <path>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
 ```
 
 A restore also needs the `svc` password, the `root` password, and the
