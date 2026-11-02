@@ -168,13 +168,15 @@ tabs above the list — All, This client, Profile, This window.
 
 Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer only and which are in the user's profile,
-which the client also saves on the Server when it closes and loads from there
+which the client also saves on the Server when it closes and on *More →
+Disconnect from Server*, and loads from there
 at login, so profile settings follow the account to another computer (with
 the "Telecontrol" server type; not with "OPC UA"). Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
-scope are saved on this computer and, when the client exits, on the Server —
-not at the moment a setting changes. So close the client only while the
-status bar reads "Connected"; what happens when the profile cannot be saved
+scope are saved on this computer and, when the client exits or on *Disconnect
+from Server*, on the Server — not at the moment a setting changes. So close the
+client or disconnect from the Server only while the status bar reads
+"Connected"; what happens when the profile cannot be saved
 on the Server is described under
 [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
 
@@ -416,10 +418,6 @@ rules, but writes a "Duplicate destination address" warning for each repeat
 to the [log]({{ '/en/server/' | relative_url }}#logging) of the process that
 serves the device. Correct the addresses yourself.
 
-**WARNING: a rule created by ticking an object gets address 1.** Give it the
-address agreed with the destination straight away — otherwise every object is
-sent under one address.
-
 Many rules with consecutive addresses are easier to create at once: select
 the objects' rows, for example in a [Table]({{ '/en/client/table/' | relative_url }}),
 and choose *Create — Transmission Rules...* from the context menu — this opens
@@ -467,10 +465,9 @@ while the client is connected and turns to a red "Offline" while it is
 disconnected; see
 [Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
 
-> **Caution.** In this version Vidicon schematics (`.vds`) themselves show no
-> live values — read values and their quality in the "Measurements" strip and
-> in the [Inspector](#inspector). Modus schematics do show live values; see
-> [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+The shapes of a Vidicon schematic show live values on the schematic itself;
+what is shown and what limits it is described under
+[Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 ## Inspector {#inspector}
 
@@ -552,7 +549,8 @@ is not offered.
 
 The Users window reads the server's standard account list and shows, for each
 account: its name, description, **roles**, and whether it is enabled. A
-disabled account cannot log in; `Enable Account` and `Disable Account` in the
+disabled account cannot log in: signing in, it gets the ordinary "Wrong user
+name or password" refusal; `Enable Account` and `Disable Account` in the
 context menu switch it. The list updates itself when accounts or roles
 change.
 

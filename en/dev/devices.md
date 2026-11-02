@@ -137,6 +137,17 @@ Transport window opened by the button in the field.</dd>
 is useful for serial devices that switch slowly between transmit and
 receive modes. Default: 0.</dd>
 
+<dt>Computer</dt>
+<dd>The name of the computer whose process serves the direction and its
+devices: the computer's name or the value of <code>scada-setup</code>'s
+<code>--host-name</code> option; letter case does not matter. Empty (the
+default) — the direction is served by the computer where
+<code>scada-setup apply</code> ran without <code>--assigned-links-only</code>.
+When the property changes, the old computer closes the link and the new one
+opens it, with no process restart. See
+<a href="{{ '/en/getting-started/' | relative_url }}#choose">Choosing the
+Server processes</a>.</dd>
+
 <dt>Disabled</dt>
 <dd>Yes — the direction does not run.</dd>
 
@@ -183,6 +194,10 @@ device sends them; most devices send the high word first: `[Hi][Lo]`.
 > sends the high word first (`[Hi][Lo]`), add `;swapwords` to every FLOAT,
 > INT32 and UINT32 address, for example `FLOAT:30001;swapwords`. Before
 > commissioning, compare the value read against a known value on the device.
+>
+> The address options (`;swapbytes`, `;swapwords`, `;reversewords`) may be
+> written in any letter case, but the Server **silently ignores** a misspelt
+> one: the value is read as if the option were absent. Check the spelling.
 
 Four MODBUS registers form a 64-bit DOUBLE value. By default the Server
 treats the first register as the **least** significant word here too. For a
@@ -453,6 +468,17 @@ to control commands.</dd>
 received IEC 60870-5-104 frame. This is a non-standard extension; turn it on
 only when the equipment requires it (No).</dd>
 
+<dt>Computer</dt>
+<dd>The name of the computer whose process serves the direction and its
+devices: the computer's name or the value of <code>scada-setup</code>'s
+<code>--host-name</code> option; letter case does not matter. Empty (the
+default) — the direction is served by the computer where
+<code>scada-setup apply</code> ran without <code>--assigned-links-only</code>.
+When the property changes, the old computer closes the link and the new one
+opens it, with no process restart. See
+<a href="{{ '/en/getting-started/' | relative_url }}#choose">Choosing the
+Server processes</a>.</dd>
+
 <dt>Disabled</dt>
 <dd>Yes — the direction does not run.</dd>
 
@@ -571,8 +597,9 @@ to.
    reads "Duplicate address": the DC cannot tell apart objects sent under one
    address, and a DC command to that address reaches only one of them. The
    Server accepts such rules but writes a "Duplicate destination address"
-   warning for each repeat to the IEC 104 process's
-   [log]({{ '/en/server/' | relative_url }}#logging). Correct the addresses
+   warning for each repeat to the
+   [log]({{ '/en/server/' | relative_url }}#logging) of the process that
+   serves the receiving device (IEC 104 or MODBUS). Correct the addresses
    yourself.
 
    Many rules with consecutive addresses are easier to create at once: open
@@ -598,6 +625,15 @@ protocol or on another computer — are read by the IEC 104 process through
 `scada-proxy`. So **retransmitting them needs `scada-proxy` running**: while
 it is unavailable, such objects send the DC no new values.
 
+**DC commands are carried out only for objects of the same process.** Only
+values pass through `scada-proxy`. Commands received from the DC — select,
+execute, value write and release of selection — are carried out only for
+objects of devices served by the same process on the same computer as the
+receiving device (for example, objects of IEC 104 devices of that same
+`scada-iec104` process). For any other object — computed, simulated, or of a
+device of another protocol or on another computer — the Server refuses the
+command.
+
 **A release of selection received from the DC is passed on to the source
 device.** If the DC selects an object for two-stage control and then abandons
 the command (cause of transmission 8, deactivation), the Server releases the
@@ -609,14 +645,50 @@ example, an object of a MODBUS device — has nothing to release, and the
 deactivation is confirmed at once. See
 [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
 
-Modbus retransmission needs Mode = retransmission on the Modbus direction.
+#### Retransmission over MODBUS {#modbus-retransmission}
+
+MODBUS retransmission needs Mode = retransmission on the MODBUS direction:
+the SCADA then answers another system's requests as a slave. The
+transmission table is filled as for IEC 60870-5 (see above), but a rule's
+address is a MODBUS register number, numbered as in a channel address (see
+[MODBUS register addressing](#modbus-registers)):
+
+| Rule address | Register |
+|:---|:---|
+| from 1 | Coils |
+| from 10001 | Discrete Inputs |
+| from 30001 | Input Registers |
+| from 40001 | Holding Registers |
+
+* Each object takes **one bit** (Coils, Discrete Inputs) or **one 16-bit
+  register** (Input Registers, Holding Registers). A register carries the
+  value as an unsigned UINT16 integer: the fraction is dropped, a value
+  above 65,535 is sent modulo 65,536, and a negative one in two's complement
+  (−1 as 65,535). There are no FLOAT, INT32 or UINT32 types and no word-order
+  options on the transmit side: send an analogue value with a fraction or
+  above 65,535 through a
+  [computed object]({{ '/en/formulas/' | relative_url }}) scaled as agreed
+  with the receiver.
+* On a device with no rules, the first rule created by ticking an object
+  gets address 1 — a coil. If the receiver reads registers, correct the
+  address in the Address column straight away, for example to 40001; the
+  next rules get consecutive addresses in the same register table.
+* A write from the receiver to a coil or holding register is passed to the
+  rule's object as a command — with the same limits as DC commands above.
 
 ## IEC 61850 devices {#iec-61850}
 
 A device is created with `Create -> IEC 61850 device` from the Equipment
 window's context menu (right-click an empty part of the window). Its
 properties are Host — the device's network address — and Port (default
-102), plus Disabled = No. Under the device an `IEC 61850 RCB` (report control
+102), plus Disabled = No. The Computer property is the name of the computer
+whose `scada-iec61850` process serves the device (the computer's name or
+`scada-setup`'s `--host-name` value, letter case ignored); empty (the
+default) means the computer where `scada-setup apply` ran without
+`--assigned-links-only`. When it changes, the device moves to the other
+computer with no process restart; see
+[Choosing the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
+Under the device an `IEC 61850 RCB` (report control
 block) can be created, with its Address set to the block's MMS address in
 the device model, for example `LD0/LLN0$RP$urcbA01` (unbuffered) or
 `LD0/LLN0$BR$brcbA01` (buffered). The device model appears in the Model

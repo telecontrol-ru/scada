@@ -113,8 +113,11 @@ A shape's *гиперссылка* (hyperlink) property names the schematic a
 double-click on it opens in the Client (when the shape's object has no
 unacknowledged events). Give the file name of a Modus schematic (`.sde` or
 `.xsde`) relative to the folder holding the schematic itself, for example
-`Seti320.sde` or `../Substations/T_1.sde`; the file must be in the Server's
-schematics folder.
+`Seti320.sde` or `../Substations/T_1.sde`. The file must be inside the
+workstation's schematics folder — copied there or delivered by the Server
+(see above); the Client does not open a link leading outside that folder.
+Hyperlinks have not yet been tried on working sites' schematics in version
+2.6: check the jumps on your own site's schematics.
 
 The Client draws a breaker's position with the fill colours that the
 switching-device table in the schematic's settings defines for a closed and

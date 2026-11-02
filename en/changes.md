@@ -22,7 +22,7 @@ This version is not yet published on the releases page.
 
 1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows (Windows services) and Linux (systemd services). See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
-1. One package, `telecontrol-scada-<version>.msi`, carries every Server process, `scada-setup` and the Client; the operator workstations get the same package, without `scada-setup`. See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
+1. One package, `telecontrol-scada-<version>.msi`, carries every Server process, `scada-setup` and the Windows Client. In addition, the releases page carries Client packages: an archive for Windows (`Telecontrol-SCADA-Client-<version>-windows-x64.zip`) and a disk image for macOS on Apple silicon (`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`). See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
@@ -30,7 +30,7 @@ This version is not yet published on the releases page.
 
 1. The same protocol process can be installed on several computers, splitting the devices of its protocol between them: a link's Computer property names the computer that serves it, and the computers that serve only the links assigned to them run `scada-setup apply` with `--assigned-links-only`. A link moves to another computer when that property changes, with no restart. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
-1. Retransmission to a DC of objects whose values another Server process receives — computed and simulated objects, and objects of another protocol's devices: the retransmitting process reads them through `scada-proxy`. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission to a DC of objects whose values another Server process receives — computed and simulated objects, and objects of another protocol's devices: the retransmitting process reads them through `scada-proxy`. DC commands (select, execute, write, release of selection) on such objects are refused by the Server: they are carried out only for objects of devices served by the same process on the same computer. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
 
@@ -60,7 +60,7 @@ This version is not yet published on the releases page.
 
 1. A new installation starts from an empty project — no objects, devices, links or users; sign in with the built-in `root` account. The demo project (objects with emulation, IEC 60870-5-104 links, users with no passwords, schematics) is installed on request: `scada-setup apply --demo`. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
-1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (verified on Ubuntu 24.04): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
 1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
 
@@ -96,7 +96,7 @@ This version is not yet published on the releases page.
 
 1. The main window is a workbench with the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar) on the left and the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector) panel on the right, which shows the selected object or event. See [Operator workbench]({{ '/en/client/workbench/' | relative_url }}).
 
-1. The user profile (pages, window layout, portfolios, settings) is saved on this computer; in addition, when the Client closes it also saves the profile on the Server, in the account's profile, at every access level, and at login it loads the profile from there — pages and portfolios follow the account to another computer (with the "Telecontrol" server type; with "OPC UA" the profile is kept on this computer only). See [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage).
+1. The user profile (pages, window layout, portfolios, settings) is saved on this computer; in addition, when the Client closes and on *Disconnect from Server* it also saves the profile on the Server, in the account's profile, at every access level, and at login it loads the profile from there — pages and portfolios follow the account to another computer (with the "Telecontrol" server type; with "OPC UA" the profile is kept on this computer only). See [Where portfolios are kept]({{ '/en/client/portfolio/' | relative_url }}#storage).
 
 1. *Acknowledge All* in the [Event journal]({{ '/en/client/events/' | relative_url }}) acknowledges only the events shown: events hidden by a zone, severity or object filter stay unacknowledged.
 
@@ -118,7 +118,7 @@ This version is not yet published on the releases page.
 
 1. The [CSV export]({{ '/en/client/export/' | relative_url }}) dialog has an *Expand grouped rows* option for the event journal.
 
-1. Fixed: CSV export honours the chosen encoding. On Windows, *System* writes the file in the Windows code page and *Unicode (UTF-8)* writes UTF-8 with a byte-order mark, so Microsoft Excel opens the file by double-clicking it without garbling Russian text. The default delimiter is the comma `,`; for Excel with Russian regional settings to split the values into columns, choose the semicolon `;` in the export dialog. See [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
+1. Fixed: CSV export honours the chosen encoding. On Windows, *System* writes the file in the Windows code page and *Unicode (UTF-8)* writes UTF-8 with a byte-order mark, so Microsoft Excel opens the file by double-clicking it without garbling Russian text. See [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
 
 1. Configuration export and import (*More — Export Configuration...* and *Import Configuration...*) use the OPC UA NodeSet (XML) format instead of version 2.5.7's CSV table. CSV files exported by version 2.5 cannot be imported: a version 2.5 Server's configuration is moved over by `scada-setup migrate`. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) and [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
 
@@ -184,7 +184,11 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Bound shapes inside a Modus Graphic Editor group have not been tried in version 2.6. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
-1. The display module is a separate library that may not be included in the Client installation; without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
+1. Some Modus element types are not drawn by the 2.6 Client yet, or are drawn differently from the Modus graphics editor. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+
+1. Hyperlinks of Modus shapes have not been tried on working sites' schematics; a link opens only when the schematic is inside the workstation's schematics folder. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
+
+1. The Client packages do not include the display module yet: its licence terms are not settled, and the module is supplied separately. Without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 
 1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
 
@@ -192,9 +196,11 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. IEC 61850: the device's clock must run on UTC — timestamps are not converted from local time. An APC setpoint whose device model carries both the `i` and `f` fields is not sent. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
-1. MODBUS: by default the first register of a multi-register value is taken as the least significant word; a device that sends the most significant word first needs `;swapwords` or `;reversewords` on the address. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
-
 1. Retransmission: objects whose values another Server process receives are sent to the DC only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
+1. Retransmission: DC commands (select, execute, write, release of selection) are carried out only for objects of devices served by the same process on the same computer as the receiving device; for computed objects and objects of other processes the Server refuses them. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
+1. MODBUS retransmission sends each value as one bit or one 16-bit register holding an unsigned integer (the fraction is dropped; no FLOAT or 32-bit types); a device's first rule gets address 1, a coil. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
 
 #### Archive and reports {#limits-archive}
 
@@ -214,11 +220,21 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 
+1. `scada-config` (port 4841) accepts a secure connection with any certificate, and registering a process with it is not yet checked against the site certificate authority: anyone who reaches that port can register as a process of the site. Open port 4841 to the site's computers only. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
+
+1. The site certificate authority is kept only on the central computer, in the `data\Certificates\ca` folder. An uninstall without `SCADA_KEEP_CERTIFICATES=1`, deleting `/opt/telecontrol-scada` on Linux, or a restore without that folder makes the next `apply` create a new authority, and every other computer must then join again, after its certificate files are deleted. A computer's certificate is valid for 5 years, the certificate authority's for 10. See [Lifetime and a new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal).
+
+1. The `svc` password may be at most 64 bytes long (a Cyrillic letter takes two): `scada-setup` refuses a longer one. See [scada-setup options]({{ '/en/server/' | relative_url }}#scada-setup-options).
+
 #### Working with the Client {#limits-client}
 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
+
+1. Two-stage control: for IEC 60870-5 the select reaches the device only for single commands (C_SC_NA_1); for other IEC 60870-5 commands and for every MODBUS command the Server reports the select as successful without asking the device — nothing is reserved, and "The remote device is ready to execute the command." does not mean the device answered. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+
+1. On a Vidicon schematic a breaker's or disconnector's position is not marked when its value is unreliable or not connected (only value fields get "?"), and a shape whose value disappears keeps the last value. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 ## 2.5.7 {#v2-5-7}
 

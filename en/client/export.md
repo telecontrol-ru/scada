@@ -71,6 +71,11 @@ follows the system's decimal separator: a semicolon `;` when the decimal
 separator is a comma, a comma `,` otherwise. The chosen delimiter is saved
 and proposed from then on. Earlier versions always proposed a comma.
 
+A delimiter saved by an earlier export — including one made in an earlier
+version of the Client — keeps being proposed instead of the regional one. So
+an upgraded workstation keeps its old choice (a comma, for example) until it
+is changed once in this dialog.
+
 </dd>
 
 <dt>Quote character</dt>

@@ -11,23 +11,23 @@ permalink: /en/client/
 * TOC
 {:toc}
 
+## Limitations of version 2.6 {#limitations}
+
+Before working at an operator workstation, read the Client limitations
+collected under
+[Known limitations — Working with the Client]({{ '/en/changes/' | relative_url }}#limits-client):
+in particular, the alarm tone is off for every new account, and with
+two-stage control some commands are not reserved on the device by the select
+stage. The limitations of the whole release are collected under
+[Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
+
+## Main areas
+
 The graphical client is the main operator application. It provides access to diagrams, tables, graphs, event windows, configuration tools, and data export functions.
 
 Main client window:
 
 ![]({{ '/img/workbench-window.png' | relative_url }})
-
-## Limitations of version 2.6 {#limitations}
-
-Read this list before working at an operator workstation. Details are behind
-the links; the limitations of the whole release are collected under
-[Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
-
-* **The alarm tone is off for every new account** — turn it on under each
-  operator's account. See
-  [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
-
-## Main areas
 
 The main window contains the title bar, the main menu and a status bar.
 Operators work with multiple views inside pages and
@@ -454,6 +454,13 @@ IEC 60870-5 (SELECT/EXECUTE):
    the command." It then reviews the present and commanded values and warns
    that the action cannot be undone remotely, as in one-stage control.
 
+   **WARNING:** for IEC 60870-5 the select reaches the device only for single
+   commands (<code>C_SC_NA_1</code>). For double commands, set-point commands
+   and **every** MODBUS command the Server reports the select as successful
+   without asking the device: nothing is reserved, and "The remote device is
+   ready to execute the command." does not mean the device answered here. The
+   command reaches the device only at the execute stage.
+
 3. **Execute.** Answering yes sends the execute command, and the device
    switches the circuit it already reserved.
 
@@ -469,8 +476,8 @@ panel: "Release of selection: <object> - <reason>. The device may stay
 selected until its own selection timeout expires." The selection stays armed
 until that timeout. The message is always shown, whatever the setting for
 reporting successful control. Objects whose device never receives a select
-stage (MODBUS, and IEC 60870-5 commands other than <code>C_SC_NA_1</code>) have
-nothing to release, and give no message.
+stage (MODBUS, and IEC 60870-5 commands other than <code>C_SC_NA_1</code> — see
+the warning in step 2) have nothing to release, and give no message.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.
@@ -497,7 +504,7 @@ or "Controlling...".
 > On a timeout (`Bad_Timeout`) or a connection lost mid-command the device may
 > have received and executed the command while the answer never reached the
 > Server. Before retrying, check the object's present state — in the
-> "Control" dialog, the Inspector, the [object panel](#object-panel) or a
+> "Control" dialog, the Inspector, the [object panel](#object-tree) or a
 > table: make sure no [С], [Н], [К] or [У] flag precedes the value, the value
 > is good, and it has not already become the commanded one. A schematic is
 > not enough for this check: it does not show the [С], [Н], [К] and [У] flags.
@@ -540,7 +547,7 @@ journal records a "Lock removed" event («Блокировка снята»).
 Limit values can also be edited from the client. Warning limits must
 stay within the configured alarm-limit range.
 
-## Object panel
+## Object panel {#object-tree}
 
 The object panel is used to browse the object hierarchy, open related
 views, and execute object operations. It is available from
@@ -645,6 +652,8 @@ The equipment panel is also the entry point to:
   for service information
 * the IEC 61850 data model view for connected IEC 61850 devices
 
+### IEC 61850 devices {#iec-61850}
+
 When communication with an IEC 61850 device is established, its data
 model appears as a `Model` subtree under the device node. See
 [Protocols]({{ '/en/protocols/' | relative_url }}#iec-61850) and
@@ -707,6 +716,14 @@ The main operator-facing views:
 * [Export and import]({{ '/en/client/export/' | relative_url }})
 * [Printing]({{ '/en/client/print/' | relative_url }})
 * [Reports and analysis]({{ '/en/client/reports/' | relative_url }})
+
+## Favorites {#favorites}
+
+![]({{ '/img/favorites.png' | relative_url }})
+
+## Device watch {#device-watch}
+
+See [Device watch]({{ '/en/client/device-watch/' | relative_url }}).
 
 ## Related views
 

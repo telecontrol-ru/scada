@@ -13,40 +13,53 @@ permalink: /en/development/
 
 Project engineering is performed from the graphical Client while signed in with an account holding the Configure right (see [Users]({{ '/en/dev/users/' | relative_url }})). The Client then exposes additional commands for editing parameters, devices, data items, displays, users, and server-side files.
 
-## Configuration commands
+## General configuration editing commands
 
-When the account holds the Configure right, the Client adds configuration
-commands to its menus and context actions.
+The commands below are available only with the Configure right.
 
-### Properties
+<dl>
 
-The `Properties` command opens the property window for the selected data
-item or object.
+<dt>Properties</dt>
+<dd>Opens the property window for the selected SCADA object.</dd>
 
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
-### Element properties
-
-The `Element Properties` command opens a table that lists parameters for
-all display elements inside the selected group or direction.
+<dt>Element Properties</dt>
+<dd>Opens a table of the parameters of all elements inside the selected group or direction.</dd>
 
 ![]({{ '/img/ti-element-parameters.png' | relative_url }})
 
-### Delete
-
-The `Delete` command removes the selected object, multiple selected
-objects, or a device from the project.
+<dt>Delete</dt>
+<dd>Removes the selected object, several selected objects, or a device from the system.</dd>
 
 ![]({{ '/img/ti-delete.png' | relative_url }})
 
-## Main engineering areas
+</dl>
 
-The engineering workflow covers:
+## User configuration
 
-* [user administration]({{ '/en/dev/users/' | relative_url }})
-* [equipment and communication setup]({{ '/en/dev/devices/' | relative_url }})
-* [data-item configuration]({{ '/en/dev/data-items/' | relative_url }})
-* [electronic schematics and element parameters]({{ '/en/dev/displays/' | relative_url }})
-* [archiving]({{ '/en/dev/history/' | relative_url }})
-* [configuration export and import]({{ '/en/dev/excel/' | relative_url }})
-* [server-side file management]({{ '/en/dev/server-files/' | relative_url }})
+See [Users]({{ '/en/dev/users/' | relative_url }}).
+
+## Equipment configuration
+
+See [Equipment]({{ '/en/dev/devices/' | relative_url }}).
+
+## Data item configuration
+
+See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
+
+## Electronic schematics and element parameters
+
+See [Displays]({{ '/en/dev/displays/' | relative_url }}).
+
+## Archiving
+
+See [Archiving]({{ '/en/dev/history/' | relative_url }}).
+
+## Configuration export and import {#excel-cfg}
+
+See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}).
+
+## Server files
+
+See [Server files]({{ '/en/dev/server-files/' | relative_url }}).

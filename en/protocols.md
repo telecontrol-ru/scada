@@ -137,7 +137,9 @@ See also the engineering reference for
 ## IEC 61850 {#iec-61850}
 
 IEC 61850 support provides transparent access to the device information
-model. See also the engineering reference for
+model. See the description of
+[IEC 61850 devices]({{ '/en/client/' | relative_url }}#iec-61850) in the
+Client and the engineering reference for
 [IEC 61850 devices]({{ '/en/dev/devices/' | relative_url }}#iec-61850).
 
 Data is acquired only through subscriptions to report control blocks

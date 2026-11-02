@@ -16,8 +16,11 @@ permalink: /en/
 > ([Licensing]({{ '/en/server/' | relative_url }}#licensing)). Before buying
 > or upgrading, read the version 2.6
 > [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
-> — in particular, the display module may not be included in the Client
-> installation, and an account created in the Client can only view data ([Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)).
+> — in particular, the Client packages do not yet include the display
+> module (it is supplied separately, and without it schematics are not
+> shown), and an account created in the Client can only view data until an
+> administrator assigns it roles with the *Roles…* command
+> ([Assigning roles]({{ '/en/dev/users/' | relative_url }}#assign-roles)).
 
 Telecontrol SCADA is supervisory control and data acquisition software
 for collecting field data, presenting it to operators, issuing control
@@ -41,11 +44,14 @@ reconnects by itself (see
 
 For operation, the system requires one computer for a single-machine
 deployment or multiple computers for a distributed deployment. The Server
-processes run on Windows 10 or newer; installing the Server on Linux is
-available on request (see
+processes run on Windows 10 or newer and on x86-64 Linux (`.deb` and
+`.tar.gz` packages, systemd services; see
 [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)).
-The Client runs on Windows 10 or newer. The Client displays Modus diagrams with
-its own display module, without the ActiveXeme component. The
+The Client runs on Windows 10 or newer and on macOS on computers with Apple
+silicon (see
+[Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
+The Client displays Modus diagrams and Vidicon schematics with live values
+with its own display module, without the ActiveXeme component. The
 [Modus graphical editor](http://swman.ru/content/blogcategory/19/47/) is
 used to edit diagrams.
 
@@ -68,12 +74,13 @@ Example of a distributed deployment:
 
 ## Key features
 
-* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows (on Linux on request)
-* Modus [displays]({{ '/en/client/display/' | relative_url }}) with live
+* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows and Linux and the Client on Windows and macOS
+* Modus and Vidicon [displays]({{ '/en/client/display/' | relative_url }}) with live
   switch positions and values; for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
-  Before upgrading, check your site's schematics in a 2.6 Client: the
-  bindings have not yet been tried on the schematics of working sites
+  Before upgrading, check your site's schematics in a 2.6 Client: some
+  Modus element types are not drawn yet, and the bindings have not yet been
+  tried on the schematics of working sites
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
   [summaries]({{ '/en/client/summary/' | relative_url }}) with archive

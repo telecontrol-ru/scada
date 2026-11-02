@@ -25,7 +25,7 @@ It can also be started in console mode for diagnostics.
 The services are registered by [`scada-setup`](#scada-setup); they run as the
 SYSTEM account and start automatically with Windows. `scada-setup stop` and
 `scada-setup start` stop and start all of a computer's services in the right
-order (`start` only with the [computer's parameters](#scada-setup-options)); a single service can be controlled through the standard Windows
+order (`start` with the [computer's parameters](#scada-setup-options): it skips the processes whose services the computer does not have, and fails only when the computer has none of the requested services); a single service can be controlled through the standard Windows
 Services UI.
 
 When a computer runs *Telecontrol SCADA Config*, its other services depend on
@@ -151,7 +151,10 @@ Client take effect in every process.
   letter: the processes receive the path as written.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
-  and `migrate --execute`; for `set-password`, the new password.
+  and `migrate --execute`; for `set-password`, the new password. It may be
+  at most 64 bytes long, or `scada-setup` refuses to run: a Latin letter or
+  digit takes one byte and a Cyrillic letter two, so a password of Cyrillic
+  letters only may be at most 32 characters.
 * `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
   environment variable) — the [root password](#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config` or
@@ -178,10 +181,17 @@ Client take effect in every process.
 * `--install-root` — the installation folder. There is no need to give it:
   it defaults to the folder above the one holding `scada-setup.exe`.
 
+* `--host-name <name>` — this computer's name in place of the Windows
+  computer name: `scada-setup` writes it into the parameter files and the
+  certificate, and it is the name a link's Computer property gives (see
+  [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
+
 **`scada-setup` does not remember its options.** Write down each computer's
-`--tiers`, `--central`, `--advertise`, `--license` and, if you gave it,
-`--data-root` at installation, and
-give them to every `apply` and `start` on it, upgrades and restores
+`--tiers`, `--central`, `--advertise`, `--license`, the central computer's
+fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
+`--assigned-links-only`, `--insecure-links` and `--data-root` at
+installation, and give them to every `apply` on it (and `--tiers`,
+`--central` and `--license` to every `start`), upgrades and restores
 included:
 
 * `start` without `--tiers` takes every process in the license, starts those
@@ -191,7 +201,18 @@ included:
   computer. `remove --tiers <the extra processes>` removes the extra services
   (without `--purge-data` their data stays);
 * `apply` without `--license` writes the default path into the parameter
-  files only, not into the services.
+  files only, not into the services;
+* `apply` without `--assigned-links-only` on a computer where it was given
+  makes that computer serve the links without a computer — and two computers
+  open the same links;
+* `apply` without `--host-name` on a computer where it was given writes the
+  Windows computer name into the parameter files, and the computer stops
+  serving the links assigned to the old name;
+* on a site set up with `--insecure-links`, `apply` without that option on
+  the central computer creates the site certificate authority and switches
+  the central computer's links to encryption — the other computers lose
+  contact with it until they are joined with `--central-fingerprint` (see
+  [Site certificate authority](#opcua-site-ca)).
 
 `apply` can be run again: it rewrites the parameter files and re-registers
 the services with the new settings, without touching data.
@@ -209,6 +230,11 @@ stop the processes before `apply`:
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
 ```
+
+Add the rest of the recorded
+[computer parameters](#scada-setup-options) too — `--central-fingerprint`,
+`--host-name`, `--assigned-links-only`, `--insecure-links`, `--data-root` —
+if they were given at installation.
 
 This is how to add a process to the computer. The `svc` and `root` passwords
 are changed by the `set-password` command, which restarts the services itself
@@ -270,9 +296,8 @@ registry no longer holds the passwords.
 * **An administrator of the computer can read these passwords.** Do not give
   untrusted people administrator rights on the Server computers.
 * **Only `scada-setup set-password` changes the passwords in this file.** A
-  root password change from the Client is refused (see
-  [Root password](#root-password)), and an `svc` password changed from the
-  Client is replaced by the one in the file the next time the processes start.
+  `root` or `svc` password change from the Client is refused by the Server
+  (see [Root password](#root-password) and [The svc account](#svc)).
 * **A Server installed by a pre-release build of version 2.6 may keep the
   passwords in plain text** — in the `Environment` values of the registry keys
   `HKLM\SYSTEM\CurrentControlSet\Services\TelecontrolScada<Process>`, where
@@ -312,10 +337,10 @@ Server* service — and kept its data in the `Configuration`, `History` and
 
 All paths are relative to `%ProgramData%\Telecontrol\SCADA Server`; if the
 version 2.5 `server.json` named other folders, the command takes them from
-there. The configuration is copied to two processes because each works from
-its own copy: `scada-config` hands it to the protocol processes and to
-`scada-historian` (the historical databases and object assignments), and
-`scada-proxy` checks Client user names and passwords against it.
+there. The configuration is copied to `scada-config` only: it hands it to
+the protocol processes and to `scada-historian` (the historical databases
+and object assignments), and `scada-proxy` reads Client user names and
+passwords from it.
 
 The configuration is not carried into `scada-filesystem`'s database
 (`filestore\Configuration`): that process needs only the `svc` service
@@ -569,6 +594,14 @@ On every Server computer:
    `data\Certificates` folder and put it back before `apply`, or uninstall
    with the `SCADA_KEEP_CERTIFICATES=1` parameter (step 2), which leaves the
    folder in place.
+
+   **On the central computer this folder also holds the site certificate
+   authority** (the `ca` subfolder with the `ca_key.pem` key). If you will
+   install the program again, uninstall with `SCADA_KEEP_CERTIFICATES=1`, or
+   save the `ca` folder and put it back before `apply`. Otherwise `apply`
+   creates a new certificate authority and every other computer of the site
+   has to join again (see
+   [A new certificate authority](#opcua-renewal)).
 2. Uninstall the program: the *ОИК Телеконтроль* program (publisher
    ООО Телеконтроль) in *Control Panel — Programs and Features*, or from an
    elevated command prompt:
@@ -1028,12 +1061,12 @@ password changed from the Client is kept. To keep the password out of the
 file in plain text, pass it through an environment variable as in the
 example above.
 
-**On Windows, `scada-setup` sets it**: the parameter files it writes for
+**`scada-setup` sets it** (on Windows and on Linux): the parameter files it writes for
 `scada-config` and `scada-filesystem`
 contain `"rootPassword": "$ENV{SCADA_ROOT_PASSWORD}"`, and `scada-setup apply`
 takes the variable's value from `--root-password` (or the
 `SCADA_SETUP_ROOT_PASSWORD` environment variable) and stores it in the
-computer's encrypted [password file](#stored-passwords). On a computer running one of those
+computer's [password file](#stored-passwords). On a computer running one of those
 processes, `apply` refuses to run without it. To change the root password,
 run `scada-setup set-password --root-password <new password>`: the command
 stores the password and restarts the computer's services (see
@@ -1124,23 +1157,31 @@ In an installation made by `scada-setup`, OPC UA is enabled on every process
 the processes exchange data with each other over it.
 
 The processes connect to each other encrypted (the Basic256Sha256 policy,
-Sign & Encrypt mode) as the [`svc`](#svc) account. Each accepts only
-computers whose certificate was issued by the
+Sign & Encrypt mode) as the [`svc`](#svc) account. Each process other than
+`scada-config` accepts only computers whose certificate was issued by the
 [site's certificate authority](#opcua-site-ca), and registration with
-`scada-proxy` is accepted only over such a connection. Only `scada-proxy`'s
+`scada-proxy` is accepted only over such a connection. `scada-config`
+(port 4841) accepts a secure connection with any certificate, because a
+computer joining the site reaches it before it has a certificate of its own.
+Its data still requires the `svc` password, but anyone who reaches port 4841
+can register with it as a process of the site. Only `scada-proxy`'s
 port 4840 also accepts unsecured connections (policy None), for external
 systems, and it never accepts a password sent unencrypted. Anonymous sign-in
 is always offered. So, still:
 
 * open the OPC UA ports to the site's computers only (see
-  [Network preparation]({{ '/en/getting-started/' | relative_url }}#network));
+  [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)),
+  and port 4841 of `scada-config` without exception;
 * if an external system must connect to the Server, allow it port 4840
   (`scada-proxy`) in the firewall from its address only.
 
-**WARNING:** a computer set up with [`--insecure-links`](#scada-setup-options),
-or a computer without `scada-config` that joined without
-`--central-fingerprint`, connects to the others unencrypted and sends the
-`svc` password in clear text, and `apply` warns about it. On such a site the
+**WARNING:** a computer without `scada-config` set up without
+`--central-fingerprint` gets a self-signed certificate, and on a site with a
+certificate authority its processes **cannot connect** to the others at all:
+those refuse unsecured connections and passwords sent unencrypted, and do not
+trust its certificate. `apply` warns about it. Only a site whose computers
+are all set up with [`--insecure-links`](#scada-setup-options) runs
+unencrypted, sending the `svc` password in clear text; on such a site the
 firewall is the only protection.
 
 ```json
@@ -1357,6 +1398,39 @@ When `apply` on another computer reports:
 Until a computer is switched over, its connections to the switched computers
 fail, so switch all of them in one session.
 
+#### Lifetime and a new certificate authority {#opcua-renewal}
+
+A computer's certificate is valid for 5 years, the site certificate
+authority's for 10 years from its creation. When a computer's certificate
+expires, the other processes stop accepting its connections and its devices
+disappear from the Client; when the certificate authority's expires, the
+same happens to every computer of the site. [OpenSSL](https://www.openssl.org/)
+shows the expiry date:
+`openssl x509 -in ServerCertificate.pem -noout -enddate` (for the authority,
+`ca\ca.pem` on the central computer). Replace certificates in good time.
+
+`apply` does not replace a valid certificate issued by a certificate
+authority this computer trusts, even when it is about to expire. So:
+
+* **to renew a computer's certificate**, stop its processes
+  (`scada-setup stop`), delete `ServerCertificate.pem` and
+  `ServerPrivateKey.pem` from the `data\Certificates` folder of the
+  installation (`C:\Program Files\Telecontrol SCADA\data\Certificates`, on
+  Linux `/opt/telecontrol-scada/data/Certificates`) and run `apply` with the
+  [computer's parameters](#scada-setup-options) — on a computer without
+  `scada-config`, together with the `--central-fingerprint` that the central
+  computer's latest `apply` prints;
+* **a new certificate authority** appears when the `ca` subfolder on the
+  central computer is deleted (to replace an expiring authority) or lost —
+  for example on a reinstall without `SCADA_KEEP_CERTIFICATES=1`. Every
+  computer's certificate was then issued by the old authority, and **every
+  other computer must join again**: delete its `ServerCertificate.pem` and
+  `ServerPrivateKey.pem` as above and run `apply` with the new fingerprint
+  from the central computer's `apply`. If those files are not deleted,
+  `apply` keeps the old certificate and the computer never connects. Until
+  a computer has joined again its connections fail, so join all of them in
+  one session.
+
 ## OPC client on Windows {#opc-classic}
 
 On Windows, the Server can connect to external Classic OPC (OPC DA)
@@ -1393,8 +1467,20 @@ On each computer running Server processes, copy:
   has its own folder in it, holding its parameter file, databases and logs,
   and the license file `license.json` sits beside them;
 * the `C:\Program Files\Telecontrol SCADA\data\Certificates` folder — the
-  [Server certificate](#opcua-certificate) and its private key. Keep the
-  copy of the key as safe as the passwords.
+  [Server certificate](#opcua-certificate) and its private key, and on the
+  central computer the `ca` subfolder as well — the
+  [site certificate authority](#opcua-site-ca) with its `ca_key.pem` key.
+  Without it every other computer must join again after a restore (see
+  [A new certificate authority](#opcua-renewal)). Keep the copy of the keys
+  as safe as the passwords.
+
+**On Linux** copy the whole `/var/lib/scada` folder and the
+`/opt/telecontrol-scada/data/Certificates` folder, with the processes
+stopped by `sudo /opt/telecontrol-scada/bin/scada-setup stop`.
+`/var/lib/scada` also holds the [password file](#stored-passwords)
+`secrets/service-secrets.env`, which keeps the `svc` and `root` passwords
+**in plain text**: keep the copy where only `root` can read it, or leave
+that file out — on a restore `apply` takes the passwords again anyway.
 
 Copy only with **this computer's processes stopped**: a copy of the files of
 running databases may be inconsistent. From an elevated command prompt:
@@ -1408,8 +1494,8 @@ rem and C:\Program Files\Telecontrol SCADA\data\Certificates
 
 A restore also needs the `svc` password, the `root` password, and the
 [computer's parameters](#scada-setup-options) — the `--tiers`, `--central`,
-`--advertise` and `--license` (and `--data-root`, if given) that
-`scada-setup apply` was run with on it;
+`--advertise`, `--license`, the central computer's fingerprint and the other
+options, if given, that `scada-setup apply` was run with on it;
 none of them is in the backup.
 
 ### Configuration backup
@@ -1459,10 +1545,16 @@ On a new or rebuilt computer:
    icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
    ```
 
-   **If the computer's name is different**, do not put the `Certificates`
-   folder back (or delete both files from it): the old certificate names the
+   **If the computer's name is different**, do not put
+   `ServerCertificate.pem` and `ServerPrivateKey.pem` back from the
+   `Certificates` folder (or delete them): the old certificate names the
    former computer name, and `apply` creates a new pair only when neither of
-   the two files exists.
+   the two files exists. **Put the central computer's `ca` subfolder back in
+   any case** — otherwise `apply` creates a new certificate authority and
+   the other computers have to join again (see
+   [A new certificate authority](#opcua-renewal)). On a computer without
+   `scada-config`, give `apply` in step 4 `--central-fingerprint` too, to get
+   a new certificate from the certificate authority.
 4. Run `scada-setup apply` with the same
    [computer's parameters](#scada-setup-options) as before, **the same `svc`
    password**, and the `root` password. The `svc` password is stored in the

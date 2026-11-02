@@ -24,7 +24,7 @@ The main data flow is:
 
 ## Server processes {#tiers}
 
-The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (or, in a Linux installation, which is available on request, run as its own process), reads its own parameter file, and is purchased separately: one installer carries every process, and the license names the ones purchased for the site.
+The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (on Linux, as its own systemd service `scada-<process>.service`; see [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)), reads its own parameter file, and is purchased separately: one installer carries every process, and the license names the ones purchased for the site.
 
 | Process | Windows service | Role |
 |:---|:---|:---|
@@ -38,7 +38,7 @@ The SCADA Server is not a single program but a set of processes. Each one is ins
 | `scada-opc` | Telecontrol SCADA OPC | [OPC client](#opc-client-on-windows) (Windows only) |
 | `scada-vidicon` | Telecontrol SCADA Vidicon | [Vidicon integration]({{ '/en/server/' | relative_url }}#vidicon) (Windows only) |
 
-The processes exchange data with each other over OPC UA.
+The processes exchange data with each other over OPC UA; the links between them are encrypted (see [OPC UA server]({{ '/en/server/' | relative_url }}#opcua)).
 
 The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it. **The smallest installation** the `scada-setup` tool builds is `scada-config`, one or more protocol processes, `scada-filesystem`, and `scada-proxy`, which the Clients connect to. Without `scada-filesystem` the server-side file system is unavailable (`scada-setup` warns about it). Add `scada-historian` for a value and event archive: only it stores history. The license must name every installed process — see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
@@ -330,17 +330,22 @@ under [historical databases]({{ '/en/server/' | relative_url }}#history).
 
 ### OPC UA server
 
-Every SCADA Server process can act as an
-[OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/)
-server and expose its address space to external systems. External OPC
-UA clients can access current values, historical data, and
+The SCADA Server processes exchange data with each other over
+[OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) with
+encryption (security policy Basic256Sha256, mode Sign and Encrypt), and
+accept from each other only certificates issued by the site certificate
+authority (except `scada-config`, which a computer joining the site
+reaches before it has one). External systems connect to the `scada-proxy`
+process on port 4840 and can access current values, historical data, and
 subscriptions.
 
 Configuration is described in the Server section on
-[OPC UA]({{ '/en/server/' | relative_url }}#opcua). **Note:** in this
-version the OPC UA ports are protected by the firewall alone: open them only
-to the site's computers, and allow an external system port 4840 from its
-address only — see the same section.
+[OPC UA]({{ '/en/server/' | relative_url }}#opcua). **Note:** port 4840 of
+`scada-proxy` also accepts unsecured connections (security policy None) and
+anonymous sign-in, and port 4841 of `scada-config` accepts a secure
+connection with any certificate. So open the OPC UA ports only to the site's
+computers, and allow an external system port 4840 from its address only —
+see the same section.
 
 ### OPC client on Windows
 
@@ -372,7 +377,7 @@ The built-in `root` account has all rights and always exists,
 whatever the configuration contains.
 
 **WARNING:** while no root password is configured, the Server accepts
-`root` with an empty password. On Windows, `scada-setup apply` sets it
+`root` with an empty password. `scada-setup apply` sets it
 (the `--root-password` option); in a hand-built setup, set it with
 [`security.rootPassword`]({{ '/en/server/' | relative_url }}#root-password)
 before the Server is reachable over the network.

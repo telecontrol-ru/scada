@@ -28,7 +28,9 @@ To delete a user, choose `Delete` from the user context menu.
 To stop a user signing in without deleting the account, choose
 `Disable Account` from the user context menu; `Enable Account` lets it sign
 in again. The Status column shows which. A disabled user's session that is
-already open is not closed.
+already open is not closed. A disabled user who tries to sign in gets the
+same refusal as for a wrong password — "Wrong user name or password" — so it
+does not show that the account is disabled.
 
 To assign roles to a user, choose `Roles...` from the user context menu (see
 [Assigning roles](#assign-roles)).

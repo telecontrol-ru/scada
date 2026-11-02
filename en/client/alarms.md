@@ -17,7 +17,8 @@ spoken message. The count and the tiles are always on; the rest are switched
 on and off on the settings screen: **Settings → Settings… → Events & alarms**.
 
 These preferences live in the user's profile, which is saved on this computer
-and, when the client exits, on the Server (see
+and, when the client exits or on *More → Disconnect from Server*, on the
+Server (see
 [Shift handover]({{ '/en/client/' | relative_url }}#shift-change)).
 
 ## Which events raise the alarm {#escalation}

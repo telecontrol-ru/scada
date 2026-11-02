@@ -15,9 +15,11 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 ## System requirements
 
-* Windows 10 or newer (Server and Client), or x86-64 Linux with systemd and
-  glibc 2.38 or newer, such as Ubuntu 24.04 (Server; see
-  [Installation on Linux](#linux))
+* Server: Windows 10 or newer, or x86-64 Linux with systemd and glibc 2.38
+  or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
+* Client: Windows 10 or newer (x64), or macOS on a computer with Apple
+  silicon (see [Installing the Client](#client-install)); there is no Linux
+  Client
 * Windows administrator rights (`root` on Linux) to install and set up the
   Server
 * A TCP/IP network between the site's computers; Clients connect to the
@@ -190,9 +192,13 @@ The protocol processes need no root password: `scada-config` keeps their
 accounts. `--central` is required on a computer without `scada-config`.
 With `--central-fingerprint`, the computer gets its certificate from the
 site's certificate authority on the central computer, and its processes
-connect to the others encrypted. Without it, they connect unencrypted, and
-`apply` warns about it (see
+connect to the others encrypted. **Without it, this computer's processes
+cannot connect to the others at all**: the other processes accept neither
+unencrypted connections nor certificates the site's certificate authority
+did not issue; `apply` warns about it (see
 [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
+Only a site whose computers are all set up with `--insecure-links` runs
+unencrypted.
 The central computer's `--advertise` is the address the other computers use
 in `--central`.
 
@@ -225,6 +231,11 @@ for each computer,** and keep with the passwords:
 * `--central` — the central computer's address (on a computer without
   `scada-config`);
 * `--advertise` — if you gave one;
+* `--central-fingerprint` — the fingerprint of the central computer's
+  certificate (on a computer without `scada-config`);
+* `--assigned-links-only` — if you gave it;
+* `--host-name` — if you gave one;
+* `--insecure-links` — if the site is set up without encryption;
 * `--license` — if the license file is not at
   `%ProgramData%\Telecontrol\SCADA Server\license.json`;
 * `--data-root` — if you gave a non-standard data folder;
@@ -240,6 +251,15 @@ the passwords to `apply`), upgrades and restores included:
   computer has none of those services, `start` ends with an error;
 * without `--central`, on a computer without `scada-config`, both commands
   refuse to run;
+* `apply` without `--assigned-links-only` on a computer where it was given
+  makes that computer serve the links without a computer, and two computers
+  open the same links;
+* `apply` without `--host-name` on a computer where it was given writes the
+  Windows computer name, and the computer stops serving the links assigned
+  to the old name;
+* on a site without encryption, `apply` without `--insecure-links` on the
+  central computer creates a certificate authority, and the other computers
+  lose contact with it until they join again with `--central-fingerprint`;
 * without `--license` both commands look for the license at
   `%ProgramData%\Telecontrol\SCADA Server\license.json`, and `apply` writes
   that path into the parameter files (but not into the services);
@@ -264,14 +284,31 @@ belong, remove their services (the processes' data stays):
 
 ### Installing the Client {#client-install}
 
-The [releases page](#download) has no separate Client installer: the Client
-is part of the same `telecontrol-scada-<version>.msi` package as the Server.
-The installer puts the Client on every computer the package is installed on,
-and creates a *Клиент* (Client) shortcut on the desktop and in the
-*Start — ОИК Телеконтроль* menu.
+The [releases page](#download) carries two Client packages of the same
+version next to the Server installer `telecontrol-scada-<version>.msi`:
 
-* **On an operator workstation**, install the same package with the same
-  command,
+* **`Telecontrol-SCADA-Client-<version>-windows-x64.zip`** — for Windows 10
+  or newer. Unzip it into any folder and run `client.exe`. The program is not
+  code-signed, so Windows SmartScreen may warn about it on first launch:
+  choose *More info* → *Run anyway*.
+* **`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`** — for macOS on a
+  computer with Apple silicon. Open the disk image and drag *Telecontrol
+  SCADA Client* to *Applications*. The release notes say whether the app is
+  signed and notarised by Apple, and name the minimum macOS version. If it
+  is not notarised, macOS refuses to open it the first time: after the
+  refusal, open *System Settings → Privacy & Security* and click *Open
+  Anyway*.
+
+**These packages do not include the display module yet** (see
+[Displaying schematics](#displays)).
+
+The Windows Client is also part of the `telecontrol-scada-<version>.msi`
+package: the installer puts the Client on every computer the package is
+installed on, and creates a *Клиент* (Client) shortcut on the desktop and in
+the *Start — ОИК Телеконтроль* menu.
+
+* **On a Windows operator workstation** you may, instead of the archive,
+  install the same package with the same command,
   `msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`,
   and **do not run `scada-setup`**: only `scada-setup` creates the Server
   process services, so without it no Server process runs on that computer.
@@ -293,11 +330,15 @@ not been verified.
 ### Displaying schematics {#displays}
 
 The version 2.6 Client renders Modus schematics (`.sde` and `.xsde` files)
-itself, through a display module that has to be in the Client's folder,
-beside its executable. The ActiveXeme component is not used by the version
-2.6 Client. Without the module, a display window shows the message "No
-display runtime is installed." with the reason. Editing schematics still
-needs the Modus graphics editor.
+and Vidicon schematics (`.vds` files) with live values itself, through a
+display module that has to be in the Client's folder, beside its executable.
+The ActiveXeme component is not used by the version 2.6 Client.
+
+**The Client packages do not include the display module yet**: its licence
+terms are not settled, and the module is supplied separately — contact
+Telecontrol. Until it is there, a display window shows the message "No
+display runtime is installed." with the reason; the Client's other windows
+work. Editing Modus schematics still needs the Modus graphics editor.
 
 ## Installation on Linux {#linux}
 
@@ -307,9 +348,9 @@ archive `telecontrol-scada-server-<version>-linux-amd64.tar.gz`. It holds the
 same processes as the Windows installer, except `scada-opc` and
 `scada-vidicon`, and the same `scada-setup` program. The package installs
 into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd and glibc
-2.38 or newer (verified on Ubuntu 24.04). The graphical Client is not
-supported on Linux: Windows Clients connect to a Linux Server just as they do
-to a Windows one.
+2.38 or newer (installation was tried in an Ubuntu 24.04 container, not yet
+on a working Linux site). There is no Linux Client: Windows and macOS
+Clients connect to a Linux Server just as they do to a Windows one.
 
 Run every command as `root` (with `sudo`; `status` does not need it).
 
@@ -358,12 +399,31 @@ only the locations differ:
 * `migrate --execute` is not available on Linux: the version 2.5 Server ran
   on Windows only.
 
-Removing the package (`sudo apt remove telecontrol-scada-server`) stops and
+**Upgrading.** As on Windows: stop the processes, install the new version
+and run `apply` with the same [computer's parameters](#host-parameters) and
+passwords — `apply` rewrites the parameter files and services from the new
+version's templates:
+
+```sh
+sudo /opt/telecontrol-scada/bin/scada-setup stop
+sudo apt install ./telecontrol-scada-server_<new version>_amd64.deb
+sudo /opt/telecontrol-scada/bin/scada-setup apply --tiers <this computer's processes> … --svc-password <password> --root-password <root password>
+```
+
+For an archive installation, unpack the new archive over the old one with
+the same `tar -xzf … -C /opt` command instead of `apt install`. An
+`apt install` of a newer `.deb` on its own, without `stop`, restarts the
+running services with the new executables, but only `apply` rewrites the
+parameter files.
+
+**Uninstalling.** `sudo apt remove telecontrol-scada-server` stops and
 removes the process services; the data in `/var/lib/scada` stays. For an
 archive installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove`
-first, then delete the `/opt/telecontrol-scada` folder. Upgrading the package
-(`apt install` of a newer `.deb`) restarts the running services with the new
-executables.
+first, then delete the `/opt/telecontrol-scada` folder — which also deletes
+its `data/Certificates` folder with the computer's certificate and, on the
+central computer, the site certificate authority (the `ca` subfolder). If
+the program will be installed again, save that folder first (see
+[A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
 
 ## License {#license}
 
@@ -422,12 +482,12 @@ machine; any other license is bound to no computer and needs no setting. See
 
 The built-in `root` account has all rights. Its password is set by the
 `--root-password` option of `scada-setup apply` (or the
-`SCADA_SETUP_ROOT_PASSWORD` environment variable). On a computer running at
-least one of `scada-config`, `scada-proxy`, `scada-historian` and
-`scada-filesystem`, `apply` refuses to run without it: each of those processes
-has its own `root` account, which would otherwise accept an empty password.
+`SCADA_SETUP_ROOT_PASSWORD` environment variable). On a computer running
+`scada-config` or `scada-filesystem`, `apply` refuses to run without it:
+those processes keep the configuration in databases of their own, each has
+its own `root` account, which would otherwise accept an empty password.
 
-`scada-setup` stores the password in the computer's encrypted
+`scada-setup` stores the password in the computer's
 [password file]({{ '/en/server/' | relative_url }}#stored-passwords) rather
 than in the parameter files, and the processes write it again on every start.
 So:
@@ -476,6 +536,11 @@ rem Computer running scada-modbus and scada-iec104 (the central computer is 10.0
 netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4843,4844 remoteip=10.0.0.10
 ```
 
+**On Linux** open the same ports with your distribution's tools, for example
+`sudo ufw allow proto tcp from 10.0.0.11 to any port 4840,4841` (Ubuntu) or
+`sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.11 port port=4840-4841 protocol=tcp accept'`
+followed by `sudo firewall-cmd --reload` (distributions with firewalld).
+
 **Links that accept connections.** When a link works passively — its
 Transport is of type TCP Server and the SCADA waits to be connected to (for
 example [retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)
@@ -499,7 +564,9 @@ The processes connect to each other encrypted and accept only the computers
 whose certificate the site's certificate authority issued (see
 [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
 Still, anonymous OPC UA sign-in is always offered, and `scada-config` accepts
-any computer's certificate, so that a new computer can join the site. If an
+any computer's certificate, so that a new computer can join the site: anyone
+who reaches port 4841 can register with it as a process of the site, so
+**open port 4841 to the site's computers only**. If an
 external OPC UA system must connect to the Server, allow it port 4840 from
 its address only (see [OPC UA server]({{ '/en/server/' | relative_url }}#opcua)).
 **On a site set up with `--insecure-links`**, the firewall is the only
@@ -738,8 +805,10 @@ msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
 ```
 
-Give `apply` the same [computer's parameters](#host-parameters) as at
-installation, and the current `svc` password. The installer replaces only the
+Give `apply` all the [computer's parameters](#host-parameters) given at
+installation — `--central-fingerprint`, `--assigned-links-only`,
+`--host-name` and `--insecure-links` included, if they were given — and the
+current `svc` password. The installer replaces only the
 executables; `apply` rewrites the parameter files (keep your own parameters
 in [`server.override.json`]({{ '/en/server/' | relative_url }}#server-override),
 which is preserved) and leaves the data alone. On computers running only protocol
@@ -750,8 +819,10 @@ processes are being upgraded, their processes' objects are marked bad; once
 upgraded, they update and archive again by themselves
 (see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
 
-**On the operator workstations** install the new package only, with no
-`scada-setup` commands (see [Installing the Client](#client-install)):
+**On the operator workstations** install the new Client version the same
+way as the old one (see [Installing the Client](#client-install)): unpack
+the new archive or disk image in place of the old one, or install the new
+package, with no `scada-setup` commands:
 
 ```bat
 msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
@@ -817,9 +888,16 @@ removes the process services together with their registry settings, and the
 folder holding the Server certificate and its private key. It leaves the
 `%ProgramData%\Telecontrol\SCADA Server` data folder (which also holds the
 `svc` and `root` password file) and the firewall rules created in
-[Network preparation](#network) — delete those by hand. The steps, including
-how to keep the certificate for a reinstall, are in
-[Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+[Network preparation](#network) — delete those by hand.
+
+**On the central computer the site certificate authority is deleted with
+the certificate.** If you will install the program again, uninstall it with
+`msiexec /x telecontrol-scada-<version>.msi SCADA_KEEP_CERTIFICATES=1`, or
+save the `C:\Program Files\Telecontrol SCADA\data\Certificates` folder:
+otherwise every other computer of the site has to join again. The steps are
+in [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+A Client unpacked from the archive or disk image is removed by deleting its
+folder (on macOS, the app in *Applications*).
 
 ## Troubleshooting
 
@@ -885,9 +963,13 @@ and run <code>scada-setup start</code> with the
 <a href="#host-parameters">computer's parameters</a>. If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt><code>scada-setup start</code> stops with an error</dt>
-<dd>It was run without <code>--tiers</code> (or without
-<code>--central</code>) and is trying to start a process whose service the
-computer does not have. Run it again with the
+<dd><code>start</code> skips the processes whose services the computer does
+not have (<code>Skipped &lt;process&gt;: not installed on this host</code>),
+and fails with <code>none of the requested tier services is installed on
+this host</code> only when the computer has none of the requested services:
+<code>--tiers</code> names the wrong processes, or <code>apply</code> has not
+run on this computer yet. On a computer without <code>scada-config</code> the
+command refuses to run without <code>--central</code>. Run it again with the
 <a href="#host-parameters">computer's parameters</a>.</dd>
 
 <dt>A process runs but refuses requests</dt>
@@ -911,7 +993,9 @@ Telecontrol.</dd>
 
 <dt>Schematics do not open</dt>
 <dd>If the display window says "No display runtime is installed.", the
-display module is missing from the Client's folder — contact Telecontrol.
+display module is missing from the Client's folder: the Client packages do
+not include it yet — contact Telecontrol (see
+<a href="#displays">Displaying schematics</a>).
 Otherwise, check that the schematic file is in
 <em>%ProgramData%\Telecontrol\SCADA Client</em> or in the
 <a href="{{ '/en/server/' | relative_url }}#filesystem">server-side file system</a>.</dd>

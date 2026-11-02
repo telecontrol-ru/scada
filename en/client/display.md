@@ -17,7 +17,8 @@ ActiveXeme component is neither needed nor used. The **Display** menu
 lists the available schematics.
 
 > **Caution.** The display module is a separate library which, in version
-> 2.6, may not yet be included in the Client installation. Without it the
+> 2.6, is not yet included in the Client packages: its licence terms are not
+> settled yet, and it is supplied separately. Without it the
 > client works, but instead of the schematic the window shows the message
 > "No display runtime is installed." («Модуль отображения мнемосхем не
 > установлен.») — in that case contact Telecontrol (see
@@ -64,6 +65,15 @@ a breaker changes colour, a disconnector moves its blade, a value field shows
 the value with its units and with a "?" mark on an unreliable value. Until a
 value arrives, a shape stays as it was saved in the schematic.
 
+> **Caution.** On a Vidicon schematic a breaker's or disconnector's position
+> is **not marked** when its value is unreliable or the object is not
+> connected: the device stays in the last position received, and nothing on
+> the schematic shows it. Only value fields get the "?" mark. When an object's
+> value disappears, the shape likewise keeps the last value instead of
+> returning to the look saved in the schematic. Check how reliable a position
+> is in the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector)
+> or the "Measurements" panel.
+
 When the object has unacknowledged events, a frame in the critical alarm
 colour blinks around the shape until the events are acknowledged in the
 event panel.
@@ -81,9 +91,11 @@ What a click does depends on the kind of schematic.
   first is selected. A double-click acknowledges the selected object's
   events; when there are no unacknowledged events and the shape has a
   *гиперссылка* (hyperlink) property, a double-click opens the Modus
-  schematic it names, as in the 2.5.7 Client. The schematic is looked for
-  relative to the folder of the open one; a link to a file outside the
-  Server's schematics folder is not opened. Bound shapes inside a Graphic Editor group have
+  schematic it names. The schematic is looked for relative to the folder of
+  the open one and must be inside the workstation's schematics folder —
+  copied there or delivered by the Server; a link leading outside that folder
+  is not opened. Hyperlinks have not yet been tried on working sites'
+  schematics in version 2.6. Bound shapes inside a Graphic Editor group have
   not been checked in version 2.6 — see
   [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 * **Vidicon schematics** (`.vds`) — opened from the same **Display** menu. A
@@ -130,10 +142,12 @@ Instead of the schematic the window may show one of these messages:
 
 <dt>"No display runtime is installed."</dt>
 <dd>The client's display module (on Windows, the file
-<code>display_runtime.dll</code>) is missing next to the client executable, so
+<code>display_runtime.dll</code>; on macOS, <code>libdisplay_runtime.dylib</code>
+inside the application) is missing next to the client executable, so
 the client works but cannot draw schematics. The second line of the message
 gives the reason. The module is a separate library which, in version 2.6,
-may not yet be included in the Client installation. The operator cannot fix
+is not yet included in the Client packages and is supplied separately. The
+operator cannot fix
 this — contact Telecontrol. Restart the client once the module is in
 place.</dd>
 
