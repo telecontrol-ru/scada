@@ -340,12 +340,15 @@ process on port 4840 and can access current values, historical data, and
 subscriptions.
 
 Configuration is described in the Server section on
-[OPC UA]({{ '/en/server/' | relative_url }}#opcua). **Note:** port 4840 of
-`scada-proxy` also accepts unsecured connections (security policy None) and
-anonymous sign-in, and port 4841 of `scada-config` accepts a secure
-connection with any certificate. So open the OPC UA ports only to the site's
-computers, and allow an external system port 4840 from its address only —
-see the same section.
+[OPC UA]({{ '/en/server/' | relative_url }}#opcua). External systems
+connect to port 4840 of `scada-proxy`. On a site with encryption it accepts
+only secured connections that sign in with a user name; unsecured
+connections (security policy None) and anonymous sign-in, which many systems
+that connected to a 2.5 Server use, it accepts only when the
+`--allow-anonymous-opcua` option allows them — see
+[Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external).
+Open the OPC UA ports only to the site's computers, and allow an external
+system port 4840 from its address only.
 
 ### OPC client on Windows
 

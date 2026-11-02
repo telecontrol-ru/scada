@@ -569,12 +569,14 @@ its protocol process, for the addresses that must connect only.
 The processes connect to each other encrypted and accept only the computers
 whose certificate the site's certificate authority issued (see
 [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
-Still, anonymous OPC UA sign-in is always offered, and `scada-config` accepts
-any computer's certificate, so that a new computer can join the site: anyone
-who reaches port 4841 can register with it as a process of the site, so
-**open port 4841 to the site's computers only**. If an
-external OPC UA system must connect to the Server, allow it port 4840 from
-its address only (see [OPC UA server]({{ '/en/server/' | relative_url }}#opcua)).
+`scada-config` accepts a connection with any computer's certificate, so that
+a new computer can join the site, but gives it nothing without the `svc`
+password and accepts a process's registration only from a computer of the
+site. If an external OPC UA system must connect to the Server, allow it
+port 4840 from its address only: that port accepts only secured connections
+that sign in with a user name, and unsecured connections and anonymous
+sign-in only with the `--allow-anonymous-opcua` option (see
+[Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external)).
 **On a site set up with `--insecure-links`**, the firewall is the only
 protection of these ports: a computer that reaches them can connect to the
 Server processes or pose as one of them.

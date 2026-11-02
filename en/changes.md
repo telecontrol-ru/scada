@@ -190,6 +190,8 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The Client packages do not include the display module yet: its licence terms are not settled, and the module is supplied separately. Without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 
+1. An external OPC UA system that connected to a 2.5 Server unencrypted (policy None) or with anonymous sign-in will not connect to a 2.6 Server that way: `scada-proxy`'s port 4840 accepts only secured connections that sign in with a user name. Trust the system's certificate and create a user for it, or run `apply` on the computer with `scada-proxy` with `--allow-anonymous-opcua`. See [Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external).
+
 1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
 
 #### Protocols and retransmission {#limits-protocols}
@@ -217,8 +219,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read, and the process services run as `root`. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
 
 1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
-
-1. `scada-config` (port 4841) accepts a secure connection with any certificate, and registering a process with it is not yet checked against the site certificate authority: anyone who reaches that port can register as a process of the site. Open port 4841 to the site's computers only. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
 1. The site certificate authority is kept only on the central computer, in the `data\Certificates\ca` folder. An uninstall with `SCADA_PURGE_CERTIFICATES=1` (on Linux, `apt purge` or deleting `/opt/telecontrol-scada`), or a restore without that folder, makes the next `apply` create a new authority, and every other computer must then join again with `apply` and the new fingerprint in `--central-fingerprint`. A computer's certificate is valid for 5 years, the certificate authority's for 10. See [Lifetime and a new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal).
 

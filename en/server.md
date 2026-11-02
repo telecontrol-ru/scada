@@ -178,6 +178,12 @@ Client take effect in every process.
   in earlier versions: no certificate authority is created, and each
   computer gets a self-signed certificate. The firewall is then the only
   protection (see [OPC UA server](#opcua)).
+* `--allow-anonymous-opcua` — on the computer with `scada-proxy`: port 4840
+  also accepts unsecured connections (policy None) and anonymous sign-in,
+  for external OPC UA systems that can do neither of the secure ones (see
+  [Connecting an external system](#opcua-external)). Without it, on a site
+  with encryption, port 4840 accepts only secured connections that sign in
+  with a user name.
 * `--data-root` — the data folder, when it is not the standard one
   (`%ProgramData%\Telecontrol\SCADA Server` by default, `/var/lib/scada`
   on Linux).
@@ -192,8 +198,8 @@ Client take effect in every process.
 **`scada-setup` does not remember its options.** Write down each computer's
 `--tiers`, `--central`, `--advertise`, `--license`, the central computer's
 fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
-`--assigned-links-only`, `--insecure-links` and `--data-root` at
-installation, and give them to every `apply` on it (and `--tiers`,
+`--assigned-links-only`, `--insecure-links`, `--allow-anonymous-opcua` and
+`--data-root` at installation, and give them to every `apply` on it (and `--tiers`,
 `--central` and `--license` to every `start`), upgrades and restores
 included:
 
@@ -215,7 +221,11 @@ included:
   the central computer creates the site certificate authority and switches
   the central computer's links to encryption — the other computers lose
   contact with it until they are joined with `--central-fingerprint` (see
-  [Site certificate authority](#opcua-site-ca)).
+  [Site certificate authority](#opcua-site-ca));
+* `apply` without `--allow-anonymous-opcua` on the computer with
+  `scada-proxy`, where it was given, closes port 4840 to unsecured
+  connections and anonymous sign-in, and the external systems that connected
+  that way stop connecting.
 
 `apply` can be run again: it rewrites the parameter files and re-registers
 the services with the new settings, without touching data.
@@ -236,8 +246,9 @@ stop the processes before `apply`:
 
 Add the rest of the recorded
 [computer parameters](#scada-setup-options) too — `--central-fingerprint`,
-`--host-name`, `--assigned-links-only`, `--insecure-links`, `--data-root` —
-if they were given at installation.
+`--host-name`, `--assigned-links-only`, `--insecure-links`,
+`--allow-anonymous-opcua`, `--data-root` — if they were given at
+installation.
 
 This is how to add a process to the computer. The `svc` and `root` passwords
 are changed by the `set-password` command, which restarts the services itself
@@ -1175,15 +1186,17 @@ Sign & Encrypt mode) as the [`svc`](#svc) account. Each process other than
 `scada-proxy` is accepted only over such a connection. `scada-config`
 (port 4841) accepts a secure connection with any certificate, because a
 computer joining the site reaches it before it has a certificate of its own.
-Its data still requires the `svc` password, but anyone who reaches port 4841
-can register with it as a process of the site. Only `scada-proxy`'s
-port 4840 also accepts unsecured connections (policy None), for external
-systems, and it never accepts a password sent unencrypted. Anonymous sign-in
-is always offered. So, still:
+But all its data requires the `svc` password, and it accepts a process's
+registration only from a computer whose certificate the site's certificate
+authority issued. No process accepts unsecured connections (policy None) or
+anonymous sign-in, `scada-proxy`'s port 4840 included, which is where
+external systems connect — unless `apply` on the computer with `scada-proxy`
+was run with `--allow-anonymous-opcua` (see
+[Connecting an external system](#opcua-external)). No process accepts a
+password sent unencrypted. So, still:
 
 * open the OPC UA ports to the site's computers only (see
-  [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)),
-  and port 4841 of `scada-config` without exception;
+  [Network preparation]({{ '/en/getting-started/' | relative_url }}#network));
 * if an external system must connect to the Server, allow it port 4840
   (`scada-proxy`) in the firewall from its address only.
 
@@ -1215,6 +1228,38 @@ firewall is the only protection.
 | `server_private_key` | Path to the private key in PEM format |
 | `server_certificate` | Path to the certificate in PEM format |
 | `trace` | Diagnostic level: `none`, `error`, `warning`, `info`, `debug`, `all` |
+
+### Connecting an external system {#opcua-external}
+
+An external OPC UA system — a higher-level system, another vendor's SCADA —
+connects to `scada-proxy`'s port 4840. On a site with encryption (set up
+without `--insecure-links`) that port accepts only secured connections
+(Sign & Encrypt mode) that sign in with a user name and password:
+
+1. Create a user with the rights it needs for the system in the Client's
+   [Users]({{ '/en/client/workbench/' | relative_url }}#users) window.
+2. Connect the system to `opc.tcp://<computer with scada-proxy>:4840` in
+   Sign & Encrypt mode as that user. The first connection is refused:
+   `scada-proxy` does not trust the system's certificate and writes it into
+   the `data\Certificates\rejected` folder of the installation folder.
+3. Move that file into the `data\Certificates\trusted` folder beside it and
+   restart the *Telecontrol SCADA Proxy* service (Control Panel — Services;
+   on Linux, `systemctl restart scada-proxy`): the process reads its trusted
+   certificates when it starts. The restart briefly cuts the Clients off the
+   Server.
+
+If the system can do neither encryption nor sign-in with a user name — as
+many systems that connected to a 2.5 Server cannot — run `apply` on the
+computer with `scada-proxy` with
+[`--allow-anonymous-opcua`](#scada-setup-options), together with the
+computer's other parameters. Port 4840 then also accepts unsecured
+connections (policy None) and anonymous sign-in: **anyone who reaches the
+port can browse and read the Server's address space** — the objects and
+their values — but not change it or send commands. The port still never
+accepts a password sent unencrypted. Allow port 4840 in the firewall from
+that system's address only. The other processes refuse anonymous sign-in
+even with this option. On a site set up with `--insecure-links`, port 4840
+accepts unsecured connections and anonymous sign-in without it.
 
 ### Server certificate {#opcua-certificate}
 
@@ -1322,12 +1367,14 @@ icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pe
 
 **Client certificates.** In an installation made by `scada-setup`, every
 process except `scada-config` accepts on secured connections only the
-certificates the site's certificate authority issued: its `opcua` block names
-the `issuer`, `trusted` and `rejected` folders under `data\Certificates`.
-`scada-config` names none, and accepts any client certificate, because a
-computer joining the site connects to it before it has a certificate of its
-own; everything `scada-config` serves still requires the `svc` password.
-The folders are:
+certificates the site's certificate authority issued or that were moved into
+the `trusted` folder: its `opcua` block names the `issuer`, `trusted` and
+`rejected` folders under `data\Certificates`. `scada-config` accepts any
+client certificate, because a computer joining the site connects to it
+before it has a certificate of its own; everything `scada-config` serves
+requires the `svc` password, and it accepts a process's registration only
+over a connection whose certificate these same folders trust (the
+`opcua.register_trust` block). The folders are:
 
 | Parameter | Description |
 |---|---|
@@ -1340,16 +1387,18 @@ Further restrictions go in the `opcua.security` block:
 `"allow_none": false` forbids unsecured connections,
 `"require_encryption_for_password": true` forbids sending a password
 unencrypted, and `"require_trusted_client_cert": true` keeps the process
-from starting without a trusted-certificate folder. Anonymous sign-in is
-always offered. The desktop Client checks no Server certificate when it signs
+from starting without a trusted-certificate folder, and
+`"allow_anonymous": false` forbids anonymous sign-in (allowed by default).
+The desktop Client checks no Server certificate when it signs
 in with the "Telecontrol" type (TCP port 2000); when it signs in with the
 "OPC UA" type in the "Most secure available" or "Sign and encrypt" mode it checks the certificate, and asks
 you to confirm trust in it on the first connection (see
 [Checking the Server's certificate]({{ '/en/getting-started/' | relative_url }}#server-certificate-check)).
 
-`scada-setup` sets these itself: `"allow_none": false` on every process
-except `scada-proxy`, and `"require_encryption_for_password": true` on all of
-them.
+`scada-setup` sets these itself: `"allow_none": false`,
+`"allow_anonymous": false` and `"require_encryption_for_password": true` on
+every process; with `--allow-anonymous-opcua`, `"allow_none": true` and
+`"allow_anonymous": true` on `scada-proxy`.
 
 **WARNING:** in an installation made with `--insecure-links`, the processes
 connect to each other unsecured and send the `svc` password unencrypted, so
