@@ -168,18 +168,33 @@ Do not give untrusted people administrator rights on the Server computers,
 and do not make a Server computer an operator workstation. The Server installer puts
 the Client on the computer too (see [Installing the Client](#client-install)).
 
-**Several computers.** Set up the central computer first, then the computers
-running protocol processes, giving them the central computer's address:
+**Several computers.** Set up the central computer first. Its `apply`
+prints a line with the fingerprint of its certificate:
+
+```
+Links are encrypted (SignAndEncrypt). Join the other computers of the site with
+  --central-fingerprint 30:CE:C4:DB:...:66:6F
+```
+
+Then set up the computers running protocol processes, giving each the central
+computer's address and that fingerprint:
 
 ```bat
 rem Central computer:
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers config,historian,filesystem,proxy --svc-password <password> --root-password <root password>
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers config,historian,filesystem,proxy --advertise 10.0.0.10 --svc-password <password> --root-password <root password>
 rem Computer running protocol processes:
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers modbus,iec104 --central 10.0.0.10 --advertise 10.0.0.11 --svc-password <password>
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers modbus,iec104 --central 10.0.0.10 --central-fingerprint 30:CE:C4:DB:...:66:6F --advertise 10.0.0.11 --svc-password <password>
 ```
 
 The protocol processes need no root password: `scada-config` keeps their
 accounts. `--central` is required on a computer without `scada-config`.
+With `--central-fingerprint`, the computer gets its certificate from the
+site's certificate authority on the central computer, and its processes
+connect to the others encrypted. Without it, they connect unencrypted, and
+`apply` warns about it (see
+[Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
+The central computer's `--advertise` is the address the other computers use
+in `--central`.
 
 **Decide `--advertise` before the first `apply` on each protocol computer.**
 A computer set up with `--central` reports its *computer name* to
@@ -481,14 +496,17 @@ its protocol process, for the addresses that must connect only.
 | `scada-opc` | 4847 | 2007 |
 | `scada-vidicon` | 4848 | 2008 |
 
-**WARNING: OPC UA ports 4840–4848 must be reachable from the site's computers
-only — in this version the firewall is their only protection.** The processes
-connect to each other unencrypted, register with `scada-proxy` and
-`scada-config` without authentication, and anonymous OPC UA sign-in is always
-offered. A computer that reaches these ports can connect to the Server
-processes or pose as one of them. If an external OPC UA system must connect
-to the Server, allow it port 4840 from its address only (see
-[OPC UA server]({{ '/en/server/' | relative_url }}#opcua)).
+**OPC UA ports 4840–4848 must be reachable from the site's computers only.**
+The processes connect to each other encrypted and accept only the computers
+whose certificate the site's certificate authority issued (see
+[Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
+Still, anonymous OPC UA sign-in is always offered, and `scada-config` accepts
+any computer's certificate, so that a new computer can join the site. If an
+external OPC UA system must connect to the Server, allow it port 4840 from
+its address only (see [OPC UA server]({{ '/en/server/' | relative_url }}#opcua)).
+**On a site set up with `--insecure-links`**, the firewall is the only
+protection of these ports: a computer that reaches them can connect to the
+Server processes or pose as one of them.
 
 Ports 2001–2008 of the other processes accept user sign-ins too, but Clients
 do not need them: keep them closed.

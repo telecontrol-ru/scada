@@ -34,6 +34,8 @@ This version is not yet published on the releases page.
 
 1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
 
+1. The Server processes connect to each other encrypted (Basic256Sha256, Sign & Encrypt), each accepting only computers whose certificate the site's own certificate authority issued: `scada-setup apply` creates the authority on the central computer, and the other computers join with `--central-fingerprint`. `--insecure-links` keeps the earlier unencrypted connections. See [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca).
+
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
 1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
@@ -209,8 +211,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read, and the process services run as `root`. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
-
-1. The OPC UA ports 4840–4848, over which the processes exchange data, are protected only by the firewall. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
 1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 

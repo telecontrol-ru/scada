@@ -140,7 +140,9 @@ Client take effect in every process.
   `scada-proxy` connects to it by that name: give the IP address unless the
   central computer resolves the name. Decide before the first `apply`: the
   [Server certificate](#opcua-certificate) records the address only when it
-  is created.
+  is created. On the central computer, give the address the other computers
+  use to reach it: they check it against the central computer's
+  certificate, and refuse to connect when it is not there.
 * `--license <path>` — the license file; default `license.json` in the data
   folder (`%ProgramData%\Telecontrol\SCADA Server\license.json`). `apply`,
   `start`, `migrate` and `status` check it: if the license file is
@@ -161,6 +163,15 @@ Client take effect in every process.
   the links whose Computer property names this computer, and leave the links
   without a computer to the computer where `apply` ran without this option
   (see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
+* `--central-fingerprint <fingerprint>` — on a computer without
+  `scada-config`: the fingerprint of the central computer's certificate, as
+  `apply` printed it there. With it, the computer gets its certificate from
+  the [site's certificate authority](#opcua-site-ca), and its processes
+  connect to the others encrypted. Requires `--svc-password`.
+* `--insecure-links` — the processes connect to each other unencrypted, as
+  in earlier versions: no certificate authority is created, and each
+  computer gets a self-signed certificate. The firewall is then the only
+  protection (see [OPC UA server](#opcua)).
 * `--data-root` — the data folder, when it is not the standard one
   (`%ProgramData%\Telecontrol\SCADA Server` by default, `/var/lib/scada`
   on Linux).
@@ -1112,20 +1123,25 @@ In an installation made by `scada-setup`, OPC UA is enabled on every process
 [Network preparation]({{ '/en/getting-started/' | relative_url }}#network)):
 the processes exchange data with each other over it.
 
-**WARNING: in this version the OPC UA ports are protected by the firewall
-alone.** The processes connect to each other unencrypted (policy None) as the
-[`svc`](#svc) account, register with `scada-proxy` and `scada-config`
-without authentication, and anonymous sign-in is always offered. So:
+The processes connect to each other encrypted (the Basic256Sha256 policy,
+Sign & Encrypt mode) as the [`svc`](#svc) account. Each accepts only
+computers whose certificate was issued by the
+[site's certificate authority](#opcua-site-ca), and registration with
+`scada-proxy` is accepted only over such a connection. Only `scada-proxy`'s
+port 4840 also accepts unsecured connections (policy None), for external
+systems, and it never accepts a password sent unencrypted. Anonymous sign-in
+is always offered. So, still:
 
 * open the OPC UA ports to the site's computers only (see
   [Network preparation]({{ '/en/getting-started/' | relative_url }}#network));
 * if an external system must connect to the Server, allow it port 4840
-  (`scada-proxy`) in the firewall from its address only;
-* **in an installation made by `scada-setup`, do not set
-  `"allow_none": false` or `"require_encryption_for_password": true`** (see
-  [below](#opcua-certificate)): the other processes cannot connect to a
-  process with those settings — and every process has at least one other
-  process connecting to it — so the Server stops working.
+  (`scada-proxy`) in the firewall from its address only.
+
+**WARNING:** a computer set up with [`--insecure-links`](#scada-setup-options),
+or a computer without `scada-config` that joined without
+`--central-fingerprint`, connects to the others unencrypted and sends the
+`svc` password in clear text, and `apply` warns about it. On such a site the
+firewall is the only protection.
 
 ```json
 "opcua": {
@@ -1163,16 +1179,20 @@ Parameter files written by [`scada-setup`](#scada-setup) point at
 and `ServerPrivateKey.pem`. The installer does not contain these files —
 **`scada-setup apply` creates them when they are not there yet**:
 
-* a 2048-bit RSA key without a passphrase and a self-signed SHA-256
-  certificate valid for 5 years;
+* a 2048-bit RSA key without a passphrase and a SHA-256 certificate valid
+  for 5 years, issued by the [site's certificate authority](#opcua-site-ca)
+  (self-signed with `--insecure-links`, or on a computer that joined without
+  `--central-fingerprint`);
 * the certificate lists the identifiers (ApplicationUri) of every process
   `apply` enables on this computer, the computer's name, `localhost`,
   `127.0.0.1`, and the `--advertise` address when one is given;
 * only the SYSTEM account the services run as, and administrators, can read
   the key file.
 
-One pair serves every process on the computer. `apply` never replaces existing
-files. When a process that the certificate does not list is enabled after the
+One pair serves every process on the computer. `apply` replaces existing
+files only to get off a self-signed pair once the site's certificate
+authority can issue one: it keeps the old files beside the new ones, as
+`ServerCertificate.pem.self-signed` and `ServerPrivateKey.pem.self-signed`. When a process that the certificate does not list is enabled after the
 pair was created, `apply` prints a warning naming its identifier: third-party
 OPC UA clients that check the certificate may refuse to connect to that
 process. When only one of the two files exists, `apply` stops and names the
@@ -1188,7 +1208,8 @@ since, or use a certificate from your own certificate authority:
    passphrase; restrict access to it as described below).
 3. Run `scada-setup apply` with the same
    [computer's parameters](#scada-setup-options) and passwords as at
-   installation: a missing pair is created again, and the processes start.
+   installation, including `--central-fingerprint` on a computer without
+   `scada-config`: a missing pair is created again, and the processes start.
 
 You can also create a self-signed pair of your own with
 [OpenSSL](https://www.openssl.org/) (not part of Windows; it comes, for
@@ -1231,8 +1252,11 @@ identifiers (ApplicationUri) of every process running on it:
 `urn:telecontrol:scada:server` for `scada-config` and `scada-proxy`, and
 `urn:<computer name>:scada:<process>` for the others (for example
 `urn:SCADA-HOST:scada:iec104`). The OPC UA specification requires the
-certificate to carry the application's identifier, and third-party OPC UA
-clients check it. Copy both files to the folder the parameters name, and
+certificate to carry the application's identifier, and the Server's processes
+check it, as third-party OPC UA clients do. **The other processes refuse a
+self-signed pair**: a pair of your own must be issued by the site's
+certificate authority, or by one whose certificate you put in the `issuer`
+folder on every computer of the site. Copy both files to the folder the parameters name, and
 restrict access to the key file to the SYSTEM account and administrators
 (the groups are given by identifier, so the command works on Windows in any
 language):
@@ -1241,13 +1265,14 @@ language):
 icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
 ```
 
-**Client** certificates are not checked by default: the Server accepts any
-client certificate. This check applies to secured connections only; it does
-not forbid an unsecured connection (policy None), which the Server processes
-use themselves, and so **it does not protect against a stranger's computer on
-the network** — in this version the protection is the firewall alone (see
-[OPC UA server](#opcua)). To accept only trusted certificates on secured
-connections, set these folders in the `opcua` block of the parameter file:
+**Client certificates.** In an installation made by `scada-setup`, every
+process except `scada-config` accepts on secured connections only the
+certificates the site's certificate authority issued: its `opcua` block names
+the `issuer`, `trusted` and `rejected` folders under `data\Certificates`.
+`scada-config` names none, and accepts any client certificate, because a
+computer joining the site connects to it before it has a certificate of its
+own; everything `scada-config` serves still requires the `svc` password.
+The folders are:
 
 | Parameter | Description |
 |---|---|
@@ -1267,10 +1292,70 @@ in with the "Telecontrol" type (TCP port 2000); when it signs in with the
 you to confirm trust in it on the first connection (see
 [Checking the Server's certificate]({{ '/en/getting-started/' | relative_url }}#server-certificate-check)).
 
-**WARNING:** the Server processes connect to each other unsecured and send
-the `svc` password unencrypted, so **`"allow_none": false` and
-`"require_encryption_for_password": true` break the links between the
-processes** — do not set them in an installation made by `scada-setup`.
+`scada-setup` sets these itself: `"allow_none": false` on every process
+except `scada-proxy`, and `"require_encryption_for_password": true` on all of
+them.
+
+**WARNING:** in an installation made with `--insecure-links`, the processes
+connect to each other unsecured and send the `svc` password unencrypted, so
+there **`"allow_none": false` and `"require_encryption_for_password": true`
+break the links between the processes**.
+
+### Site certificate authority {#opcua-site-ca}
+
+The processes trust each other because one certificate authority issued all
+their certificates: the site's own, kept on the central computer.
+
+* **The central computer** (the one running `scada-config`): the first
+  `apply` creates the certificate authority in
+  `C:\Program Files\Telecontrol SCADA\data\Certificates\ca` and issues
+  the computer's own certificate from it. It then prints the line the other
+  computers need:
+
+  ```
+  Links are encrypted (SignAndEncrypt). Join the other computers of the site with
+    --central-fingerprint 30:CE:C4:DB:...:66:6F
+  ```
+
+  **The `ca_key.pem` file is the key that issues every certificate of the
+  site.** Only the SYSTEM account and administrators can read it. Back it
+  up with the configuration, and never copy it to another computer.
+* **Every other computer**: give `apply` that fingerprint with
+  `--central-fingerprint`. `apply` then:
+  1. checks that the central computer's certificate has that fingerprint,
+     and stops, changing nothing, when it does not, so the `svc` password
+     goes to no other computer;
+  2. signs in to `scada-config` as `svc`;
+  3. creates this computer's key, which never leaves it, and gets a
+     certificate for it from the certificate authority;
+  4. writes parameter files in which every connection is encrypted.
+
+  The colons and letter case of the fingerprint do not matter. Every
+  `apply` on the central computer prints it again; [OpenSSL](https://www.openssl.org/)
+  shows it too:
+  `openssl x509 -in ServerCertificate.pem -noout -fingerprint -sha256`.
+
+When `apply` on another computer reports:
+
+* `presented a certificate with fingerprint …, not the … given` — the
+  fingerprint is mistyped, or `--central` names another computer.
+* `cannot sign in to scada-config … as svc` — the `svc` password differs
+  from the central computer's. **After five failed sign-ins, `scada-config`
+  refuses that computer for 15 minutes**, even with the right password.
+* `the central computer's certificate does not name the address` — the
+  other computers reach the central one by an address its certificate does
+  not list. Give `--central` the central computer's name, or, on the central
+  computer, delete `ServerCertificate.pem` and `ServerPrivateKey.pem` and run
+  `apply` again with `--advertise` and that address.
+
+**Sites installed before this version** switch over by themselves:
+
+1. Run `apply` on the central computer. It creates the certificate authority
+   and replaces the self-signed pair.
+2. Run `apply` with `--central-fingerprint` on every other computer.
+
+Until a computer is switched over, its connections to the switched computers
+fail, so switch all of them in one session.
 
 ## OPC client on Windows {#opc-classic}
 
