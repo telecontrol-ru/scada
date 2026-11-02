@@ -30,7 +30,7 @@ This version is not yet published on the releases page.
 
 1. The same protocol process can be installed on several computers, splitting the devices of its protocol between them: a link's Computer property names the computer that serves it, and the computers that serve only the links assigned to them run `scada-setup apply` with `--assigned-links-only`. A link moves to another computer when that property changes, with no restart. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
-1. Retransmission to a DC of objects whose values another Server process receives — computed and simulated objects, and objects of another protocol's devices: the retransmitting process reads them through `scada-proxy`. DC commands (select, execute, write, release of selection) on such objects are refused by the Server: they are carried out only for objects of devices served by the same process on the same computer. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission to a DC of objects whose values another Server process receives — computed and simulated objects, and objects of another protocol's devices: the retransmitting process reads them through `scada-proxy`, and passes the DC's commands on them (select, execute, write, release of selection) through it to the process that receives the object's value. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
 
@@ -196,9 +196,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. IEC 61850: the device's clock must run on UTC — timestamps are not converted from local time. An APC setpoint whose device model carries both the `i` and `f` fields is not sent. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
-1. Retransmission: objects whose values another Server process receives are sent to the DC only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
-
-1. Retransmission: DC commands (select, execute, write, release of selection) are carried out only for objects of devices served by the same process on the same computer as the receiving device; for computed objects and objects of other processes the Server refuses them. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+1. Retransmission: objects whose values another Server process receives are sent to the DC, and the DC's commands on them carried out, only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 1. MODBUS retransmission sends each value as one bit or one 16-bit register holding an unsigned integer (the fraction is dropped; no FLOAT or 32-bit types); a device's first rule gets address 1, a coil. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
 

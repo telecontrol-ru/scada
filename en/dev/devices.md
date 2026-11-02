@@ -625,14 +625,14 @@ protocol or on another computer — are read by the IEC 104 process through
 `scada-proxy`. So **retransmitting them needs `scada-proxy` running**: while
 it is unavailable, such objects send the DC no new values.
 
-**DC commands are carried out only for objects of the same process.** Only
-values pass through `scada-proxy`. Commands received from the DC — select,
-execute, value write and release of selection — are carried out only for
-objects of devices served by the same process on the same computer as the
-receiving device (for example, objects of IEC 104 devices of that same
-`scada-iec104` process). For any other object — computed, simulated, or of a
-device of another protocol or on another computer — the Server refuses the
-command.
+**DC commands on such objects go through `scada-proxy` too.** Commands
+received from the DC — select, execute, value write and release of
+selection — are carried out on the spot for objects of devices of the same
+process, and for any other object — computed, simulated, or of a device of
+another protocol or on another computer — are passed through `scada-proxy`
+to the process that receives the object's value. The DC gets its
+confirmation once that process has answered; while `scada-proxy` is
+unavailable, the DC gets a negative confirmation.
 
 **A release of selection received from the DC is passed on to the source
 device.** If the DC selects an object for two-stage control and then abandons
