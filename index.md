@@ -24,7 +24,7 @@ nav_order: 1
 
 Пример организации многомашинного комплекса:
 
-![]({{ '/img/structure.png' | relative_url }})
+![]({{ '/img/structure.svg' | relative_url }})
 
 
 ## Функции

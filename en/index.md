@@ -64,7 +64,7 @@ system.
 
 Example of a distributed deployment:
 
-![]({{ '/img/structure.png' | relative_url }})
+![]({{ '/img/structure-en.svg' | relative_url }})
 
 ## Key features
 
