@@ -70,6 +70,10 @@ This version is not yet published on the releases page.
 
 1. MODBUS: the `;reversewords` address parameter reverses the order of a value's registers, so a DOUBLE sent most significant word first — the usual order — is read and written correctly; with `;swapbytes` and `;swapwords` it reaches every word order. The default order is unchanged. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
+1. MODBUS: a channel address with an unknown option — a misspelt `;swapword`, for example — is not accepted, and the device log records a warning; until now such an option was silently skipped and the value read in the default word order. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+
+1. MODBUS retransmission: a rule's Value format property sets the type and the byte and word order of the value sent, written as in a channel address (`FLOAT;swapwords`, `INT32`, `DOUBLE;reversewords`); FLOAT, INT32 and UINT32 take two registers, DOUBLE four. The default (UINT16) is rounded to the nearest whole number instead of dropping the fraction, and a value outside the type's range is sent as the nearest one it can hold instead of modulo. A device's first rule gets address 40001, a holding register, instead of coil 1. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
+
 1. Retransmission over IEC 60870-5-104: a release of selection received from the DC is passed on to the source device, and the deactivation is confirmed to the DC once the device has answered. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 1. MODBUS RTU: fixed waiting for a device's exception response — a command the device rejects is reported as an error at once, not after the response timeout. In retransmission mode, fixed receiving writes with 0x10 and added 0x06 and 0x0F.
@@ -180,6 +184,8 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
 
+1. MODBUS: version 2.5.7 read a channel address with a misspelt option (`;swapword`, `;swapbyte`) by skipping the option; version 2.6 does not accept it, and such an object stops receiving values. Before upgrading, check the spelling of the options in your MODBUS channel addresses. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
+
 1. On Modus displays the 2.6 Client shows switch positions and values bound through the *положение*, *текст* and *значение_базовое* properties but, unlike 2.5.7, does not show bindings of other shape properties or limits. If a site's displays rely on these, check the displays before upgrading. The bindings have not yet been tried on the schematics of working sites, so in any case open your site's schematics in a 2.6 Client before upgrading the workstations. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. Bound shapes inside a Modus Graphic Editor group have not been tried in version 2.6. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
@@ -199,8 +205,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. IEC 61850: the device's clock must run on UTC — timestamps are not converted from local time. An APC setpoint whose device model carries both the `i` and `f` fields is not sent. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 1. Retransmission: objects whose values another Server process receives are sent to the DC, and the DC's commands on them carried out, only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
-
-1. MODBUS retransmission sends each value as one bit or one 16-bit register holding an unsigned integer (the fraction is dropped; no FLOAT or 32-bit types); a device's first rule gets address 1, a coil. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
 
 #### Archive and reports {#limits-archive}
 

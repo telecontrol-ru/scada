@@ -196,8 +196,10 @@ device sends them; most devices send the high word first: `[Hi][Lo]`.
 > commissioning, compare the value read against a known value on the device.
 >
 > The address options (`;swapbytes`, `;swapwords`, `;reversewords`) may be
-> written in any letter case, but the Server **silently ignores** a misspelt
-> one: the value is read as if the option were absent. Check the spelling.
+> written in any letter case. The Server does not accept an address with an
+> unknown option — a misspelt `;swapword`, for example: the object gets no
+> values from the device, and the device log records the warning
+> `Wrong variable path`.
 
 Four MODBUS registers form a 64-bit DOUBLE value. By default the Server
 treats the first register as the **least** significant word here too. For a
@@ -660,21 +662,38 @@ address is a MODBUS register number, numbered as in a channel address (see
 | from 30001 | Input Registers |
 | from 40001 | Holding Registers |
 
-* Each object takes **one bit** (Coils, Discrete Inputs) or **one 16-bit
-  register** (Input Registers, Holding Registers). A register carries the
-  value as an unsigned UINT16 integer: the fraction is dropped, a value
-  above 65,535 is sent modulo 65,536, and a negative one in two's complement
-  (−1 as 65,535). There are no FLOAT, INT32 or UINT32 types and no word-order
-  options on the transmit side: send an analogue value with a fraction or
-  above 65,535 through a
-  [computed object]({{ '/en/formulas/' | relative_url }}) scaled as agreed
-  with the receiver.
+* An object in Coils or Discrete Inputs takes **one bit**: 1 when the
+  value is non-zero. In registers (Input Registers, Holding Registers) a
+  value is sent by default in one 16-bit register as an unsigned UINT16
+  integer, rounded to the nearest whole number.
+* To send a value of another type, set the rule's Value format property —
+  the type and the byte- and word-order options written as in a channel
+  address, but without the register number: `FLOAT;swapwords`, `INT32`,
+  `DOUBLE;reversewords`, `;swapbytes`. A rule at address 40001 with the
+  format `FLOAT;swapwords` sends the value the way the channel
+  `FLOAT:40001;swapwords` reads it: FLOAT, INT32 and UINT32 take two
+  consecutive registers (40001 and 40002), DOUBLE takes four. Put the next
+  rule on the first free register after them. An empty format means UINT16
+  in a register, or a bit in Coils and Discrete Inputs. A type other than
+  BOOL can be given for registers only, and a format names no bit.
+* A value the type cannot hold is sent as the nearest one it can: 70,000 in
+  UINT16 as 65,535, −5 as 0. The receiver gets no quality flag, so choose a
+  type that holds the value's whole range.
+* A rule with a wrong format (for example `REAL` or `FLOAT;swapword`) sends
+  nothing — the register stays 0 — and the device log records the warning
+  `Wrong MODBUS transmission address`.
 * On a device with no rules, the first rule created by ticking an object
-  gets address 1 — a coil. If the receiver reads registers, correct the
-  address in the Address column straight away, for example to 40001; the
-  next rules get consecutive addresses in the same register table.
+  gets address 40001, the first holding register; the next rules get
+  consecutive addresses in the same register table. Move a rule that needs
+  two or four registers by hand in the Address column. A discrete object in
+  a holding register is sent as 0 or 1; to send discrete objects as bits,
+  give the first rule address 1 (Coils), and the next ones get addresses in
+  that table.
 * A write from the receiver to a coil or holding register is passed to the
   rule's object as a command — with the same limits as DC commands above.
+  The value is read in the rule's format, so a write to a FLOAT or INT32
+  rule must fill all its registers in one request; a write to only one of
+  them is not carried out, and the device log records a warning.
 
 ## IEC 61850 devices {#iec-61850}
 
