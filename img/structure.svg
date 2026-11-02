@@ -1,55 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" width="960" height="720" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-label="Пример многомашинного комплекса ОИК Телеконтроль 2.6">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 740" width="1110" height="740" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-label="Пример многомашинного комплекса ОИК Телеконтроль 2.6">
 <title>Пример многомашинного комплекса ОИК Телеконтроль 2.6</title>
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f2933"/></marker></defs>
-<rect width="960" height="720" fill="#ffffff"/>
-<rect x="30" y="20" width="220" height="128" rx="8" fill="#eef2f7" stroke="#9aa5b1"/>
-<rect x="108.0" y="32" width="64" height="42" rx="3" fill="#323f4b" />
-<rect x="112.0" y="36" width="56" height="32" fill="#9fb3c8" />
-<polyline points="118.0,60 128.0,50 138.0,56 150.0,44 162.0,52" fill="none" stroke="#5e4fa2" stroke-width="2"/>
-<rect x="135.0" y="74" width="10" height="7" fill="#323f4b" />
-<rect x="122.0" y="81" width="36" height="4" rx="2" fill="#323f4b" />
-<text x="140.0" y="106" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">АРМ диспетчера</text>
-<text x="140.0" y="124" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Клиент ОИК Телеконтроль</text>
-<rect x="270" y="20" width="240" height="128" rx="8" fill="#eef2f7" stroke="#9aa5b1"/>
-<rect x="358.0" y="32" width="64" height="42" rx="3" fill="#323f4b" />
-<rect x="362.0" y="36" width="56" height="32" fill="#9fb3c8" />
-<polyline points="368.0,60 378.0,50 388.0,56 400.0,44 412.0,52" fill="none" stroke="#5e4fa2" stroke-width="2"/>
-<rect x="385.0" y="74" width="10" height="7" fill="#323f4b" />
-<rect x="372.0" y="81" width="36" height="4" rx="2" fill="#323f4b" />
-<text x="390.0" y="106" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">АРМ инженера</text>
-<text x="390.0" y="124" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Клиент ОИК Телеконтроль,</text>
-<text x="390.0" y="139" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Графический редактор Модус</text>
-<rect x="530" y="20" width="220" height="128" rx="8" fill="#eef2f7" stroke="#9aa5b1"/>
-<rect x="608.0" y="32" width="64" height="42" rx="3" fill="#323f4b" />
-<rect x="612.0" y="36" width="56" height="32" fill="#9fb3c8" />
-<polyline points="618.0,60 628.0,50 638.0,56 650.0,44 662.0,52" fill="none" stroke="#5e4fa2" stroke-width="2"/>
-<rect x="635.0" y="74" width="10" height="7" fill="#323f4b" />
-<rect x="622.0" y="81" width="36" height="4" rx="2" fill="#323f4b" />
-<text x="640.0" y="106" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">АРМ руководителя</text>
-<text x="640.0" y="124" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Клиент ОИК Телеконтроль</text>
-<rect x="790" y="26" width="110" height="64" rx="8" fill="#ffffff" stroke="#9aa5b1" stroke-dasharray="4 3"/>
-<rect x="798" y="34" width="110" height="64" rx="8" fill="#ffffff" stroke="#9aa5b1" stroke-dasharray="4 3"/>
-<rect x="806" y="42" width="110" height="64" rx="8" fill="#ffffff" stroke="#9aa5b1" stroke-dasharray="4 3"/>
-<text x="853" y="84" font-size="22" font-weight="bold" fill="#52606d" text-anchor="middle">…</text>
-<text x="853" y="128" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Число Клиентов</text>
-<text x="853" y="143" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">не ограничено</text>
-<line x1="30" y1="190" x2="930" y2="190" stroke="#1f2933" stroke-width="3"/>
-<line x1="140.0" y1="148" x2="140.0" y2="190" stroke="#1f2933" stroke-width="1.5"/>
-<line x1="390.0" y1="148" x2="390.0" y2="190" stroke="#1f2933" stroke-width="1.5"/>
-<line x1="640.0" y1="148" x2="640.0" y2="190" stroke="#1f2933" stroke-width="1.5"/>
-<line x1="853" y1="106" x2="853" y2="114" stroke="#1f2933" stroke-width="1.5" stroke-dasharray="2 2"/>
-<line x1="853" y1="152" x2="853" y2="190" stroke="#1f2933" stroke-width="1.5" stroke-dasharray="2 2"/>
-<text x="480.0" y="210" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Локальная сеть · Клиенты подключаются к scada-proxy по TCP/IP, порт 2000</text>
+<rect width="1110" height="740" fill="#ffffff"/>
+<rect x="30" y="20" width="250" height="128" rx="8" fill="#eef2f7" stroke="#9aa5b1"/>
+<rect x="123.0" y="32" width="64" height="42" rx="3" fill="#323f4b" />
+<rect x="127.0" y="36" width="56" height="32" fill="#9fb3c8" />
+<polyline points="133.0,60 143.0,50 153.0,56 165.0,44 177.0,52" fill="none" stroke="#5e4fa2" stroke-width="2"/>
+<rect x="150.0" y="74" width="10" height="7" fill="#323f4b" />
+<rect x="137.0" y="81" width="36" height="4" rx="2" fill="#323f4b" />
+<text x="155.0" y="106" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">АРМ диспетчера</text>
+<text x="155.0" y="124" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Клиент ОИК Телеконтроль</text>
+<rect x="310" y="20" width="270" height="128" rx="8" fill="#eef2f7" stroke="#9aa5b1"/>
+<rect x="413.0" y="32" width="64" height="42" rx="3" fill="#323f4b" />
+<rect x="417.0" y="36" width="56" height="32" fill="#9fb3c8" />
+<polyline points="423.0,60 433.0,50 443.0,56 455.0,44 467.0,52" fill="none" stroke="#5e4fa2" stroke-width="2"/>
+<rect x="440.0" y="74" width="10" height="7" fill="#323f4b" />
+<rect x="427.0" y="81" width="36" height="4" rx="2" fill="#323f4b" />
+<text x="445.0" y="106" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">АРМ инженера</text>
+<text x="445.0" y="124" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Клиент ОИК Телеконтроль,</text>
+<text x="445.0" y="139" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Графический редактор Модус</text>
+<rect x="610" y="20" width="250" height="128" rx="8" fill="#eef2f7" stroke="#9aa5b1"/>
+<rect x="703.0" y="32" width="64" height="42" rx="3" fill="#323f4b" />
+<rect x="707.0" y="36" width="56" height="32" fill="#9fb3c8" />
+<polyline points="713.0,60 723.0,50 733.0,56 745.0,44 757.0,52" fill="none" stroke="#5e4fa2" stroke-width="2"/>
+<rect x="730.0" y="74" width="10" height="7" fill="#323f4b" />
+<rect x="717.0" y="81" width="36" height="4" rx="2" fill="#323f4b" />
+<text x="735.0" y="106" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">АРМ руководителя</text>
+<text x="735.0" y="124" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Клиент ОИК Телеконтроль</text>
+<rect x="920" y="26" width="110" height="64" rx="8" fill="#ffffff" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+<rect x="928" y="34" width="110" height="64" rx="8" fill="#ffffff" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+<rect x="936" y="42" width="110" height="64" rx="8" fill="#ffffff" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+<text x="983" y="84" font-size="22" font-weight="bold" fill="#52606d" text-anchor="middle">…</text>
+<text x="983" y="128" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Число Клиентов</text>
+<text x="983" y="143" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">не ограничено</text>
+<line x1="30" y1="190" x2="1080" y2="190" stroke="#1f2933" stroke-width="3"/>
+<line x1="155.0" y1="148" x2="155.0" y2="190" stroke="#1f2933" stroke-width="1.5"/>
+<line x1="445.0" y1="148" x2="445.0" y2="190" stroke="#1f2933" stroke-width="1.5"/>
+<line x1="735.0" y1="148" x2="735.0" y2="190" stroke="#1f2933" stroke-width="1.5"/>
+<line x1="983" y1="106" x2="983" y2="114" stroke="#1f2933" stroke-width="1.5" stroke-dasharray="2 2"/>
+<line x1="983" y1="152" x2="983" y2="190" stroke="#1f2933" stroke-width="1.5" stroke-dasharray="2 2"/>
+<text x="555.0" y="210" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">Локальная сеть · Клиенты подключаются к scada-proxy по TCP/IP, порт 2000</text>
 <rect x="30" y="230" width="520" height="300" rx="10" fill="#f4f6f8" stroke="#9aa5b1" stroke-width="1.5"/>
 <text x="46" y="256" font-size="15" font-weight="bold" fill="#1f2933" text-anchor="start">Центральный компьютер</text>
 <line x1="290.0" y1="220" x2="290.0" y2="274" stroke="#1f2933" stroke-width="1.5" marker-end="url(#ah)"/>
 <rect x="120.0" y="274" width="340" height="54" rx="6" fill="#e6d0f0" stroke="#8a5ca8" stroke-width="1.2"/>
 <text x="290.0" y="296" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-proxy</text>
 <text x="290.0" y="315" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">подключения Клиентов, единое адресное пространство</text>
-<rect x="590" y="230" width="340" height="300" rx="10" fill="#f4f6f8" stroke="#9aa5b1" stroke-width="1.5" stroke-dasharray="6 4"/>
+<rect x="590" y="230" width="490" height="300" rx="10" fill="#f4f6f8" stroke="#9aa5b1" stroke-width="1.5" stroke-dasharray="6 4"/>
 <text x="606" y="256" font-size="15" font-weight="bold" fill="#1f2933" text-anchor="start">Компьютер объекта</text>
 <text x="606" y="274" font-size="12" font-weight="normal" fill="#52606d" text-anchor="start">по необходимости, их может быть несколько</text>
-<polyline points="38,350 839.5,350" fill="none" stroke="#5b7fa6" stroke-width="2"/>
+<polyline points="38,350 991.0,350" fill="none" stroke="#5b7fa6" stroke-width="2"/>
 <polyline points="290.0,328 290.0,350" fill="none" stroke="#5b7fa6" stroke-width="2"/>
 <polyline points="124.0,350 124.0,370" fill="none" stroke="#5b7fa6" stroke-width="2"/>
 <rect x="46" y="370" width="156" height="54" rx="6" fill="#fdebcf" stroke="#b8862e" stroke-width="1.2"/>
@@ -66,44 +66,61 @@
 <polyline points="38,350 38,479 46,479" fill="none" stroke="#5b7fa6" stroke-width="2"/>
 <rect x="46" y="452" width="156" height="54" rx="6" fill="#d0e0f0" stroke="#5b7fa6" stroke-width="1.2"/>
 <text x="124.0" y="474" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-iec104</text>
-<text x="124.0" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">МЭК 60870-5-101/104</text>
+<text x="124.0" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">МЭК 60870-5-104</text>
 <text x="212" y="484" font-size="12" font-weight="normal" fill="#52606d" text-anchor="start">Процессы обмениваются данными по OPC UA</text>
 <rect x="542.0" y="339" width="56" height="20" rx="3" fill="#ffffff"/>
 <text x="570.0" y="354" font-size="12" font-weight="bold" fill="#5b7fa6" text-anchor="middle">OPC UA</text>
-<polyline points="680.5,350 680.5,452" fill="none" stroke="#5b7fa6" stroke-width="2"/>
-<rect x="606" y="452" width="149.0" height="54" rx="6" fill="#d0e0f0" stroke="#5b7fa6" stroke-width="1.2"/>
-<text x="680.5" y="474" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-modbus</text>
-<text x="680.5" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">MODBUS RTU/ASCII/TCP</text>
-<polyline points="839.5,350 839.5,452" fill="none" stroke="#5b7fa6" stroke-width="2"/>
-<rect x="765.0" y="452" width="149.0" height="54" rx="6" fill="#d0e0f0" stroke="#5b7fa6" stroke-width="1.2"/>
-<text x="839.5" y="474" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-iec61850</text>
-<text x="839.5" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">МЭК 61850</text>
-<line x1="124.0" y1="608" x2="124.0" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<text x="132.0" y="586" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">МЭК 60870-5-101/104</text>
-<rect x="52.0" y="610" width="144" height="64" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
-<rect x="102.0" y="620" width="44" height="22" rx="2" fill="#323f4b"/>
-<circle cx="111.0" cy="631" r="2.5" fill="#3ebd93"/>
-<circle cx="120.0" cy="631" r="2.5" fill="#3ebd93"/>
-<circle cx="129.0" cy="631" r="2.5" fill="#f0b429"/>
-<circle cx="138.0" cy="631" r="2.5" fill="#9fb3c8"/>
-<text x="124.0" y="661" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">КП, контроллеры</text>
-<line x1="680.5" y1="608" x2="680.5" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<text x="672.5" y="586" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="end">MODBUS RTU/ASCII/TCP</text>
-<rect x="608.5" y="610" width="144" height="64" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
-<rect x="658.5" y="620" width="44" height="22" rx="2" fill="#323f4b"/>
-<circle cx="667.5" cy="631" r="2.5" fill="#3ebd93"/>
-<circle cx="676.5" cy="631" r="2.5" fill="#3ebd93"/>
-<circle cx="685.5" cy="631" r="2.5" fill="#f0b429"/>
-<circle cx="694.5" cy="631" r="2.5" fill="#9fb3c8"/>
-<text x="680.5" y="661" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">счетчики, УСО</text>
-<line x1="839.5" y1="608" x2="839.5" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<text x="847.5" y="586" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="start">МЭК 61850</text>
-<rect x="767.5" y="610" width="144" height="64" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
-<rect x="817.5" y="620" width="44" height="22" rx="2" fill="#323f4b"/>
-<circle cx="826.5" cy="631" r="2.5" fill="#3ebd93"/>
-<circle cx="835.5" cy="631" r="2.5" fill="#3ebd93"/>
-<circle cx="844.5" cy="631" r="2.5" fill="#f0b429"/>
-<circle cx="853.5" cy="631" r="2.5" fill="#9fb3c8"/>
-<text x="839.5" y="661" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">терминалы РЗА</text>
-<text x="480.0" y="706" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">Устройства телемеханики</text>
+<polyline points="679.0,350 679.0,452" fill="none" stroke="#5b7fa6" stroke-width="2"/>
+<rect x="606.0" y="452" width="146.0" height="54" rx="6" fill="#d0e0f0" stroke="#5b7fa6" stroke-width="1.2"/>
+<text x="679.0" y="474" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-iec104</text>
+<text x="679.0" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">МЭК 60870-5-101</text>
+<polyline points="835.0,350 835.0,452" fill="none" stroke="#5b7fa6" stroke-width="2"/>
+<rect x="762.0" y="452" width="146.0" height="54" rx="6" fill="#d0e0f0" stroke="#5b7fa6" stroke-width="1.2"/>
+<text x="835.0" y="474" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-modbus</text>
+<text x="835.0" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">MODBUS RTU/ASCII/TCP</text>
+<polyline points="991.0,350 991.0,452" fill="none" stroke="#5b7fa6" stroke-width="2"/>
+<rect x="918.0" y="452" width="146.0" height="54" rx="6" fill="#d0e0f0" stroke="#5b7fa6" stroke-width="1.2"/>
+<text x="991.0" y="474" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace">scada-iec61850</text>
+<text x="991.0" y="493" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">МЭК 61850</text>
+<line x1="124.0" y1="610" x2="124.0" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<text x="132.0" y="590" font-size="12" font-weight="normal" fill="#52606d" text-anchor="start">TCP/IP</text>
+<rect x="49.0" y="612" width="150" height="84" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
+<rect x="102.0" y="622" width="44" height="22" rx="2" fill="#323f4b"/>
+<circle cx="111.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="120.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="129.0" cy="633" r="2.5" fill="#f0b429"/>
+<circle cx="138.0" cy="633" r="2.5" fill="#9fb3c8"/>
+<text x="124.0" y="664" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">МЭК 60870-5-104</text>
+<text x="124.0" y="682" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">контроллеры</text>
+<line x1="679.0" y1="610" x2="679.0" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<text x="687.0" y="590" font-size="12" font-weight="normal" fill="#52606d" text-anchor="start">COM-порт</text>
+<rect x="604.0" y="612" width="150" height="84" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
+<rect x="657.0" y="622" width="44" height="22" rx="2" fill="#323f4b"/>
+<circle cx="666.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="675.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="684.0" cy="633" r="2.5" fill="#f0b429"/>
+<circle cx="693.0" cy="633" r="2.5" fill="#9fb3c8"/>
+<text x="679.0" y="664" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">МЭК 60870-5-101</text>
+<text x="679.0" y="682" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">КП телемеханики</text>
+<line x1="835.0" y1="610" x2="835.0" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<text x="843.0" y="590" font-size="12" font-weight="normal" fill="#52606d" text-anchor="start">COM-порт или TCP/IP</text>
+<rect x="760.0" y="612" width="150" height="84" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
+<rect x="813.0" y="622" width="44" height="22" rx="2" fill="#323f4b"/>
+<circle cx="822.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="831.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="840.0" cy="633" r="2.5" fill="#f0b429"/>
+<circle cx="849.0" cy="633" r="2.5" fill="#9fb3c8"/>
+<text x="835.0" y="664" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">MODBUS RTU/ASCII/TCP</text>
+<text x="835.0" y="682" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">счетчики, УСО</text>
+<line x1="991.0" y1="610" x2="991.0" y2="508" stroke="#1f2933" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<text x="999.0" y="590" font-size="12" font-weight="normal" fill="#52606d" text-anchor="start">Ethernet</text>
+<rect x="916.0" y="612" width="150" height="84" rx="6" fill="#ffffff" stroke="#1f2933" stroke-width="1.2"/>
+<rect x="969.0" y="622" width="44" height="22" rx="2" fill="#323f4b"/>
+<circle cx="978.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="987.0" cy="633" r="2.5" fill="#3ebd93"/>
+<circle cx="996.0" cy="633" r="2.5" fill="#f0b429"/>
+<circle cx="1005.0" cy="633" r="2.5" fill="#9fb3c8"/>
+<text x="991.0" y="664" font-size="12" font-weight="bold" fill="#1f2933" text-anchor="middle">МЭК 61850</text>
+<text x="991.0" y="682" font-size="12" font-weight="normal" fill="#52606d" text-anchor="middle">терминалы РЗА</text>
+<text x="555.0" y="726" font-size="14" font-weight="bold" fill="#1f2933" text-anchor="middle">Устройства телемеханики</text>
 </svg>
