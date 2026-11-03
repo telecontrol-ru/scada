@@ -62,17 +62,16 @@ Shapes that are not bound are drawn as the designer drew them.
 Shapes of a Vidicon schematic whose tags name an object's address show that
 object's present value and update with it, the way their designer drew them:
 a breaker changes colour, a disconnector moves its blade, a value field shows
-the value with its units and with a "?" mark on an unreliable value. Until a
-value arrives, a shape stays as it was saved in the schematic.
+the value with its units and with a "?" mark on an unreliable value.
 
-> **Caution.** On a Vidicon schematic a breaker's or disconnector's position
-> is **not marked** when its value is unreliable or the object is not
-> connected: the device stays in the last position received, and nothing on
-> the schematic shows it. Only value fields get the "?" mark. When an object's
-> value disappears, the shape likewise keeps the last value instead of
-> returning to the look saved in the schematic. Check how reliable a position
-> is in the [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector)
-> or the "Measurements" panel.
+If the value is **unreliable** or the object is not connected, the shape is
+hatched in the bad-quality colour: its position on the schematic is not
+confirmed at that moment. A value field gets the "?" mark instead of the
+hatching.
+
+Until a value arrives, and when an object's value disappears, the shape looks
+as it was saved in the schematic; when the connection to the object is lost,
+it is hatched as well.
 
 When the object has unacknowledged events, a frame in the critical alarm
 colour blinks around the shape until the events are acknowledged in the

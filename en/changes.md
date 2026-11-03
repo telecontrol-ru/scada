@@ -134,7 +134,7 @@ This version is not yet published on the releases page.
 
 1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Breakers are filled with the colours from the schematic's settings, a shape with unacknowledged events blinks a frame, and a double-click on a shape with no unacknowledged events follows its *гиперссылка* (hyperlink) property to another schematic. Bindings of other properties and limits are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
-1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
+1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. A shape whose value is unreliable or whose object is not connected is hatched in the bad-quality colour, and a shape whose value disappears returns to the look saved in the schematic. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
 
@@ -236,7 +236,6 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Two-stage control: for IEC 60870-5 the select reaches the device only for single commands (C_SC_NA_1); for other IEC 60870-5 commands and for every MODBUS command the Server reports the select as successful without asking the device — nothing is reserved, and "The remote device is ready to execute the command." does not mean the device answered. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
-1. On a Vidicon schematic a breaker's or disconnector's position is not marked when its value is unreliable or not connected (only value fields get "?"), and a shape whose value disappears keeps the last value. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 ## 2.5.7 {#v2-5-7}
 
