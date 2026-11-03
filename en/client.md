@@ -16,9 +16,7 @@ permalink: /en/client/
 Before working at an operator workstation, read the Client limitations
 collected under
 [Known limitations — Working with the Client]({{ '/en/changes/' | relative_url }}#limits-client):
-in particular, the alarm tone is off for every new account, and with
-two-stage control some commands are not reserved on the device by the select
-stage. The limitations of the whole release are collected under
+in particular, the alarm tone is off for every new account. The limitations of the whole release are collected under
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
 ## Main areas
@@ -454,12 +452,19 @@ IEC 60870-5 (SELECT/EXECUTE):
    the command." It then reviews the present and commanded values and warns
    that the action cannot be undone remotely, as in one-stage control.
 
-   **WARNING:** for IEC 60870-5 the select reaches the device only for single
-   commands (<code>C_SC_NA_1</code>). For double commands, set-point commands
-   and **every** MODBUS command the Server reports the select as successful
-   without asking the device: nothing is reserved, and "The remote device is
-   ready to execute the command." does not mean the device answered here. The
-   command reaches the device only at the execute stage.
+   Not every device can select. For IEC 60870-5 only a single command
+   (<code>C_SC_NA_1</code>) is selected; for other IEC 60870-5 commands, such
+   as set-point commands, and for **every** MODBUS object the Server refuses
+   the select and sends nothing to the device. Instead of the confirmation
+   prompt the Client then shows an error box: "Two-stage control is not
+   available for this object: its device cannot select a command. Nothing was
+   sent to the device. Ask the administrator to turn off two-stage control for
+   this object." The control window stays open, and nothing is left selected.
+   Such an object is controlled in one stage: the administrator sets its
+   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
+   If the device itself refuses the select, the error box starts with
+   "Preparation for control failed" and ends with "The command was not
+   executed."
 
 3. **Execute.** Answering yes sends the execute command, and the device
    switches the circuit it already reserved.
@@ -475,9 +480,8 @@ moved on — but the Client adds a message of its own to the current events
 panel: "Release of selection: <object> - <reason>. The device may stay
 selected until its own selection timeout expires." The selection stays armed
 until that timeout. The message is always shown, whatever the setting for
-reporting successful control. Objects whose device never receives a select
-stage (MODBUS, and IEC 60870-5 commands other than <code>C_SC_NA_1</code> — see
-the warning in step 2) have nothing to release, and give no message.
+reporting successful control. When the select was refused (see step 2),
+there is nothing to release, and no message is given.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

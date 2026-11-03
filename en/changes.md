@@ -174,6 +174,8 @@ This version is not yet published on the releases page.
 
 1. With two-stage control, the selection on the device is also released when the Control window is closed during the select stage. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
+1. Two-stage control of an object whose device cannot select — an IEC 60870-5 command other than a single command (C_SC_NA_1), or a MODBUS object — is refused by the Server at the select stage, with nothing sent to the device, and the Client explains this in an error box. Such a select used to be confirmed without asking the device, and the Client said "The remote device is ready to execute the command." One-stage control of such an object works as before. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+
 1. Deleting a portfolio, or an object from one, asks for confirmation first. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}).
 
 1. In the bulk-create wizard the "NodeId template" field is empty by default, so the Server assigns the identifiers; the former default was one the Server refused. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
@@ -183,6 +185,8 @@ This version is not yet published on the releases page.
 Read this list before buying and before upgrading: each limitation is described in detail on the page it links to.
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
+
+1. Two-stage control is on by default, and version 2.6 does not carry out MODBUS objects or IEC 60870-5 commands other than single commands (C_SC_NA_1) in two stages: the Server refuses the select. Before upgrading, set "Two-stage control" to No on such objects, or they cannot be controlled. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
 1. MODBUS: version 2.5.7 read a channel address with a misspelt option (`;swapword`, `;swapbyte`) by skipping the option; version 2.6 does not accept it, and such an object stops receiving values. Before upgrading, check the spelling of the options in your MODBUS channel addresses. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
@@ -233,9 +237,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
-
-1. Two-stage control: for IEC 60870-5 the select reaches the device only for single commands (C_SC_NA_1); for other IEC 60870-5 commands and for every MODBUS command the Server reports the select as successful without asking the device — nothing is reserved, and "The remote device is ready to execute the command." does not mean the device answered. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
-
 
 ## 2.5.7 {#v2-5-7}
 

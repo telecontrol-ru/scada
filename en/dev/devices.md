@@ -644,7 +644,9 @@ cause 9 only once the device has answered. If the source device refuses to
 release it, the DC gets a negative confirmation and the selection on the
 device stays until the device's timeout. A source with no selection — for
 example, an object of a MODBUS device — has nothing to release, and the
-deactivation is confirmed at once. See
+deactivation is confirmed at once. A select of such an object gets the DC a
+negative confirmation: the source device cannot select, so the DC controls
+that object with a command without select. See
 [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
 
 #### Retransmission over MODBUS {#modbus-retransmission}
