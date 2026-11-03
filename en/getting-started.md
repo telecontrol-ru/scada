@@ -17,8 +17,8 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 * Server: Windows 10 or newer, or x86-64 Linux with systemd and glibc 2.38
   or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
-* Client: Windows 10 or newer (x64), or macOS on a computer with Apple
-  silicon (see [Installing the Client](#client-install)); there is no Linux
+* Client: Windows 10 or newer (x64), or macOS 26 or newer on a computer
+  with Apple silicon (see [Installing the Client](#client-install)); there is no Linux
   Client
 * Windows administrator rights (`root` on Linux) to install and set up the
   Server
@@ -31,9 +31,9 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 Distributions are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases/latest).
 
-**WARNING:** the release published today, 2.5.7, predates version 2.6: it
-installs the Server as a single *Telecontrol SCADA Server* service and does
-not contain the separate 2.6 processes. The earlier rules apply to it: the
+**WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
+earlier install the Server as a single *Telecontrol SCADA Server* service and
+do not contain the separate 2.6 processes. The earlier rules apply to them: the
 *Telecontrol SCADA Server* service, a HASP or Guardant hardware key, and the
 configuration in `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
 

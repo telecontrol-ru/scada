@@ -7,9 +7,9 @@ permalink: /en/
 # Overview
 
 {: .note }
-> **Version 2.6.** This manual describes version 2.6, which is being prepared
-> for release. The published release is
-> [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), and it is built
+> **Version 2.6.** This manual describes version 2.6, published as release
+> [2.6.0]({{ '/en/changes/' | relative_url }}#v2-6). The previous release,
+> [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
 > differently: its Server is a single service with a HASP or Guardant
 > hardware key, not a set of separate processes. The version 2.6 license is
 > issued for a term: after it expires the Server processes refuse requests

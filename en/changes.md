@@ -10,11 +10,11 @@ permalink: /en/changes/
 * TOC
 {:toc}
 
-Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); release 2.5.7 is available there today. Distributions of earlier versions are not published. The rest of this manual describes version 2.6, which is being prepared for release; how it differs from 2.5.7 is described below.
+Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); releases 2.6.0 and 2.5.7 are available there today. Distributions of earlier versions are not published. The rest of this manual describes version 2.6; how it differs from 2.5.7 is described below.
 
-## 2.6 (being prepared for release) {#v2-6}
+## 2.6.0 {#v2-6}
 
-This version is not yet published on the releases page.
+Published on the releases page on 2 November 2026 (the `telecontrol-scada-2.6.0.msi` installer and the Client packages for Windows and macOS).
 
 ### Server
 
