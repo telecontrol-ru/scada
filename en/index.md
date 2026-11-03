@@ -78,8 +78,9 @@ Example of a distributed deployment:
 * Modus and Vidicon [displays]({{ '/en/client/display/' | relative_url }}) with live
   switch positions and values; for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
-  Before upgrading, check your site's schematics in a 2.6 Client: some
-  Modus element types are not drawn yet, and the bindings have not yet been
+  Before upgrading, check your site's schematics in a 2.6 Client: the
+  instruments and controls the Modus graphics editor draws as pictures, and
+  some less common element types, are not drawn yet, and the bindings have not yet been
   tried on the schematics of working sites
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
