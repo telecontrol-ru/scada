@@ -174,7 +174,7 @@ This version is not yet published on the releases page.
 
 1. With two-stage control, the selection on the device is also released when the Control window is closed during the select stage. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
-1. Two-stage control of an object whose device cannot select — an IEC 60870-5 command other than a single command (C_SC_NA_1), an IEC 61850 object with direct control, or a MODBUS object — is refused by the Server at the select stage, with nothing sent to the device, and the Client explains this in an error box. Such a select used to be confirmed without asking the device, and the Client said "The remote device is ready to execute the command." One-stage control of such an object works as before. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+1. Two-stage control of an object whose device cannot select — an IEC 60870-5 command other than a single command (C_SC_NA_1), an IEC 61850 object with direct control, a MODBUS object, or an OPC object — is refused by the Server at the select stage, with nothing sent to the device, and the Client explains this in an error box. Such a select used to be confirmed without asking the device, and the Client said "The remote device is ready to execute the command." One-stage control of such an object works as before. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
 1. Deleting a portfolio, or an object from one, asks for confirmation first. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}).
 
@@ -186,7 +186,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
 
-1. Two-stage control is on by default, and version 2.6 does not carry out MODBUS objects, IEC 61850 objects with direct control, or IEC 60870-5 commands other than single commands (C_SC_NA_1) in two stages: the Server refuses the select. Before upgrading, set "Two-stage control" to No on such objects, or they cannot be controlled. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+1. Two-stage control is on by default, and version 2.6 does not carry out MODBUS or OPC objects, IEC 61850 objects with direct control, or IEC 60870-5 commands other than single commands (C_SC_NA_1) in two stages: the Server refuses the select. Before upgrading, set "Two-stage control" to No on such objects, or they cannot be controlled. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
 1. MODBUS: version 2.5.7 read a channel address with a misspelt option (`;swapword`, `;swapbyte`) by skipping the option; version 2.6 does not accept it, and such an object stops receiving values. Before upgrading, check the spelling of the options in your MODBUS channel addresses. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 

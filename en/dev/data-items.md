@@ -226,7 +226,7 @@ commands.</dd>
 stage. Default: Yes. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
-control and for MODBUS devices the Server refuses the select, sends nothing
+control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
 to the device, and the command is not executed — set No for such objects.
 Set No if the device does not support select-before-operate.
 If the operator declines to execute after the select (answers no or closes
