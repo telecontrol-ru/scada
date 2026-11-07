@@ -80,9 +80,9 @@ Example of a distributed deployment:
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
   Before upgrading, check your site's schematics in a 2.6 Client: the
   instruments and controls the Modus graphics editor draws as pictures are
-  drawn simplified, without a scale or needle, some less common element
-  types are not drawn yet, and the bindings have not yet been tried on the
-  schematics of working sites
+  drawn simplified, without a scale or needle, the *Spectrum_UP*,
+  *Spectrum_P* and *Server* elements are not drawn yet, and the bindings
+  have not yet been tried on the schematics of working sites
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
   [summaries]({{ '/en/client/summary/' | relative_url }}) with archive
