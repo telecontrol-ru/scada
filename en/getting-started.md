@@ -31,6 +31,10 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 Distributions are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases/latest).
 
+**WARNING:** release 2.6.0 carries only the Client packages for now; the
+`telecontrol-scada-2.6.0.msi` installer will be added later. Until it is, the
+Server installation steps on this page cannot be followed.
+
 **WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
 earlier install the Server as a single *Telecontrol SCADA Server* service and
 do not contain the separate 2.6 processes. The earlier rules apply to them: the

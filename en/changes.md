@@ -14,7 +14,7 @@ Distributions are published on the [GitHub releases page](https://github.com/ale
 
 ## 2.6.0 {#v2-6}
 
-Published on the releases page on 2 November 2026 (the `telecontrol-scada-2.6.0.msi` installer and the Client packages for Windows and macOS).
+Published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The `telecontrol-scada-2.6.0.msi` installer is not attached to it yet.
 
 ### Server
 
