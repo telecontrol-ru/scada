@@ -204,7 +204,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Bound shapes inside a Modus Graphic Editor group have not been tried in version 2.6. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
-1. The 2.6 Client draws the common Modus element types as the Modus graphics editor does, except the instruments and controls that the editor draws as pictures (*прибор_настраиваемый*, *прибор_реальный*, *прибор_цифровой*, *РПН*, *панель_накладка*, *орган_управления*): the Client draws these simplified — by the picture's main outlines, without a needle or lettering, and at one size whatever scale the shape is given. An *отделитель* (separator) is drawn as in the editor, but the schematic does not show its position. The *Spectrum_UP*, *Spectrum_P* and *Server* elements are not drawn yet; some less common elements are drawn without the letters inside them, and the coloured parts of some (valves, for example) are drawn grey. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. The 2.6 Client draws the common Modus element types as the Modus graphics editor does, except the instruments and controls that the editor draws as pictures (*прибор_настраиваемый*, *прибор_реальный*, *прибор_цифровой*, *РПН*, *панель_накладка*, *орган_управления*): the Client draws these simplified — by the picture's main outlines, without a needle or lettering, and at one size whatever scale the shape is given. An *отделитель* (separator) is drawn with the editor's symbol, but coloured by its position as a breaker square is (the editor always draws it black). The *Spectrum_UP*, *Spectrum_P* and *Server* elements are not drawn yet; some less common elements are drawn without the letters inside them, and the coloured parts of some (valves, for example) are drawn grey. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. Hyperlinks of Modus shapes have not been tried on working sites' schematics; a link opens only when the schematic is inside the workstation's schematics folder. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
@@ -249,8 +249,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
-
-1. A Modus schematic does not show the position of an *отделитель* (separator): the shape is drawn the same in every position. Check the separator's position in a table or in the Inspector. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 ## 2.5.7 {#v2-5-7}
 

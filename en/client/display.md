@@ -36,9 +36,9 @@ those objects' present state and update with it:
   non-zero value is closed, zero is open. A breaker square is filled with the
   colours the schematic's settings define for a closed and an open breaker;
   when the schematic defines none, bright green when closed and red when
-  open. An **отделитель** (separator) is the exception: the schematic does
-  not show its position, and the shape is drawn the same whatever the value.
-  Check a separator's position in a table or in the Inspector.
+  open. An **отделитель** (separator) is drawn with the same symbol as in the
+  Modus graphics editor, but the whole symbol takes those same colours by
+  position; the editor always draws it black.
 * **A text field** (a shape with the *текст*, "text", property) shows the
   value of its measured (ТИТ) object the way a table does: with its units and
   with a "?" mark on an unreliable value.
