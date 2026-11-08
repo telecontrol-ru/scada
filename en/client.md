@@ -294,7 +294,7 @@ the user account and written to the registry under
 Keychain Access app, item "Telecontrol SCADA Client"). Only the same user on
 the same computer can decrypt it. Still, anyone who signs in to the computer
 under that account also signs in to SCADA, so tick the box only on a
-computer you trust. A password stored unencrypted by Client 2.6.0 is moved
+computer you trust. A password stored unencrypted by an earlier client version is moved
 into the protected store the first time the new version starts, and removed
 from the settings. After a client update, macOS may ask whether to allow it
 access to the "Telecontrol SCADA Client" keychain item; click Always Allow,
