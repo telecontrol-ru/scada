@@ -30,16 +30,16 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 Distributions are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases). The version 2.6
-Client packages are in release [2.6.2](https://github.com/alexsmn/scada-client/releases/tag/v2.6.2). The page marks
+Client packages are in release [2.6.3](https://github.com/alexsmn/scada-client/releases/tag/v2.6.3). The page marks
 release 2.5.7 as the latest, because it is the last release that carries a
 Server installer.
 
-**WARNING:** releases 2.6.0 and 2.6.2 carry only the Client packages for now;
+**WARNING:** releases 2.6.0 and 2.6.3 carry only the Client packages for now;
 the Windows Server installer `telecontrol-scada-<version>.msi` and the Linux Server
 packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
 Server installation steps on this page cannot be followed.
 
-So today the 2.6.2 Client is installed on workstations that work with a
+So today the 2.6.3 Client is installed on workstations that work with a
 2.5.7 Server. What works in that combination and what does not is listed
 under [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
 **Do not use the 2.6.0 Client with a 2.5.7 Server:** it lacks the support
@@ -320,7 +320,7 @@ version with every version 2.6 release:
   computer with Apple silicon; the release notes name the lowest macOS
   version. Open the disk image and
   drag *Telecontrol SCADA Client* to *Applications*. The release notes say
-  whether the app is signed and notarised by Apple; the release 2.6.2
+  whether the app is signed and notarised by Apple; the release 2.6.3
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
   refusal, open *System Settings → Privacy & Security* and click *Open
   Anyway*.

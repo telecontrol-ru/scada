@@ -102,7 +102,7 @@ unreliable value or no value they show "?".
 
 The display module, not the Client itself, draws the marks for unreliable
 and missing values (hatching and "?"), the separator's colouring by position
-and value boards. A display module supplied before Client 2.6.2 came out does
+and value boards. A display module supplied before Client 2.6.3 came out does
 not draw them: it may show an unreliable or missing value as a reliable one,
 and a separator in black, with no position. The Client checks whether the
 installed module can mark unreliable values and, if it cannot, shows the

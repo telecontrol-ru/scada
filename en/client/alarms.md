@@ -40,13 +40,6 @@ holds:
 > announce them. A silent client does **not** mean nothing is unacknowledged —
 > check the count in the status bar and the event panel.
 
-> **Caution: with a 2.5.7 Server there are no critical events.** A 2.5.7
-> Server sends event severity on its earlier scale, and the 2.6 Client counts
-> none of its events as a warning or as critical: the tone sounds only in an
-> alarm flood, there are no severity tiles or colours, and a minimum-severity
-> filter of 600 or 800 hides every event. See
-> [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
-
 The client's own messages ("Local Event") are events too: reports of a
 successful command, of the connection to the Server being lost and restored,
 of errors. They count according to their severity:

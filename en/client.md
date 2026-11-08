@@ -20,7 +20,7 @@ in particular, the alarm tone is off for every new account. The limitations of t
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
 Until the version 2.6 Server is published, the 2.6 Client is connected to a
-2.5.7 Server. The Client works this way from release 2.6.2: the 2.6.0 Client
+2.5.7 Server. The Client works this way from release 2.6.3: the 2.6.0 Client
 cannot perform two-stage control with a 2.5.7 Server. The 2.6 Client has not
 yet been tried against a working 2.5.7 Server. What does not work with
 a 2.5.7 Server, and how it differs from what this page describes, is listed
@@ -28,16 +28,10 @@ under [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | re
 page the differences for [two-stage control](#two-stage) and
 [shift handover](#shift-change) are noted separately.
 
-> **Caution: with a 2.5.7 Server the 2.6 Client does not recognise event
-> severity.** A 2.5.7 Server sends severity on its earlier scale, and the 2.6
-> Client counts no event as a warning or as critical: the alarm tone does not
-> sound, critical events get no colour or tile, and a minimum-severity filter
-> set at warning or critical hides every event. Until this is fixed, do not
-> rely on the 2.6 Client for alarms on a site with a 2.5.7 Server, and watch
-> the event journal. Also, with a 2.5.7 Server the alarm tone is off the
-> first time each account signs in on each computer, including right after
-> the Client upgrade: switch it on and test it at every workstation (see
-> [Shift handover](#shift-change)).
+> **Caution: with a 2.5.7 Server the alarm tone is off at first sign-in.**
+> The first time each account signs in on each computer, including right
+> after the Client upgrade, the alarm tone is off: switch it on and test it at
+> every workstation (see [Shift handover](#shift-change)).
 
 ## Main areas
 

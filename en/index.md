@@ -8,20 +8,16 @@ permalink: /en/
 
 {: .note }
 > **Version 2.6.** This manual describes version 2.6, published as releases
-> [2.6.0 and 2.6.2]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
+> [2.6.0 and 2.6.3]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
 > have been published for version 2.6 so far: the Windows Server installer and the
 > Linux Server packages will be added later, and until then the version 2.6
 > Server cannot be installed
 > ([Download]({{ '/en/getting-started/' | relative_url }}#download)). So the 2.6 Client
-> can today connect only to a 2.5.7 Server — from release 2.6.2 on, and
+> can today connect only to a 2.5.7 Server — from release 2.6.3 on, and
 > without every version 2.6 capability; the 2.6 Client has not yet been tried
 > against a working 2.5.7 Server
 > ([Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
-> **With a 2.5.7 Server the 2.6 Client does not recognise event severity: no
-> event counts as a warning or as critical, the alarm tone does not sound,
-> critical events are not highlighted, and a minimum-severity filter hides
-> every event.** Until this is fixed, do not rely on the 2.6 Client for
-> alarms on a site with a 2.5.7 Server. The previous release,
+> The previous release,
 > [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
 > differently: its Server is a single service with a HASP or Guardant
 > hardware key, not a set of separate processes. The version 2.6 license is
