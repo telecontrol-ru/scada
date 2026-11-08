@@ -12,6 +12,7 @@ permalink: /en/server/
 
 The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux, as system services or in console mode (see [Linux deployment](#linux)).
 
+{: .warning }
 > The version 2.6 Server packages (the Windows installer and the Linux
 > packages) are not published yet; until they are, only a 2.5.7 Server can be
 > installed (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
@@ -155,7 +156,7 @@ Client take effect in every process.
   beginning with the drive letter): the processes receive the path as
   written. On Linux the file must be readable by the `scada` account and must
   not be under `/home`, `/root` or `/run/user`: the services cannot see
-  those folders, and `apply`, `start` and `migrate` refuse such a path.
+  those folders, and `apply` and `start` refuse such a path.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`; for `set-password`, the new password. It may be
@@ -203,7 +204,7 @@ Client take effect in every process.
   it defaults to the folder above the one holding `scada-setup.exe`. On
   Linux neither the data folder nor the installation folder may be under
   `/home`, `/root` or `/run/user`: the services cannot see those folders,
-  and `apply`, `start` and `migrate` refuse to run. So do not unpack the `.tar.gz`
+  and `apply` and `start` refuse to run. So do not unpack the `.tar.gz`
   archive into a home folder.
 
 * `--host-name <name>` — this computer's name in place of the Windows
@@ -783,7 +784,9 @@ Docker containers is available on request.
 
 Each Server process needs a signed license file. The license states an
 expiry date and the processes purchased; a process the license does not name
-will not run. No hardware key is used.
+will not run. No hardware key is used. The license limits nothing else: not
+the number of objects or devices, nor the number of computers, Clients or
+copies of one process. Ask Telecontrol about the license term and renewal.
 
 The settings live in the `license` block of the parameter file:
 
@@ -811,8 +814,9 @@ The license is checked at startup and then every 5 seconds:
   and the [computer's parameters](#scada-setup-options). A license whose
   validity period has not started yet counts as not valid too.
 * **The license could not be verified** (for example, the Google Cloud
-  metadata server did not answer) — the process keeps running but serves no
-  requests until verification succeeds.
+  metadata server did not answer) — the process keeps running. If the license
+  has not yet been verified since the process started, it serves no requests
+  until verification succeeds; if it has, it goes on serving as before.
 * **The license has expired** — the process keeps running but refuses every
   request from Clients and from the site's other processes: reading and
   subscribing to live values, control, writes, and browsing the
@@ -829,7 +833,8 @@ period has not started yet.
 `scada-setup status` shows the license id and when the license expires. The
 id names whom the license was issued to; quote it when asking Telecontrol
 about the license. During the last 30
-days the Server also raises a daily system event about the expiry, but it is
+days the Server also raises a daily system event about the expiry (every 15
+minutes in the final day), but it is
 visible only in the Client; there is no other warning, so watch the date with
 `scada-setup status`.
 
@@ -1684,7 +1689,10 @@ stopped by `sudo /opt/telecontrol-scada/bin/scada-setup stop`.
 `/var/lib/scada` also holds the [password file](#stored-passwords)
 `secrets/service-secrets.env`, which keeps the `svc` and `root` passwords
 **in plain text**: keep the copy where only `root` can read it, or leave
-that file out — on a restore `apply` takes the passwords again anyway.
+that file out. The services do not start without it, and `start` does not
+create it: if the copy has no `secrets` folder, keep the existing one when
+restoring, or run `apply` with the passwords instead of `start` (see
+[Restore](#restore)).
 
 Copy only with **this computer's processes stopped**: a copy of the files of
 running databases may be inconsistent. From an elevated command prompt:
@@ -1790,7 +1798,9 @@ have to be set up again.
 commands are `sudo /opt/telecontrol-scada/bin/scada-setup …`; the `icacls`
 step is not needed. Files put back as `root` (with `cp -r`, say) belong to
 `root`, but `scada-setup start` gives them back to the `scada` account before
-it starts the services, so on the same computer step 3 (`start`) is enough; on
+it starts the services, so on the same computer step 3 (`start`) is enough
+while the `secrets` folder is in place (otherwise run `apply` with the
+passwords); on
 a new computer run `apply` as in the steps above ("On a new or rebuilt
 computer"). If `start` reports that the `scada` account does not exist, the
 system was reinstalled — restore with the new-computer steps.

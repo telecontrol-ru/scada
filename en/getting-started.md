@@ -18,7 +18,7 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 * Server: Windows 10 or newer, or x86-64 Linux with systemd and glibc 2.38
   or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
 * Client: Windows 10 or newer (x64), or macOS on a computer with Apple
-  silicon — the release notes name the lowest macOS version (see [Installing the Client](#client-install)); there is no Linux
+  silicon, macOS 26 or later (the release notes name the exact minimum; see [Installing the Client](#client-install)); there is no Linux
   Client
 * Windows administrator rights (`root` on Linux) to install and set up the
   Server
@@ -46,8 +46,19 @@ under [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-u
 for a 2.5.7 Server, and two-stage control of objects does not work with it.
 
 **Buying now.** Until the 2.6 Server packages are published, a new site can
-install only a 2.5.7 Server. Ask Telecontrol (mail@telecontrol.ru) about keys
-and licenses for it and about version 2.6 licenses.
+install only a 2.5.7 Server, with the installer `telecontrol-scada-2.5.7.msi`
+from release [2.5.7](https://github.com/alexsmn/scada-client/releases/tag/v2.5.7).
+It has no `scada-setup` command, and its installation is not described in
+this manual: ask Telecontrol (mail@telecontrol.ru) for it, and about keys
+and licenses. Without a hardware key a 2.5.7 Server runs for two hours in
+demo mode, which is enough for a trial. A 2.5.7 hardware key can later be
+exchanged for a version 2.6 license (see
+[Exchanging the hardware key]({{ '/en/server/' | relative_url }}#license-exchange)).
+For running a site on a 2.5.7 Server, the 2.5.7 Client from the same
+installer remains the tested choice; it is also the one for managing users
+and exporting the configuration, which the 2.6.3 Client cannot do with a
+2.5.7 Server. The 2.6.3 Client with a 2.5.7 Server is, for now, for
+evaluation.
 
 **WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
 earlier install the Server as a single *Telecontrol SCADA Server* service and
@@ -317,8 +328,8 @@ version with every version 2.6 release:
   code-signed, so Windows SmartScreen may warn about it on first launch:
   choose *More info* → *Run anyway*.
 * **`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`** — for macOS on a
-  computer with Apple silicon; the release notes name the lowest macOS
-  version. Open the disk image and
+  computer with Apple silicon, macOS 26 or later (the release notes name the
+  exact minimum). Open the disk image and
   drag *Telecontrol SCADA Client* to *Applications*. The release notes say
   whether the app is signed and notarised by Apple; the release 2.6.3
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
@@ -413,9 +424,9 @@ when only the `scada` group can read the license it prints
    To keep the license elsewhere, give its path with `--license`; the file
    must be readable by the `scada` account and must not be under `/home`,
    `/root` or `/run/user` (the folder it was downloaded to, for example): the
-   services cannot see those folders, and `apply`, `start` and `migrate` refuse such a
+   services cannot see those folders, and `apply` and `start` refuse such a
    path. Every folder above the file must also be open to the `scada`
-   account; `apply` and `start` warn when it is not. `apply`, `start` and `migrate` likewise
+   account; `apply` and `start` warn when it is not. `apply` and `start` likewise
    refuse a data folder (`--data-root`) or an installation folder in those
    places, so unpack the `.tar.gz` archive into `/opt`, not a home folder.
 
@@ -503,7 +514,10 @@ no longer needed, delete it with `sudo userdel scada`.
 folder**: the configuration, history and license stay. `apt purge` deletes
 only its `secrets` folder, with the file `service-secrets.env` that holds the
 `svc` and `root` passwords unencrypted; after `apt remove` that file stays
-too. If the data is no longer needed, delete the
+too. `apt purge` knows only `/var/lib/scada`: if the data was kept in
+another folder (`--data-root`) or the program was installed from the archive
+(`scada-setup remove` and deleting the installation folder), the `secrets`
+folder stays — delete `<data folder>/secrets` by hand. If the data is no longer needed, delete the
 folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
 created in [Network preparation](#network).
 
@@ -646,6 +660,11 @@ sudo ufw allow proto tcp from 10.0.0.12 to any port 4840,4841,4842
 # Computer running scada-modbus and scada-iec104:
 sudo ufw allow proto tcp from 10.0.0.10 to any port 4843,4844
 ```
+
+On Ubuntu ufw is off by default, and the rules take effect only after
+`sudo ufw enable`; check its state with `sudo ufw status`. If you are
+connected to the computer over SSH, allow SSH before enabling it
+(`sudo ufw allow OpenSSH`), or you lose access to the computer.
 
 On distributions with firewalld, rules such as
 `sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.11 port port=4840-4842 protocol=tcp accept'`
@@ -945,11 +964,15 @@ upgraded, they update and archive again by themselves
 way as the old one (see [Installing the Client](#client-install)): unpack
 the new archive or disk image in place of the old one, or install the new
 package, with no `scada-setup` commands. The display module is not part of
-the Client packages: carry it over from the old Client folder to the new one
+the Client packages, and replacing the program deletes it with the old
+folder: **before** replacing it, copy the module somewhere safe
 (`display_runtime.dll` beside `client.exe`; on macOS
-`libdisplay_runtime.dylib` in the app's *Contents/Frameworks* folder), or the
+`libdisplay_runtime.dylib` in the app's *Contents/Frameworks* folder), and
+afterwards put it in the same place in the new Client. Otherwise the
 schematic windows show "No display runtime is installed".
 
+A workstation whose Client was installed by the Server installer (not yet
+published for version 2.6) is upgraded with:
 
 ```bat
 msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
@@ -1047,6 +1070,10 @@ and data elsewhere, and those stay behind:
 When automatic login was on, the user's password is kept encrypted in the
 same registry key on Windows, and on macOS in the user's keychain, as the
 item "Telecontrol SCADA Client", which deleting the folders does not touch.
+A Client older than 2.6.3 kept it unencrypted — on Windows in the `Password`
+value of the same registry key, on macOS in the `settings.json` file — and on
+a workstation where the new Client has never started it is still there in
+clear.
 When a workstation is decommissioned, delete that registry key and those
 folders — and on macOS that item in Keychain Access — for every user of the
 computer.
@@ -1054,7 +1081,7 @@ computer.
 ## Troubleshooting
 
 Run the `scada-setup` commands below, other than `status`, from an elevated
-command prompt.
+command prompt (on Linux, with `sudo`).
 
 <dl>
 

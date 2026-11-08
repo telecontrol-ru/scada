@@ -117,6 +117,11 @@ Incoming values can be:
 * scaled linearly for measured values
 * calculated from a [formula]({{ '/en/formulas/' | relative_url }})
 
+This describes redundancy of an object's data sources. Redundancy of the
+Server itself (a second, hot-standby Server) is not described in this
+version of the manual, and `scada-setup` does not set it up; ask Telecontrol
+about it.
+
 ## Devices and protocols
 
 The SCADA configuration distinguishes between directions and devices.
