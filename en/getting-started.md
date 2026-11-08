@@ -176,11 +176,13 @@ and do not make a Server computer an operator workstation. The Server installer 
 the Client on the computer too (see [Installing the Client](#client-install)).
 
 **Several computers.** Set up the central computer first. Its `apply`
-prints a line with the fingerprint of its certificate:
+prints a line with the fingerprint of its certificate (`scada-setup status`
+on the central computer shows it again later):
 
 ```
 Links are encrypted (SignAndEncrypt). Join the other computers of the site with
   --central-fingerprint 30:CE:C4:DB:...:66:6F
+('scada-setup status' prints it again)
 ```
 
 Then set up the computers running protocol processes, giving each the central
@@ -435,9 +437,11 @@ removes the process services and the computer's certificate; the data in
 `/var/lib/scada` and the site certificate authority (on the central
 computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, so
 after a reinstall the other computers need not join again. The central
-computer's own certificate is removed, though, and the next `apply` creates a
-new one with a different fingerprint: record the fingerprint it prints and
-give it in `--central-fingerprint` on the other computers (see
+computer's own certificate is removed, and the next `apply` creates a new one
+with a different fingerprint, but the other computers recognise it by the
+certificate authority, so nothing needs changing on them. The new
+fingerprint is needed only to join new computers; `scada-setup status` on the
+central computer prints it (see
 [The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed)).
 `sudo apt purge telecontrol-scada-server` also deletes the whole
 `data/Certificates` folder, the certificate authority included — uninstall
@@ -926,10 +930,11 @@ this computer's Server certificate and its private key. It leaves the
 
 **The installer leaves the site certificate authority on the central
 computer**, so after a reinstall the other computers need not join again.
-The installer removes the central computer's own certificate, though, and the
-next `apply` creates a new one with a different fingerprint: record the
-fingerprint it prints and give it in `--central-fingerprint` on the other
-computers (see
+The installer removes the central computer's own certificate, and the next
+`apply` creates a new one with a different fingerprint, but the other
+computers recognise it by the certificate authority, so nothing needs
+changing on them. The new fingerprint is needed only to join new computers;
+`scada-setup status` on the central computer prints it (see
 [The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed)).
 If the computer leaves the site for good, uninstall it with
 `msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1` —

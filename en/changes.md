@@ -44,6 +44,8 @@ The Client packages on the releases page were built on 2 November 2026, before s
 
 1. `scada-setup apply` does not join a computer to the site unencrypted: on a computer without `scada-config` that has no certificate from the site certificate authority yet, `apply` without `--central-fingerprint` and without `--insecure-links` fails and changes nothing. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
+1. A computer needs `--central-fingerprint` only to join the site and after the central computer gets a new certificate authority. A computer that has joined recognises the central one by the certificate authority, so renewing or re-making the central computer's certificate, or reinstalling it, needs no change on the other computers, and `apply` on them still runs when the central computer is unreachable. `scada-setup status` shows this computer's certificate fingerprint and validity dates, and on the central computer the fingerprint the other computers join with. See [The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed).
+
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
 1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).

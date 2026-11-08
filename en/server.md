@@ -101,7 +101,7 @@ in the installation folder, the one above the folder holding
 | Command | Does | Needs admin |
 |---|---|:-:|
 | `apply` | Write parameter files and databases, create the [Server certificate](#opcua-certificate) if there is none, register and start the processes' services | yes |
-| `status` | License summary and each process's service state | no |
+| `status` | License summary, this computer's certificate and each process's service state | no |
 | `start` / `stop` | Start / stop this computer's services in order | yes |
 | `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the data of the processes named in `--tiers` too — see [Removing services and data](#remove)) | yes |
 | `generate --tiers <list> --output <dir>` | Write the parameter files only, for inspection | no |
@@ -168,12 +168,17 @@ Client take effect in every process.
   (see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
 * `--central-fingerprint <fingerprint>` — on a computer without
   `scada-config`: the fingerprint of the central computer's certificate, as
-  `apply` printed it there. With it, the computer gets its certificate from
-  the [site's certificate authority](#opcua-site-ca), and its processes
-  connect to the others encrypted. Requires `--svc-password`. If the
-  central computer has since got a new certificate authority (for example,
-  it was reinstalled with its authority deleted), `apply` with the new
-  fingerprint replaces this computer's certificate by itself.
+  `apply` and `scada-setup status` print it there. With it, the computer
+  joins the site: it gets its certificate from the
+  [site's certificate authority](#opcua-site-ca), and its processes connect
+  to the others encrypted. Requires `--svc-password`. The fingerprint is
+  needed only to join for the first time, and after the central computer has
+  got a new certificate authority (for example, it was reinstalled with its
+  authority deleted): `apply` with the new fingerprint then replaces this
+  computer's certificate by itself. A computer that has joined recognises the
+  central one by the certificate authority, so replacing the central
+  computer's certificate does not affect the fingerprint in its parameters
+  (see [The central computer's fingerprint changed](#central-fingerprint-changed)).
 * `--insecure-links` — the processes connect to each other unencrypted, as
   in earlier versions: no certificate authority is created, and each
   computer gets a self-signed certificate. The firewall is then the only
@@ -606,7 +611,9 @@ the `ServerCertificate.pem` and `ServerPrivateKey.pem` files and the copies
 on the central computer — **stays**: after a reinstall `apply` goes on using
 it, and the other computers' certificates stay valid. `apply` creates the
 central computer's own certificate anew, though, with a different
-fingerprint, which the other computers then need (see
+fingerprint. The other computers recognise it by the certificate authority,
+so nothing needs changing on them; the new fingerprint is needed only to join
+new computers (see
 [The central computer's fingerprint changed](#central-fingerprint-changed)).
 The processes'
 data in `%ProgramData%\Telecontrol\SCADA Server` (configuration, users,
@@ -1017,14 +1024,22 @@ example an unknown level) is written to a log with the default settings in the
 
 ## Monitoring {#monitoring}
 
-* **Service and license state** — `scada-setup status` on each computer
-  (it needs no administrator rights): the license expiry, the processes it
-  entitles, and the state of each process's service. It prints, for
+* **Service, license and certificate state** — `scada-setup status` on each
+  computer (it needs no administrator rights): the license expiry, the
+  processes it entitles, this computer's [Server certificate](#opcua-certificate)
+  and the state of each process's service. It prints, for
   example:
 
   ```text
   License: C:\ProgramData\Telecontrol\SCADA Server\license.json (onprem-example-20260131, expires 2027-01-31T00:00:00Z)
   Entitled tiers: config filesystem historian iec104 proxy
+  OPC UA certificate: C:\Program Files\Telecontrol SCADA\data\Certificates\ServerCertificate.pem
+    SHA-256 fingerprint: 30:CE:C4:DB:...:66:6F
+    Valid from 2026-11-07 to 2031-11-06 (UTC)
+    Issued by the site CA: links are encrypted
+  Site CA: C:\Program Files\Telecontrol SCADA\data\Certificates\ca\ca.pem (this is the central computer)
+    Valid from 2026-11-07 to 2036-11-05 (UTC)
+    Other computers join the site with --central-fingerprint 30:CE:C4:DB:...:66:6F
   config       SERVICE_RUNNING
   historian    SERVICE_RUNNING
   filesystem   SERVICE_RUNNING
@@ -1037,7 +1052,12 @@ example an unknown level) is written to a log with the default settings in the
   ```
 
   The processes on the `Entitled tiers` line are listed in alphabetical
-  order. Below it, without `--tiers`, come all nine processes in their start
+  order. Under `OPC UA certificate` come the SHA-256 fingerprint of this
+  computer's certificate, the dates it is valid from and to, and whether the
+  [site certificate authority](#opcua-site-ca) issued it (if not, its
+  connections are unencrypted). The `Site CA` lines appear on the central
+  computer only: the certificate authority's dates, and the fingerprint the
+  other computers join the site with (`--central-fingerprint`). Below that, without `--tiers`, come all nine processes in their start
   order: a running service shows `SERVICE_RUNNING`, a stopped one
   `SERVICE_STOPPED`, and one the computer does not have `not installed`.
 * **Process logs** — see [Logging](#logging). Why a process stopped (license,
@@ -1447,6 +1467,7 @@ their certificates: the site's own, kept on the central computer.
   ```
   Links are encrypted (SignAndEncrypt). Join the other computers of the site with
     --central-fingerprint 30:CE:C4:DB:...:66:6F
+  ('scada-setup status' prints it again)
   ```
 
   **The `ca_key.pem` file is the key that issues every certificate of the
@@ -1463,16 +1484,31 @@ their certificates: the site's own, kept on the central computer.
   4. writes parameter files in which every connection is encrypted.
 
   The colons and letter case of the fingerprint do not matter. Every
-  `apply` on the central computer prints it again; [OpenSSL](https://www.openssl.org/)
-  shows it too:
+  `apply` on the central computer prints it again, and
+  [`scada-setup status`](#monitoring) on the central computer shows it at any
+  time (the `Other computers join the site with --central-fingerprint …`
+  line); [OpenSSL](https://www.openssl.org/) shows it too:
   `openssl x509 -in ServerCertificate.pem -noout -fingerprint -sha256`.
+
+  The fingerprint is needed only to join. A computer that has joined keeps
+  the certificate authority's certificate, and later `apply` runs check the
+  central computer's certificate against it rather than against the
+  fingerprint.
 
 When `apply` on another computer reports:
 
 * `presented a certificate with fingerprint …, not the … given` — the
-  fingerprint is mistyped, `--central` names another computer, or the central
-  computer's certificate has been replaced since (see
+  fingerprint is mistyped, `--central` names another computer, or the
+  central computer has had a new certificate authority since and the
+  fingerprint given is the old one. `scada-setup status` on the central
+  computer prints the current fingerprint. Replacing only the central
+  computer's certificate does not cause this error (see
   [The central computer's fingerprint changed](#central-fingerprint-changed)).
+* `presents a certificate (fingerprint …) that the site CA this computer holds
+  did not issue` — this computer has joined, and the central computer has
+  since got a new certificate authority (or `--central` names another
+  computer). Run `apply` with `--central-fingerprint` and the fingerprint
+  that `scada-setup status` prints on the central computer.
 * `cannot sign in to scada-config … as svc` — the `svc` password differs
   from the central computer's. **After five failed sign-ins, `scada-config`
   refuses that computer for 15 minutes**, even with the right password.
@@ -1497,8 +1533,11 @@ A computer's certificate is valid for 5 years, the site certificate
 authority's for 10 years from its creation. When a computer's certificate
 expires, the other processes stop accepting its connections and its devices
 disappear from the Client; when the certificate authority's expires, the
-same happens to every computer of the site. [OpenSSL](https://www.openssl.org/)
-shows the expiry date:
+same happens to every computer of the site.
+[`scada-setup status`](#monitoring) shows the start and expiry dates: the
+`Valid from … to …` line under `OPC UA certificate` for the computer's
+certificate, and the one under `Site CA` on the central computer for the
+authority. [OpenSSL](https://www.openssl.org/) shows them too:
 `openssl x509 -in ServerCertificate.pem -noout -enddate` (for the authority,
 `ca\ca.pem` on the central computer). Replace certificates in good time.
 
@@ -1510,11 +1549,12 @@ authority this computer trusts, even when it is about to expire. So:
   `ServerPrivateKey.pem` from the `data\Certificates` folder of the
   installation (`C:\Program Files\Telecontrol SCADA\data\Certificates`, on
   Linux `/opt/telecontrol-scada/data/Certificates`) and run `apply` with the
-  [computer's parameters](#scada-setup-options) — on a computer without
-  `scada-config`, together with the `--central-fingerprint` that the central
-  computer's latest `apply` prints. Renewing the central computer's own
-  certificate changes its fingerprint: give the new one in
-  `--central-fingerprint` on the other computers (see
+  [computer's parameters](#scada-setup-options) — on a joined computer
+  without `scada-config`, together with `--svc-password`: it gets the new
+  certificate from `scada-config`, and needs no fingerprint for that.
+  Renewing the central computer's own certificate changes its fingerprint,
+  but the other computers recognise it by the certificate authority, and
+  nothing needs changing on them (see
   [The central computer's fingerprint changed](#central-fingerprint-changed));
 * **a new certificate authority** appears when the `ca` subfolder on the
   central computer is deleted (to replace an expiring authority) or lost —
@@ -1522,11 +1562,11 @@ authority this computer trusts, even when it is about to expire. So:
   restore without that folder. Every computer's certificate was then issued
   by the old authority, and **every other computer must join again**. On the
   central computer itself, `apply` then replaces its own pair as well: the old
-  one is set aside with the `.self-signed` extension, and the central
-  computer's fingerprint changes — the same `apply` prints the new one (see
-  [The central computer's fingerprint changed](#central-fingerprint-changed)).
-  On every other computer, run `apply` with the [computer's parameters](#scada-setup-options) and
-  the new fingerprint from the central computer's `apply` in
+  one is set aside with the `.previous-ca` extension, and the central
+  computer's fingerprint changes — the same `apply` and `scada-setup status`
+  print the new one. This is the one case in which the other computers need
+  the new fingerprint: on every one of them, run `apply` with the
+  [computer's parameters](#scada-setup-options) and the new fingerprint in
   `--central-fingerprint`. `apply` notices by itself that this computer's
   certificate was not issued by the current authority, sets the old pair
   aside with the `.previous-ca` extension and gets a new one; there is no
@@ -1534,12 +1574,6 @@ authority this computer trusts, even when it is about to expire. So:
   again its connections fail, so join all of them in one session.
 
 #### The central computer's fingerprint changed {#central-fingerprint-changed}
-
-Every `apply` with `--central-fingerprint` on a computer that has already
-joined fetches the central computer's certificate from `scada-config` again
-and requires its fingerprint to match the one given. So `apply` on such a
-computer runs only while the central computer is reachable and `scada-config`
-is running on it.
 
 The central computer's fingerprint changes with its certificate:
 
@@ -1549,16 +1583,26 @@ The central computer's fingerprint changes with its certificate:
 * after its pair is made again for `--advertise`;
 * after the site certificate authority is replaced.
 
-From then on, every `apply` on the other computers with the old fingerprint
-stops with `presented a certificate with fingerprint …, not the … given` and
-changes nothing. The new fingerprint is printed by `apply` on the central
-computer (the `--central-fingerprint …` line; `scada-setup status` does not
-print it), and OpenSSL shows it too (see
-[Site certificate authority](#opcua-site-ca)). Record it among each other
-computer's [parameters](#scada-setup-options) in place of the old one, and
-give it to later `apply` runs. While the certificate authority is the same,
-those computers need not join again: their certificates stay valid and their
-connections keep working.
+**While the certificate authority is the same, nothing needs changing on the
+other computers.** A computer that has joined checks the central computer's
+certificate against the certificate authority rather than the fingerprint,
+so its `apply` (upgrades and restores included) works with the old
+fingerprint in `--central-fingerprint` and without one alike, and it need not
+join again. The new fingerprint is needed only to join new computers;
+`apply` and `scada-setup status` on the central computer print it.
+
+**When the certificate authority is new**, the other computers must join
+again with the new fingerprint (see
+[Lifetime and a new certificate authority](#opcua-renewal)). Until they do,
+`apply` on them stops with `presented a certificate with fingerprint …, not
+the … given` (with the old fingerprint) or `… that the site CA this computer
+holds did not issue` (without one) and changes nothing.
+
+To notice a new certificate authority, `apply` on a joined computer contacts
+`scada-config` on the central computer. When that is unreachable, `apply`
+warns `could not check the central computer's site CA`, keeps this
+computer's certificate and carries on. If the certificate authority may have
+been replaced, run `apply` again once the central computer is up.
 
 ## OPC client on Windows {#opc-classic}
 
