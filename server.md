@@ -1715,11 +1715,10 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 **Под Linux** папки те же, что и при [резервном копировании](#backup):
 `/var/lib/scada` и `/opt/telecontrol-scada/data/Certificates`, а команды —
 `sudo /opt/telecontrol-scada/bin/scada-setup …`; шаг с `icacls` не нужен.
-Файлы, возвращенные под `root` (например, `cp -r`), принадлежат `root`, и
-службы, работающие от имени `scada`, не могут в них писать. Поэтому и на том
-же компьютере вместо `start` на шаге 3 выполните `apply` с теми же
-[параметрами компьютера](#scada-setup-options) и паролями: `apply` передает
-учетной записи `scada` папки процессов и ключи сертификатов.
+Файлы, возвращенные под `root` (например, `cp -r`), принадлежат `root`, но
+`scada-setup start` перед запуском служб возвращает их учетной записи `scada`,
+поэтому на том же компьютере достаточно шага 3 (`start`); на новом компьютере
+выполните `apply`, как описано ниже.
 
 ## Справочник параметров server.json {#parameters}
 

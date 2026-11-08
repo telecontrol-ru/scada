@@ -405,7 +405,10 @@ Run every command as `root` (with `sudo`; `status` does not need it).
 
    To keep the license elsewhere, give its path with `--license`; the file
    must be readable by the `scada` account and must not be under `/home`,
-   `/root` or `/run/user`, which the services cannot see.
+   `/root` or `/run/user` (the folder it was downloaded to, for example): the
+   services cannot see those folders, and `apply` refuses such a path. Every
+   folder above the file must also be open to the `scada` account; `apply`
+   warns when it is not.
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
@@ -428,7 +431,8 @@ only the locations differ:
   example `scada-config.service`) that `apply` creates; the services start
   at boot, are restarted after a failure, and run as the system account
   `scada`, which the package (or, after the archive, `apply`) creates. The
-  `scada` account is in the `dialout` group, which owns the serial ports; if
+  package and `apply` add the `scada` account to the `dialout` group, which
+  owns the serial ports, also when the account already existed; if
   an RS-485 adapter belongs to another group, add `scada` to it
   (`sudo usermod -aG <group> scada`) and restart the services. The protocol
   processes may listen on ports below 1024 (for example port 502 for

@@ -1776,11 +1776,9 @@ have to be set up again.
 `/var/lib/scada` and `/opt/telecontrol-scada/data/Certificates` — and the
 commands are `sudo /opt/telecontrol-scada/bin/scada-setup …`; the `icacls`
 step is not needed. Files put back as `root` (with `cp -r`, say) belong to
-`root`, and the services, which run as `scada`, cannot write to them. So on
-the same computer too, run `apply` with the same
-[computer's parameters](#scada-setup-options) and passwords instead of
-`start` in step 3: `apply` hands the process folders and the certificate keys
-to the `scada` account.
+`root`, but `scada-setup start` gives them back to the `scada` account before
+it starts the services, so on the same computer step 3 (`start`) is enough; on
+a new computer run `apply` as described below.
 
 ## `server.json` parameter reference {#parameters}
 
