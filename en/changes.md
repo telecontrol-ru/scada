@@ -216,7 +216,17 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. An external OPC UA system that connected to a 2.5 Server unencrypted (policy None) or with anonymous sign-in will not connect to a 2.6 Server that way: `scada-proxy`'s port 4840 accepts only secured connections that sign in with a user name. Trust the system's certificate and create a user for it, or run `apply` on the computer with `scada-proxy` with `--allow-anonymous-opcua`. See [Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external).
 
-1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. A 2.6 Client working with a 2.5.7 Server has not been tested either: both use the same connection protocol version, so a 2.5.7 Server does not turn a 2.6 Client away when it connects, but capabilities that the Server provides in version 2.6 may not work with a 2.5.7 Server. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
+1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
+
+1. A 2.6 Client connects to a 2.5.7 Server: both use the same connection protocol version. Live values, history and graphs, the event journal and acknowledgement work, and the 2.6 Client performs [two-stage control]({{ '/en/client/' | relative_url }}#two-stage) the way the 2.5.7 Client did. What the 2.5.7 Server does not have, the 2.6 Client cannot offer with it; where it can tell, it says that Server version 2.6 is required:
+   * [Users and roles]({{ '/en/dev/users/' | relative_url }}): the user list is not shown, there are no roles, and an account cannot be disabled. The 2.6 Client neither shows nor changes the access rights of a 2.5.7 Server's accounts. Users can change their own password, but a password cannot be reset for another user: a 2.5.7 Server changes a password only together with the current one.
+   * [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) are not available.
+   * In a [summary]({{ '/en/client/summary/' | relative_url }}#function) the *Time Average* function leaves its cells empty, and *Time Integral* gives the sum of the recorded values, without regard to how long each value was in effect.
+   * In the [device watch]({{ '/en/client/device-watch/' | relative_url }}) window, *Frame trace* mode shows no captured frames: a 2.5.7 Server does not send them.
+   * Existing [retransmission]({{ '/en/dev/devices/' | relative_url }}#retransmission) objects and their sources are shown, but a 2.5.7 Server does not let an object be added to retransmission.
+   * The Client's pages and settings are kept on this computer only, as with the 2.5.7 Client.
+
+   This is established from how both versions are built; the 2.6 Client has not yet been tried against a working 2.5.7 Server.
 
 #### Protocols and retransmission {#limits-protocols}
 
