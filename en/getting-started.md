@@ -32,7 +32,8 @@ Distributions are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases/latest).
 
 **WARNING:** release 2.6.0 carries only the Client packages for now; the
-`telecontrol-scada-2.6.0.msi` installer will be added later. Until it is, the
+Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server
+packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
 Server installation steps on this page cannot be followed.
 
 **WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
@@ -241,6 +242,8 @@ for each computer,** and keep with the passwords:
 * `--assigned-links-only` — if you gave it;
 * `--host-name` — if you gave one;
 * `--insecure-links` — if the site is set up without encryption;
+* `--allow-anonymous-opcua` — if you gave it (on the computer with
+  `scada-proxy`);
 * `--license` — if the license file is not at
   `%ProgramData%\Telecontrol\SCADA Server\license.json`;
 * `--data-root` — if you gave a non-standard data folder;
@@ -290,30 +293,32 @@ belong, remove their services (the processes' data stays):
 ### Installing the Client {#client-install}
 
 The [releases page](#download) carries two Client packages of the same
-version next to the Server installer `telecontrol-scada-<version>.msi`:
+version with every release:
 
 * **`Telecontrol-SCADA-Client-<version>-windows-x64.zip`** — for Windows 10
   or newer. Unzip it into any folder and run `client.exe`. The program is not
   code-signed, so Windows SmartScreen may warn about it on first launch:
   choose *More info* → *Run anyway*.
 * **`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`** — for macOS on a
-  computer with Apple silicon. Open the disk image and drag *Telecontrol
-  SCADA Client* to *Applications*. The release notes say whether the app is
-  signed and notarised by Apple, and name the minimum macOS version. If it
-  is not notarised, macOS refuses to open it the first time: after the
+  computer with Apple silicon, macOS 26 or newer. Open the disk image and
+  drag *Telecontrol SCADA Client* to *Applications*. The release notes say
+  whether the app is signed and notarised by Apple; the release 2.6.0
+  package is neither. If it is not notarised, macOS refuses to open it the first time: after the
   refusal, open *System Settings → Privacy & Security* and click *Open
   Anyway*.
 
 **These packages do not include the display module yet** (see
 [Displaying schematics](#displays)).
 
-The Windows Client is also part of the `telecontrol-scada-<version>.msi`
-package: the installer puts the Client on every computer the package is
-installed on, and creates a *Клиент* (Client) shortcut on the desktop and in
-the *Start — ОИК Телеконтроль* menu.
+The Server installer `telecontrol-scada-<version>.msi` is meant to carry the
+Windows Client too: the Client goes on every computer the package is
+installed on, with a *Клиент* (Client) shortcut on the desktop and in the
+*Start — ОИК Телеконтроль* menu. That installer is not attached to release
+2.6.0 yet (see [Download](#download)), so for now the Client is installed
+from the archive or the disk image. Once the installer is published:
 
 * **On a Windows operator workstation** you may, instead of the archive,
-  install the same package with the same command,
+  install that package with the command
   `msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`,
   and **do not run `scada-setup`**: only `scada-setup` creates the Server
   process services, so without it no Server process runs on that computer.
@@ -346,6 +351,10 @@ display runtime is installed." with the reason; the Client's other windows
 work. Editing Modus schematics still needs the Modus graphics editor.
 
 ## Installation on Linux {#linux}
+
+**WARNING:** the Linux Server packages are not attached to release 2.6.0 yet
+(see [Download](#download)); until they are, the steps in this section cannot
+be followed.
 
 The Server ships for Linux as a package in two forms —
 `telecontrol-scada-server_<version>_amd64.deb` (Ubuntu, Debian) and the
@@ -425,7 +434,11 @@ parameter files.
 removes the process services and the computer's certificate; the data in
 `/var/lib/scada` and the site certificate authority (on the central
 computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, so
-after a reinstall the other computers need not join again.
+after a reinstall the other computers need not join again. The central
+computer's own certificate is removed, though, and the next `apply` creates a
+new one with a different fingerprint: record the fingerprint it prints and
+give it in `--central-fingerprint` on the other computers (see
+[The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed)).
 `sudo apt purge telecontrol-scada-server` also deletes the whole
 `data/Certificates` folder, the certificate authority included — uninstall
 that way only when the computer leaves the site for good. For an archive
@@ -441,7 +454,9 @@ The license is a signed `license.json` file listing the processes purchased
 and its validity period. The same file goes on every computer of the site. A
 process the license does not name stops right after it starts. A license
 whose validity period has not started yet is accepted neither by the
-processes nor by `scada-setup`.
+processes nor by `scada-setup`. Version 2.6 has no unlicensed demo mode: to
+evaluate the system, request a license from Telecontrol (mail@telecontrol.ru)
+(see [Licensing]({{ '/en/server/' | relative_url }}#licensing)).
 
 **Expiry.** `scada-setup status` shows when the license ends (the line
 `License: … (<license id>, expires …)`; an expired one shows `EXPIRED` and the
@@ -525,8 +540,10 @@ hand:
 * **for the Client workstations** — TCP port 2000 on the central computer
   (the one running `scada-proxy`);
 * **when the processes run on several computers:**
-  * on the central computer — ports 4840 (`scada-proxy`) and 4841
-    (`scada-config`) for the computers running protocol processes;
+  * on the central computer — ports 4840 (`scada-proxy`), 4841
+    (`scada-config`) and 4842 (`scada-historian`) for the computers running
+    protocol processes: at start-up they read their objects' latest values
+    from the archive;
   * on each computer running protocol processes — the OPC UA port of each of
     its processes (from the table below) for the central computer:
     `scada-proxy` connects to them.
@@ -541,14 +558,14 @@ comma-separated):
 rem Central computer: Clients (may be limited to the workstations' addresses with remoteip=...)
 netsh advfirewall firewall add rule name="Telecontrol SCADA Clients" dir=in action=allow protocol=TCP localport=2000
 rem Central computer, when there are other Server computers (here 10.0.0.11 and 10.0.0.12):
-netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4840,4841 remoteip=10.0.0.11,10.0.0.12
+netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4840,4841,4842 remoteip=10.0.0.11,10.0.0.12
 rem Computer running scada-modbus and scada-iec104 (the central computer is 10.0.0.10):
 netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4843,4844 remoteip=10.0.0.10
 ```
 
 **On Linux** open the same ports with your distribution's tools, for example
-`sudo ufw allow proto tcp from 10.0.0.11 to any port 4840,4841` (Ubuntu) or
-`sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.11 port port=4840-4841 protocol=tcp accept'`
+`sudo ufw allow proto tcp from 10.0.0.11 to any port 4840,4841,4842` (Ubuntu) or
+`sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.11 port port=4840-4842 protocol=tcp accept'`
 followed by `sudo firewall-cmd --reload` (distributions with firewalld).
 
 **Links that accept connections.** When a link works passively — its
@@ -574,9 +591,13 @@ The processes connect to each other encrypted and accept only the computers
 whose certificate the site's certificate authority issued (see
 [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
 `scada-config` accepts a connection with any computer's certificate, so that
-a new computer can join the site, but gives it nothing without the `svc`
-password and accepts a process's registration only from a computer of the
-site. If an external OPC UA system must connect to the Server, allow it
+a new computer can join the site. It issues a site certificate only after a
+sign-in as an account holding the `ConfigureAdmin` or `SecurityAdmin` role —
+`svc`, `root` or a user with the Configure right — so give those roles only
+to people you trust to join computers to the site. `scada-config` accepts a
+process's registration only from a computer whose certificate the site
+certificate authority issued or which was moved into the trusted
+certificates folder. If an external OPC UA system must connect to the Server, allow it
 port 4840 from its address only: that port accepts only secured connections
 that sign in with a user name, and unsecured connections and anonymous
 sign-in only with the `--allow-anonymous-opcua` option (see
@@ -819,7 +840,8 @@ msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 
 Give `apply` all the [computer's parameters](#host-parameters) given at
 installation — `--central-fingerprint`, `--assigned-links-only`,
-`--host-name` and `--insecure-links` included, if they were given — and the
+`--host-name`, `--insecure-links`, `--allow-anonymous-opcua` and `--data-root`
+included, if they were given — and the
 current `svc` password. The installer replaces only the
 executables; `apply` rewrites the parameter files (keep your own parameters
 in [`server.override.json`]({{ '/en/server/' | relative_url }}#server-override),
@@ -904,6 +926,11 @@ this computer's Server certificate and its private key. It leaves the
 
 **The installer leaves the site certificate authority on the central
 computer**, so after a reinstall the other computers need not join again.
+The installer removes the central computer's own certificate, though, and the
+next `apply` creates a new one with a different fingerprint: record the
+fingerprint it prints and give it in `--central-fingerprint` on the other
+computers (see
+[The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed)).
 If the computer leaves the site for good, uninstall it with
 `msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1` —
 the whole `C:\Program Files\Telecontrol SCADA\data\Certificates` folder

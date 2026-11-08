@@ -8,7 +8,11 @@ permalink: /en/
 
 {: .note }
 > **Version 2.6.** This manual describes version 2.6, published as release
-> [2.6.0]({{ '/en/changes/' | relative_url }}#v2-6). The previous release,
+> [2.6.0]({{ '/en/changes/' | relative_url }}#v2-6). Only the Client packages
+> are attached to release 2.6.0 so far: the Windows Server installer and the
+> Linux Server packages will be added later, and until then the version 2.6
+> Server cannot be installed
+> ([Download]({{ '/en/getting-started/' | relative_url }}#download)). The previous release,
 > [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
 > differently: its Server is a single service with a HASP or Guardant
 > hardware key, not a set of separate processes. The version 2.6 license is
@@ -47,7 +51,7 @@ deployment or multiple computers for a distributed deployment. The Server
 processes run on Windows 10 or newer and on x86-64 Linux (`.deb` and
 `.tar.gz` packages, systemd services; see
 [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)).
-The Client runs on Windows 10 or newer and on macOS on computers with Apple
+The Client runs on Windows 10 or newer and on macOS 26 or newer on computers with Apple
 silicon (see
 [Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
 The Client displays Modus diagrams and Vidicon schematics with live values
@@ -80,7 +84,7 @@ Example of a distributed deployment:
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
   Before upgrading, check your site's schematics in a 2.6 Client: the
   instruments and controls the Modus graphics editor draws as pictures are
-  drawn simplified, without a scale or needle, the *Spectrum_UP*,
+  drawn simplified, without a needle or lettering, the *Spectrum_UP*,
   *Spectrum_P* and *Server* elements are not drawn yet, and the bindings
   have not yet been tried on the schematics of working sites
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),

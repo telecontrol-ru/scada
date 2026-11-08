@@ -14,7 +14,9 @@ Distributions are published on the [GitHub releases page](https://github.com/ale
 
 ## 2.6.0 {#v2-6}
 
-Published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The `telecontrol-scada-2.6.0.msi` installer is not attached to it yet.
+Published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
+
+The Client packages on the releases page were built on 2 November 2026, before some of the changes listed below: the readable message when the Server refuses two-stage control, the hatching of unreliable shapes on Vidicon schematics, and the improved drawing of Modus shapes. These changes arrive with the next build of the Client and the display module.
 
 ### Server
 
@@ -22,9 +24,11 @@ Published on the releases page on 7 November 2026 with the Client packages for W
 
 1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows (Windows services) and Linux (systemd services). See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
-1. One package, `telecontrol-scada-<version>.msi`, carries every Server process, `scada-setup` and the Windows Client. In addition, the releases page carries Client packages: an archive for Windows (`Telecontrol-SCADA-Client-<version>-windows-x64.zip`) and a disk image for macOS on Apple silicon (`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`). See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
+1. The Windows Server installer, `telecontrol-scada-<version>.msi`, is meant as one package carrying every Server process, `scada-setup` and the Windows Client; it is not attached to release 2.6.0 yet. In addition, the releases page carries Client packages: an archive for Windows (`Telecontrol-SCADA-Client-<version>-windows-x64.zip`) and a disk image for macOS 26 or later on Apple silicon (`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`). See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+
+1. There is no longer an unlicensed demo mode: in version 2.5 a Server without a hardware key ran for two hours in demo mode, whereas in version 2.6 a process the license does not name — including when there is no license file — stops right after it starts. To evaluate the system, request a license from Telecontrol. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
 1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data and the site certificate authority stay. The `SCADA_PURGE_CERTIFICATES=1` parameter (on Linux, `apt purge`) deletes the whole certificate folder, the authority included. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
@@ -35,6 +39,10 @@ Published on the releases page on 7 November 2026 with the Client packages for W
 1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
 
 1. The Server processes connect to each other encrypted (Basic256Sha256, Sign & Encrypt), each accepting only computers whose certificate the site's own certificate authority issued: `scada-setup apply` creates the authority on the central computer, and the other computers join with `--central-fingerprint`. `--insecure-links` keeps the earlier unencrypted connections. See [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca).
+
+1. `scada-config` accepts a process registration only from a computer whose certificate the site certificate authority issued or which was moved into the trusted certificates folder. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
+
+1. `scada-setup apply` does not join a computer to the site unencrypted: on a computer without `scada-config` that has no certificate from the site certificate authority yet, `apply` without `--central-fingerprint` and without `--insecure-links` fails and changes nothing. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
 1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
 
@@ -60,7 +68,7 @@ Published on the releases page on 7 November 2026 with the Client packages for W
 
 1. A new installation starts from an empty project — no objects, devices, links or users; sign in with the built-in `root` account. The demo project (objects with emulation, IEC 60870-5-104 links, users with no passwords, schematics) is installed on request: `scada-setup apply --demo`. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
-1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (not attached to release 2.6.0 yet; installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
 1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
 
@@ -194,7 +202,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Bound shapes inside a Modus Graphic Editor group have not been tried in version 2.6. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
-1. The 2.6 Client draws the common Modus element types as the Modus graphics editor does, except the instruments and controls that the editor draws as pictures (*прибор_настраиваемый*, *прибор_реальный*, *прибор_цифровой*, *РПН*, *панель_накладка*, *орган_управления*, *орган_упр_самовозвр*, *кнопка*): the Client draws these simplified, as a plate of the same size and colour, without a scale or needle. An *отделитель* (separator) is drawn as in the editor, but the schematic does not show its position. The *Spectrum_UP*, *Spectrum_P* and *Server* elements are not drawn yet; some less common elements are drawn without the letters inside them, and the coloured parts of some (valves, for example) are drawn grey. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. The 2.6 Client draws the common Modus element types as the Modus graphics editor does, except the instruments and controls that the editor draws as pictures (*прибор_настраиваемый*, *прибор_реальный*, *прибор_цифровой*, *РПН*, *панель_накладка*, *орган_управления*): the Client draws these simplified — by the picture's main outlines, without a needle or lettering, and at one size whatever scale the shape is given. An *отделитель* (separator) is drawn as in the editor, but the schematic does not show its position. The *Spectrum_UP*, *Spectrum_P* and *Server* elements are not drawn yet; some less common elements are drawn without the letters inside them, and the coloured parts of some (valves, for example) are drawn grey. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. Hyperlinks of Modus shapes have not been tried on working sites' schematics; a link opens only when the schematic is inside the workstation's schematics folder. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
@@ -202,13 +210,15 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. An external OPC UA system that connected to a 2.5 Server unencrypted (policy None) or with anonymous sign-in will not connect to a 2.6 Server that way: `scada-proxy`'s port 4840 accepts only secured connections that sign in with a user name. Trust the system's certificate and create a user for it, or run `apply` on the computer with `scada-proxy` with `--allow-anonymous-opcua`. See [Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external).
 
-1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
+1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. A 2.6 Client working with a 2.5.7 Server has not been tested either: both use the same connection protocol version, so a 2.5.7 Server does not turn a 2.6 Client away when it connects, but capabilities that the Server provides in version 2.6 may not work with a 2.5.7 Server. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
 
 #### Protocols and retransmission {#limits-protocols}
 
 1. IEC 61850: the device's clock must run on UTC — timestamps are not converted from local time. An APC setpoint whose device model carries both the `i` and `f` fields is not sent. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 1. Retransmission: objects whose values another Server process receives are sent to the DC, and the DC's commands on them carried out, only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
+
+1. Retransmission over MODBUS: the Server answers one read request with at most 50 registers or 800 bits (coils, discrete inputs); a request for more makes it drop the connection. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
 
 #### Archive and reports {#limits-archive}
 
@@ -232,11 +242,15 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The `svc` password may be at most 64 bytes long (a Cyrillic letter takes two): `scada-setup` refuses a longer one. See [scada-setup options]({{ '/en/server/' | relative_url }}#scada-setup-options).
 
+1. The Client packages are not digitally signed: on first launch Windows SmartScreen warns about the program, and macOS refuses to open it until it is allowed in the system settings. See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
+
 #### Working with the Client {#limits-client}
 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
+
+1. A Modus schematic does not show the position of an *отделитель* (separator): the shape is drawn the same in every position. Check the separator's position in a table or in the Inspector. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 ## 2.5.7 {#v2-5-7}
 

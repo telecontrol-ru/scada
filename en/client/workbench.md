@@ -401,8 +401,9 @@ column; clearing the tick deletes the rule. The ticks in the tree always
 match the contents of the open table.
 
 A new rule gets a destination address straight away — the next free one in
-this device's table: one more than the highest address, and address 1 for the
-first rule. Gaps in the numbering are not filled, since they may be spares
+this device's table: one more than the highest address, and for the first
+rule address 1 on an IEC 60870-5 destination or address 40001 (the first
+holding register) on a Modbus one. Gaps in the numbering are not filled, since they may be spares
 agreed with the receiver. The lowest free address is taken only when the next
 one leaves the allowed range: for IEC 60870-5, the direction's Object address
 size; for Modbus, the register table holding the highest address (for example
@@ -435,7 +436,10 @@ Selecting a rule fills the Transmission-rule panel on the right:
 
 The panel shows the source signal (with its TS/TI type tag), the destination
 device, the protocol and the address (IOA); the address is editable behind
-Revert/Apply when a write path is available.
+Revert/Apply when a write path is available. Neither the panel nor the
+transmission table shows a Modbus rule's Value format property: it is set in
+the rule's property window (see
+[Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission)).
 
 ### What happens at run time
 

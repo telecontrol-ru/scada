@@ -199,9 +199,9 @@ Client take effect in every process.
 `--tiers`, `--central`, `--advertise`, `--license`, the central computer's
 fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
 `--assigned-links-only`, `--insecure-links`, `--allow-anonymous-opcua` and
-`--data-root` at installation, and give them to every `apply` on it (and `--tiers`,
-`--central` and `--license` to every `start`), upgrades and restores
-included:
+`--data-root` at installation, and give them to every `apply` on it (and `--tiers` and
+`--license` to every `start`; `start` does not need `--central`), upgrades
+and restores included:
 
 * `start` without `--tiers` takes every process in the license, starts those
   whose services the computer has, and prints
@@ -336,6 +336,10 @@ work with it on a Server computer (see
 [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install)).
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
+
+**WARNING:** the version 2.6 Server installer is not attached to release
+2.6.0 yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download));
+until it is, the upgrade cannot be carried out.
 
 Versions 2.5 and earlier installed a single process — the *Telecontrol SCADA
 Server* service — and kept its data in the `Configuration`, `History` and
@@ -524,7 +528,7 @@ computer, from an elevated command prompt:
    `%ProgramData%\Telecontrol\SCADA Server` (see
    [Uninstalling the Server](#uninstall)).
 2. Install release 2.5.7 (`telecontrol-scada-2.5.7.msi` from the
-   [releases page]({{ '/en/getting-started/' | relative_url }}#download)) the
+   [releases page](https://github.com/alexsmn/scada-client/releases)) the
    way you installed version 2.5, and attach the HASP or Guardant hardware
    key.
 3. On **every workstation** that got the version 2.6 package in the
@@ -600,7 +604,11 @@ from the `C:\Program Files\Telecontrol SCADA\data\Certificates` folder —
 the `ServerCertificate.pem` and `ServerPrivateKey.pem` files and the copies
 `apply` set aside. **The site certificate authority** — the `ca` subfolder
 on the central computer — **stays**: after a reinstall `apply` goes on using
-it, and the other computers' certificates stay valid. The processes'
+it, and the other computers' certificates stay valid. `apply` creates the
+central computer's own certificate anew, though, with a different
+fingerprint, which the other computers then need (see
+[The central computer's fingerprint changed](#central-fingerprint-changed)).
+The processes'
 data in `%ProgramData%\Telecontrol\SCADA Server` (configuration, users,
 archives, files, the license, the [password file](#stored-passwords)) stays. If `scada-setup remove` fails, the
 uninstall is cancelled and the program stays installed: services are never
@@ -807,7 +815,11 @@ under a temporary name and rename it to `license.json` over the old one
 (`move /y`) — see [License]({{ '/en/getting-started/' | relative_url }}#license).
 
 Versions 2.5 and earlier used a HASP or Guardant hardware key, and ran for two
-hours in demo mode without one.
+hours in demo mode without one. **Version 2.6 has no demo mode**: without a
+license the Server processes do not run. To evaluate the system or to order a
+license, contact Telecontrol (mail@telecontrol.ru) and name the processes the
+site needs (see
+[Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
 
 ## Configuration storage
 
@@ -1182,13 +1194,17 @@ the processes exchange data with each other over it.
 The processes connect to each other encrypted (the Basic256Sha256 policy,
 Sign & Encrypt mode) as the [`svc`](#svc) account. Each process other than
 `scada-config` accepts only computers whose certificate was issued by the
-[site's certificate authority](#opcua-site-ca), and registration with
-`scada-proxy` is accepted only over such a connection. `scada-config`
-(port 4841) accepts a secure connection with any certificate, because a
-computer joining the site reaches it before it has a certificate of its own.
-But all its data requires the `svc` password, and it accepts a process's
-registration only from a computer whose certificate the site's certificate
-authority issued. No process accepts unsecured connections (policy None) or
+[site's certificate authority](#opcua-site-ca) or moved into the `trusted`
+folder, and registration with `scada-proxy` is accepted only over such a
+connection. `scada-config` (port 4841) accepts a secure connection with any
+certificate, because a computer joining the site reaches it before it has a
+certificate of its own. But it gives nothing without a sign-in, and it issues
+a site certificate only to an account holding the `ConfigureAdmin` or
+`SecurityAdmin` role — `svc`, `root` or a user with the Configure right; give
+those roles only to people you trust to join computers to the site.
+`scada-config` accepts a process's registration only from a computer whose
+certificate the site's certificate authority issued or which was moved into
+the `trusted` folder. No process accepts unsecured connections (policy None) or
 anonymous sign-in, `scada-proxy`'s port 4840 included, which is where
 external systems connect — unless `apply` on the computer with `scada-proxy`
 was run with `--allow-anonymous-opcua` (see
@@ -1247,6 +1263,16 @@ without `--insecure-links`) that port accepts only secured connections
    on Linux, `systemctl restart scada-proxy`): the process reads its trusted
    certificates when it starts. The restart briefly cuts the Clients off the
    Server.
+
+**WARNING:** a certificate in the `trusted` folder gives the system more than
+read access. Every process of the computer trusts that folder, so a system
+with such a certificate can also register with `scada-proxy` and
+`scada-config` as a Server process — and `scada-proxy` will then treat it as
+one of the site's processes. Move into `trusted` only the certificates of
+systems you trust as much as the Server's computers; in the firewall, open
+only port 4840 to such a system, from its address only, and keep port 4841
+closed to it; remove its certificate from `trusted` once the system no longer
+connects.
 
 If the system can do neither encryption nor sign-in with a user name — as
 many systems that connected to a 2.5 Server cannot — run `apply` on the
@@ -1372,9 +1398,11 @@ the `trusted` folder: its `opcua` block names the `issuer`, `trusted` and
 `rejected` folders under `data\Certificates`. `scada-config` accepts any
 client certificate, because a computer joining the site connects to it
 before it has a certificate of its own; everything `scada-config` serves
-requires the `svc` password, and it accepts a process's registration only
-over a connection whose certificate these same folders trust (the
-`opcua.register_trust` block). The folders are:
+requires a sign-in, it issues a site certificate only to an account holding
+the `ConfigureAdmin` or `SecurityAdmin` role, and it accepts a process's
+registration only over a connection whose certificate these same folders
+trust (the `opcua.register_trust` block): one the site's certificate
+authority issued or one moved into the `trusted` folder. The folders are:
 
 | Parameter | Description |
 |---|---|
@@ -1442,7 +1470,9 @@ their certificates: the site's own, kept on the central computer.
 When `apply` on another computer reports:
 
 * `presented a certificate with fingerprint …, not the … given` — the
-  fingerprint is mistyped, or `--central` names another computer.
+  fingerprint is mistyped, `--central` names another computer, or the central
+  computer's certificate has been replaced since (see
+  [The central computer's fingerprint changed](#central-fingerprint-changed)).
 * `cannot sign in to scada-config … as svc` — the `svc` password differs
   from the central computer's. **After five failed sign-ins, `scada-config`
   refuses that computer for 15 minutes**, even with the right password.
@@ -1482,19 +1512,53 @@ authority this computer trusts, even when it is about to expire. So:
   Linux `/opt/telecontrol-scada/data/Certificates`) and run `apply` with the
   [computer's parameters](#scada-setup-options) — on a computer without
   `scada-config`, together with the `--central-fingerprint` that the central
-  computer's latest `apply` prints;
+  computer's latest `apply` prints. Renewing the central computer's own
+  certificate changes its fingerprint: give the new one in
+  `--central-fingerprint` on the other computers (see
+  [The central computer's fingerprint changed](#central-fingerprint-changed));
 * **a new certificate authority** appears when the `ca` subfolder on the
   central computer is deleted (to replace an expiring authority) or lost —
   for example by uninstalling with `SCADA_PURGE_CERTIFICATES=1` or by a
   restore without that folder. Every computer's certificate was then issued
-  by the old authority, and **every other computer must join again**: run
-  `apply` on it with the [computer's parameters](#scada-setup-options) and
+  by the old authority, and **every other computer must join again**. On the
+  central computer itself, `apply` then replaces its own pair as well: the old
+  one is set aside with the `.self-signed` extension, and the central
+  computer's fingerprint changes — the same `apply` prints the new one (see
+  [The central computer's fingerprint changed](#central-fingerprint-changed)).
+  On every other computer, run `apply` with the [computer's parameters](#scada-setup-options) and
   the new fingerprint from the central computer's `apply` in
   `--central-fingerprint`. `apply` notices by itself that this computer's
   certificate was not issued by the current authority, sets the old pair
   aside with the `.previous-ca` extension and gets a new one; there is no
   need to delete the certificate files by hand. Until a computer has joined
   again its connections fail, so join all of them in one session.
+
+#### The central computer's fingerprint changed {#central-fingerprint-changed}
+
+Every `apply` with `--central-fingerprint` on a computer that has already
+joined fetches the central computer's certificate from `scada-config` again
+and requires its fingerprint to match the one given. So `apply` on such a
+computer runs only while the central computer is reachable and `scada-config`
+is running on it.
+
+The central computer's fingerprint changes with its certificate:
+
+* after the central computer's [certificate is renewed](#opcua-renewal);
+* after the program is reinstalled on the central computer (the installer
+  removes its certificate), or the computer is restored under another name;
+* after its pair is made again for `--advertise`;
+* after the site certificate authority is replaced.
+
+From then on, every `apply` on the other computers with the old fingerprint
+stops with `presented a certificate with fingerprint …, not the … given` and
+changes nothing. The new fingerprint is printed by `apply` on the central
+computer (the `--central-fingerprint …` line; `scada-setup status` does not
+print it), and OpenSSL shows it too (see
+[Site certificate authority](#opcua-site-ca)). Record it among each other
+computer's [parameters](#scada-setup-options) in place of the old one, and
+give it to later `apply` runs. While the certificate authority is the same,
+those computers need not join again: their certificates stay valid and their
+connections keep working.
 
 ## OPC client on Windows {#opc-classic}
 

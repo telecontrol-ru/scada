@@ -36,7 +36,9 @@ those objects' present state and update with it:
   non-zero value is closed, zero is open. A breaker square is filled with the
   colours the schematic's settings define for a closed and an open breaker;
   when the schematic defines none, bright green when closed and red when
-  open.
+  open. An **отделитель** (separator) is the exception: the schematic does
+  not show its position, and the shape is drawn the same whatever the value.
+  Check a separator's position in a table or in the Inspector.
 * **A text field** (a shape with the *текст*, "text", property) shows the
   value of its measured (ТИТ) object the way a table does: with its units and
   with a "?" mark on an unreliable value.
@@ -52,6 +54,11 @@ those objects' present state and update with it:
 
 Shapes that are not bound are drawn as the designer drew them.
 
+Some Modus shapes are drawn simplified or not drawn yet — for example, the
+instruments and controls that the Modus graphics editor draws as pictures.
+The list is under
+[Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+
 > **Caution.** Compared with the 2.5.7 Client, a Modus schematic does **not**
 > show a binding of an arbitrary shape property (*property_name=alias* with a
 > name other than *положение*, *текст* or *значение_базовое*) or the object's
@@ -66,8 +73,11 @@ the value with its units and with a "?" mark on an unreliable value.
 
 If the value is **unreliable** or the object is not connected, the shape is
 hatched in the bad-quality colour: its position on the schematic is not
-confirmed at that moment. A value field gets the "?" mark instead of the
-hatching.
+confirmed at that moment. A value field is not hatched: an unreliable value
+is marked in it with "?". When there is no value at all — the object is not
+connected, or its value is empty — the field shows the text saved in the
+schematic **with no mark of any kind**. Do not read that text as a
+measurement: check the object's value in a table or in the Inspector.
 
 Until a value arrives, and when an object's value disappears, the shape looks
 as it was saved in the schematic; when the connection to the object is lost,

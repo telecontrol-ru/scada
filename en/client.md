@@ -454,14 +454,17 @@ IEC 60870-5 (SELECT/EXECUTE):
 
    Not every device can select. For IEC 60870-5 only a single command
    (<code>C_SC_NA_1</code>) is selected; for other IEC 60870-5 commands, such
-   as set-point commands, and for **every** MODBUS object the Server refuses
-   the select and sends nothing to the device. Instead of the confirmation
+   as set-point commands, for IEC 61850 objects with direct control or with
+   none (`status-only`), for **every** MODBUS object and for OPC objects the
+   Server refuses the select and sends nothing to the device. Instead of the confirmation
    prompt the Client then shows an error box: "Two-stage control is not
    available for this object: its device cannot select a command. Nothing was
    sent to the device. Ask the administrator to turn off two-stage control for
    this object." The control window stays open, and nothing is left selected.
-   Such an object is controlled in one stage: the administrator sets its
-   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
+   Such an object is controlled in one stage: the engineer who configures the
+   project (with the Configure right) sets its
+   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No —
+   ask that person, although the message names the administrator.
    If the device itself refuses the select, the error box starts with
    "Preparation for control failed" and ends with "The command was not
    executed."
@@ -502,7 +505,10 @@ or "Controlling...".
   control dialog stays open so the command can be retried. The event journal
   records a "Control - Failed (…)" event with the error code in brackets, for
   example "Control - Failed (Bad_Timeout)" («Управление - Ошибка
-  (Bad_Timeout)»).
+  (Bad_Timeout)»). When the Server refuses the select of
+  [two-stage control](#two-stage), the event journal shows a "Preparing to
+  control" event («Подготовка к управлению») followed by "Preparing to
+  control - Failed (Bad_NotSupported)".
 
 > **Caution.** A failure does not always mean the command was not carried out.
 > On a timeout (`Bad_Timeout`) or a connection lost mid-command the device may

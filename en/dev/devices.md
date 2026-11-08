@@ -227,10 +227,10 @@ The protocol uses four logical register groups:
 
 | Register number (dec) | Register address (hex) | Register type | Command | Access |
 |:---:|:---:|:---|:---:|:---:|
-| `1-9999` | `0x0000-0x270F` | Coils | `0x01 / 0x05` | Read/write |
-| `10001-19999` | `0x0000-0x270F` | Discrete Inputs | `0x02` | Read |
-| `30001-39999` | `0x0000-0x270F` | Input Registers | `0x04` | Read |
-| `40001-49999` | `0x0000-0x270F` | Holding Registers | `0x03 / 0x10` | Read/write |
+| `1-10000` | `0x0000-0x270F` | Coils | `0x01 / 0x05` | Read/write |
+| `10001-20000` | `0x0000-0x270F` | Discrete Inputs | `0x02` | Read |
+| `30001-40000` | `0x0000-0x270F` | Input Registers | `0x04` | Read |
+| `40001-50000` | `0x0000-0x270F` | Holding Registers | `0x03 / 0x10` | Read/write |
 
 The Command column gives the functions the Server sends: for reading and,
 after the slash, for writing. Holding registers are always written with
@@ -642,11 +642,14 @@ the command (cause of transmission 8, deactivation), the Server releases the
 selection on the source device and confirms the deactivation to the DC with
 cause 9 only once the device has answered. If the source device refuses to
 release it, the DC gets a negative confirmation and the selection on the
-device stays until the device's timeout. A source with no selection — for
-example, an object of a MODBUS device — has nothing to release, and the
-deactivation is confirmed at once. A select of such an object gets the DC a
-negative confirmation: the source device cannot select, so the DC controls
-that object with a command without select. See
+device stays until the device's timeout. When the Server refuses two-stage
+control of the source object — for example, an object of a MODBUS or OPC
+device, an IEC 61850 object with direct control, or an IEC 60870-5 object
+whose command is not a single command (see
+[Two-stage control]({{ '/en/client/' | relative_url }}#two-stage)) — there is
+nothing to release, and the deactivation is confirmed at once. A select of
+such an object gets the DC a negative confirmation, so the DC controls that
+object with a command without select. See
 [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
 
 #### Retransmission over MODBUS {#modbus-retransmission}
@@ -664,11 +667,18 @@ address is a MODBUS register number, numbered as in a channel address (see
 | from 30001 | Input Registers |
 | from 40001 | Holding Registers |
 
+In each register table a rule's address lies within 10,000 numbers of the
+table's start (40001–50000, for example), so retransmission rules reach only
+the registers at addresses 0x0000–0x270F.
+
 * An object in Coils or Discrete Inputs takes **one bit**: 1 when the
   value is non-zero. In registers (Input Registers, Holding Registers) a
   value is sent by default in one 16-bit register as an unsigned UINT16
   integer, rounded to the nearest whole number.
-* To send a value of another type, set the rule's Value format property —
+* To send a value of another type, set the rule's Value format property.
+  The transmission table and the Transmission rule panel do not show it: in
+  the Equipment window expand the destination device, right-click the rule
+  and choose `Properties`. The Value format is
   the type and the byte- and word-order options written as in a channel
   address, but without the register number: `FLOAT;swapwords`, `INT32`,
   `DOUBLE;reversewords`, `;swapbytes`. A rule at address 40001 with the
@@ -682,8 +692,16 @@ address is a MODBUS register number, numbered as in a channel address (see
   UINT16 as 65,535, −5 as 0. The receiver gets no quality flag, so choose a
   type that holds the value's whole range.
 * A rule with a wrong format (for example `REAL` or `FLOAT;swapword`) sends
-  nothing — the register stays 0 — and the device log records the warning
-  `Wrong MODBUS transmission address`.
+  nothing, and the device log records the warning
+  `Wrong MODBUS transmission address`. Its register stays 0 only when the
+  process started with that rule already in place (see the next item).
+* When a rule is deleted, moved to another address or given another format,
+  the receiver keeps being served the last value at the old address (and in
+  the old format) until the `scada-modbus` process is restarted. After such
+  changes, restart the *Telecontrol SCADA Modbus* service (on Linux,
+  `systemctl restart scada-modbus`) on the computer serving the destination
+  device (see
+  [Restarting a protocol process]({{ '/en/server/' | relative_url }}#edge-restart)).
 * On a device with no rules, the first rule created by ticking an object
   gets address 40001, the first holding register; the next rules get
   consecutive addresses in the same register table. Move a rule that needs
@@ -691,6 +709,14 @@ address is a MODBUS register number, numbered as in a channel address (see
   a holding register is sent as 0 or 1; to send discrete objects as bits,
   give the first rule address 1 (Coils), and the next ones get addresses in
   that table.
+* The [bulk create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
+  wizard sets no format. For a MODBUS destination its "IOA start" and "IOA
+  step" fields mean register numbers: for FLOAT, INT32 and UINT32 rules set
+  "IOA step" to 2, for DOUBLE to 4 (the default step is 1), then set the
+  Value format on each rule created.
+* The SCADA answers one read request with at most 50 registers or 800 bits
+  (coils, discrete inputs). A request for more makes it drop the connection,
+  so set the receiver to read in blocks no larger than that.
 * A write from the receiver to a coil or holding register is passed to the
   rule's object as a command — with the same limits as DC commands above.
   The value is read in the rule's format, so a write to a FLOAT or INT32

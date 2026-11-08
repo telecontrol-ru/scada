@@ -97,6 +97,13 @@ For control operations, Telecontrol SCADA uses:
 * `C_SC_NA_1` for discrete control objects
 * `P_ME_NC_1` for measured-value control objects
 
+Only a single command, `C_SC_NA_1`, can be carried out in two stages. A
+set-point command — `P_ME_NC_1` by default, or the type an `INT16:` or
+`FLOAT:` override names (see below) — is refused by the Server already at
+the select stage, with nothing sent to the device. So on objects controlled
+with such a command (usually TIT objects), set
+[Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
+
 With [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) of a TS
 object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then
 with the execute flag. If the operator declines to execute, the Server
@@ -111,8 +118,11 @@ DC releases a selection (a command with cause of transmission 8 after a
 confirmed select), the Server releases the selection on the object's source
 device the same way and confirms the deactivation to the DC with cause 9 only
 once the source device has answered; if the device refuses, the confirmation
-is negative. A source that has no selection (for example, an object of a
-MODBUS device) confirms the release at once. Deactivating a command already
+is negative. When the Server refuses the select of the source object (for example, an
+object of a MODBUS device, or one whose command is not `C_SC_NA_1`), the DC
+gets a negative confirmation already for its select and must control such an
+object with a command without select; a release on such an object is
+confirmed at once. Deactivating a command already
 being executed only stops the reply to the DC: the execution on the device
 cannot be undone.
 
@@ -209,8 +219,9 @@ command value type from the device:
   rejects the command. If the operator declines to execute, the Server
   releases the selection with the control model's Cancel service;
 * for direct control (`direct-with-normal-security`,
-  `direct-with-enhanced-security`) both one-stage and two-stage commands
-  work;
+  `direct-with-enhanced-security`) only a one-stage command works: the
+  Server refuses a select without sending anything to the device, so set
+  Two-stage control to No on the object;
 * an object whose model is `status-only` takes no commands; the Server
   rejects them.
 
@@ -254,3 +265,19 @@ destination: the IEC 61850 process only polls devices.
 
 See the [IEC 61850 article](https://en.wikipedia.org/wiki/IEC_61850) for a
 description of the protocol.
+
+## OPC DA (Windows) {#opc}
+
+The `scada-opc` process runs on Windows only and connects to external OPC
+servers over OPC DA (Classic OPC): the external servers' tags appear in the
+Server's address space and are bound to objects. The Server refuses the
+select of two-stage control on an OPC object, so set
+[Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on such
+objects. See [OPC client on Windows]({{ '/en/server/' | relative_url }}#opc-classic).
+
+## Vidicon integration (Windows) {#vidicon}
+
+The `scada-vidicon` process runs on Windows only and links the Server with
+the Telecontrol Vidicon system for migrating existing projects: the Server
+imports objects from the Vidicon configuration into its address space. See
+[Vidicon integration]({{ '/en/server/' | relative_url }}#vidicon).
