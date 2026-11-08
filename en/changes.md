@@ -10,13 +10,13 @@ permalink: /en/changes/
 * TOC
 {:toc}
 
-Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); releases 2.6.1, 2.6.0 and 2.5.7 are available there today, and release 2.5.7 is marked as the latest because it is the last one that carries a Server installer. Distributions of earlier versions are not published. The rest of this manual describes version 2.6; how it differs from 2.5.7 is described below.
+Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); releases 2.6.2, 2.6.0 and 2.5.7 are available there today, and release 2.5.7 is marked as the latest because it is the last one that carries a Server installer. Distributions of earlier versions are not published. The rest of this manual describes version 2.6; how it differs from 2.5.7 is described below.
 
-## 2.6.0 and 2.6.1 {#v2-6}
+## 2.6.0 and 2.6.2 {#v2-6}
 
 Release 2.6.0 was published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
 
-The release 2.6.0 Client packages were built on 2 November 2026, before some of the changes listed below. Release 2.6.1, published on 8 November 2026, carries only Client packages rebuilt from later sources, and they include every Client change listed below. The changes to drawing Vidicon and Modus schematics — the hatching of unreliable shapes, the "?" in value fields with no value, the position of the Modus separator and the improved drawing of Modus shapes — are made in the display module, which is shipped separately, and arrive with its next build.
+The release 2.6.0 Client packages were built on 2 November 2026, before some of the changes listed below. Release 2.6.2, published on 8 November 2026, carries only Client packages rebuilt from later sources, and they include every Client change listed below. The changes to drawing Vidicon and Modus schematics — the hatching of unreliable shapes, the "?" in value fields with no value, the position of the Modus separator and the improved drawing of Modus shapes — are made in the display module, which is shipped separately, and arrive with its next build.
 
 ### Server
 
