@@ -248,7 +248,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
-1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read, and the process services run as `root`. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
+1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
 
 1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
 

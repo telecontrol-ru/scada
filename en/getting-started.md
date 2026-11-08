@@ -382,7 +382,9 @@ Run every command as `root` (with `sudo`; `status` does not need it).
    sudo tar -xzf telecontrol-scada-server-<version>-linux-amd64.tar.gz -C /opt
    ```
 
-2. Put the license file at `/var/lib/scada/license.json`.
+2. Put the license file at `/var/lib/scada/license.json`, readable by
+   everyone (`sudo chmod 0644 /var/lib/scada/license.json`): the processes
+   read it as the `scada` account.
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
@@ -403,7 +405,8 @@ only the locations differ:
   `scada-filesystem`) and the license;
 * every process runs as a systemd service `scada-<process>.service` (for
   example `scada-config.service`) that `apply` creates; the services start
-  at boot, are restarted after a failure, and run as `root`;
+  at boot, are restarted after a failure, and run as the system account
+  `scada`, which the package (or, after the archive, `apply`) creates;
 * the `svc` and `root` passwords are kept in the file
   `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
   (see [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords));

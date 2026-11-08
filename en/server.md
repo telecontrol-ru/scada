@@ -741,8 +741,8 @@ and starts them in the right order; `status`, `start`, `stop`, `remove` and
 `set-password` manage those services. The step-by-step installation is in
 [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
-* The services run as `root`, start at boot and are restarted 10 seconds
-  after a failure. As on Windows, on a computer with `scada-config` the other
+* The services run as the system account `scada`, start at boot and are
+  restarted 10 seconds after a failure. As on Windows, on a computer with `scada-config` the other
   services depend on `scada-config.service`, and `scada-proxy.service` also
   on `scada-filesystem.service`: stopping a service stops the ones that
   depend on it.
