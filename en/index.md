@@ -116,11 +116,9 @@ Example of a distributed deployment:
   and [limit checks]({{ '/en/architecture/' | relative_url }}#limits)
 * Object emulation for testing without field hardware
 * [Historical archives]({{ '/en/server/' | relative_url }}#history)
-  (the `scada-historian` process) with automatic removal of expired data;
+  (the `scada-historian` process) with automatic removal of expired data
   (set up as described under
-  [Archiving]({{ '/en/dev/history/' | relative_url }})); for the limitations
-  of version 2.6 see
-  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-archive)
+  [Archiving]({{ '/en/dev/history/' | relative_url }}))
 * [Event journal]({{ '/en/client/events/' | relative_url }}) with
   acknowledgement and importance-based highlighting
 * [Redundancy]({{ '/en/architecture/' | relative_url }}#data-items) support for information objects

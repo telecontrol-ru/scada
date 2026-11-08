@@ -35,7 +35,9 @@ settings, not in the Server's configuration:
   account with no roles included, and for the
   "Telecontrol" server type; with the "OPC UA" type the profile, and the
   portfolios with it, is kept on this computer only. A 2.5.7 Server keeps no
-  profiles: portfolios stay on this computer, one set per account (see
+  profiles: portfolios stay on this computer, one set per account, and after
+  the Client upgrade every account starts afresh — earlier portfolios are not
+  carried over (see
   [Shift handover]({{ '/en/client/' | relative_url }}#shift-change)).
 
 ## Create a portfolio

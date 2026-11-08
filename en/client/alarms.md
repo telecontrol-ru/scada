@@ -98,8 +98,10 @@ With the option off, the panel stays on screen until the operator closes it.
 >
 > With a 2.5.7 Server the profile is kept on the computer, one per account,
 > so the tone is off the first time each account signs in **on each
-> computer**, including right after the Client upgrade: switch it on and test
-> it at every workstation.
+> computer**, including right after the Client upgrade: switch it on at every
+> workstation. An operator cannot raise a critical event, so the engineer who
+> configures the project raises a test alarm (see the check
+> [below](#tone-check)).
 
 The tone sounds only under the conditions listed [above](#escalation).
 
@@ -121,6 +123,7 @@ silent on an alarm without saying so.
 > above) and make sure the tone is heard. Keep a sound assigned to the Windows
 > "Exclamation" event and the volume up on that computer, and test the tone
 > again after changing the Windows sound scheme or the audio device.
+{: #tone-check}
 
 ## Window flash
 

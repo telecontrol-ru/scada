@@ -38,7 +38,7 @@ nav_order: 1
 * [Интеграция с ОИК Видикон]({{ '/protocols/' | relative_url }}#vidicon) (Windows) для перевода существующих проектов
 * [Дорасчет]({{ '/formulas/' | relative_url }}), [Ручной ввод]({{ '/architecture/' | relative_url }}#manual-write) и [Контроль уставок]({{ '/architecture/' | relative_url }}#limits)
 * Эмуляция объектов для тестирования без оборудования
-* Ведение [Архива измерений и сигнализации]({{ '/server/' | relative_url }}#history) (процесс `scada-historian`) с автоматическим удалением устаревших данных (настройка — в разделе [Архивирование]({{ '/dev/history/' | relative_url }})); ограничения версии 2.6 — смотрите [Известные ограничения]({{ '/changes/' | relative_url }}#limits-archive)
+* Ведение [Архива измерений и сигнализации]({{ '/server/' | relative_url }}#history) (процесс `scada-historian`) с автоматическим удалением устаревших данных (настройка — в разделе [Архивирование]({{ '/dev/history/' | relative_url }}))
 * [Журнал событий]({{ '/client/events/' | relative_url }}) с квитированием и цветовой маркировкой по важности
 * [Резервирование]({{ '/architecture/' | relative_url }}#data-items) информационных объектов
 * [Разграничение доступа]({{ '/dev/users/' | relative_url }}) по ролям пользователей

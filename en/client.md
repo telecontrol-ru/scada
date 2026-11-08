@@ -30,8 +30,11 @@ page the differences for [two-stage control](#two-stage) and
 
 > **Caution: with a 2.5.7 Server the alarm tone is off at first sign-in.**
 > The first time each account signs in on each computer, including right
-> after the Client upgrade, the alarm tone is off: switch it on and test it at
-> every workstation (see [Shift handover](#shift-change)).
+> after the Client upgrade, the alarm tone is off: switch it on at every
+> workstation and ask the engineer to raise a test alarm (see
+> [Sound alarm]({{ '/en/client/alarms/' | relative_url }}#tone) and
+> [Shift handover](#shift-change)). On macOS this tone is the only audible
+> alarm.
 
 ## Main areas
 
@@ -223,10 +226,14 @@ operator's stored password is not filled in there (see
 > so the incoming operator gets their own pages and settings, not the
 > outgoing operator's. An account that has not signed in on this computer
 > before starts from the default settings and takes only the window placement
-> from the workstation. **The default settings have the alarm tone off** —
-> so it is off the first time each account signs in on each computer,
-> including right after the Client upgrade: the incoming operator switches it
-> on and tests it. Another computer keeps its own profile. The "Control
+> from the workstation. That includes right after the Client upgrade: the
+> earlier shared profile is carried over to no one, so every account's pages,
+> portfolios, favourites, severity threshold and window layouts start afresh.
+> Before upgrading, note which pages and portfolios the operators need, so
+> they can be rebuilt. **The default settings have the alarm tone off**: the
+> incoming operator switches it on, and the engineer raises a test alarm (see
+> [Sound alarm]({{ '/en/client/alarms/' | relative_url }}#tone)). Another
+> computer keeps its own profile. The "Control
 > confirmation" setting is not kept in the profile and is on at every
 > sign-in.
 
@@ -291,8 +298,9 @@ in the client's settings: on Windows it is encrypted by Windows (DPAPI) for
 the user account and written to the registry under
 `HKEY_CURRENT_USER\Software\Telecontrol\Workplace` (value
 `PasswordProtected`); on macOS it is kept in the user's keychain (the
-Keychain Access app, item "Telecontrol SCADA Client"). Only the same user on
-the same computer can decrypt it. Still, anyone who signs in to the computer
+Keychain Access app, item "Telecontrol SCADA Client"). Only the same user
+account can decrypt it (on Windows, also on other computers if that account's
+profile roams). Still, anyone who signs in to the computer
 under that account also signs in to SCADA, so tick the box only on a
 computer you trust. A password stored unencrypted by an earlier client version is moved
 into the protected store the first time the new version starts, and removed
@@ -496,8 +504,9 @@ IEC 60870-5 (SELECT/EXECUTE):
    Not every device can select. For IEC 60870-5 only a single command
    (<code>C_SC_NA_1</code>) is selected; for other IEC 60870-5 commands, such
    as set-point commands, for IEC 61850 objects with direct control or with
-   none (`status-only`), for **every** MODBUS object and for OPC objects the
-   Server refuses the select and sends nothing to the device. Instead of the confirmation
+   none (`status-only`), for **every** MODBUS object and for OPC objects a
+   2.6 Server refuses the select and sends nothing to the device (a 2.5.7
+   Server behaves differently, see below). Instead of the confirmation
    prompt the Client then shows an error box: "Two-stage control is not
    available for this object: its device cannot select a command. Nothing was
    sent to the device. Ask the engineer who configures the project to turn off
@@ -505,7 +514,7 @@ IEC 60870-5 (SELECT/EXECUTE):
    Such an object is controlled in one stage: the engineer who configures the
    project (with the Configure right) sets its
    [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
-   The Client sets No by itself on new MODBUS objects and IEC 60870-5 TIT
+   The Client sets No by itself on new MODBUS, OPC and IEC 60870-5 TIT
    objects.
    If the device itself refuses the select, the error box starts with
    "Preparation for control failed" and ends with "The command was not
@@ -529,10 +538,22 @@ reporting successful control. When the select was refused (see step 2),
 there is nothing to release, and no message is given.
 
 **With a 2.5.7 Server** the Client performs two-stage control the way the
-2.5.7 Client did: on any answer other than yes, and when the control window
-is closed, the Client does **not** release the selection — a 2.5.7 Server
-cannot — and the selection stays armed until the device's selection timeout
-expires. Until then the device refuses a new select from any workstation.
+2.5.7 Client did.
+
+* A 2.5.7 Server refuses no select. For objects whose device cannot select —
+  IEC 60870-5 commands other than a single command, IEC 61850 objects with
+  direct control, MODBUS and OPC objects — it confirms the select without
+  sending anything to the device: there is no error box from step 2, the
+  confirmation prompt appears although the device selected nothing, and the
+  select stage is a formality. The engineer sets
+  [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on
+  such objects.
+* On any answer other than yes, and when the control window is closed, the
+  Client does **not** release the selection — a 2.5.7 Server cannot. On a
+  device that really selects, the selection stays armed until the device's
+  selection timeout expires, and until then the device refuses a new select
+  from any workstation.
+
 The Client says so in the current events panel: "Release of selection:
 &lt;object&gt; - A Server before 2.6 cannot release a selection. The device stays
 selected until its own selection timeout expires." (in the Russian
@@ -543,7 +564,9 @@ critical, sounds when the alarm tone is on, and stays in the panel until it
 is acknowledged. The message is also given when the control window was
 closed while the Client was still waiting for the answer to the select
 ("Preparing to control...") and the device then accepted the select; if the
-select was refused, there is no message.
+select was refused, there is no message. For now the message also appears
+for the objects in the first point, although nothing is selected on the
+device: acknowledge it; it has no effect.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.
