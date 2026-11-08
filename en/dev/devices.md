@@ -702,9 +702,13 @@ the registers at addresses 0x0000–0x270F.
   the registers it occupied become 0 at once (unless another rule occupies
   them); no process restart is needed.
 * On a device with no rules, the first rule created by ticking an object
-  gets address 40001, the first holding register; the next rules get
-  consecutive addresses in the same register table. Move a rule that needs
-  two or four registers by hand in the Address column. A discrete object in
+  gets address 40001, the first holding register; each next one gets the
+  first register after all those the device's rules occupy, Value format
+  included: after a FLOAT, INT32 or UINT32 rule at 40001 the next gets 40003,
+  after a DOUBLE 40005. Changing an existing rule's format does not move its
+  neighbours: if a rule at 40002 now lies inside a FLOAT rule at 40001, the
+  Status column reads Duplicate address on both — move one of them by hand in
+  the Address column. A discrete object in
   a holding register is sent as 0 or 1; to send discrete objects as bits,
   give the first rule address 1 (Coils), and the next ones get addresses in
   that table.
@@ -712,7 +716,10 @@ the registers at addresses 0x0000–0x270F.
   wizard sets no format. For a MODBUS destination its "IOA start" and "IOA
   step" fields mean register numbers: for FLOAT, INT32 and UINT32 rules set
   "IOA step" to 2, for DOUBLE to 4 (the default step is 1), then set the
-  Value format on each rule created.
+  Value format on each rule created. The wizard fills "IOA start" with the
+  first register after all those the device's rules occupy, and marks
+  "duplicate address" on a row that lands on any register of an existing
+  FLOAT, INT32, UINT32 or DOUBLE rule.
 * The SCADA answers one read request with at most 125 registers or 2000
   bits (coils, discrete inputs), the MODBUS protocol's limit. A request for
   more, a read beyond addresses 0x0000–0xFFFF and an incomplete request are
