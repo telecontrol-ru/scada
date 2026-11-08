@@ -13,8 +13,15 @@ permalink: /en/
 > Linux Server packages will be added later, and until then the version 2.6
 > Server cannot be installed
 > ([Download]({{ '/en/getting-started/' | relative_url }}#download)). So the 2.6 Client
-> works today with a 2.5.7 Server — from release 2.6.2 on, and without every
-> version 2.6 capability ([Upgrading from version 2.5]({{ '/en/changes/' | relative_url }}#limits-upgrade)). The previous release,
+> can today connect only to a 2.5.7 Server — from release 2.6.2 on, and
+> without every version 2.6 capability; the 2.6 Client has not yet been tried
+> against a working 2.5.7 Server
+> ([Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
+> **With a 2.5.7 Server the 2.6 Client does not recognise event severity: no
+> event counts as a warning or as critical, the alarm tone does not sound,
+> critical events are not highlighted, and a minimum-severity filter hides
+> every event.** Until this is fixed, do not rely on the 2.6 Client for
+> alarms on a site with a 2.5.7 Server. The previous release,
 > [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
 > differently: its Server is a single service with a HASP or Guardant
 > hardware key, not a set of separate processes. The version 2.6 license is
@@ -87,7 +94,8 @@ Example of a distributed deployment:
   Before upgrading, check your site's schematics in a 2.6 Client: the
   instruments and controls the Modus graphics editor draws as pictures are
   drawn simplified, without a needle or lettering, the *Spectrum_UP*,
-  *Spectrum_P* and *Server* elements are not drawn yet, and the bindings
+  *Spectrum_P*, *Server*, *отвертка* (screwdriver) and *XP4* elements are not
+  drawn yet, and the bindings
   have not yet been tried on the schematics of working sites
 * Interactive [tables]({{ '/en/client/table/' | relative_url }}),
   [graphs]({{ '/en/client/graph/' | relative_url }}), and
@@ -97,21 +105,26 @@ Example of a distributed deployment:
 * Telemetry acquisition and control over
   [MODBUS]({{ '/en/protocols/' | relative_url }}#modbus),
   [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870), and
-  [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850); for the
-  limitations of version 2.6 see
+  [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850), and from
+  external OPC servers over [OPC DA]({{ '/en/protocols/' | relative_url }}#opc)
+  (Windows); for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-protocols)
 * [Retransmission]({{ '/en/dev/devices/' | relative_url }}#retransmission)
   of selected data to upper-level systems and an OPC UA server; for the
   limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-protocols)
+* [Vidicon integration]({{ '/en/protocols/' | relative_url }}#vidicon)
+  (Windows) for migrating existing projects
 * [Formulas]({{ '/en/formulas/' | relative_url }}),
   [manual input]({{ '/en/architecture/' | relative_url }}#manual-write),
   and [limit checks]({{ '/en/architecture/' | relative_url }}#limits)
 * Object emulation for testing without field hardware
 * [Historical archives]({{ '/en/server/' | relative_url }}#history)
   (the `scada-historian` process) with automatic removal of expired data;
-  the limitations of version 2.6 are described under
-  [Archiving]({{ '/en/dev/history/' | relative_url }})
+  (set up as described under
+  [Archiving]({{ '/en/dev/history/' | relative_url }})); for the limitations
+  of version 2.6 see
+  [Known limitations]({{ '/en/changes/' | relative_url }}#limits-archive)
 * [Event journal]({{ '/en/client/events/' | relative_url }}) with
   acknowledgement and importance-based highlighting
 * [Redundancy]({{ '/en/architecture/' | relative_url }}#data-items) support for information objects

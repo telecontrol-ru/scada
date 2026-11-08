@@ -42,7 +42,7 @@ Multiple rows can be selected with `Shift` and `Ctrl`.
 Rows can be added from the object panel by enabling objects, or by
 typing an object alias directly into the last row of the table. In
 addition to aliases, formulas can be used instead of direct object
-references.
+references (see [Formulas](#formulas)).
 
 Deleting a selected row removes it from the table view. Double-clicking
 an object row opens that object's graph.
@@ -100,7 +100,7 @@ row.</dd>
 
 </dl>
 
-## Formulas
+## Formulas {#formulas}
 
 Instead of selecting an object from the object panel, a formula can be
 entered in the first column. Formulas allow computed values based on one

@@ -424,12 +424,16 @@ can change it directly in the Address column. The Object column is not
 editable — the source is set only by the tick in the tree.
 
 The Status column marks a configuration fault: if several rules of a device
-share an address, each of them reads "Duplicate address" — the receiver cannot
+share an address, or for a MODBUS receiver their registers overlap (a FLOAT
+rule at 40001 and a rule at 40002, say), each of them reads "Duplicate
+address" — the receiver cannot
 tell apart objects sent under one address, and a command it sends to that
 address reaches only one of the objects. The Server accepts and transmits such
-rules, but writes a "Duplicate destination address" warning for each repeat
-to the [log]({{ '/en/server/' | relative_url }}#logging) of the process that
-serves the device. Correct the addresses yourself.
+rules. A version 2.6 Server writes a "Duplicate destination address" warning
+for each rule whose address is exactly repeated to the
+[log]({{ '/en/server/' | relative_url }}#logging) of the process that
+serves the device; it does not warn about overlapping registers, and a 2.5.7
+Server does not warn at all. Correct the addresses yourself.
 
 Many rules with consecutive addresses are easier to create at once: select
 the objects' rows, for example in a [Table]({{ '/en/client/table/' | relative_url }}),

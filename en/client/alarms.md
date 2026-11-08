@@ -40,6 +40,13 @@ holds:
 > announce them. A silent client does **not** mean nothing is unacknowledged —
 > check the count in the status bar and the event panel.
 
+> **Caution: with a 2.5.7 Server there are no critical events.** A 2.5.7
+> Server sends event severity on its earlier scale, and the 2.6 Client counts
+> none of its events as a warning or as critical: the tone sounds only in an
+> alarm flood, there are no severity tiles or colours, and a minimum-severity
+> filter of 600 or 800 hides every event. See
+> [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+
 The client's own messages ("Local Event") are events too: reports of a
 successful command, of the connection to the Server being lost and restored,
 of errors. They count according to their severity:
@@ -95,6 +102,11 @@ With the option off, the panel stays on screen until the operator closes it.
 > — **Settings → Settings… → Events & alarms → Sound Alarm on Event**. Spoken
 > announcements exist on Windows only, so on macOS this tone is the only
 > audible alarm: while it is off, the client on macOS raises alarms silently.
+>
+> With a 2.5.7 Server the profile is kept on the computer, one per account,
+> so the tone is off the first time each account signs in **on each
+> computer**, including right after the Client upgrade: switch it on and test
+> it at every workstation.
 
 The tone sounds only under the conditions listed [above](#escalation).
 

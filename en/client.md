@@ -21,11 +21,23 @@ in particular, the alarm tone is off for every new account. The limitations of t
 
 Until the version 2.6 Server is published, the 2.6 Client is connected to a
 2.5.7 Server. The Client works this way from release 2.6.2: the 2.6.0 Client
-cannot perform two-stage control with a 2.5.7 Server. What does not work with
+cannot perform two-stage control with a 2.5.7 Server. The 2.6 Client has not
+yet been tried against a working 2.5.7 Server. What does not work with
 a 2.5.7 Server, and how it differs from what this page describes, is listed
-under [Known limitations — Upgrading from version 2.5]({{ '/en/changes/' | relative_url }}#limits-upgrade); on this
+under [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade); on this
 page the differences for [two-stage control](#two-stage) and
 [shift handover](#shift-change) are noted separately.
+
+> **Caution: with a 2.5.7 Server the 2.6 Client does not recognise event
+> severity.** A 2.5.7 Server sends severity on its earlier scale, and the 2.6
+> Client counts no event as a warning or as critical: the alarm tone does not
+> sound, critical events get no colour or tile, and a minimum-severity filter
+> set at warning or critical hides every event. Until this is fixed, do not
+> rely on the 2.6 Client for alarms on a site with a 2.5.7 Server, and watch
+> the event journal. Also, with a 2.5.7 Server the alarm tone is off the
+> first time each account signs in on each computer, including right after
+> the Client upgrade: switch it on and test it at every workstation (see
+> [Shift handover](#shift-change)).
 
 ## Main areas
 
@@ -217,7 +229,10 @@ operator's stored password is not filled in there (see
 > so the incoming operator gets their own pages and settings, not the
 > outgoing operator's. An account that has not signed in on this computer
 > before starts from the default settings and takes only the window placement
-> from the workstation. Another computer keeps its own profile. The "Control
+> from the workstation. **The default settings have the alarm tone off** —
+> so it is off the first time each account signs in on each computer,
+> including right after the Client upgrade: the incoming operator switches it
+> on and tests it. Another computer keeps its own profile. The "Control
 > confirmation" setting is not kept in the profile and is on at every
 > sign-in.
 
@@ -276,6 +291,13 @@ forget the stored password.
 > **Caution.** Never tick this box on a shared operator workstation. With it,
 > the incoming operator works under the outgoing operator's account: events
 > are acknowledged and commands issued in somebody else's name.
+
+The stored password is kept **unencrypted** in the operating-system user's
+settings: on Windows in the registry, under
+`HKEY_CURRENT_USER\Software\Telecontrol\Workplace`; on macOS in the file
+`~/Library/Application Support/Telecontrol/SCADA Client/settings.json`.
+Anyone with access to that computer user's profile, or to a backup of it,
+can read it, so tick the box only on a computer you trust.
 
 How to sign in under another account, or clear the box:
 
@@ -515,7 +537,11 @@ The Client says so in the current events panel: "Release of selection:
 selected until its own selection timeout expires." (in the Russian
 interface: «Отмена выбора: <объект> - Сервер версии до 2.6 не может
 отменить выбор. Устройство остаётся в состоянии выбора до истечения
-собственного тайм-аута выбора.»)
+собственного тайм-аута выбора.») The message is a Client error: it is
+critical, sounds when the alarm tone is on, and stays in the panel until it
+is acknowledged. If the control window is closed while the Client is still
+waiting for the answer to the select ("Preparing to control..."), no message
+is given, although the device may stay selected.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

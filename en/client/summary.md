@@ -156,6 +156,19 @@ or the archive has none, the time before the first change is not counted.
 Earlier versions did not count the start of the interval before its first
 change, and left an interval without changes empty.
 
+> **Caution: with a 2.5.7 Server *Time Average* and *Time Integral* are not
+> computed.** A 2.5.7 Server cannot do the first and computes the second
+> wrongly (as a plain sum), so the Client leaves the cells of these
+> functions empty and shows the notice "Time Average: The Server does not
+> support this. It requires Server version 2.6 or later." (or the same for
+> *Time Integral*) above the summary. An empty cell here does not mean the
+> value did not change. Saved summary windows using *Sum* now compute *Time
+> Integral*, so with a 2.5.7 Server they are empty too. While the Client is
+> checking the Server's version right after the summary opens, these cells
+> can briefly show the 2.5.7 Server's wrong values: do not print or export
+> the summary until the notice appears. See
+> [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+
 Cell values are shown in the object's display format and engineering units.
 *Count* and *Time Integral* are plain numbers, without the object's units or
 format: the integral's unit is the engineering unit times a second.

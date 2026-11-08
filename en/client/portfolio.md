@@ -34,7 +34,9 @@ settings, not in the Server's configuration:
   [access rights]({{ '/en/dev/users/' | relative_url }}#access-rights), an
   account with no roles included, and for the
   "Telecontrol" server type; with the "OPC UA" type the profile, and the
-  portfolios with it, is kept on this computer only.
+  portfolios with it, is kept on this computer only. A 2.5.7 Server keeps no
+  profiles: portfolios stay on this computer, one set per account (see
+  [Shift handover]({{ '/en/client/' | relative_url }}#shift-change)).
 
 ## Create a portfolio
 

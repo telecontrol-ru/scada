@@ -110,6 +110,11 @@ warning "Old display runtime: bad values may not be marked" («Устаревш�
 модуль отображения мнемосхем: недостоверные значения могут не отмечаться») in
 its status bar while a schematic is open.
 
+An earlier-built module also draws open breakers, disconnectors and ground
+switches on binary Modus schematics (`.sde`) as closed while they have no
+value or are not bound. No warning covers this: the warning checks only
+quality marking, so a module that raises no warning may still draw them so.
+
 While a workstation has such a module, do not rely on the schematic to judge
 whether a value is reliable: check values and device positions in a
 [table]({{ '/en/client/table/' | relative_url }}) or in the inspector. Ask
