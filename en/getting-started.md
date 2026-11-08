@@ -413,9 +413,9 @@ when only the `scada` group can read the license it prints
    To keep the license elsewhere, give its path with `--license`; the file
    must be readable by the `scada` account and must not be under `/home`,
    `/root` or `/run/user` (the folder it was downloaded to, for example): the
-   services cannot see those folders, and `apply` and `migrate` refuse such a
+   services cannot see those folders, and `apply`, `start` and `migrate` refuse such a
    path. Every folder above the file must also be open to the `scada`
-   account; `apply` warns when it is not. `apply` and `migrate` likewise
+   account; `apply` and `start` warn when it is not. `apply`, `start` and `migrate` likewise
    refuse a data folder (`--data-root`) or an installation folder in those
    places, so unpack the `.tar.gz` archive into `/opt`, not a home folder.
 
@@ -500,9 +500,10 @@ The `scada` account stays after uninstalling, `apt purge` included; if it is
 no longer needed, delete it with `sudo userdel scada`.
 
 **Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
-folder**: the configuration, history, license and the file
-`/var/lib/scada/secrets/service-secrets.env`, which holds the `svc` and `root`
-passwords unencrypted, all stay. If the data is no longer needed, delete the
+folder**: the configuration, history and license stay. `apt purge` deletes
+only its `secrets` folder, with the file `service-secrets.env` that holds the
+`svc` and `root` passwords unencrypted; after `apt remove` that file stays
+too. If the data is no longer needed, delete the
 folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
 created in [Network preparation](#network).
 

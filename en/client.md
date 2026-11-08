@@ -540,9 +540,10 @@ interface: «Отмена выбора: &lt;объект&gt; - Сервер ве
 отменить выбор. Устройство остаётся в состоянии выбора до истечения
 собственного тайм-аута выбора.») The message is a Client error: it is
 critical, sounds when the alarm tone is on, and stays in the panel until it
-is acknowledged. If the control window is closed while the Client is still
-waiting for the answer to the select ("Preparing to control..."), no message
-is given, although the device may stay selected.
+is acknowledged. The message is also given when the control window was
+closed while the Client was still waiting for the answer to the select
+("Preparing to control...") and the device then accepted the select; if the
+select was refused, there is no message.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

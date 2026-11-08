@@ -288,7 +288,8 @@ servers over OPC DA (Classic OPC): the external servers' tags appear in the
 Server's address space and are bound to objects. The Server refuses the
 select of two-stage control on an OPC object, so set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on such
-objects. See [OPC client on Windows]({{ '/en/server/' | relative_url }}#opc-classic).
+objects. The Client sets No on new OPC objects by itself; check objects
+created by earlier Client versions. See [OPC client on Windows]({{ '/en/server/' | relative_url }}#opc-classic).
 
 ## Vidicon integration (Windows) {#vidicon}
 

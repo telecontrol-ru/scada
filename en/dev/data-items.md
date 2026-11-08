@@ -229,8 +229,8 @@ commands.</dd>
 stage. Default: Yes. The Client creates a new object with the value its
 device calls for — one at a time and with the
 <a href="#bulk-create">Multiple Create</a> wizard alike: No on objects that
-cannot be controlled in two stages (every object of a MODBUS device and the
-TIT (analog) objects of an IEC 60870-5 device, whose command is a set-point
+cannot be controlled in two stages (every object of a MODBUS device, OPC
+objects and the TIT (analog) objects of an IEC 60870-5 device, whose command is a set-point
 rather than <code>C_SC_NA_1</code>), Yes on the rest. The device is the one
 named by the Control channel, or by the Channel when no control channel is
 set; an object with no channel gets Yes.
@@ -240,11 +240,11 @@ to the new device's value. So a value set by hand is kept only when it
 differs from the old device's (Yes on a MODBUS object, say): Yes set by hand
 on an object with no channel becomes No when the object is bound to a MODBUS
 device, and No on a MODBUS object becomes Yes when it moves to an
-IEC 60870-5 single command. Moving a MODBUS object to an OPC or IEC 61850
-device also sets Yes — on OPC objects and IEC 61850 objects with direct
-control, set No yourself after the move. Objects created with a 2.5.7 or
-2.6.0 Client are not changed by themselves: check such MODBUS objects and
-IEC 60870-5 TIT objects and set No. The SELECT stage is sent only with the IEC 60870-5
+IEC 60870-5 single command. A move to an OPC device sets No, and on a move
+to an IEC 61850 device the value is kept: only the device knows whether the
+object selects. Objects created with a 2.5.7 or 2.6.0 Client are not changed
+by themselves: check such MODBUS, OPC and IEC 60870-5 TIT objects and set
+No. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing

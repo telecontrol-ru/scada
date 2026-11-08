@@ -155,7 +155,7 @@ Client take effect in every process.
   beginning with the drive letter): the processes receive the path as
   written. On Linux the file must be readable by the `scada` account and must
   not be under `/home`, `/root` or `/run/user`: the services cannot see
-  those folders, and `apply` and `migrate` refuse such a path.
+  those folders, and `apply`, `start` and `migrate` refuse such a path.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`; for `set-password`, the new password. It may be
@@ -203,7 +203,7 @@ Client take effect in every process.
   it defaults to the folder above the one holding `scada-setup.exe`. On
   Linux neither the data folder nor the installation folder may be under
   `/home`, `/root` or `/run/user`: the services cannot see those folders,
-  and `apply` and `migrate` refuse to run. So do not unpack the `.tar.gz`
+  and `apply`, `start` and `migrate` refuse to run. So do not unpack the `.tar.gz`
   archive into a home folder.
 
 * `--host-name <name>` — this computer's name in place of the Windows
