@@ -12,6 +12,14 @@ permalink: /protocols/
 
 Для всех протоколов предоставляется возможность наблюдения за обменом с устройством. Смотрите [Наблюдение]({{ '/client/device-watch/' | relative_url }}) и [Отладчик]({{ '/client/debugger/' | relative_url }}) в Клиенте ОИК.
 
+| Протокол | Процесс | Сбор данных с устройств | Передача данных другой системе |
+|:---|:---|:---|:---|
+| [MODBUS RTU, ASCII, TCP](#modbus) | `scada-modbus` | ведущий (master) | ведомое устройство (slave) — [ретрансляция по MODBUS]({{ '/dev/devices/' | relative_url }}#modbus-retransmission) |
+| [МЭК 60870-5-101, -104](#iec-60870) | `scada-iec104` | ведущий; для -101 также прослушивание линии | контролируемая станция — [ретрансляция в ДЦ]({{ '/dev/devices/' | relative_url }}#retransmission) |
+| [МЭК 61850](#iec-61850) | `scada-iec61850` | клиент | нет |
+| [OPC DA](#opc) (Windows) | `scada-opc` | клиент внешних OPC-серверов | нет |
+| OPC UA | `scada-proxy` | — | [сервер OPC UA для внешних систем]({{ '/server/' | relative_url }}#opcua), порт 4840 |
+
 ## MODBUS {#modbus}
 
 Modbus — коммуникационный протокол, основан на архитектуре ведущий-подчиненный (master-slave). Использует для передачи данных следующие интерфейсы: RS-485, RS-422, RS-232 (протоколы Modbus RTU/ASCII), а также интерфейс Ethernet сети TCP/IP (протокол Modbus TCP). ОИК поддерживает все три варианта: Modbus RTU, Modbus ASCII и Modbus TCP.

@@ -227,25 +227,31 @@ commands.</dd>
 <dd>Enables the IEC 60870 two-stage control workflow
 <code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
 stage. Default: Yes. The Client creates a new object with the value its
-device calls for — one at a time, with the
-<a href="#bulk-create">Multiple Create</a> wizard, or by dragging from an
-IEC 61850 device alike: No on objects that cannot be controlled in two stages
-(every object of a MODBUS device and the TIT (analog) objects of an
-IEC 60870-5 device, whose command is a set-point rather than
-<code>C_SC_NA_1</code>), Yes on the rest. The device is taken from the
-object's source; an object with no source gets Yes. When an object's source
-moves to another device and the value is still the one the Client would have
-set for the old device, the Client changes it to the new device's value; a
-value set by hand against the device (Yes on a MODBUS object, say) is kept.
-Objects created before the upgrade are not changed: set No yourself on such
-MODBUS objects and IEC 60870-5 TIT objects. The SELECT stage is sent only with the IEC 60870-5
+device calls for — one at a time and with the
+<a href="#bulk-create">Multiple Create</a> wizard alike: No on objects that
+cannot be controlled in two stages (every object of a MODBUS device and the
+TIT (analog) objects of an IEC 60870-5 device, whose command is a set-point
+rather than <code>C_SC_NA_1</code>), Yes on the rest. The device is the one
+named by the Control channel, or by the Channel when no control channel is
+set; an object with no channel gets Yes.
+When an object's channel moves to another device and the value still equals
+the one the Client would have set for the old device, the Client changes it
+to the new device's value. So a value set by hand is kept only when it
+differs from the old device's (Yes on a MODBUS object, say): Yes set by hand
+on an object with no channel becomes No when the object is bound to a MODBUS
+device, and No on a MODBUS object becomes Yes when it moves to an
+IEC 60870-5 single command. Moving a MODBUS object to an OPC or IEC 61850
+device also sets Yes — on OPC objects and IEC 61850 objects with direct
+control, set No yourself after the move. Objects created with a 2.5.7 or
+2.6.0 Client are not changed by themselves: check such MODBUS objects and
+IEC 60870-5 TIT objects and set No. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
 to the device, and the command is not executed — set No on such objects if
-they have Yes. The wizard leaves Yes on IEC 61850 objects: the Server learns
-the control model from the device itself, and the configuration does not hold
-it.
+they have Yes. The Client sets Yes on IEC 61850 objects however they are created,
+dragging from an IEC 61850 device included: the Server learns the control
+model from the device itself, and the configuration does not hold it.
 Set No if the device does not support select-before-operate.
 If the operator declines to execute after the select (answers no or closes
 the confirmation prompt), the Server releases the

@@ -116,7 +116,7 @@ Supported MODBUS function codes are described in
 
 MODBUS objects cannot be controlled in two stages: the Server refuses the
 select. Set [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control)
-to No on them. The Client sets No on new MODBUS objects by itself; check it on objects created before the upgrade to version 2.6.
+to No on them. The Client sets No on new MODBUS objects by itself; check it on objects created with a 2.5.7 or 2.6.0 Client.
 
 ### MODBUS direction parameters
 
@@ -595,18 +595,22 @@ to.
    the first rule. Gaps in the numbering are not filled, since they may be
    spares agreed with the DC. If the next address does not fit the Object
    address size in the direction's properties (up to 255 for 1 byte, up to
-   65,535 for 2 bytes), the rule gets the lowest free address instead.
+   65,535 for 2 bytes), the rule gets the lowest free address instead. On a
+   MODBUS device the next address takes the rules' widths into account: see
+   [MODBUS retransmission](#modbus-retransmission).
    Check the address against the one agreed with the DC and correct it in
    the Address column if needed.
 
-   If several rules of a device share an address, the Status column of each
-   reads "Duplicate address": the DC cannot tell apart objects sent under one
-   address, and a DC command to that address reaches only one of them. The
-   Server accepts such rules but writes a "Duplicate destination address"
-   warning for each repeat to the
+   If several rules of a device share an address or, on a MODBUS device,
+   their registers overlap, the Status column of each reads "Duplicate
+   address": the DC cannot tell apart objects sent under one address, and a
+   DC command to that address reaches only one of them. The Server accepts
+   such rules. A version 2.6 Server writes a "Duplicate destination address"
+   warning for each rule with exactly the same address to the
    [log]({{ '/en/server/' | relative_url }}#logging) of the process that
-   serves the receiving device (IEC 104 or MODBUS). Correct the addresses
-   yourself.
+   serves the receiving device (IEC 104 or MODBUS); it does not warn about
+   overlapping registers, and a 2.5.7 Server writes no such warning at all.
+   Correct the addresses yourself.
 
    Many rules with consecutive addresses are easier to create at once: open
    a [Table]({{ '/en/client/table/' | relative_url }}) (or a summary, a

@@ -16,6 +16,14 @@ through the
 [Debugger]({{ '/en/client/debugger/' | relative_url }}) tools in the
 Client.
 
+| Protocol | Process | Collecting data from devices | Serving data to another system |
+|:---|:---|:---|:---|
+| [MODBUS RTU, ASCII, TCP](#modbus) | `scada-modbus` | master | slave — [MODBUS retransmission]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission) |
+| [IEC 60870-5-101, -104](#iec-60870) | `scada-iec104` | master; for -101 also listening on a line | controlled station — [retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission) |
+| [IEC 61850](#iec-61850) | `scada-iec61850` | client | no |
+| [OPC DA](#opc) (Windows) | `scada-opc` | client of external OPC servers | no |
+| OPC UA | `scada-proxy` | — | [OPC UA server for external systems]({{ '/en/server/' | relative_url }}#opcua), port 4840 |
+
 ## MODBUS {#modbus}
 
 MODBUS is a master-slave communication protocol. Telecontrol SCADA

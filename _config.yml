@@ -48,9 +48,13 @@ gh_edit_repository: "https://github.com/telecontrol-ru/scada"
 gh_edit_branch: "main"
 gh_edit_view_mode: "tree"
 
-# Top-right aux link.
+# Top-right aux links. The first is where the Client packages are
+# downloaded (the releases of the Client repository); the second is this
+# manual's own source. Labels are shown on both language versions.
 aux_links:
-  "GitHub":
+  "Releases":
+    - "https://github.com/alexsmn/scada-client/releases"
+  "Manual on GitHub":
     - "https://github.com/telecontrol-ru/scada"
 aux_links_new_tab: true
 
