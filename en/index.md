@@ -12,7 +12,7 @@ permalink: /en/
 > have been published for version 2.6 so far: the Windows Server installer and the
 > Linux Server packages will be added later, and until then the version 2.6
 > Server cannot be installed
-> ([Download]({{ '/en/getting-started/' | relative_url }}#download)). So the 2.6 Client
+> ([Download]({{ '/en/getting-started/' | relative_url }}#download); what can be bought and installed today is under [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)). So the 2.6 Client
 > can today connect only to a 2.5.7 Server — from release 2.6.3 on, and
 > without every version 2.6 capability; the 2.6 Client has not yet been tried
 > against a working 2.5.7 Server
