@@ -1215,16 +1215,19 @@ The processes connect to each other encrypted (the Basic256Sha256 policy,
 Sign & Encrypt mode) as the [`svc`](#svc) account. Each process other than
 `scada-config` accepts only computers whose certificate was issued by the
 [site's certificate authority](#opcua-site-ca) or moved into the `trusted`
-folder, and registration with `scada-proxy` is accepted only over such a
-connection. `scada-config` (port 4841) accepts a secure connection with any
+folder. `scada-config` (port 4841) accepts a secure connection with any
 certificate, because a computer joining the site reaches it before it has a
 certificate of its own. But it gives nothing without a sign-in, and it issues
-a site certificate only to an account holding the `ConfigureAdmin` or
-`SecurityAdmin` role — `svc`, `root` or a user with the Configure right; give
-those roles only to people you trust to join computers to the site.
-`scada-config` accepts a process's registration only from a computer whose
-certificate the site's certificate authority issued or which was moved into
-the `trusted` folder. No process accepts unsecured connections (policy None) or
+a site certificate to the `svc` account only: no user — not `root`, not an
+administrator, not a user with the Configure right — can obtain one, and the
+Client cannot give that right to anyone. So joining a computer to the site
+takes the `svc` password; keep it as you keep the `root` password.
+
+A Server process may register with `scada-proxy` and `scada-config` — and
+`scada-proxy` then treats it as one of the site's processes — only when it
+connects with a certificate the [site's certificate authority](#opcua-site-ca)
+issued, and only under a name that certificate carries. A certificate moved
+into the `trusted` folder lets a system connect, never register. No process accepts unsecured connections (policy None) or
 anonymous sign-in, `scada-proxy`'s port 4840 included, which is where
 external systems connect — unless `apply` on the computer with `scada-proxy`
 was run with `--allow-anonymous-opcua` (see
@@ -1284,15 +1287,15 @@ without `--insecure-links`) that port accepts only secured connections
    certificates when it starts. The restart briefly cuts the Clients off the
    Server.
 
-**WARNING:** a certificate in the `trusted` folder gives the system more than
-read access. Every process of the computer trusts that folder, so a system
-with such a certificate can also register with `scada-proxy` and
-`scada-config` as a Server process — and `scada-proxy` will then treat it as
-one of the site's processes. Move into `trusted` only the certificates of
-systems you trust as much as the Server's computers; in the firewall, open
-only port 4840 to such a system, from its address only, and keep port 4841
-closed to it; remove its certificate from `trusted` once the system no longer
-connects.
+**WARNING:** every process of the computer trusts the `trusted` folder, so a
+system with a certificate there can open a secure connection to any of them,
+not only to port 4840 — what it may then do is decided by the user it signs in
+as. It cannot register with `scada-proxy` or `scada-config` as a Server
+process: they accept that only from a certificate the site's certificate
+authority issued. Move into `trusted` only the certificates of systems you
+mean to let in; in the firewall, open only port 4840 to such a system, from
+its address only; remove its certificate from `trusted` once the system no
+longer connects.
 
 If the system can do neither encryption nor sign-in with a user name — as
 many systems that connected to a 2.5 Server cannot — run `apply` on the
@@ -1338,10 +1341,16 @@ and `ServerPrivateKey.pem`. The installer does not contain these files —
 One pair serves every process on the computer. `apply` replaces existing
 files only to get off a self-signed pair once the site's certificate
 authority can issue one: it keeps the old files beside the new ones, as
-`ServerCertificate.pem.self-signed` and `ServerPrivateKey.pem.self-signed`. When a process that the certificate does not list is enabled after the
-pair was created, `apply` prints a warning naming its identifier: third-party
-OPC UA clients that check the certificate may refuse to connect to that
-process. When only one of the two files exists, `apply` stops and names the
+`ServerCertificate.pem.self-signed` and `ServerPrivateKey.pem.self-signed`.
+When a process that the certificate does not list is enabled after the pair
+was created, `apply` gets a new certificate from the site's certificate
+authority that lists it, and keeps the old files beside the new ones as
+`ServerCertificate.pem.previous-uris` and `ServerPrivateKey.pem.previous-uris`:
+`scada-proxy` and `scada-config` accept a process's registration only under an
+identifier its certificate lists. Where no certificate authority can issue
+one (a site set up with `--insecure-links`), `apply` instead prints a warning
+naming the identifier: that process cannot register, and third-party OPC UA
+clients that check the certificate may refuse to connect to it. When only one of the two files exists, `apply` stops and names the
 missing one.
 
 **To replace the certificate** — to issue a new one, include processes added
@@ -1418,11 +1427,12 @@ the `trusted` folder: its `opcua` block names the `issuer`, `trusted` and
 `rejected` folders under `data\Certificates`. `scada-config` accepts any
 client certificate, because a computer joining the site connects to it
 before it has a certificate of its own; everything `scada-config` serves
-requires a sign-in, it issues a site certificate only to an account holding
-the `ConfigureAdmin` or `SecurityAdmin` role, and it accepts a process's
-registration only over a connection whose certificate these same folders
-trust (the `opcua.register_trust` block): one the site's certificate
-authority issued or one moved into the `trusted` folder. The folders are:
+requires a sign-in, and it issues a site certificate only to the `svc`
+account. `scada-config` and `scada-proxy` accept a process's registration
+only over a connection whose certificate the site's certificate authority
+issued — the `opcua.register_trust` block names the `issuer` folder and not
+`trusted` — and only under an identifier (ApplicationUri) that certificate
+lists. The folders are:
 
 | Parameter | Description |
 |---|---|
