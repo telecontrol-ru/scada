@@ -215,17 +215,15 @@ Client take effect in every process.
   certificate, and it is the name a link's Computer property gives (see
   [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
 
-**`scada-setup` remembers only the license path and, on Linux, the data
-folder.** It does not remember the other options. Write down each computer's
+**`scada-setup` remembers only the license path and the data folder.** It does not remember the other options. Write down each computer's
 `--tiers`, `--central`, `--advertise`, `--license`, the central computer's
 fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
 `--assigned-links-only`, `--insecure-links`, `--allow-anonymous-opcua` and
 `--data-root` at installation, and give them to every `apply` on it (and
 `--tiers` to every `start`; `start` does not need `--central`), upgrades and
-restores included (on Linux, `start`, `status`, `stop`, `remove` and
+restores included (`start`, `status`, `stop`, `remove` and
 `set-password` without `--data-root` take the data folder from the installed
-services; on Windows, give a non-standard data folder to `status`, `start`,
-`set-password` and `remove --purge-data` too):
+services):
 
 * `start` without `--tiers` takes every process in the license, starts those
   whose services the computer has, and prints
@@ -1207,9 +1205,8 @@ command prompt:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --svc-password <new password>
 ```
 
-If the data folder is not the standard one, on Windows add
-`--data-root <folder>`: without it the command writes the password into the
-default folder and points the services at that file.
+The command finds the data folder from the installed services, so
+`--data-root` is not needed.
 
 **Run it on every Server computer, in this order:**
 

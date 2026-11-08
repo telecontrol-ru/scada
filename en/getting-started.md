@@ -265,8 +265,8 @@ in [Installing the Client](#client-install).
 
 ### The computer's parameters {#host-parameters}
 
-`scada-setup` remembers only the license file path and, on Linux, the data
-folder; it does not remember the other options. **Write down, for each
+`scada-setup` remembers only the license file path and the data folder; it
+does not remember the other options. **Write down, for each
 computer,** and keep with the passwords:
 
 * `--tiers` — this computer's processes;
@@ -319,10 +319,8 @@ included:
 the computer has, so they need no `--tiers` or `--central`. Without
 `--license`, `status` and `start` check the license file whose path `apply`
 wrote into the processes' parameter files, so `--license` need not be given
-again. On Windows, give a non-standard data folder with `--data-root` to
-`status`, `start`, `set-password` and `remove --purge-data` as well:
-without it these commands work on the default folder, and `set-password`,
-for one, writes the passwords there and points the services at that file.
+again. Likewise they take a non-standard data folder from the installed
+services, so `--data-root` need not be given again either.
 
 **If `apply` was run without `--tiers`** and installed processes that do not
 belong, remove their services (the processes' data stays):
@@ -516,8 +514,7 @@ central computer prints it (see
 `data/Certificates` folder, the certificate authority included — uninstall
 that way only when the computer leaves the site for good. For an archive
 installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
-then delete the `/opt/telecontrol-scada` and `/etc/scada` folders (in the
-latter `scada-setup` records the data folder); on the central computer, if
+then delete the `/opt/telecontrol-scada` folder; on the central computer, if
 the program will be installed again, first save the `data/Certificates/ca`
 subfolder and put it back before `apply` (see
 [A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
