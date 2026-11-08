@@ -244,12 +244,21 @@ IEC 60870-5 single command. A move to an OPC device sets No, and on a move
 to an IEC 61850 device the value is kept: only the device knows whether the
 object selects. Objects created with a 2.5.7 or 2.6.0 Client are not changed
 by themselves: check such MODBUS, OPC and IEC 60870-5 TIT objects and set
-No. The SELECT stage is sent only with the IEC 60870-5
+No — now, before the Server is upgraded (see below how a 2.5.7 Server
+behaves). The Client does not take a command type override in the control
+channel (<code>INT16:</code>, <code>FLOAT:</code>, <code>BOOL:</code>, see
+<a href="{{ '/en/protocols/' | relative_url }}#iec-60870">IEC 60870-5</a>) into
+account: on an object with <code>INT16:</code> or <code>FLOAT:</code>, set No
+by hand. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
 to the device, and the command is not executed — set No on such objects if
-they have Yes. The Client sets Yes on IEC 61850 objects however they are created,
+they have Yes. That is a 2.6 Server's answer; a 2.5.7 Server confirms the
+select of such objects without asking the device, and on a declined command
+Client 2.6.3 then reports that the device stays selected although nothing
+was selected (see <a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage
+control</a>). The Client sets Yes on IEC 61850 objects however they are created,
 dragging from an IEC 61850 device included: the Server learns the control
 model from the device itself, and the configuration does not hold it.
 Set No if the device does not support select-before-operate.

@@ -125,7 +125,12 @@ an open breaker. When the table defines no colour, or a transparent one, the
 breaker is filled bright green when closed and red when open. Each device
 takes its colours from the rows of its own object type: a separator from the
 separator's rows (closed and open), not the breaker's, and also falls back to
-bright green and red; its symbol's lines take the position colour too.
+bright green and red; its symbol's lines take the position colour too. A
+separator given a voltage class on the schematic is drawn in that voltage's
+colour, as the Modus graphics editor draws it, and does not show its position
+by colour; read such a separator's position in a table or the Inspector. The
+separator's colouring needs the next build of the display module (see
+[A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 ![]({{ '/img/modus-f11-bus.png' | relative_url }})
 

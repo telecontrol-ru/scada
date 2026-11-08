@@ -22,6 +22,7 @@ Client.
 | [IEC 60870-5-101, -104](#iec-60870) | `scada-iec104` | master; for -101 also listening on a line | controlled station — [retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission) |
 | [IEC 61850](#iec-61850) | `scada-iec61850` | client | no |
 | [OPC DA](#opc) (Windows) | `scada-opc` | client of external OPC servers | no |
+| [Vidicon](#vidicon) (Windows) | `scada-vidicon` | the objects of a Vidicon SCADA project, through its OPC server | no |
 | OPC UA | `scada-proxy` | — | [OPC UA server for external systems]({{ '/en/server/' | relative_url }}#opcua), port 4840 |
 
 ## MODBUS {#modbus}
@@ -150,6 +151,12 @@ The ASDU type can be overridden in the output field with the format
 
 This override is useful when a measured object must be controlled with
 `C_SC_NA_1` instead of the default measured-value command ASDU.
+
+The Client chooses "Two-stage control" by the object's type, not by the
+override: on a TS object controlled through an `INT16:` or `FLOAT:` override,
+set it to No by hand, or the Server refuses the select; a TIT object with a
+`BOOL:` override gets No from the Client, although `C_SC_NA_1` can also be
+executed in two stages.
 
 When UDP server mode is used, multiple remote devices can share one
 direction. Devices are identified by the remote IP address and port, so

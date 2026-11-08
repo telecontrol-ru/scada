@@ -606,7 +606,8 @@ to.
    address": the DC cannot tell apart objects sent under one address, and a
    DC command to that address reaches only one of them. The Server accepts
    such rules. A version 2.6 Server writes a "Duplicate destination address"
-   warning for each rule with exactly the same address to the
+   warning for every further rule that takes an address already in use (not
+   for the first of them; a rule with no source is not checked) to the
    [log]({{ '/en/server/' | relative_url }}#logging) of the process that
    serves the receiving device (IEC 104 or MODBUS); it does not warn about
    overlapping registers, and a 2.5.7 Server writes no such warning at all.
