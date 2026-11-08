@@ -151,8 +151,9 @@ Client take effect in every process.
 * `--license <path>` — the license file; default `license.json` in the data
   folder (`%ProgramData%\Telecontrol\SCADA Server\license.json`; on Linux
   `/var/lib/scada/license.json`). `apply`, `start`, `migrate` and `status`
-  check it: if the license file is elsewhere, give `--license` to `status`
-  too, or it prints `License: not available`. Give a full path (on Windows,
+  check it. Without `--license`, `start` and `status` check the file whose
+  path `apply` wrote into the processes' parameter files, so `--license` is
+  needed only by `apply` and `migrate`. Give a full path (on Windows,
   beginning with the drive letter): the processes receive the path as
   written. On Linux the file must be readable by the `scada` account and must
   not be under `/home`, `/root` or `/run/user`: the services cannot see
@@ -161,8 +162,9 @@ Client take effect in every process.
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`; for `set-password`, the new password. It may be
   at most 64 bytes long, or `scada-setup` refuses to run: a Latin letter or
-  digit takes one byte and a Cyrillic letter two, so a password of Cyrillic
-  letters only may be at most 32 characters.
+  digit takes one byte and a Cyrillic letter two (passwords are stored in
+  UTF-8 on Windows and Linux alike), so a password of Cyrillic letters only
+  may be at most 32 characters.
 * `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
   environment variable) — the [root password](#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config` or
@@ -216,9 +218,11 @@ Client take effect in every process.
 `--tiers`, `--central`, `--advertise`, `--license`, the central computer's
 fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
 `--assigned-links-only`, `--insecure-links`, `--allow-anonymous-opcua` and
-`--data-root` at installation, and give them to every `apply` on it (and `--tiers` and
-`--license` to every `start`; `start` does not need `--central`), upgrades
-and restores included:
+`--data-root` at installation, and give them to every `apply` on it (and
+`--tiers` to every `start`; `start` does not need `--central`), upgrades and
+restores included (on Linux, `start`, `status`, `stop`, `remove` and
+`set-password` without `--data-root` take the data folder from the installed
+services):
 
 * `start` without `--tiers` takes every process in the license, starts those
   whose services the computer has, and prints
@@ -1701,7 +1705,7 @@ running databases may be inconsistent. From an elevated command prompt:
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
 rem copy %ProgramData%\Telecontrol\SCADA Server
 rem and C:\Program Files\Telecontrol SCADA\data\Certificates
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
 ```
 
 A restore also needs the `svc` password, the `root` password, and the

@@ -305,12 +305,10 @@ rem Компьютер с процессами протокольного уро
 
 Команды `stop`, `status` и `remove` без `--tiers` действуют на все службы
 Сервера, которые есть на компьютере, поэтому `--tiers` и `--central` им
-указывать не нужно. Но `status` проверяет лицензию по пути
-`<папка данных>\license.json` (по умолчанию
-`%ProgramData%\Telecontrol\SCADA Server\license.json`): если файл лицензии
-лежит в другом месте, укажите ему `--license` (и `--data-root`, если папка
-данных не стандартная), иначе он выведет `License: not available` вместо
-сведений о лицензии.
+указывать не нужно. `status` и `start` без `--license` проверяют файл
+лицензии, путь к которому `apply` записал в параметры процессов, поэтому
+`--license` им повторять не нужно (под Windows укажите `--data-root`, если
+папка данных не стандартная).
 
 **Если `apply` был выполнен без `--tiers`** и установил лишние процессы,
 удалите их службы (данные процессов при этом остаются):
@@ -518,11 +516,14 @@ remove`, затем удалите папку `/opt/telecontrol-scada`; на ц�
 **Ни `apt remove`, ни `apt purge` не удаляют папку данных `/var/lib/scada`**
 — в ней остаются конфигурация, архивы и лицензия. `apt purge` удаляет из нее
 только папку `secrets` с файлом `service-secrets.env`, где пароли `svc` и
-`root` хранятся в незашифрованном виде; после `apt remove` остается и он.
-`apt purge` знает только папку `/var/lib/scada`: если данные хранились в
-другой папке (`--data-root`) или программа была установлена из архива
-(`scada-setup remove` и удаление папки установки), папка `secrets` остается —
-удалите `<папка данных>/secrets` вручную.
+`root` хранятся в незашифрованном виде, — и в папке, заданной при установке
+параметром `--data-root`, тоже: `scada-setup` запоминает ее в файле
+`/etc/scada/data-root`. После `apt remove` файл с паролями остается. Папку
+`secrets` удалите вручную (`<папка данных>/secrets`), если программа была
+установлена из архива (`scada-setup remove` и удаление папки установки), а
+также если на компьютере с папкой данных, отличной от `/var/lib/scada`, ни
+разу не выполнялись `apply` или `remove` текущей версии — тогда записи о
+папке нет.
 Если данные больше не нужны, удалите папку командой
 `sudo rm -rf /var/lib/scada`, а также удалите правила брандмауэра, созданные
 в разделе [Настройка сети](#network).
@@ -574,11 +575,16 @@ sudo mv -f /var/lib/scada/license.new /var/lib/scada/license.json
 [параметрами компьютера](#host-parameters):
 
 ```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <процессы этого компьютера> [--license <путь>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <процессы этого компьютера>
 ```
 
+Если лицензия при установке была указана параметром `--license` в другом
+месте, заменяйте файл по тому же пути: `start` и `status` проверяют файл,
+путь к которому записан в параметрах процессов, и повторять `--license` не
+нужно.
+
 ```sh
-sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <процессы этого компьютера> [--license <путь>]
+sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <процессы этого компьютера>
 ```
 
 Если на этом компьютере нет `scada-proxy` (только процессы протокольного уровня), больше ничего перезапускать не нужно: объекты его процессов сами снова обновляются и архивируются — смотрите [Перезапуск процесса протокольного уровня]({{ '/server/' | relative_url }}#edge-restart).
@@ -836,7 +842,7 @@ sudo ufw allow proto tcp from 10.0.0.10 to any port 4843,4844
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <процессы этого компьютера> [--license <путь>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <процессы этого компьютера>
 ```
 
 Для диагностики процесс может быть запущен в

@@ -304,12 +304,11 @@ the passwords to `apply`), upgrades and restores included:
   path does not lead them to the same file.
 
 `stop`, `status` and `remove` without `--tiers` act on every Server service
-the computer has, so they need no `--tiers` or `--central`. `status`,
-however, checks the license at `<data folder>\license.json` (by default
-`%ProgramData%\Telecontrol\SCADA Server\license.json`): if the license file
-is elsewhere, give it `--license` (and `--data-root` if the data folder is
-not the standard one), or it prints `License: not available` instead of the
-license details.
+the computer has, so they need no `--tiers` or `--central`. Without
+`--license`, `status` and `start` check the license file whose path `apply`
+wrote into the processes' parameter files, so `--license` need not be given
+again (on Windows, give `--data-root` if the data folder is not the standard
+one).
 
 **If `apply` was run without `--tiers`** and installed processes that do not
 belong, remove their services (the processes' data stays):
@@ -513,11 +512,14 @@ no longer needed, delete it with `sudo userdel scada`.
 **Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
 folder**: the configuration, history and license stay. `apt purge` deletes
 only its `secrets` folder, with the file `service-secrets.env` that holds the
-`svc` and `root` passwords unencrypted; after `apt remove` that file stays
-too. `apt purge` knows only `/var/lib/scada`: if the data was kept in
-another folder (`--data-root`) or the program was installed from the archive
-(`scada-setup remove` and deleting the installation folder), the `secrets`
-folder stays — delete `<data folder>/secrets` by hand. If the data is no longer needed, delete the
+`svc` and `root` passwords unencrypted — also in a data folder chosen with
+`--data-root`, which `scada-setup` records in `/etc/scada/data-root`. After
+`apt remove` that file stays. Delete the `secrets` folder
+(`<data folder>/secrets`) by hand if the program was installed from the
+archive (`scada-setup remove` and deleting the installation folder), or if
+the data folder is not `/var/lib/scada` and no `apply` or `remove` of the
+current version has run on the computer, which leaves no record of it. If
+the data is no longer needed, delete the
 folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
 created in [Network preparation](#network).
 
@@ -568,11 +570,15 @@ service: once the file is in place, start the processes with `start` and the
 [computer's parameters](#host-parameters):
 
 ```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
 ```
 
+If the license was given with `--license` elsewhere at installation,
+replace the file at that path: `start` and `status` check the file named in
+the processes' parameter files, so `--license` need not be given again.
+
 ```sh
-sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's processes> [--license <path>]
+sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's processes>
 ```
 
 If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
@@ -817,7 +823,7 @@ order; `start` only with the [computer's parameters](#host-parameters):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
 ```
 
 For diagnostics, a process can be started in

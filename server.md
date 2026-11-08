@@ -141,8 +141,9 @@ permalink: /server/
 * `--license <путь>` — файл лицензии; по умолчанию `license.json` в папке
   данных (`%ProgramData%\Telecontrol\SCADA Server\license.json`, под Linux —
   `/var/lib/scada/license.json`). Его проверяют `apply`, `start`, `migrate`
-  и `status`: если файл лицензии лежит в другом месте, указывайте
-  `--license` и в `status`, иначе он выводит `License: not available`.
+  и `status`. `start` и `status` без `--license` проверяют файл, путь к
+  которому `apply` записал в параметры процессов, поэтому указывать
+  `--license` нужно только в `apply` и `migrate`.
   Указывайте полный путь (под Windows — начиная с буквы диска): процессы
   получают путь так, как он записан. Под Linux файл должен быть доступен на
   чтение учетной записи `scada` и не должен лежать в `/home`, `/root` или
@@ -153,7 +154,8 @@ permalink: /server/
   обязателен для `apply` и `migrate --execute`; в `set-password` — новый
   пароль. Длина пароля — не больше 64 байт, иначе `scada-setup` отказывается
   работать: латинская буква или цифра занимает один байт, а русская буква —
-  два, поэтому пароль из одних русских букв — не длиннее 32 знаков.
+  два (пароли сохраняются в кодировке UTF-8 и под Windows, и под Linux),
+  поэтому пароль из одних русских букв — не длиннее 32 знаков.
 * `--root-password <пароль>` (или переменная окружения
   `SCADA_SETUP_ROOT_PASSWORD`) — [пароль root](#root-password), обязателен
   для `apply` и `migrate --execute` на компьютере с `scada-config` или
@@ -209,8 +211,10 @@ permalink: /server/
 `--assigned-links-only`, `--insecure-links`, `--allow-anonymous-opcua` и
 `--data-root` каждого
 компьютера при установке и указывайте их
-в каждой команде `apply` (а `--tiers` и `--license` — и в `start`;
-`--central` команде `start` не нужен) на нем, в том числе при обновлении и восстановлении:
+в каждой команде `apply` (а `--tiers` — и в `start`; `--central` команде
+`start` не нужен) на нем, в том числе при обновлении и восстановлении (под
+Linux `start`, `status`, `stop`, `remove` и `set-password` без `--data-root`
+берут папку данных из установленных служб):
 
 * `start` без `--tiers` берет все процессы из лицензии, запускает те, службы
   которых есть на компьютере, и про остальные выводит
@@ -1646,7 +1650,7 @@ CA`, оставляет сертификат этого компьютера и 
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
 rem скопируйте %ProgramData%\Telecontrol\SCADA Server
 rem и C:\Program Files\Telecontrol SCADA\data\Certificates
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <процессы этого компьютера> [--license <путь>]
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <процессы этого компьютера>
 ```
 
 Для восстановления понадобятся также пароль `svc`, пароль `root` и
