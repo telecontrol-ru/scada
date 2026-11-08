@@ -39,6 +39,12 @@ the Windows Server installer `telecontrol-scada-<version>.msi` and the Linux Ser
 packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
 Server installation steps on this page cannot be followed.
 
+So today the 2.6.2 Client is installed on workstations that work with a
+2.5.7 Server. What works in that combination and what does not is listed
+under [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+**Do not use the 2.6.0 Client with a 2.5.7 Server:** it lacks the support
+for a 2.5.7 Server, and two-stage control of objects does not work with it.
+
 **WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
 earlier install the Server as a single *Telecontrol SCADA Server* service and
 do not contain the separate 2.6 processes. The earlier rules apply to them: the
@@ -107,7 +113,9 @@ nobody serves those links.
 
 ## Installation on Windows
 
-One installer carries every Server process and the `scada-setup` tool. You
+The Server installer is meant to carry every Server process and the
+`scada-setup` tool; it is not published for version 2.6 yet (see
+[Download](#download)). You
 choose which processes run on a computer with the `--tiers` option; the
 license decides which of them are allowed.
 
@@ -298,7 +306,7 @@ belong, remove their services (the processes' data stays):
 ### Installing the Client {#client-install}
 
 The [releases page](#download) carries two Client packages of the same
-version with every release:
+version with every version 2.6 release:
 
 * **`Telecontrol-SCADA-Client-<version>-windows-x64.zip`** — for Windows 10
   or newer. Unzip it into any folder and run `client.exe`. The program is not
@@ -386,8 +394,18 @@ Run every command as `root` (with `sudo`; `status` does not need it).
    ```
 
 2. Put the license file at `/var/lib/scada/license.json`, readable by
-   everyone (`sudo chmod 0644 /var/lib/scada/license.json`): the processes
-   read it as the `scada` account.
+   everyone: the processes read it as the `scada` account. The
+   `/var/lib/scada` folder does not exist yet after the package is
+   installed, so create it:
+
+   ```sh
+   sudo mkdir -p /var/lib/scada
+   sudo install -m 0644 license.json /var/lib/scada/license.json
+   ```
+
+   To keep the license elsewhere, give its path with `--license`; the file
+   must be readable by the `scada` account and must not be under `/home`,
+   `/root` or `/run/user`, which the services cannot see.
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
@@ -409,7 +427,12 @@ only the locations differ:
 * every process runs as a systemd service `scada-<process>.service` (for
   example `scada-config.service`) that `apply` creates; the services start
   at boot, are restarted after a failure, and run as the system account
-  `scada`, which the package (or, after the archive, `apply`) creates;
+  `scada`, which the package (or, after the archive, `apply`) creates. The
+  `scada` account is in the `dialout` group, which owns the serial ports; if
+  an RS-485 adapter belongs to another group, add `scada` to it
+  (`sudo usermod -aG <group> scada`) and restart the services. The protocol
+  processes may listen on ports below 1024 (for example port 502 for
+  MODBUS TCP retransmission);
 * the `svc` and `root` passwords are kept in the file
   `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
   (see [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords));
@@ -457,6 +480,8 @@ then delete the `/opt/telecontrol-scada` folder; on the central computer, if
 the program will be installed again, first save the `data/Certificates/ca`
 subfolder and put it back before `apply` (see
 [A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
+The `scada` account stays after uninstalling, `apt purge` included; if it is
+no longer needed, delete it with `sudo userdel scada`.
 
 ## License {#license}
 
@@ -490,14 +515,26 @@ copy new-license.json "%ProgramData%\Telecontrol\SCADA Server\license.new"
 move /y "%ProgramData%\Telecontrol\SCADA Server\license.new" "%ProgramData%\Telecontrol\SCADA Server\license.json"
 ```
 
+On Linux the new file must be readable by the `scada` account:
+
+```sh
+sudo install -m 0644 new-license.json /var/lib/scada/license.new
+sudo mv -f /var/lib/scada/license.new /var/lib/scada/license.json
+```
+
 **WARNING:** if the file is missing or only partly written when a process
-checks it (for example while it is being copied over the old one), the
-process concludes there is no license and stops. Windows does not restart
-such a service: once the file is in place, start the processes with `start`
-and the [computer's parameters](#host-parameters):
+checks it (for example while it is being copied over the old one), or on
+Linux is not readable by the `scada` account, the process concludes there is
+no license and stops. Neither Windows nor systemd on Linux restarts such a
+service: once the file is in place, start the processes with `start` and the
+[computer's parameters](#host-parameters):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes> [--license <path>]
+```
+
+```sh
+sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's processes> [--license <path>]
 ```
 
 If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
@@ -601,13 +638,14 @@ The processes connect to each other encrypted and accept only the computers
 whose certificate the site's certificate authority issued (see
 [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
 `scada-config` accepts a connection with any computer's certificate, so that
-a new computer can join the site. It issues a site certificate only after a
-sign-in as an account holding the `ConfigureAdmin` or `SecurityAdmin` role —
-`svc`, `root` or a user with the Configure right — so give those roles only
-to people you trust to join computers to the site. `scada-config` accepts a
-process's registration only from a computer whose certificate the site
-certificate authority issued or which was moved into the trusted
-certificates folder. If an external OPC UA system must connect to the Server, allow it
+a new computer can join the site. It issues a site certificate to the `svc`
+account only: neither `root` nor a user with the Configure right can obtain
+one, and the Client cannot give that right. So joining a computer to the site
+takes the `svc` password; keep it as you keep the `root` password.
+`scada-config` and `scada-proxy` accept a process's registration only over a
+certificate the site certificate authority issued, and only under a name
+that certificate carries; a certificate moved into the `trusted` folder lets
+a system connect, never register. If an external OPC UA system must connect to the Server, allow it
 port 4840 from its address only: that port accepts only secured connections
 that sign in with a user name, and unsecured connections and anonymous
 sign-in only with the `--allow-anonymous-opcua` option (see

@@ -22,9 +22,11 @@ The main data flow is:
 1. The historian (`scada-historian`) archives value changes and system events.
 1. Clients display live and historical information and send control commands back to the Server.
 
+The Server can also provide data to external systems over [OPC UA]({{ '/en/server/' | relative_url }}#opcua) and receive data from external [OPC servers]({{ '/en/server/' | relative_url }}#opc-classic).
+
 ## Server processes {#tiers}
 
-The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (on Linux, as its own systemd service `scada-<process>.service`; see [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)), reads its own parameter file, and is purchased separately: one installer carries every process, and the license names the ones purchased for the site.
+The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (on Linux, as its own systemd service `scada-<process>.service`; see [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)), reads its own parameter file, and is purchased separately: one Server installer is meant to carry every process (it is not published for version 2.6 yet; see [Download]({{ '/en/getting-started/' | relative_url }}#download)), and the license names the ones purchased for the site.
 
 | Process | Windows service | Role |
 |:---|:---|:---|
@@ -378,8 +380,9 @@ devices or users; the demo project is installed on request — see
 Configuration is edited with the built-in engineering tools, and
 requires the *Configure* right.
 
-The built-in `root` account has all rights and always exists,
-whatever the configuration contains.
+The built-in `root` account has every user right and always exists,
+whatever the configuration contains. It cannot obtain a site certificate to
+join a computer: only the [`svc`]({{ '/en/server/' | relative_url }}#svc) account can.
 
 **WARNING:** while no root password is configured, the Server accepts
 `root` with an empty password. `scada-setup apply` sets it

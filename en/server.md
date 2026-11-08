@@ -10,7 +10,7 @@ permalink: /en/server/
 * TOC
 {:toc}
 
-The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux (see [Linux deployment](#linux)).
+The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux, as system services or in console mode (see [Linux deployment](#linux)).
 
 The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
 
@@ -144,11 +144,14 @@ Client take effect in every process.
   use to reach it: they check it against the central computer's
   certificate, and refuse to connect when it is not there.
 * `--license <path>` — the license file; default `license.json` in the data
-  folder (`%ProgramData%\Telecontrol\SCADA Server\license.json`). `apply`,
-  `start`, `migrate` and `status` check it: if the license file is
-  elsewhere, give `--license` to `status` too, or it prints
-  `License: not available`. Give a full path, beginning with the drive
-  letter: the processes receive the path as written.
+  folder (`%ProgramData%\Telecontrol\SCADA Server\license.json`; on Linux
+  `/var/lib/scada/license.json`). `apply`, `start`, `migrate` and `status`
+  check it: if the license file is elsewhere, give `--license` to `status`
+  too, or it prints `License: not available`. Give a full path (on Windows,
+  beginning with the drive letter): the processes receive the path as
+  written. On Linux the file must be readable by the `scada` account and must
+  not be under `/home`, `/root` or `/run/user`, which the services cannot
+  see.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`; for `set-password`, the new password. It may be
@@ -786,7 +789,7 @@ The settings live in the `license` block of the parameter file:
 |---|---|---|
 | `file` | `license.json` | Path to the license file. A relative path resolves against the process's working directory, so an absolute path is safer. When the parameter is absent, the `SCADA_SERVER_LICENSE_FILE` environment variable is used |
 
-Parameter files written by [`scada-setup`](#scada-setup) already carry the path `%ProgramData%\Telecontrol\SCADA Server\license.json` (or the one given with `--license`).
+Parameter files written by [`scada-setup`](#scada-setup) already carry the path `%ProgramData%\Telecontrol\SCADA Server\license.json` (on Linux `/var/lib/scada/license.json`; or the one given with `--license`).
 
 A license issued for a Google Cloud virtual machine verifies only on that machine. Any other license is bound to no computer and needs no setting. The `require_gcp_binding` parameter and the `SCADA_SERVER_LICENSE_REQUIRE_GCP_BINDING` environment variable no longer have any effect: if an older parameter file still has them, the process logs a warning and ignores them. Remove them.
 
@@ -794,9 +797,9 @@ The license is checked at startup and then every 5 seconds:
 
 * **No valid license**, or one that does not include this process — the
   process stops. The reason is written to the log. The process does the same
-  when the file is missing or only partly written at the moment it is
-  checked. The service then exits normally and Windows does **not** restart
-  it — once the file is fixed, start the processes with `scada-setup start`
+  when the file is missing, only partly written or, on Linux, not readable
+  by the `scada` account at the moment it is checked. The service then exits
+  normally and neither Windows nor systemd restarts it — once the file is fixed, start the processes with `scada-setup start`
   and the [computer's parameters](#scada-setup-options). A license whose
   validity period has not started yet counts as not valid too.
 * **The license could not be verified** (for example, the Google Cloud
@@ -819,7 +822,7 @@ visible only in the Client.
 
 Replace the license file in one step: copy the new file into the same folder
 under a temporary name and rename it to `license.json` over the old one
-(`move /y`) — see [License]({{ '/en/getting-started/' | relative_url }}#license).
+(`move /y`; on Linux `mv -f`) — see [License]({{ '/en/getting-started/' | relative_url }}#license).
 
 Versions 2.5 and earlier used a HASP or Guardant hardware key, and ran for two
 hours in demo mode without one. **Version 2.6 has no demo mode**: without a
@@ -1481,7 +1484,10 @@ their certificates: the site's own, kept on the central computer.
   ```
 
   **The `ca_key.pem` file is the key that issues every certificate of the
-  site.** Only the SYSTEM account and administrators can read it. Back it
+  site.** On Windows only the SYSTEM account and administrators can read
+  it. On Linux it belongs to `root` and the `scada` group (mode 0640): any
+  Server process on the central computer can read it, so run nothing but the
+  Server services as the `scada` account. Back it
   up with the configuration, and never copy it to another computer.
 * **Every other computer**: give `apply` that fingerprint with
   `--central-fingerprint`. `apply` then:
@@ -1591,7 +1597,9 @@ The central computer's fingerprint changes with its certificate:
 * after the program is reinstalled on the central computer (the installer
   removes its certificate), or the computer is restored under another name;
 * after its pair is made again for `--advertise`;
-* after the site certificate authority is replaced.
+* after the site certificate authority is replaced;
+* after `apply` adds a process to the central computer: the computer gets a
+  new certificate that names that process too.
 
 **While the certificate authority is the same, nothing needs changing on the
 other computers.** A computer that has joined checks the central computer's
@@ -1737,7 +1745,10 @@ On a new or rebuilt computer:
    the other computers have to join again (see
    [A new certificate authority](#opcua-renewal)). On a computer without
    `scada-config`, give `apply` in step 4 `--central-fingerprint` too, to get
-   a new certificate from the certificate authority.
+   a new certificate from the certificate authority. Take the fingerprint
+   from `scada-setup status` on the central computer now, not from the
+   recorded parameters: it differs once the central computer's certificate
+   has been renewed.
 4. Run `scada-setup apply` with the same
    [computer's parameters](#scada-setup-options) as before, **the same `svc`
    password**, and the `root` password. The `svc` password is stored in the
@@ -1760,6 +1771,16 @@ On a new or rebuilt computer:
 
 With a new certificate, third-party OPC UA clients that trusted the old one
 have to be set up again.
+
+**On Linux** the folders are the ones in [Backup](#backup) —
+`/var/lib/scada` and `/opt/telecontrol-scada/data/Certificates` — and the
+commands are `sudo /opt/telecontrol-scada/bin/scada-setup …`; the `icacls`
+step is not needed. Files put back as `root` (with `cp -r`, say) belong to
+`root`, and the services, which run as `scada`, cannot write to them. So on
+the same computer too, run `apply` with the same
+[computer's parameters](#scada-setup-options) and passwords instead of
+`start` in step 3: `apply` hands the process folders and the certificate keys
+to the `scada` account.
 
 ## `server.json` parameter reference {#parameters}
 

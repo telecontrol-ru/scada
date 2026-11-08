@@ -56,8 +56,9 @@ reset) does not. The server sets what a password must satisfy — see
   deleting this user does not affect the built-in account.
 * **The built-in `root` account's password is not changed in this
   window.** On a Server installed with `scada-setup` the root password is
-  kept in the computer's encrypted
-  [password file]({{ '/en/server/' | relative_url }}#stored-passwords), and
+  kept in the computer's
+  [password file]({{ '/en/server/' | relative_url }}#stored-passwords)
+  (encrypted on Windows, readable only by `root` on Linux), and
   each Server process writes it again every time it starts. So the Server
   refuses a root password change made from the Client, and the Client
   reports the refusal in the event journal, naming the command that changes
