@@ -230,8 +230,10 @@ stage. Default: Yes. The
 <a href="#bulk-create">Multiple Create</a> wizard sets No by itself on objects
 that cannot be controlled in two stages: every object of a MODBUS device and
 the TIT (analog) objects of an IEC 60870-5 device, whose command is a
-set-point rather than <code>C_SC_NA_1</code>. Objects created any other way,
-and existing objects, keep their value. The SELECT stage is sent only with the IEC 60870-5
+set-point rather than <code>C_SC_NA_1</code>. An object created one at a time
+gets Yes, and existing objects are
+not changed: set No yourself on MODBUS objects and IEC 60870-5 TIT objects
+created one at a time. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing

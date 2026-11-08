@@ -122,7 +122,10 @@ Hyperlinks have not yet been tried on working sites' schematics in version
 The Client draws a breaker's position with the fill colours that the
 switching-device table in the schematic's settings defines for a closed and
 an open breaker. When the table defines no colour, or a transparent one, the
-breaker is filled bright green when closed and red when open.
+breaker is filled bright green when closed and red when open. Each device
+takes its colours from the rows of its own object type: a separator from the
+separator's rows (closed and open), not the breaker's, and also falls back to
+bright green and red; its symbol's lines take the position colour too.
 
 ![]({{ '/img/modus-f11-bus.png' | relative_url }})
 

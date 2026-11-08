@@ -106,7 +106,11 @@ permalink: /dev/devices/
 
 ## Устройства MODBUS {#mbDevice}
 
-Поддерживаемые коды функций Modbus смотрите в [описании MODBUS]({{ '/protocols/' | relative_url }}#modbus) 
+Поддерживаемые коды функций Modbus смотрите в [описании MODBUS]({{ '/protocols/' | relative_url }}#modbus).
+
+Объекты MODBUS в два этапа не управляются: Сервер отклоняет выбор. Установите
+у них [Двухэтапное управление]({{ '/dev/data-items/' | relative_url }}#two-stage-control)
+= «Нет»; мастер серийного создания делает это сам.
 
 ### Параметры направления MODBUS
 

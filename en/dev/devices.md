@@ -114,6 +114,10 @@ After creating a direction and a device, make sure data is flowing:
 Supported MODBUS function codes are described in
 [Protocols]({{ '/en/protocols/' | relative_url }}#modbus).
 
+MODBUS objects cannot be controlled in two stages: the Server refuses the
+select. Set [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control)
+to No on them; the Multiple Create wizard does this by itself.
+
 ### MODBUS direction parameters
 
 <dl>
@@ -757,7 +761,7 @@ and the Server does not shift them.
 
 An IEC 61850 device takes no
 [retransmission](#retransmission) rules: it is not offered in the
-Transmission table or in the bulk-create wizard. Rules created for IEC 61850
+Transmission table or in the Multiple Create wizard. Rules created for IEC 61850
 devices by earlier versions were never served; on upgrade the Server deletes
 them and writes how many to the process log.
 

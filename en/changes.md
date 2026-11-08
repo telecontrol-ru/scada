@@ -14,9 +14,9 @@ Distributions are published on the [GitHub releases page](https://github.com/ale
 
 ## 2.6.0 and 2.6.2 {#v2-6}
 
-Release 2.6.0 was published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
+Release 2.6.0 was published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. A Windows Server installer for version 2.6 and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
 
-The release 2.6.0 Client packages were built on 2 November 2026, before some of the changes listed below. Release 2.6.2, published on 8 November 2026, carries only Client packages rebuilt from later sources, and they include every Client change listed below. The changes to drawing Vidicon and Modus schematics — the hatching of unreliable shapes, the "?" in value fields with no value, the position of the Modus separator and the improved drawing of Modus shapes — are made in the display module, which is shipped separately, and arrive with its next build.
+The release 2.6.0 Client packages were built on 2 November 2026, before some of the changes listed below. Release 2.6.2, published on 8 November 2026, carries only Client packages rebuilt from later sources, and they include every Client change listed below. The changes to drawing Vidicon and Modus schematics — the hatching of unreliable shapes, the "?" in Vidicon value fields and Modus text fields with no value, the position of the Modus separator and the improved drawing of Modus shapes — are made in the display module, which is shipped separately, and arrive with its next build; with the module supplied today, schematics do not show these changes (see [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 ### Server
 
@@ -38,9 +38,9 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
 
-1. The Server processes connect to each other encrypted (Basic256Sha256, Sign & Encrypt), each accepting only computers whose certificate the site's own certificate authority issued: `scada-setup apply` creates the authority on the central computer, and the other computers join with `--central-fingerprint`. `--insecure-links` keeps the earlier unencrypted connections. See [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca).
+1. The Server processes connect to each other signed and encrypted (the OPC UA security policy Basic256Sha256), each accepting only computers whose certificate the site's own certificate authority issued: `scada-setup apply` creates the authority on the central computer, and the other computers join with `--central-fingerprint`. `--insecure-links` allows unencrypted links. See [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca).
 
-1. `scada-config` accepts a process registration only from a computer whose certificate the site certificate authority issued or which was moved into the trusted certificates folder. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
+1. `scada-config` and `scada-proxy` accept a process registration only from a computer whose certificate the site certificate authority issued, and only under a name that certificate carries; a certificate moved into the trusted certificates folder lets a system connect, never register. A site certificate is issued to the `svc` account only: no role assigned in the Client grants it, so joining a computer to the site needs the `svc` password. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
 1. `scada-setup apply` does not join a computer to the site unencrypted: on a computer without `scada-config` that has no certificate from the site certificate authority yet, `apply` without `--central-fingerprint` and without `--insecure-links` fails and changes nothing. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
 
@@ -70,7 +70,7 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. A new installation starts from an empty project — no objects, devices, links or users; sign in with the built-in `root` account. The demo project (objects with emulation, IEC 60870-5-104 links, users with no passwords, schematics) is installed on request: `scada-setup apply --demo`. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
-1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (not published for version 2.6 yet; installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (not published for version 2.6 yet; installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process; the services run under a separate unprivileged `scada` account. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
 1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
 
@@ -144,9 +144,9 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. The *Audit log* window shows sign-ins and who did what to user accounts, passwords and roles; it is available to administrators only. See [Audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log).
 
-1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Breakers are filled with the colours from the schematic's settings, a shape with unacknowledged events blinks a frame, and a double-click on a shape with no unacknowledged events follows its *гиперссылка* (hyperlink) property to another schematic. Bindings of other properties and limits are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Breakers are filled with the colours from the schematic's settings, a shape with unacknowledged events blinks a frame, and a double-click on a shape with no unacknowledged events follows its *гиперссылка* (hyperlink) property to another schematic. A text field with no value shows "?". Bindings of other properties and limits are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
-1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. A shape whose value is unreliable or whose object is not connected is hatched in the bad-quality colour, and a shape whose value disappears returns to the look saved in the schematic. A value field with no value shows "?" rather than the text saved in the schematic, and an unreliable value carries a "?" mark. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
+1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. A shape whose value is unreliable or whose object is not connected is hatched in the bad-quality colour, and a shape whose value disappears returns to the look saved in the schematic. A value field with no value shows "?" rather than the text saved in the schematic, and an unreliable value carries a "?" mark. The hatching and the "?" need the next build of the display module (see above). See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
 
@@ -190,9 +190,9 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. Deleting a portfolio, or an object from one, asks for confirmation first. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}).
 
-1. In the bulk-create wizard the "NodeId template" field is empty by default, so the Server assigns the identifiers; the former default was one the Server refused. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
+1. In the Multiple Create wizard the "NodeId template" field is empty by default, so the Server assigns the identifiers; the former default was one the Server refused. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
 
-1. The bulk-create wizard creates the objects of a MODBUS device and the TIT objects of an IEC 60870-5 device with "Two-stage control" set to No: such objects cannot be controlled in two stages, and they used to need switching by hand. The wizard leaves Yes on other new objects; existing objects are not changed. The error box for a refused select now says to ask the engineer who configures the project rather than the administrator. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control).
+1. The Multiple Create wizard creates the objects of a MODBUS device and the TIT objects of an IEC 60870-5 device with "Two-stage control" set to No: such objects cannot be controlled in two stages, and they used to need switching by hand. The wizard leaves Yes on other new objects; existing objects are not changed. The error box for a refused select now says to ask the engineer who configures the project rather than the administrator. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control).
 
 ### Known limitations {#known-limitations}
 
@@ -200,7 +200,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Before upgrading from 2.5.7 {#limits-upgrade}
 
-1. Two-stage control is on by default, and version 2.6 does not carry out MODBUS or OPC objects, IEC 61850 objects with direct control, or IEC 60870-5 commands other than single commands (C_SC_NA_1) in two stages: the Server refuses the select. Before upgrading, set "Two-stage control" to No on such objects, or they cannot be controlled. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
+1. Two-stage control is on by default, and version 2.6 does not carry out MODBUS or OPC objects, IEC 61850 objects with direct control, or IEC 60870-5 commands other than single commands (C_SC_NA_1) in two stages: the Server refuses the select. Before upgrading, set "Two-stage control" to No on such objects, or they cannot be controlled; do the same on such objects created one at a time after the upgrade — only the Multiple Create wizard sets No by itself. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
 1. MODBUS: version 2.5.7 read a channel address with a misspelt option (`;swapword`, `;swapbyte`) by skipping the option; version 2.6 does not accept it, and such an object stops receiving values. Before upgrading, check the spelling of the options in your MODBUS channel addresses. See [MODBUS register addressing]({{ '/en/dev/devices/' | relative_url }}#modbus-registers).
 
@@ -208,7 +208,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. Bound shapes inside a Modus Graphic Editor group have not been tried in version 2.6. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
-1. The 2.6 Client draws the common Modus element types as the Modus graphics editor does, except the instruments and controls that the editor draws as pictures (*прибор_настраиваемый*, *прибор_реальный*, *прибор_цифровой*, *РПН*, *панель_накладка*, *орган_управления*): the Client draws these simplified — by the picture's main outlines, without a needle or lettering, and at one size whatever scale the shape is given. An *отделитель* (separator) is drawn with the editor's symbol, but coloured by its position as a breaker square is (the editor always draws it black). The *Spectrum_UP*, *Spectrum_P* and *Server* elements are not drawn yet; some less common elements are drawn without the letters inside them, and the coloured parts of some (valves, for example) are drawn grey. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
+1. The 2.6 Client draws the common Modus element types as the Modus graphics editor does, except the instruments and controls that the editor draws as pictures (*прибор_настраиваемый*, *прибор_реальный*, *прибор_цифровой*, *РПН*, *панель_накладка*, *орган_управления*): the Client draws these simplified — by the picture's main outlines, without a needle or lettering, and at one size whatever scale the shape is given. An *отделитель* (separator) is drawn with the editor's symbol, but coloured by its position — with the separator's rows of the schematic's switching-device table, or bright green and red when they define no colour (the editor always draws it black). The *Spectrum_UP*, *Spectrum_P* and *Server* elements are not drawn yet; some less common elements are drawn without the letters inside them, and the coloured parts of some (valves, for example) are drawn grey. Also, three-winding transformers on schematics re-saved by the Modus editor and on binary schematics are drawn without their wye and delta marks, mirrored text is not mirrored, and a double reactor is drawn without its second arc. The coloured separator and the improved drawing need the next build of the display module. Open your site's schematics in a 2.6 Client before upgrading. See [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
 1. Hyperlinks of Modus shapes have not been tried on working sites' schematics; a link opens only when the schematic is inside the workstation's schematics folder. See [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding).
 
@@ -218,13 +218,15 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
 
-1. A 2.6 Client connects to a 2.5.7 Server: both use the same connection protocol version. Live values, history and graphs, the event journal and acknowledgement work, and the 2.6 Client performs [two-stage control]({{ '/en/client/' | relative_url }}#two-stage) the way the 2.5.7 Client did. What the 2.5.7 Server does not have, the 2.6 Client cannot offer with it; where it can tell, it says that Server version 2.6 is required:
+1. A 2.6 Client connects to a 2.5.7 Server: both use the same connection protocol version. What follows applies to the Client of release 2.6.2 and later. Live values, history and graphs, the event journal and acknowledgement work, and the 2.6.2 Client performs [two-stage control]({{ '/en/client/' | relative_url }}#two-stage) the way the 2.5.7 Client did. Do not use the release 2.6.0 Client with a 2.5.7 Server: it controls no object in two stages and offers a link reconnection that fails. What the 2.5.7 Server does not have, the 2.6 Client cannot offer with it; where it can tell, it says that Server version 2.6 is required:
    * [Users and roles]({{ '/en/dev/users/' | relative_url }}): the user list is not shown, there are no roles, and an account cannot be disabled. The 2.6 Client neither shows nor changes the access rights of a 2.5.7 Server's accounts. Users can change their own password, but a password cannot be reset for another user: a 2.5.7 Server changes a password only together with the current one.
    * [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) are not available.
    * In a [summary]({{ '/en/client/summary/' | relative_url }}#function) the *Time Average* function leaves its cells empty, and *Time Integral* gives the sum of the recorded values, without regard to how long each value was in effect.
    * In the [device watch]({{ '/en/client/device-watch/' | relative_url }}) window, *Frame trace* mode shows no captured frames: a 2.5.7 Server does not send them.
    * Existing [retransmission]({{ '/en/dev/devices/' | relative_url }}#retransmission) objects and their sources are shown, but a 2.5.7 Server does not let an object be added to retransmission.
    * The Client's pages and settings are kept on this computer only, as with the 2.5.7 Client.
+   * The device diagnostics panel has no button to reconnect an IEC 60870-5 link: a 2.5.7 Server has no such command.
+   * The [audit log]({{ '/en/client/workbench/' | relative_url }}#audit-log) is empty: a 2.5.7 Server records no audit events.
 
    This is established from how both versions are built; the 2.6 Client has not yet been tried against a working 2.5.7 Server.
 
@@ -246,6 +248,8 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
+1. The Linux Server has been tried only in an Ubuntu 24.04 container: not yet on a working site, with several computers or with serial (RS-485) links. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+
 1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 
 1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
@@ -264,7 +268,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
 
-1. A display module older than the Client may not mark unreliable or missing values on schematics. The Client then shows the warning "Old display runtime: bad values may not be marked" in its status bar; install the display module of the same version as the Client. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
+1. A display module older than the Client may not mark unreliable or missing values on schematics. The Client then shows the warning "Old display runtime: bad values may not be marked" in its status bar. The module supplied today was built before this Client, so the warning is expected; until a new module is installed, check values in a table or the Inspector. Request the new module from Telecontrol. See [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime).
 
 ## 2.5.7 {#v2-5-7}
 

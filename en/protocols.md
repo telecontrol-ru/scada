@@ -36,6 +36,10 @@ MODBUS function codes and maps them to SCADA objects. The table below
 > 0x05, 0x06, 0x0F and 0x10, and answers a request carrying any other
 > function with an ILLEGAL FUNCTION exception.
 
+MODBUS objects cannot be controlled in two stages: the Server refuses the
+select, so set [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control)
+to No on them.
+
 See also the engineering reference for
 [MODBUS devices]({{ '/en/dev/devices/' | relative_url }}).
 
