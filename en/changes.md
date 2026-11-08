@@ -16,7 +16,7 @@ Distributions are published on the [GitHub releases page](https://github.com/ale
 
 Published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
 
-The Client packages on the releases page were built on 2 November 2026, before some of the changes listed below: the readable message when the Server refuses two-stage control, the hatching of unreliable shapes on Vidicon schematics, and the improved drawing of Modus shapes. These changes arrive with the next build of the Client and the display module.
+The Client packages on the releases page were built on 2 November 2026, before some of the changes listed below: the readable message when the Server refuses two-stage control, the hatching of unreliable shapes and the "?" in value fields with no value on Vidicon schematics, and the improved drawing of Modus shapes. These changes arrive with the next build of the Client and the display module.
 
 ### Server
 
@@ -146,7 +146,7 @@ The Client packages on the releases page were built on 2 November 2026, before s
 
 1. Modus displays are drawn by the Client's own display module, without the ActiveXeme component. Shapes bound with the `ключ_привязки` property show the present switch positions and measured values, and a click on such a shape selects its object; the **Display** menu lists a schematic by its title. Breakers are filled with the colours from the schematic's settings, a shape with unacknowledged events blinks a frame, and a double-click on a shape with no unacknowledged events follows its *гиперссылка* (hyperlink) property to another schematic. Bindings of other properties and limits are not shown — see [Live values on a Modus schematic]({{ '/en/client/display/' | relative_url }}#live-values).
 
-1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. A shape whose value is unreliable or whose object is not connected is hatched in the bad-quality colour, and a shape whose value disappears returns to the look saved in the schematic. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
+1. Vidicon displays show live values on the schematic itself: breakers, disconnectors and value fields change with the objects whose addresses the shapes' tags name, and a shape with unacknowledged events blinks a frame. A shape whose value is unreliable or whose object is not connected is hatched in the bad-quality colour, and a shape whose value disappears returns to the look saved in the schematic. A value field with no value shows "?" rather than the text saved in the schematic, and an unreliable value carries a "?" mark. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 1. The [Device watch]({{ '/en/client/device-watch/' | relative_url }}) window has a `Frame trace` mode — protocol traffic only, with a decode pane for the selected frame — and a filter line above the table that works in both modes and also applies to `Save as`.
 
@@ -263,6 +263,8 @@ Read this list before buying and before upgrading: each limitation is described 
 1. With "Sign in automatically next time" ticked, the Client logs in as the last account by itself at startup — do not tick it on a shared workstation; to sign in as yourself, hold *Ctrl* (on macOS, *Option*) while starting it. See [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login).
 
 1. The alarm tone is off for every new account — switch it on under each operator's account. See [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone).
+
+1. A display module older than the Client may not mark unreliable or missing values on schematics. The Client then shows the warning "Old display runtime: bad values may not be marked" in its status bar; install the display module of the same version as the Client. See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).
 
 ## 2.5.7 {#v2-5-7}
 
