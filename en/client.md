@@ -521,7 +521,7 @@ the window's close button) while the select stage is still running: if the
 device accepts the select after all, the Client sends the release at once. If
 the device refuses the release, no error box is shown — the operator has already
 moved on — but the Client adds a message of its own to the current events
-panel: "Release of selection: <object> - <reason>. The device may stay
+panel: "Release of selection: &lt;object&gt; - &lt;reason&gt;. The device may stay
 selected until its own selection timeout expires." The selection stays armed
 until that timeout. The message is always shown, whatever the setting for
 reporting successful control. When the select was refused (see step 2),
@@ -533,9 +533,9 @@ is closed, the Client does **not** release the selection — a 2.5.7 Server
 cannot — and the selection stays armed until the device's selection timeout
 expires. Until then the device refuses a new select from any workstation.
 The Client says so in the current events panel: "Release of selection:
-<object> - A Server before 2.6 cannot release a selection. The device stays
+&lt;object&gt; - A Server before 2.6 cannot release a selection. The device stays
 selected until its own selection timeout expires." (in the Russian
-interface: «Отмена выбора: <объект> - Сервер версии до 2.6 не может
+interface: «Отмена выбора: &lt;объект&gt; - Сервер версии до 2.6 не может
 отменить выбор. Устройство остаётся в состоянии выбора до истечения
 собственного тайм-аута выбора.») The message is a Client error: it is
 critical, sounds when the alarm tone is on, and stays in the panel until it
