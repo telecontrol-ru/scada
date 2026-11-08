@@ -82,6 +82,8 @@ The Client packages on the releases page were built on 2 November 2026, before s
 
 1. MODBUS retransmission: a rule's Value format property sets the type and the byte and word order of the value sent, written as in a channel address (`FLOAT;swapwords`, `INT32`, `DOUBLE;reversewords`); FLOAT, INT32 and UINT32 take two registers, DOUBLE four. The default (UINT16) is rounded to the nearest whole number instead of dropping the fraction, and a value outside the type's range is sent as the nearest one it can hold instead of modulo. A device's first rule gets address 40001, a holding register, instead of coil 1. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
 
+1. MODBUS retransmission: the Server answers one read request with up to 125 registers or 2000 bits, as the protocol allows, instead of up to 50 registers or 800 bits with the connection dropped on a larger request; a request it cannot carry out is answered with a MODBUS exception, and the connection stays open. A deleted, moved or re-formatted rule stops being sent at its old registers at once, with no process restart. A rule whose format is a register-table word alone (for example `HOLDREG`) is treated as wrong instead of sending the neighbouring register. Over MODBUS TCP the response carries the request's transaction number. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
+
 1. Retransmission over IEC 60870-5-104: a release of selection received from the DC is passed on to the source device, and the deactivation is confirmed to the DC once the device has answered. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
 
 1. MODBUS RTU: fixed waiting for a device's exception response — a command the device rejects is reported as an error at once, not after the response timeout. In retransmission mode, fixed receiving writes with 0x10 and added 0x06 and 0x0F.
@@ -217,8 +219,6 @@ Read this list before buying and before upgrading: each limitation is described 
 1. IEC 61850: the device's clock must run on UTC — timestamps are not converted from local time. An APC setpoint whose device model carries both the `i` and `f` fields is not sent. See [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850).
 
 1. Retransmission: objects whose values another Server process receives are sent to the DC, and the DC's commands on them carried out, only while `scada-proxy` is running. See [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission).
-
-1. Retransmission over MODBUS: the Server answers one read request with at most 50 registers or 800 bits (coils, discrete inputs); a request for more makes it drop the connection. See [Retransmission over MODBUS]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission).
 
 #### Archive and reports {#limits-archive}
 

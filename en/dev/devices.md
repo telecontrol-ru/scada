@@ -693,15 +693,10 @@ the registers at addresses 0x0000–0x270F.
   type that holds the value's whole range.
 * A rule with a wrong format (for example `REAL` or `FLOAT;swapword`) sends
   nothing, and the device log records the warning
-  `Wrong MODBUS transmission address`. Its register stays 0 only when the
-  process started with that rule already in place (see the next item).
+  `Wrong MODBUS transmission address`. Its registers are 0.
 * When a rule is deleted, moved to another address or given another format,
-  the receiver keeps being served the last value at the old address (and in
-  the old format) until the `scada-modbus` process is restarted. After such
-  changes, restart the *Telecontrol SCADA Modbus* service (on Linux,
-  `systemctl restart scada-modbus`) on the computer serving the destination
-  device (see
-  [Restarting a protocol process]({{ '/en/server/' | relative_url }}#edge-restart)).
+  the registers it occupied become 0 at once (unless another rule occupies
+  them); no process restart is needed.
 * On a device with no rules, the first rule created by ticking an object
   gets address 40001, the first holding register; the next rules get
   consecutive addresses in the same register table. Move a rule that needs
@@ -714,14 +709,18 @@ the registers at addresses 0x0000–0x270F.
   step" fields mean register numbers: for FLOAT, INT32 and UINT32 rules set
   "IOA step" to 2, for DOUBLE to 4 (the default step is 1), then set the
   Value format on each rule created.
-* The SCADA answers one read request with at most 50 registers or 800 bits
-  (coils, discrete inputs). A request for more makes it drop the connection,
-  so set the receiver to read in blocks no larger than that.
+* The SCADA answers one read request with at most 125 registers or 2000
+  bits (coils, discrete inputs), the MODBUS protocol's limit. A request for
+  more, a read beyond addresses 0x0000–0xFFFF and an incomplete request are
+  answered with a MODBUS exception (code 03 or 02), and the connection stays
+  open.
 * A write from the receiver to a coil or holding register is passed to the
   rule's object as a command — with the same limits as DC commands above.
   The value is read in the rule's format, so a write to a FLOAT or INT32
   rule must fill all its registers in one request; a write to only one of
-  them is not carried out, and the device log records a warning.
+  them is not carried out, and the device log records a warning. A write
+  at address 0x2710 or above, where no rule can be, is answered with
+  exception 02 (Illegal Data Address).
 
 ## IEC 61850 devices {#iec-61850}
 
