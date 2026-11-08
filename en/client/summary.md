@@ -165,7 +165,10 @@ change, and left an interval without changes empty.
 > value did not change. Saved summary windows using *Sum* now compute *Time
 > Integral*, so with a 2.5.7 Server they are empty too. While the Client is
 > checking the Server's version right after the summary opens, these cells
-> are empty with any Server. See
+> are empty with any Server. If the connection to the Server drops while the
+> summary is opening, however, Client 2.6.3 may take a 2.5.7 Server for a 2.6
+> one and show the 2.5.7 Server's wrong values in these cells with no notice —
+> then close the summary window and open it again. See
 > [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
 
 Cell values are shown in the object's display format and engineering units.

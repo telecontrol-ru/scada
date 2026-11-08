@@ -26,6 +26,10 @@ lists the available schematics.
 
 ## Live values on a Modus schematic {#live-values}
 
+Some of what follows (hatching, "?", the separator's colouring, voltage
+colours, value boards) is drawn only by the display module's next build — see
+[A display module from an earlier build](#old-runtime).
+
 Shapes of a Modus schematic that the designer bound to SCADA objects (the
 `ключ_привязки` property — see
 [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding)) show
@@ -103,8 +107,8 @@ unreliable value or no value they show "?".
 
 The display module, not the Client itself, draws the marks for unreliable
 and missing values (hatching and "?"), the separator's colouring, voltage
-colours and value boards. Every module supplied so far, including alongside
-Client 2.6.3, is an earlier build: it does not draw them, and the changes
+colours and value boards. Every module supplied so far (as of Client 2.6.3)
+is an earlier build: it does not draw them, and the changes
 arrive with the module's next build. An earlier-built module may show an
 unreliable or missing value as a reliable one, and a separator in black, with
 no position. The Client checks whether the
@@ -120,8 +124,9 @@ quality marking, so a module that raises no warning may still draw them so.
 
 While a workstation has such a module, do not rely on the schematic to judge
 whether a value is reliable: check values and device positions in a
-[table]({{ '/en/client/table/' | relative_url }}) or in the inspector. Ask
-Telecontrol for a display module of the new build.
+[table]({{ '/en/client/table/' | relative_url }}) or in the inspector until
+the module's next build is supplied. Telecontrol supplies it when it is
+released.
 
 ## Working with a schematic {#working}
 

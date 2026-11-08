@@ -20,7 +20,7 @@ in particular, the alarm tone is off for every new account. The limitations of t
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
 Until the version 2.6 Server is published, the 2.6 Client is connected to a
-2.5.7 Server. The Client works this way from release 2.6.3: the 2.6.0 Client
+2.5.7 Server. The Client works this way from release 2.6.3: Clients of earlier releases
 cannot perform two-stage control with a 2.5.7 Server. The 2.6 Client has not
 yet been tried against a working 2.5.7 Server. What does not work with
 a 2.5.7 Server, and how it differs from what this page describes, is listed
@@ -28,11 +28,13 @@ under [Known limitations — Before upgrading from 2.5.7]({{ '/en/changes/' | re
 page the differences for [two-stage control](#two-stage) and
 [shift handover](#shift-change) are noted separately.
 
-> **Caution: with a 2.5.7 Server the alarm tone is off at first sign-in.**
+{: .warning }
+> **With a 2.5.7 Server the alarm tone is off at first sign-in.**
 > The first time each account signs in on each computer, including right
-> after the Client upgrade, the alarm tone is off: switch it on at every
-> workstation and ask the engineer to raise a test alarm (see
-> [Sound alarm]({{ '/en/client/alarms/' | relative_url }}#tone) and
+> after the Client upgrade, the alarm tone is off: switch it on and ask the
+> engineer to raise a test alarm. This is needed once — at the account's
+> first sign-in on that computer, not at every shift handover (see
+> [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone) and
 > [Shift handover](#shift-change)). On macOS this tone is the only audible
 > alarm.
 
@@ -227,12 +229,13 @@ operator's stored password is not filled in there (see
 > outgoing operator's. An account that has not signed in on this computer
 > before starts from the default settings and takes only the window placement
 > from the workstation. That includes right after the Client upgrade: the
-> earlier shared profile is carried over to no one, so every account's pages,
+> earlier shared profile is carried over to no named account, so every account's pages,
 > portfolios, favourites, severity threshold and window layouts start afresh.
 > Before upgrading, note which pages and portfolios the operators need, so
 > they can be rebuilt. **The default settings have the alarm tone off**: the
-> incoming operator switches it on, and the engineer raises a test alarm (see
-> [Sound alarm]({{ '/en/client/alarms/' | relative_url }}#tone)). Another
+> incoming operator switches it on, and the engineer raises a test alarm —
+> once, at the account's first sign-in on that computer (see
+> [The alarm tone]({{ '/en/client/alarms/' | relative_url }}#tone)). Another
 > computer keeps its own profile. The "Control
 > confirmation" setting is not kept in the profile and is on at every
 > sign-in.
@@ -515,7 +518,7 @@ IEC 60870-5 (SELECT/EXECUTE):
    project (with the Configure right) sets its
    [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
    The Client sets No by itself on new MODBUS, OPC and IEC 60870-5 TIT
-   objects.
+   objects (without a type override in the control channel).
    If the device itself refuses the select, the error box starts with
    "Preparation for control failed" and ends with "The command was not
    executed."
@@ -540,14 +543,16 @@ there is nothing to release, and no message is given.
 **With a 2.5.7 Server** the Client performs two-stage control the way the
 2.5.7 Client did.
 
-* A 2.5.7 Server refuses no select. For objects whose device cannot select —
-  IEC 60870-5 commands other than a single command, IEC 61850 objects with
-  direct control, MODBUS and OPC objects — it confirms the select without
-  sending anything to the device: there is no error box from step 2, the
-  confirmation prompt appears although the device selected nothing, and the
-  select stage is a formality. The engineer sets
+* For MODBUS and OPC objects and IEC 60870-5 commands other than a single
+  command, a 2.5.7 Server confirms the select without sending anything to
+  the device: there is no error box from step 2, the confirmation prompt
+  appears although the device selected nothing, and the select stage is a
+  formality. The engineer sets
   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on
   such objects.
+* Control of IEC 61850 objects through a 2.5.7 Server is not carried out:
+  the Server answers it with an error (or the device refuses the select),
+  and no command reaches the device.
 * On any answer other than yes, and when the control window is closed, the
   Client does **not** release the selection — a 2.5.7 Server cannot. On a
   device that really selects, the selection stays armed until the device's

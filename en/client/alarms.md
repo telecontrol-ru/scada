@@ -98,9 +98,10 @@ With the option off, the panel stays on screen until the operator closes it.
 >
 > With a 2.5.7 Server the profile is kept on the computer, one per account,
 > so the tone is off the first time each account signs in **on each
-> computer**, including right after the Client upgrade: switch it on at every
-> workstation. An operator cannot raise a critical event, so the engineer who
-> configures the project raises a test alarm (see the check
+> computer**, including right after the Client upgrade: switch it on. This is
+> needed once — at the account's first sign-in on that computer, not at every
+> shift handover. An operator has no safe way to raise a critical event, so
+> the engineer who configures the project raises a test alarm (see the check
 > [below](#tone-check)).
 
 The tone sounds only under the conditions listed [above](#escalation).
@@ -120,7 +121,13 @@ silent on an alarm without saying so.
 
 > **Caution.** When commissioning an operator workstation, test the tone:
 > turn on *Sound Alarm on Event*, raise a critical event (severity 800 or
-> above) and make sure the tone is heard. Keep a sound assigned to the Windows
+> above) and make sure the tone is heard. A convenient way is a test object
+> not bound to equipment: the engineer sets its
+> [Severity]({{ '/en/dev/data-items/' | relative_url }}) to 800 (a 2.5.7
+> Server uses a 0–100 scale — set 80) and performs
+> [Manual input]({{ '/en/client/' | relative_url }}#manual-input) on it; the
+> manual-input event carries the object's severity. Afterwards acknowledge
+> the event. Keep a sound assigned to the Windows
 > "Exclamation" event and the volume up on that computer, and test the tone
 > again after changing the Windows sound scheme or the audio device.
 {: #tone-check}

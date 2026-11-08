@@ -60,7 +60,10 @@ The Client runs on Windows 10 or newer and on macOS 26 or newer on computers wit
 silicon (see
 [Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
 The Client displays Modus diagrams and Vidicon schematics with live values
-with its own display module, without the ActiveXeme component. The
+with its own display module, without the ActiveXeme component; that module is
+not in the release packages — Telecontrol supplies it separately, on terms
+agreed with them (see
+[Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)). The
 [Modus graphical editor](http://swman.ru/content/blogcategory/19/47/) is
 used to edit diagrams.
 
