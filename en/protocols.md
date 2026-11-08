@@ -38,7 +38,7 @@ MODBUS function codes and maps them to SCADA objects. The table below
 
 MODBUS objects cannot be controlled in two stages: the Server refuses the
 select, so set [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control)
-to No on them.
+to No on them. The Client sets No on new MODBUS objects by itself.
 
 See also the engineering reference for
 [MODBUS devices]({{ '/en/dev/devices/' | relative_url }}).
@@ -107,8 +107,9 @@ set-point command — `P_ME_NC_1` by default, or the type an `INT16:` or
 the select stage, with nothing sent to the device. So on objects controlled
 with such a command (usually TIT objects), set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
-The [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
-wizard sets No by itself on the TIT objects it creates.
+The Client sets No by itself on new TIT objects, whether created one at a
+time or with the [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
+wizard.
 
 With [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) of a TS
 object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then

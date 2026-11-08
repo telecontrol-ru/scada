@@ -202,22 +202,24 @@ To hand over a shift without closing the client:
 2. The incoming operator enters their own name and password in the sign-in
    window.
 3. The client closes the outgoing operator's pages and opens the incoming
-   operator's profile: their pages, portfolios, alarm tone, "Control
-   confirmation" setting and severity threshold. If the incoming account has
-   no profile on the Server yet, the default profile opens. Whatever the
-   incoming operator changes is saved into **their** profile.
+   operator's profile: their pages, portfolios, alarm tone and severity
+   threshold. If the incoming account has no profile on the Server yet, the
+   default profile opens. Whatever the incoming operator changes is saved into
+   **their** profile. The "Control confirmation" setting is not kept in the
+   profile: it is on again at every sign-in.
 
 The sign-in window this command opens always waits for input: the outgoing
 operator's stored password is not filled in there (see
 [Automatic sign-in](#auto-login)).
 
-> **Caution. With a 2.5.7 Server the profile is not kept on the Server.** The
-> client opens the profile from a file on this computer, and that file is one
-> per operating-system user, not per SCADA account. So the incoming operator
-> gets the outgoing operator's pages and settings, including the alarm tone,
-> the "Control confirmation" setting and the severity threshold. After taking
-> over the shift, check them; preferably, operators work under separate
-> operating-system accounts.
+> **With a 2.5.7 Server the profile is not kept on the Server.** The client
+> keeps the profile in a file on this computer, one for each SCADA account,
+> so the incoming operator gets their own pages and settings, not the
+> outgoing operator's. An account that has not signed in on this computer
+> before starts from the default settings and takes only the window placement
+> from the workstation. Another computer keeps its own profile. The "Control
+> confirmation" setting is not kept in the profile and is on at every
+> sign-in.
 
 A shift can also be handed over by closing the client:
 
@@ -436,7 +438,7 @@ while the dialog is open, the client reports that the command failed.
 ### Command confirmation {#control-confirmation}
 
 The *Control Confirmation* setting (*Settings → Settings… → Control*) is on by
-default. While it is on, before a command goes to the equipment the client
+default and is on again at every sign-in. While it is on, before a command goes to the equipment the client
 shows a confirmation box: the object's name, "Present:" and "Command:" — the
 present and the commanded values — and the warning "This control command is
 sent to physical equipment and cannot be undone remotely. Send it?".
@@ -480,8 +482,8 @@ IEC 60870-5 (SELECT/EXECUTE):
    Such an object is controlled in one stage: the engineer who configures the
    project (with the Configure right) sets its
    [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
-   The Multiple Create wizard sets No by itself on the MODBUS objects and the
-   IEC 60870-5 TIT objects it creates.
+   The Client sets No by itself on new MODBUS objects and IEC 60870-5 TIT
+   objects.
    If the device itself refuses the select, the error box starts with
    "Preparation for control failed" and ends with "The command was not
    executed."
@@ -505,9 +507,15 @@ there is nothing to release, and no message is given.
 
 **With a 2.5.7 Server** the Client performs two-stage control the way the
 2.5.7 Client did: on any answer other than yes, and when the control window
-is closed, the Client does **not** release the selection and adds no message
-about it — the selection stays armed until the device's selection timeout
-expires.
+is closed, the Client does **not** release the selection — a 2.5.7 Server
+cannot — and the selection stays armed until the device's selection timeout
+expires. Until then the device refuses a new select from any workstation.
+The Client says so in the current events panel: "Release of selection:
+<object> - A Server before 2.6 cannot release a selection. The device stays
+selected until its own selection timeout expires." (in the Russian
+interface: «Отмена выбора: <объект> - Сервер версии до 2.6 не может
+отменить выбор. Устройство остаётся в состоянии выбора до истечения
+собственного тайм-аута выбора.»)
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

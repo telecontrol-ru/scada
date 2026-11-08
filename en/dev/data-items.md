@@ -226,14 +226,19 @@ commands.</dd>
 <dt id="two-stage-control">Two-stage control</dt>
 <dd>Enables the IEC 60870 two-stage control workflow
 <code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
-stage. Default: Yes. The
-<a href="#bulk-create">Multiple Create</a> wizard sets No by itself on objects
-that cannot be controlled in two stages: every object of a MODBUS device and
-the TIT (analog) objects of an IEC 60870-5 device, whose command is a
-set-point rather than <code>C_SC_NA_1</code>. An object created one at a time
-gets Yes, and existing objects are
-not changed: set No yourself on MODBUS objects and IEC 60870-5 TIT objects
-created one at a time. The SELECT stage is sent only with the IEC 60870-5
+stage. Default: Yes. The Client creates a new object with the value its
+device calls for — one at a time, with the
+<a href="#bulk-create">Multiple Create</a> wizard, or by dragging from an
+IEC 61850 device alike: No on objects that cannot be controlled in two stages
+(every object of a MODBUS device and the TIT (analog) objects of an
+IEC 60870-5 device, whose command is a set-point rather than
+<code>C_SC_NA_1</code>), Yes on the rest. The device is taken from the
+object's source; an object with no source gets Yes. When an object's source
+moves to another device and the value is still the one the Client would have
+set for the old device, the Client changes it to the new device's value; a
+value set by hand against the device (Yes on a MODBUS object, say) is kept.
+Objects created before the upgrade are not changed: set No yourself on such
+MODBUS objects and IEC 60870-5 TIT objects. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing

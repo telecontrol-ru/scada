@@ -116,7 +116,7 @@ Supported MODBUS function codes are described in
 
 MODBUS objects cannot be controlled in two stages: the Server refuses the
 select. Set [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control)
-to No on them; the Multiple Create wizard does this by itself.
+to No on them. The Client sets No on new MODBUS objects by itself; check it on objects created before the upgrade to version 2.6.
 
 ### MODBUS direction parameters
 
