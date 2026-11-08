@@ -93,7 +93,8 @@ example <code>HOLDREG:INT16:{n}</code>). With no device selected, or an empty
 template, the objects are created without a source. On objects of a MODBUS
 device and on TIT objects of an IEC 60870-5 device the wizard sets
 <a href="#two-stage-control">Two-stage control</a> to No; it leaves Yes on the
-rest.</dd>
+rest, and sets nothing on objects created without a source (so does Client
+2.6.4; Client 2.6.3 set No on those too).</dd>
 
 <dt>Pattern: naming and addressing</dt>
 <dd>The "Name template", "NodeId template" and "Source path template" take
@@ -229,38 +230,43 @@ commands.</dd>
 stage. Default: Yes. The Client creates a new object with the value its
 device calls for: No on objects that
 cannot be controlled in two stages (every object of a MODBUS device, OPC
-objects and the TIT (analog) objects of an IEC 60870-5 device, whose command is a set-point
-rather than <code>C_SC_NA_1</code>), Yes on the rest. It does so for objects
+objects and IEC 60870-5 objects whose command is a set-point rather than
+<code>C_SC_NA_1</code>), Yes on the rest. Client 2.6.4 takes an IEC 60870-5
+object's command from the type override in its Control channel:
+<code>INT16:</code> and <code>FLOAT:</code> are set-points (No), <code>BOOL:</code>
+is <code>C_SC_NA_1</code> (Yes); without an override a TIT (analog) object
+gets No and a TS object Yes. It does so for objects
 created one at a time; the <a href="#bulk-create">Multiple Create</a> wizard
 creates objects only on MODBUS and IEC 60870-5 devices and sets No on MODBUS
 and IEC 60870-5 TIT objects. The device is the one
 named by the Control channel, or by the Channel when no control channel is
 set; an object with no channel gets Yes.
-When an object's channel moves to another device and the value still equals
-the one the Client would have set for the old device, the Client changes it
-to the new device's value. So a value set by hand is kept only when it
+When an object's channel moves to another device, or the IEC 60870-5 type
+override in its Control channel changes, and the value still equals the one
+the Client would have set for the old channel, the Client changes it to the
+new channel's value. So a value set by hand is kept only when it
 differs from the old device's (Yes on a MODBUS object, say): Yes set by hand
 on an object with no channel becomes No when the object is bound to a MODBUS
 device, and No on a MODBUS object becomes Yes when it moves to an
 IEC 60870-5 single command. A move to an OPC device sets No, and on a move
 to an IEC 61850 device the value is kept: only the device knows whether the
 object selects. Objects created with a 2.5.7 or 2.6.0 Client are not changed
-by themselves: check such MODBUS, OPC and IEC 60870-5 TIT objects and set
-No — now, before the Server is upgraded (see below how a 2.5.7 Server
-behaves). The Client does not take a command type override in the control
-channel (<code>INT16:</code>, <code>FLOAT:</code>, <code>BOOL:</code>, see
+by themselves: check such MODBUS, OPC and IEC 60870-5 TIT objects, and
+IEC 60870-5 objects with an <code>INT16:</code> or <code>FLOAT:</code> override,
+and set No — now, before the Server is upgraded (see below how a 2.5.7
+Server behaves). Client 2.6.3 did not take the type override (see
 <a href="{{ '/en/protocols/' | relative_url }}#iec-60870">IEC 60870-5</a>) into
-account: on an object with <code>INT16:</code> or <code>FLOAT:</code>, set No
-by hand. The SELECT stage is sent only with the IEC 60870-5
+account: check the value on objects it created with <code>INT16:</code>,
+<code>FLOAT:</code> or <code>BOOL:</code>. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
 to the device, and the command is not executed — set No on such objects if
 they have Yes. That is a 2.6 Server's answer. A 2.5.7 Server confirms the
 select of MODBUS and OPC objects and of IEC 60870-5 commands other than
-<code>C_SC_NA_1</code> without asking the device, and on a declined command
-Client 2.6.3 then reports that the device stays selected although nothing
-was selected; controlling an IEC 61850 direct-control object through a 2.5.7
+<code>C_SC_NA_1</code> without asking the device; on a declined command
+Client 2.6.4 reports no selection (Client 2.6.3 reported that the device
+stays selected although nothing was selected); controlling an IEC 61850 direct-control object through a 2.5.7
 Server fails, and the command is not executed (see <a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage
 control</a>). The Client sets Yes on IEC 61850 objects however they are created,
 dragging from an IEC 61850 device included: the Server learns the control

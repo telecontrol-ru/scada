@@ -517,8 +517,10 @@ IEC 60870-5 (SELECT/EXECUTE):
    Such an object is controlled in one stage: the engineer who configures the
    project (with the Configure right) sets its
    [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
-   The Client sets No by itself on new MODBUS, OPC and IEC 60870-5 TIT
-   objects (without a type override in the control channel).
+   The Client sets No by itself on new MODBUS, OPC and IEC 60870-5
+   set-point objects; Client 2.6.4 takes an object with an `INT16:` or
+   `FLOAT:` type in its control channel, or a TIT object with no type given,
+   for a set-point.
    If the device itself refuses the select, the error box starts with
    "Preparation for control failed" and ends with "The command was not
    executed."
@@ -569,9 +571,9 @@ critical, sounds when the alarm tone is on, and stays in the panel until it
 is acknowledged. The message is also given when the control window was
 closed while the Client was still waiting for the answer to the select
 ("Preparing to control...") and the device then accepted the select; if the
-select was refused, there is no message. For now the message also appears
-for the objects in the first point, although nothing is selected on the
-device: acknowledge it; it has no effect.
+select was refused, there is no message. For the objects in the first
+point, where nothing is selected on the device, Client 2.6.4 gives no such
+message (Client 2.6.3 did — acknowledge it there; it has no effect).
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

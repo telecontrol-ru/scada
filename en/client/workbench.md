@@ -178,6 +178,12 @@ The settings screen opens over the main window: a search field along the top,
 the categories down the left with the number of settings in each, and scope
 tabs above the list — All, This client, Profile, This window.
 
+From release 2.6.4 a setting whose value differs from its default is marked
+Modified, and the Modified filter beside the search field narrows the list to
+such settings. A row's "⋯" menu resets the setting to its default (*Reset to
+default*) and copies its identifier (*Copy setting ID*). Language, colour
+scheme and widget style have no default: the system chooses them.
+
 Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer only and which are in the user's profile,
 which the client also saves on the Server when it closes and on *More →

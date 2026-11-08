@@ -116,9 +116,10 @@ set-point command — `P_ME_NC_1` by default, or the type an `INT16:` or
 the select stage, with nothing sent to the device. So on objects controlled
 with such a command (usually TIT objects), set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
-The Client sets No by itself on new TIT objects, whether created one at a
-time or with the [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
-wizard.
+The Client sets No by itself, whether objects are created one at a time or
+with the [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
+wizard: on TIT objects, and Client 2.6.4 also on objects with an `INT16:` or
+`FLOAT:` override in the Control channel.
 
 With [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) of a TS
 object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then
@@ -152,13 +153,14 @@ The ASDU type can be overridden in the Control channel with the format
 This override is useful when a measured object must be controlled with
 `C_SC_NA_1` instead of the default measured-value command ASDU.
 
-The Client chooses "Two-stage control" by the object's type, not by the
-override: on a TS object controlled through an `INT16:` or `FLOAT:` override,
-set it to No by hand, or a version 2.6 Server refuses the select (a 2.5.7
-Server confirms it without sending anything to the device); a TIT object with
-a `BOOL:` override gets No from the Client, although `C_SC_NA_1` can also be
-executed in two stages — if a select-before-operate is needed, set Yes by
-hand. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control).
+Client 2.6.4 chooses "Two-stage control" by the override: `INT16:` and
+`FLOAT:` give No (a version 2.6 Server does not carry out a set-point in two
+stages, and a 2.5.7 Server confirms the select without sending anything to
+the device), `BOOL:` gives Yes; without an override a TIT object gets No and
+a TS object Yes. If the override changes and the value still equals the
+Client's earlier choice, the Client changes it. Client 2.6.3 chose by the
+object's type, ignoring the override: check the value on objects it created
+with an override. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control).
 
 When UDP server mode is used, multiple remote devices can share one
 direction. Devices are identified by the remote IP address and port, so

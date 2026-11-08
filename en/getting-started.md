@@ -30,23 +30,23 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 Distributions are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases). The version 2.6
-Client packages are in release [2.6.3](https://github.com/alexsmn/scada-client/releases/tag/v2.6.3). The page marks
+Client packages are in release [2.6.4](https://github.com/alexsmn/scada-client/releases/tag/v2.6.4), which replaces release 2.6.3. The page marks
 release 2.5.7 as the latest, because it is the last release that carries a
 Server installer.
 
-**WARNING:** releases 2.6.0 and 2.6.3 carry only the Client packages for now;
+**WARNING:** releases 2.6.0, 2.6.3 and 2.6.4 carry only the Client packages for now;
 the Windows Server installer `telecontrol-scada-<version>.msi` and the Linux Server
 packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
 Server installation steps on this page cannot be followed.
 
-So today the 2.6.3 Client can be installed, for evaluation, on workstations
+So today the 2.6.4 Client can be installed, for evaluation, on workstations
 that work with a 2.5.7 Server (see [Buying now](#buy-now)). What works in
 that combination and what does not is listed under
 [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
 2.6 Clients before 2.6.3 lack the support for a 2.5.7 Server, and two-stage
 control of objects does not work with them. **Do not use the 2.6.0 Client**
 at all — it also stores the remembered automatic-login password
-unencrypted; use the 2.6.3 Client.
+unencrypted; use the 2.6.4 Client.
 
 **WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
 earlier install the Server as a single *Telecontrol SCADA Server* service and
@@ -67,8 +67,8 @@ exchanged for a version 2.6 license (see
 [Exchanging the hardware key]({{ '/en/server/' | relative_url }}#license-exchange)).
 For running a site on a 2.5.7 Server, the 2.5.7 Client from the same
 installer remains the tested choice; it is also the one for managing users
-and exporting the configuration, which the 2.6.3 Client cannot do with a
-2.5.7 Server. The 2.6.3 Client with a 2.5.7 Server is, for now, for
+and exporting the configuration, which the 2.6 Client cannot do with a
+2.5.7 Server. The 2.6.4 Client with a 2.5.7 Server is, for now, for
 evaluation. The schematic display module is not part of the releases and is
 supplied separately; agree the terms of its supply with Telecontrol.
 
@@ -344,7 +344,7 @@ version with every version 2.6 release:
   computer with Apple silicon, macOS 26 or later (the release notes name the
   exact minimum). Open the disk image and
   drag *Telecontrol SCADA Client* to *Applications*. The release notes say
-  whether the app is signed and notarised by Apple; the release 2.6.3
+  whether the app is signed and notarised by Apple; the release 2.6.4
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
   refusal, open *System Settings → Privacy & Security* and click *Open
   Anyway*.
