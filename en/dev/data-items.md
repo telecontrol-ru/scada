@@ -90,7 +90,10 @@ field, exactly as if the device and channel had been chosen in its properties
 by hand. For an IEC 60870-5 device it is the information object address (for
 example <code>1{nn}</code>); for MODBUS it is a MODBUS channel address (for
 example <code>HOLDREG:INT16:{n}</code>). With no device selected, or an empty
-template, the objects are created without a source.</dd>
+template, the objects are created without a source. On objects of a MODBUS
+device and on TIT objects of an IEC 60870-5 device the wizard sets
+<a href="#two-stage-control">Two-stage control</a> to No; it leaves Yes on the
+rest.</dd>
 
 <dt>Pattern: naming and addressing</dt>
 <dd>The "Name template", "NodeId template" and "Source path template" take
@@ -220,14 +223,22 @@ format required by the selected device.</dd>
 <dd>Selects the device used as the control-data source for remote
 commands.</dd>
 
-<dt>Two-stage control</dt>
+<dt id="two-stage-control">Two-stage control</dt>
 <dd>Enables the IEC 60870 two-stage control workflow
 <code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
-stage. Default: Yes. The SELECT stage is sent only with the IEC 60870-5
+stage. Default: Yes. The
+<a href="#bulk-create">Multiple Create</a> wizard sets No by itself on objects
+that cannot be controlled in two stages: every object of a MODBUS device and
+the TIT (analog) objects of an IEC 60870-5 device, whose command is a
+set-point rather than <code>C_SC_NA_1</code>. Objects created any other way,
+and existing objects, keep their value. The SELECT stage is sent only with the IEC 60870-5
 command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
-to the device, and the command is not executed — set No for such objects.
+to the device, and the command is not executed — set No on such objects if
+they have Yes. The wizard leaves Yes on IEC 61850 objects: the Server learns
+the control model from the device itself, and the configuration does not hold
+it.
 Set No if the device does not support select-before-operate.
 If the operator declines to execute after the select (answers no or closes
 the confirmation prompt), the Server releases the

@@ -190,6 +190,8 @@ The Client packages on the releases page were built on 2 November 2026, before s
 
 1. In the bulk-create wizard the "NodeId template" field is empty by default, so the Server assigns the identifiers; the former default was one the Server refused. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
 
+1. The bulk-create wizard creates the objects of a MODBUS device and the TIT objects of an IEC 60870-5 device with "Two-stage control" set to No: such objects cannot be controlled in two stages, and they used to need switching by hand. The wizard leaves Yes on other new objects; existing objects are not changed. The error box for a refused select now says to ask the engineer who configures the project rather than the administrator. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control).
+
 ### Known limitations {#known-limitations}
 
 Read this list before buying and before upgrading: each limitation is described in detail on the page it links to.

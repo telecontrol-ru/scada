@@ -103,6 +103,8 @@ set-point command — `P_ME_NC_1` by default, or the type an `INT16:` or
 the select stage, with nothing sent to the device. So on objects controlled
 with such a command (usually TIT objects), set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
+The [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
+wizard sets No by itself on the TIT objects it creates.
 
 With [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) of a TS
 object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then

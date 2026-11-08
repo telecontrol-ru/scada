@@ -459,12 +459,13 @@ IEC 60870-5 (SELECT/EXECUTE):
    Server refuses the select and sends nothing to the device. Instead of the confirmation
    prompt the Client then shows an error box: "Two-stage control is not
    available for this object: its device cannot select a command. Nothing was
-   sent to the device. Ask the administrator to turn off two-stage control for
-   this object." The control window stays open, and nothing is left selected.
+   sent to the device. Ask the engineer who configures the project to turn off
+   two-stage control for this object." The control window stays open, and nothing is left selected.
    Such an object is controlled in one stage: the engineer who configures the
    project (with the Configure right) sets its
-   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No —
-   ask that person, although the message names the administrator.
+   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
+   The Multiple Create wizard sets No by itself on the MODBUS objects and the
+   IEC 60870-5 TIT objects it creates.
    If the device itself refuses the select, the error box starts with
    "Preparation for control failed" and ends with "The command was not
    executed."
