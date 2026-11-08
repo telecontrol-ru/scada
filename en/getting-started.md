@@ -39,13 +39,24 @@ the Windows Server installer `telecontrol-scada-<version>.msi` and the Linux Ser
 packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
 Server installation steps on this page cannot be followed.
 
-So today the 2.6.3 Client is installed on workstations that work with a
-2.5.7 Server. What works in that combination and what does not is listed
-under [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
-**Do not use the 2.6.0 Client with a 2.5.7 Server:** it lacks the support
-for a 2.5.7 Server, and two-stage control of objects does not work with it.
+So today the 2.6.3 Client can be installed, for evaluation, on workstations
+that work with a 2.5.7 Server (see [Buying now](#buy-now)). What works in
+that combination and what does not is listed under
+[Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+2.6 Clients before 2.6.3 lack the support for a 2.5.7 Server, and two-stage
+control of objects does not work with them. **Do not use the 2.6.0 Client**
+at all — it also stores the remembered automatic-login password
+unencrypted; use the 2.6.3 Client.
 
-**Buying now.** Until the 2.6 Server packages are published, a new site can
+**WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
+earlier install the Server as a single *Telecontrol SCADA Server* service and
+do not contain the separate 2.6 processes. The earlier rules apply to them: the
+*Telecontrol SCADA Server* service, a HASP or Guardant hardware key, and the
+configuration in `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
+
+### Buying now {#buy-now}
+
+Until the 2.6 Server packages are published, a new site can
 install only a 2.5.7 Server, with the installer `telecontrol-scada-2.5.7.msi`
 from release [2.5.7](https://github.com/alexsmn/scada-client/releases/tag/v2.5.7).
 It has no `scada-setup` command, and its installation is not described in
@@ -58,13 +69,9 @@ For running a site on a 2.5.7 Server, the 2.5.7 Client from the same
 installer remains the tested choice; it is also the one for managing users
 and exporting the configuration, which the 2.6.3 Client cannot do with a
 2.5.7 Server. The 2.6.3 Client with a 2.5.7 Server is, for now, for
-evaluation.
+evaluation. The schematic display module is not part of the releases and is
+supplied separately; agree the terms of its supply with Telecontrol.
 
-**WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
-earlier install the Server as a single *Telecontrol SCADA Server* service and
-do not contain the separate 2.6 processes. The earlier rules apply to them: the
-*Telecontrol SCADA Server* service, a HASP or Guardant hardware key, and the
-configuration in `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
 
 ## Choose the Server processes {#choose}
 
@@ -258,8 +265,9 @@ in [Installing the Client](#client-install).
 
 ### The computer's parameters {#host-parameters}
 
-`scada-setup` does not remember the options it was run with. **Write down,
-for each computer,** and keep with the passwords:
+`scada-setup` remembers only the license file path and, on Linux, the data
+folder; it does not remember the other options. **Write down, for each
+computer,** and keep with the passwords:
 
 * `--tiers` — this computer's processes;
 * `--central` — the central computer's address (on a computer without
@@ -273,12 +281,14 @@ for each computer,** and keep with the passwords:
 * `--allow-anonymous-opcua` — if you gave it (on the computer with
   `scada-proxy`);
 * `--license` — if the license file is not at
-  `%ProgramData%\Telecontrol\SCADA Server\license.json`;
+  `%ProgramData%\Telecontrol\SCADA Server\license.json` (on Linux, not at
+  `/var/lib/scada/license.json`);
 * `--data-root` — if you gave a non-standard data folder;
 * the `svc` password and the `root` password.
 
-**Give these options to every `apply` and `start` on that computer** (and
-the passwords to `apply`), upgrades and restores included:
+**Give these options to every `apply` on that computer** (with the
+passwords), and `--tiers` to every `start` as well, upgrades and restores
+included:
 
 * without `--tiers` both commands take **every** process in the license:
   `apply` installs processes that do not belong on the computer, and `start`
@@ -296,9 +306,11 @@ the passwords to `apply`), upgrades and restores included:
 * on a site without encryption, `apply` without `--insecure-links` on the
   central computer creates a certificate authority, and the other computers
   lose contact with it until they join again with `--central-fingerprint`;
-* without `--license` both commands look for the license at
-  `%ProgramData%\Telecontrol\SCADA Server\license.json`, and `apply` writes
-  that path into the parameter files (but not into the services);
+* `apply` without `--license` looks for the license at
+  `%ProgramData%\Telecontrol\SCADA Server\license.json` (on Linux,
+  `/var/lib/scada/license.json`) and writes that path into the parameter
+  files (but not into the services); `start` and `status` check the path the
+  last `apply` wrote;
 * give `--license` as a full path, beginning with the drive letter:
   `scada-setup` hands the path to the processes as written, and a relative
   path does not lead them to the same file.
@@ -307,8 +319,10 @@ the passwords to `apply`), upgrades and restores included:
 the computer has, so they need no `--tiers` or `--central`. Without
 `--license`, `status` and `start` check the license file whose path `apply`
 wrote into the processes' parameter files, so `--license` need not be given
-again (on Windows, give `--data-root` if the data folder is not the standard
-one).
+again. On Windows, give a non-standard data folder with `--data-root` to
+`status`, `start`, `set-password` and `remove --purge-data` as well:
+without it these commands work on the default folder, and `set-password`,
+for one, writes the passwords there and points the services at that file.
 
 **If `apply` was run without `--tiers`** and installed processes that do not
 belong, remove their services (the processes' data stays):
@@ -502,7 +516,8 @@ central computer prints it (see
 `data/Certificates` folder, the certificate authority included — uninstall
 that way only when the computer leaves the site for good. For an archive
 installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
-then delete the `/opt/telecontrol-scada` folder; on the central computer, if
+then delete the `/opt/telecontrol-scada` and `/etc/scada` folders (in the
+latter `scada-setup` records the data folder); on the central computer, if
 the program will be installed again, first save the `data/Certificates/ca`
 subfolder and put it back before `apply` (see
 [A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
@@ -517,8 +532,8 @@ only its `secrets` folder, with the file `service-secrets.env` that holds the
 `apt remove` that file stays. Delete the `secrets` folder
 (`<data folder>/secrets`) by hand if the program was installed from the
 archive (`scada-setup remove` and deleting the installation folder), or if
-the data folder is not `/var/lib/scada` and no `apply` or `remove` of the
-current version has run on the computer, which leaves no record of it. If
+the data folder is not `/var/lib/scada` and the processes' services had
+already been removed before `apt purge`, which leaves no record of it. If
 the data is no longer needed, delete the
 folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
 created in [Network preparation](#network).
@@ -573,13 +588,13 @@ service: once the file is in place, start the processes with `start` and the
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
 ```
 
-If the license was given with `--license` elsewhere at installation,
-replace the file at that path: `start` and `status` check the file named in
-the processes' parameter files, so `--license` need not be given again.
-
 ```sh
 sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's processes>
 ```
+
+If the license was given with `--license` elsewhere at installation,
+replace the file at that path: `start` and `status` check the file named in
+the processes' parameter files, so `--license` need not be given again.
 
 If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 

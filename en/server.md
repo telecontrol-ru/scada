@@ -163,7 +163,8 @@ Client take effect in every process.
   and `migrate --execute`; for `set-password`, the new password. It may be
   at most 64 bytes long, or `scada-setup` refuses to run: a Latin letter or
   digit takes one byte and a Cyrillic letter two (passwords are stored in
-  UTF-8 on Windows and Linux alike), so a password of Cyrillic letters only
+  UTF-8 on Windows and Linux alike; on Windows `scada-setup` has not yet
+  been tried on a site), so a password of Cyrillic letters only
   may be at most 32 characters.
 * `--root-password <password>` (or the `SCADA_SETUP_ROOT_PASSWORD`
   environment variable) — the [root password](#root-password), required by
@@ -214,7 +215,8 @@ Client take effect in every process.
   certificate, and it is the name a link's Computer property gives (see
   [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
 
-**`scada-setup` does not remember its options.** Write down each computer's
+**`scada-setup` remembers only the license path and, on Linux, the data
+folder.** It does not remember the other options. Write down each computer's
 `--tiers`, `--central`, `--advertise`, `--license`, the central computer's
 fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
 `--assigned-links-only`, `--insecure-links`, `--allow-anonymous-opcua` and
@@ -222,7 +224,8 @@ fingerprint (`--central-fingerprint`) and, if you gave them, `--host-name`,
 `--tiers` to every `start`; `start` does not need `--central`), upgrades and
 restores included (on Linux, `start`, `status`, `stop`, `remove` and
 `set-password` without `--data-root` take the data folder from the installed
-services):
+services; on Windows, give a non-standard data folder to `status`, `start`,
+`set-password` and `remove --purge-data` too):
 
 * `start` without `--tiers` takes every process in the license, starts those
   whose services the computer has, and prints
@@ -790,7 +793,8 @@ Each Server process needs a signed license file. The license states an
 expiry date and the processes purchased; a process the license does not name
 will not run. No hardware key is used. The license limits nothing else: not
 the number of objects or devices, nor the number of computers, Clients or
-copies of one process. Ask Telecontrol about the license term and renewal.
+copies of one process. License types and terms, renewal and its cost, and
+the terms of exchanging a hardware key are agreed with Telecontrol.
 
 The settings live in the `license` block of the parameter file:
 
@@ -848,10 +852,11 @@ under a temporary name and rename it to `license.json` over the old one
 
 Versions 2.5 and earlier used a HASP or Guardant hardware key, and ran for two
 hours in demo mode without one. **Version 2.6 has no demo mode**: without a
-license the Server processes do not run. To evaluate the system or to order a
-license, contact Telecontrol (mail@telecontrol.ru) and name the processes the
-site needs (see
+license the Server processes do not run. Once the 2.6 Server packages are
+published, to evaluate the system or to order a license, contact Telecontrol
+(mail@telecontrol.ru) and name the processes the site needs (see
 [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
+Until then see [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now).
 
 ## Configuration storage
 
@@ -1201,6 +1206,10 @@ command prompt:
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --svc-password <new password>
 ```
+
+If the data folder is not the standard one, on Windows add
+`--data-root <folder>`: without it the command writes the password into the
+default folder and points the services at that file.
 
 **Run it on every Server computer, in this order:**
 
@@ -1711,8 +1720,11 @@ rem and C:\Program Files\Telecontrol SCADA\data\Certificates
 A restore also needs the `svc` password, the `root` password, and the
 [computer's parameters](#scada-setup-options) — the `--tiers`, `--central`,
 `--advertise`, `--license`, the central computer's fingerprint and the other
-options, if given, that `scada-setup apply` was run with on it;
-none of them is in the backup.
+options, if given, that `scada-setup apply` was run with on it. Some of them
+are in the copied parameter files of the processes, and on Linux the copy
+also holds `secrets/service-secrets.env` with the passwords, but the backup
+does not give them in a form `apply` can reuse — keep the written record of
+the options and passwords separately.
 
 ### Configuration backup
 

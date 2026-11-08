@@ -117,10 +117,12 @@ Incoming values can be:
 * scaled linearly for measured values
 * calculated from a [formula]({{ '/en/formulas/' | relative_url }})
 
-This describes redundancy of an object's data sources. Redundancy of the
-Server itself (a second, hot-standby Server) is not described in this
-version of the manual, and `scada-setup` does not set it up; ask Telecontrol
-about it.
+This describes redundancy of an object's data sources. **Redundancy of the
+Server itself (a second, hot-standby Server) is not a supported
+configuration in version 2.6**, and `scada-setup` does not set it up. So the
+central computer (`scada-config`, `scada-proxy`, `scada-historian` and
+`scada-filesystem`) is a single point of failure of the site: while it is
+down, the Clients get no data. Ask Telecontrol about redundancy.
 
 ## Devices and protocols
 
