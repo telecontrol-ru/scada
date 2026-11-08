@@ -7,9 +7,9 @@ permalink: /en/
 # Overview
 
 {: .note }
-> **Version 2.6.** This manual describes version 2.6, published as release
-> [2.6.0]({{ '/en/changes/' | relative_url }}#v2-6). Only the Client packages
-> are attached to release 2.6.0 so far: the Windows Server installer and the
+> **Version 2.6.** This manual describes version 2.6, published as releases
+> [2.6.0 and 2.6.1]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
+> have been published for version 2.6 so far: the Windows Server installer and the
 > Linux Server packages will be added later, and until then the version 2.6
 > Server cannot be installed
 > ([Download]({{ '/en/getting-started/' | relative_url }}#download)). The previous release,

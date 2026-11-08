@@ -29,10 +29,13 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 ## Download {#download}
 
 Distributions are published on the
-[Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases/latest).
+[Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases). The version 2.6
+Client packages are in release [2.6.1](https://github.com/alexsmn/scada-client/releases/tag/v2.6.1). The page marks
+release 2.5.7 as the latest, because it is the last release that carries a
+Server installer.
 
-**WARNING:** release 2.6.0 carries only the Client packages for now; the
-Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server
+**WARNING:** releases 2.6.0 and 2.6.1 carry only the Client packages for now;
+the Windows Server installer `telecontrol-scada-<version>.msi` and the Linux Server
 packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
 Server installation steps on this page cannot be followed.
 
@@ -304,7 +307,7 @@ version with every release:
 * **`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`** — for macOS on a
   computer with Apple silicon, macOS 26 or newer. Open the disk image and
   drag *Telecontrol SCADA Client* to *Applications*. The release notes say
-  whether the app is signed and notarised by Apple; the release 2.6.0
+  whether the app is signed and notarised by Apple; the release 2.6.1
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
   refusal, open *System Settings → Privacy & Security* and click *Open
   Anyway*.
@@ -315,8 +318,8 @@ version with every release:
 The Server installer `telecontrol-scada-<version>.msi` is meant to carry the
 Windows Client too: the Client goes on every computer the package is
 installed on, with a *Клиент* (Client) shortcut on the desktop and in the
-*Start — ОИК Телеконтроль* menu. That installer is not attached to release
-2.6.0 yet (see [Download](#download)), so for now the Client is installed
+*Start — ОИК Телеконтроль* menu. That installer is not published for
+version 2.6 yet (see [Download](#download)), so for now the Client is installed
 from the archive or the disk image. Once the installer is published:
 
 * **On a Windows operator workstation** you may, instead of the archive,
@@ -354,7 +357,7 @@ work. Editing Modus schematics still needs the Modus graphics editor.
 
 ## Installation on Linux {#linux}
 
-**WARNING:** the Linux Server packages are not attached to release 2.6.0 yet
+**WARNING:** the Linux Server packages are not published for version 2.6 yet
 (see [Download](#download)); until they are, the steps in this section cannot
 be followed.
 

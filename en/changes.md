@@ -10,13 +10,13 @@ permalink: /en/changes/
 * TOC
 {:toc}
 
-Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); releases 2.6.0 and 2.5.7 are available there today. Distributions of earlier versions are not published. The rest of this manual describes version 2.6; how it differs from 2.5.7 is described below.
+Distributions are published on the [GitHub releases page](https://github.com/alexsmn/scada-client/releases); releases 2.6.1, 2.6.0 and 2.5.7 are available there today, and release 2.5.7 is marked as the latest because it is the last one that carries a Server installer. Distributions of earlier versions are not published. The rest of this manual describes version 2.6; how it differs from 2.5.7 is described below.
 
-## 2.6.0 {#v2-6}
+## 2.6.0 and 2.6.1 {#v2-6}
 
-Published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
+Release 2.6.0 was published on the releases page on 7 November 2026 with the Client packages for Windows and macOS. The Windows Server installer `telecontrol-scada-2.6.0.msi` and the Linux Server packages (`.deb` and `.tar.gz`) are not attached to it yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
 
-The Client packages on the releases page were built on 2 November 2026, before some of the changes listed below: the readable message when the Server refuses two-stage control, the hatching of unreliable shapes and the "?" in value fields with no value on Vidicon schematics, and the improved drawing of Modus shapes. These changes arrive with the next build of the Client and the display module.
+The release 2.6.0 Client packages were built on 2 November 2026, before some of the changes listed below. Release 2.6.1, published on 8 November 2026, carries only Client packages rebuilt from later sources, and they include every Client change listed below. The changes to drawing Vidicon and Modus schematics — the hatching of unreliable shapes, the "?" in value fields with no value, the position of the Modus separator and the improved drawing of Modus shapes — are made in the display module, which is shipped separately, and arrive with its next build.
 
 ### Server
 
@@ -24,7 +24,7 @@ The Client packages on the releases page were built on 2 November 2026, before s
 
 1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows (Windows services) and Linux (systemd services). See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
 
-1. The Windows Server installer, `telecontrol-scada-<version>.msi`, is meant as one package carrying every Server process, `scada-setup` and the Windows Client; it is not attached to release 2.6.0 yet. In addition, the releases page carries Client packages: an archive for Windows (`Telecontrol-SCADA-Client-<version>-windows-x64.zip`) and a disk image for macOS 26 or later on Apple silicon (`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`). See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
+1. The Windows Server installer, `telecontrol-scada-<version>.msi`, is meant as one package carrying every Server process, `scada-setup` and the Windows Client; it is not published for version 2.6 yet. In addition, the releases page carries Client packages: an archive for Windows (`Telecontrol-SCADA-Client-<version>-windows-x64.zip`) and a disk image for macOS 26 or later on Apple silicon (`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`). See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
 1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
 
@@ -70,7 +70,7 @@ The Client packages on the releases page were built on 2 November 2026, before s
 
 1. A new installation starts from an empty project — no objects, devices, links or users; sign in with the built-in `root` account. The demo project (objects with emulation, IEC 60870-5-104 links, users with no passwords, schematics) is installed on request: `scada-setup apply --demo`. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
-1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (not attached to release 2.6.0 yet; installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+1. A Linux Server package — a `.deb` and a `.tar.gz` archive for x86-64 Linux with systemd (not published for version 2.6 yet; installation tried in an Ubuntu 24.04 container, not yet on a working site): the same processes except `scada-opc` and `scada-vidicon`, and `scada-setup`, which creates a systemd service per process. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
 1. Fixed: a command that an IEC 60870-5-104 device rejects is reported as an error, not as successfully completed.
 

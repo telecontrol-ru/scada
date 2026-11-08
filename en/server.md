@@ -342,8 +342,8 @@ work with it on a Server computer (see
 
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
-**WARNING:** the version 2.6 Server installer is not attached to release
-2.6.0 yet (see [Download]({{ '/en/getting-started/' | relative_url }}#download));
+**WARNING:** the version 2.6 Server installer is not published yet
+(see [Download]({{ '/en/getting-started/' | relative_url }}#download));
 until it is, the upgrade cannot be carried out.
 
 Versions 2.5 and earlier installed a single process — the *Telecontrol SCADA
