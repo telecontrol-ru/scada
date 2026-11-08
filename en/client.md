@@ -19,6 +19,14 @@ collected under
 in particular, the alarm tone is off for every new account. The limitations of the whole release are collected under
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
+Until the version 2.6 Server is published, the 2.6 Client is connected to a
+2.5.7 Server. The Client works this way from release 2.6.2: the 2.6.0 Client
+cannot perform two-stage control with a 2.5.7 Server. What does not work with
+a 2.5.7 Server, and how it differs from what this page describes, is listed
+under [Known limitations — Upgrading from version 2.5]({{ '/en/changes/' | relative_url }}#limits-upgrade); on this
+page the differences for [two-stage control](#two-stage) and
+[shift handover](#shift-change) are noted separately.
+
 ## Main areas
 
 The graphical client is the main operator application. It provides access to diagrams, tables, graphs, event windows, configuration tools, and data export functions.
@@ -202,6 +210,14 @@ To hand over a shift without closing the client:
 The sign-in window this command opens always waits for input: the outgoing
 operator's stored password is not filled in there (see
 [Automatic sign-in](#auto-login)).
+
+> **Caution. With a 2.5.7 Server the profile is not kept on the Server.** The
+> client opens the profile from a file on this computer, and that file is one
+> per operating-system user, not per SCADA account. So the incoming operator
+> gets the outgoing operator's pages and settings, including the alarm tone,
+> the "Control confirmation" setting and the severity threshold. After taking
+> over the shift, check them; preferably, operators work under separate
+> operating-system accounts.
 
 A shift can also be handed over by closing the client:
 
@@ -486,6 +502,12 @@ selected until its own selection timeout expires." The selection stays armed
 until that timeout. The message is always shown, whatever the setting for
 reporting successful control. When the select was refused (see step 2),
 there is nothing to release, and no message is given.
+
+**With a 2.5.7 Server** the Client performs two-stage control the way the
+2.5.7 Client did: on any answer other than yes, and when the control window
+is closed, the Client does **not** release the selection and adds no message
+about it — the selection stays armed until the device's selection timeout
+expires.
 
 One-stage control is a single value write and uses neither stage; the
 confirmation box is shown before that write.

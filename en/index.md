@@ -12,7 +12,9 @@ permalink: /en/
 > have been published for version 2.6 so far: the Windows Server installer and the
 > Linux Server packages will be added later, and until then the version 2.6
 > Server cannot be installed
-> ([Download]({{ '/en/getting-started/' | relative_url }}#download)). The previous release,
+> ([Download]({{ '/en/getting-started/' | relative_url }}#download)). So the 2.6 Client
+> works today with a 2.5.7 Server — from release 2.6.2 on, and without every
+> version 2.6 capability ([Upgrading from version 2.5]({{ '/en/changes/' | relative_url }}#limits-upgrade)). The previous release,
 > [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
 > differently: its Server is a single service with a HASP or Guardant
 > hardware key, not a set of separate processes. The version 2.6 license is

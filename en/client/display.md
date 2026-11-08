@@ -37,16 +37,23 @@ those objects' present state and update with it:
   colours the schematic's settings define for a closed and an open breaker;
   when the schematic defines none, bright green when closed and red when
   open. An **отделитель** (separator) is drawn with the same symbol as in the
-  Modus graphics editor, but the whole symbol takes those same colours by
-  position; the editor always draws it black.
+  Modus graphics editor, but the whole symbol — its lines and arrowhead —
+  is coloured by position with the colours the schematic's settings define
+  for a closed and an open **separator** (not those of a breaker); when the
+  schematic defines none, bright green and red. The editor always draws it
+  black.
 * **A text field** (a shape with the *текст*, "text", property) shows the
   value of its measured (ТИТ) object the way a table does: with its units and
-  with a "?" mark on an unreliable value.
+  with a "?" mark on an unreliable value. When there is no value — the
+  object is not found, not connected, or has not reported a value yet — the
+  field shows "?" alone, not the text its designer drew.
+* **A value board** is drawn as the Modus graphics editor draws it — a box in
+  its own background colour with no outline and a right-aligned number — and
+  shows the bound object's value in it.
 * When a value is **unreliable** or the object is not connected, the
   switching device is hatched in the bad-quality colour: its position on the
   schematic is not confirmed at that moment. Until a value arrives, a device
-  stays in the position its designer drew, and a text field keeps its drawn
-  text.
+  stays in the position its designer drew.
 * When the object has **unacknowledged events**, a frame in the critical
   alarm colour blinks around the shape until the events are acknowledged (by
   double-clicking the shape, see [Working with a schematic](#working), or in
@@ -78,9 +85,10 @@ is marked in it with "?" after the value. When there is no value — the object
 is not found, not connected, or has not reported a value yet — the field
 shows "?" alone, not the text saved in the schematic.
 
-Until a value arrives, and when an object's value disappears, the shape looks
-as it was saved in the schematic; when the connection to the object is lost,
-it is hatched as well.
+Until a value arrives, and when an object's value disappears, a switching
+device and other shapes, except value fields, look as they were saved in the
+schematic; when the connection to the object is lost, they are hatched as
+well.
 
 When the object has unacknowledged events, a frame in the critical alarm
 colour blinks around the shape until the events are acknowledged in the
@@ -90,10 +98,22 @@ Fields whose formula uses the address's description or units functions show
 the text saved in the schematic while the value is reliable; with an
 unreliable value or no value they show "?".
 
-The display module draws these quality marks. If a workstation has a display
-module older than the Client, it may not draw them, and the Client's status
-bar then shows the warning "Old display runtime: bad values may not be
-marked". Install the display module of the same version as the Client.
+## A display module from an earlier build {#old-runtime}
+
+The display module, not the Client itself, draws the marks for unreliable
+and missing values (hatching and "?"), the separator's colouring by position
+and value boards. A display module supplied before Client 2.6.2 came out does
+not draw them: it may show an unreliable or missing value as a reliable one,
+and a separator in black, with no position. The Client checks whether the
+installed module can mark unreliable values and, if it cannot, shows the
+warning "Old display runtime: bad values may not be marked" («Устаревший
+модуль отображения мнемосхем: недостоверные значения могут не отмечаться») in
+its status bar while a schematic is open.
+
+While a workstation has such a module, do not rely on the schematic to judge
+whether a value is reliable: check values and device positions in a
+[table]({{ '/en/client/table/' | relative_url }}) or in the inspector. Ask
+Telecontrol for a display module of the new build.
 
 ## Working with a schematic {#working}
 

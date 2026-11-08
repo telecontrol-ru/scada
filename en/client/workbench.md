@@ -47,12 +47,24 @@ The workbench regions:
 - **Status strip** (bottom) — the event summary, the minimum severity, the
   highest active severity, the user and role, the connection state, the server
   round-trip time, and the server address and version. This is the only place
-  the user and the connection details are shown.
+  the user and the connection details are shown. When the installed display
+  module cannot mark unreliable values, the strip also shows the warning "Old
+  display runtime: bad values may not be marked" («Устаревший модуль
+  отображения мнемосхем: недостоверные значения могут не отмечаться») while a
+  schematic is open (see
+  [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
+
+For an IEC 60870-5 device the Device diagnostics panel also shows the state
+of its link and a "Reconnect now" («Переподключить сейчас») button, which
+drops and re-establishes the connection. The link is shared by every device
+on it, so reconnecting interrupts the exchange with all of them. The button is
+available to an account with the control right; with a version 2.5.7 Server
+neither the link rows nor the button are shown.
 
 > **Caution.** The status bar can be hidden (*Settings → Settings… →
 > Workspace → Status Bar*, separately for each main window), and then nothing
 > in that window reports a lost connection to the Server except the messages
-> in the event panel. Do not hide the status bar at an operator workstation.
+> in the event panel, and nothing at all reports an old display module. Do not hide the status bar at an operator workstation.
 
 The server round-trip time is the age of an outstanding ping, so a growing
 number means no answer is arriving. Past 3 seconds the cell gains a "no
