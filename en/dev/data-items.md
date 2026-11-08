@@ -227,11 +227,13 @@ commands.</dd>
 <dd>Enables the IEC 60870 two-stage control workflow
 <code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
 stage. Default: Yes. The Client creates a new object with the value its
-device calls for — one at a time and with the
-<a href="#bulk-create">Multiple Create</a> wizard alike: No on objects that
+device calls for: No on objects that
 cannot be controlled in two stages (every object of a MODBUS device, OPC
 objects and the TIT (analog) objects of an IEC 60870-5 device, whose command is a set-point
-rather than <code>C_SC_NA_1</code>), Yes on the rest. The device is the one
+rather than <code>C_SC_NA_1</code>), Yes on the rest. It does so for objects
+created one at a time; the <a href="#bulk-create">Multiple Create</a> wizard
+creates objects only on MODBUS and IEC 60870-5 devices and sets No on MODBUS
+and IEC 60870-5 TIT objects. The device is the one
 named by the Control channel, or by the Channel when no control channel is
 set; an object with no channel gets Yes.
 When an object's channel moves to another device and the value still equals
@@ -254,10 +256,12 @@ command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
 SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
 control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
 to the device, and the command is not executed — set No on such objects if
-they have Yes. That is a 2.6 Server's answer; a 2.5.7 Server confirms the
-select of such objects without asking the device, and on a declined command
+they have Yes. That is a 2.6 Server's answer. A 2.5.7 Server confirms the
+select of MODBUS and OPC objects and of IEC 60870-5 commands other than
+<code>C_SC_NA_1</code> without asking the device, and on a declined command
 Client 2.6.3 then reports that the device stays selected although nothing
-was selected (see <a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage
+was selected; controlling an IEC 61850 direct-control object through a 2.5.7
+Server fails, and the command is not executed (see <a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage
 control</a>). The Client sets Yes on IEC 61850 objects however they are created,
 dragging from an IEC 61850 device included: the Server learns the control
 model from the device itself, and the configuration does not hold it.

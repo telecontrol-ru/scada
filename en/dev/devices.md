@@ -590,6 +590,11 @@ to.
    straight into the Address column. The table is described in
    [Transmission rules]({{ '/en/client/workbench/' | relative_url }}#transmission).
 
+   With a 2.5.7 Server no rule is created, neither by ticking an object nor by
+   the wizard: the Client reports "Insert: The Server does not support this.
+   It requires Server version 2.6 or later." (see
+   [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
+
    A rule created by ticking an object gets an address straight away: one
    more than the highest address in this device's table, and address 1 for
    the first rule. Gaps in the numbering are not filled, since they may be
@@ -737,6 +742,13 @@ the registers at addresses 0x0000–0x270F.
   them is not carried out, and the device log records a warning. A write
   at address 0x2710 or above, where no rule can be, is answered with
   exception 02 (Illegal Data Address).
+
+That is how a version 2.6 Server retransmits over MODBUS. **A 2.5.7 Server**
+is simpler: a rule has no Value format, and each rule is sent as one
+unsigned 16-bit register (the fraction dropped) or one bit; only functions
+01–04, 05 and 16 are supported; a request with another function or a
+malformed request is not answered with an exception — the Server closes the
+connection to the receiver.
 
 ## IEC 61850 devices {#iec-61850}
 

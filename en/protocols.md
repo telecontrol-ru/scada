@@ -142,7 +142,7 @@ confirmed at once. Deactivating a command already
 being executed only stops the reply to the DC: the execution on the device
 cannot be undone.
 
-The ASDU type can be overridden in the output field with the format
+The ASDU type can be overridden in the Control channel with the format
 `type:address`, where `type` is one of:
 
 * `BOOL` to use `C_SC_NA_1`
@@ -154,9 +154,11 @@ This override is useful when a measured object must be controlled with
 
 The Client chooses "Two-stage control" by the object's type, not by the
 override: on a TS object controlled through an `INT16:` or `FLOAT:` override,
-set it to No by hand, or the Server refuses the select; a TIT object with a
-`BOOL:` override gets No from the Client, although `C_SC_NA_1` can also be
-executed in two stages.
+set it to No by hand, or a version 2.6 Server refuses the select (a 2.5.7
+Server confirms it without sending anything to the device); a TIT object with
+a `BOOL:` override gets No from the Client, although `C_SC_NA_1` can also be
+executed in two stages — if a select-before-operate is needed, set Yes by
+hand. See [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control).
 
 When UDP server mode is used, multiple remote devices can share one
 direction. Devices are identified by the remote IP address and port, so
