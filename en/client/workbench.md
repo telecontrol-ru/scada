@@ -430,7 +430,8 @@ address" — the receiver cannot
 tell apart objects sent under one address, and a command it sends to that
 address reaches only one of the objects. The Server accepts and transmits such
 rules. A version 2.6 Server writes a "Duplicate destination address" warning
-for each rule whose address is exactly repeated to the
+for every further rule that takes an address already in use (not for the
+first one) to the
 [log]({{ '/en/server/' | relative_url }}#logging) of the process that
 serves the device; it does not warn about overlapping registers, and a 2.5.7
 Server does not warn at all. Correct the addresses yourself.
