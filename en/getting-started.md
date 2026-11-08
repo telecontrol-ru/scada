@@ -17,8 +17,8 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 * Server: Windows 10 or newer, or x86-64 Linux with systemd and glibc 2.38
   or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
-* Client: Windows 10 or newer (x64), or macOS 26 or newer on a computer
-  with Apple silicon (see [Installing the Client](#client-install)); there is no Linux
+* Client: Windows 10 or newer (x64), or macOS on a computer with Apple
+  silicon — the release notes name the lowest macOS version (see [Installing the Client](#client-install)); there is no Linux
   Client
 * Windows administrator rights (`root` on Linux) to install and set up the
   Server
@@ -44,6 +44,10 @@ So today the 2.6.2 Client is installed on workstations that work with a
 under [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
 **Do not use the 2.6.0 Client with a 2.5.7 Server:** it lacks the support
 for a 2.5.7 Server, and two-stage control of objects does not work with it.
+
+**Buying now.** Until the 2.6 Server packages are published, a new site can
+install only a 2.5.7 Server. Ask Telecontrol (mail@telecontrol.ru) about keys
+and licenses for it and about version 2.6 licenses.
 
 **WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
 earlier install the Server as a single *Telecontrol SCADA Server* service and
@@ -313,7 +317,8 @@ version with every version 2.6 release:
   code-signed, so Windows SmartScreen may warn about it on first launch:
   choose *More info* → *Run anyway*.
 * **`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`** — for macOS on a
-  computer with Apple silicon, macOS 26 or newer. Open the disk image and
+  computer with Apple silicon; the release notes name the lowest macOS
+  version. Open the disk image and
   drag *Telecontrol SCADA Client* to *Applications*. The release notes say
   whether the app is signed and notarised by Apple; the release 2.6.2
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
@@ -379,7 +384,9 @@ into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd and glibc
 on a working Linux site). There is no Linux Client: Windows and macOS
 Clients connect to a Linux Server just as they do to a Windows one.
 
-Run every command as `root` (with `sudo`; `status` does not need it).
+Run every command as `root` (with `sudo`; `status` does not need it, but
+when only the `scada` group can read the license it prints
+`License: not available` without `sudo`).
 
 1. Install the package:
 
@@ -406,9 +413,11 @@ Run every command as `root` (with `sudo`; `status` does not need it).
    To keep the license elsewhere, give its path with `--license`; the file
    must be readable by the `scada` account and must not be under `/home`,
    `/root` or `/run/user` (the folder it was downloaded to, for example): the
-   services cannot see those folders, and `apply` refuses such a path. Every
-   folder above the file must also be open to the `scada` account; `apply`
-   warns when it is not.
+   services cannot see those folders, and `apply` and `migrate` refuse such a
+   path. Every folder above the file must also be open to the `scada`
+   account; `apply` warns when it is not. `apply` and `migrate` likewise
+   refuse a data folder (`--data-root`) or an installation folder in those
+   places, so unpack the `.tar.gz` archive into `/opt`, not a home folder.
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
@@ -432,8 +441,11 @@ only the locations differ:
   at boot, are restarted after a failure, and run as the system account
   `scada`, which the package (or, after the archive, `apply`) creates. The
   package and `apply` add the `scada` account to the `dialout` group, which
-  owns the serial ports, also when the account already existed; if
-  an RS-485 adapter belongs to another group, add `scada` to it
+  owns the serial ports, also when the account already existed. When `apply`
+  reports that it added the account to `dialout`, restart the services
+  (`stop`, then `start` with the [computer's parameters](#host-parameters)):
+  a process already running gets the ports only after a restart. If an
+  RS-485 adapter belongs to another group, add `scada` to it
   (`sudo usermod -aG <group> scada`) and restart the services. The protocol
   processes may listen on ports below 1024 (for example port 502 for
   MODBUS TCP retransmission);
@@ -486,6 +498,13 @@ subfolder and put it back before `apply` (see
 [A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
 The `scada` account stays after uninstalling, `apt purge` included; if it is
 no longer needed, delete it with `sudo userdel scada`.
+
+**Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
+folder**: the configuration, history, license and the file
+`/var/lib/scada/secrets/service-secrets.env`, which holds the `svc` and `root`
+passwords unencrypted, all stay. If the data is no longer needed, delete the
+folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
+created in [Network preparation](#network).
 
 ## License {#license}
 
@@ -615,9 +634,22 @@ netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in actio
 ```
 
 **On Linux** open the same ports with your distribution's tools, for example
-`sudo ufw allow proto tcp from 10.0.0.11 to any port 4840,4841,4842` (Ubuntu) or
+on Ubuntu:
+
+```sh
+# Central computer: Clients
+sudo ufw allow proto tcp to any port 2000
+# Central computer, when there are other Server computers:
+sudo ufw allow proto tcp from 10.0.0.11 to any port 4840,4841,4842
+sudo ufw allow proto tcp from 10.0.0.12 to any port 4840,4841,4842
+# Computer running scada-modbus and scada-iec104:
+sudo ufw allow proto tcp from 10.0.0.10 to any port 4843,4844
+```
+
+On distributions with firewalld, rules such as
 `sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.11 port port=4840-4842 protocol=tcp accept'`
-followed by `sudo firewall-cmd --reload` (distributions with firewalld).
+do the same (for the Clients' port, `sudo firewall-cmd --permanent --add-port=2000/tcp`),
+followed by `sudo firewall-cmd --reload`.
 
 **Links that accept connections.** When a link works passively — its
 Transport is of type TCP Server and the SCADA waits to be connected to (for
@@ -773,7 +805,10 @@ For diagnostics, a process can be started in
 
 ## Client login {#client-start}
 
-Start the Client from the desktop shortcut or the Start menu. The login dialog asks for SCADA credentials and, optionally, the target server name or IP address.
+Run `client.exe` from the folder the Client archive was unpacked into, or on
+macOS *Telecontrol SCADA Client* from *Applications*. The desktop and Start
+menu shortcuts are created only by the Server installer, which is not
+published for version 2.6 yet. The login dialog asks for SCADA credentials and, optionally, the target server name or IP address.
 
 ![]({{ '/img/client-login.png' | relative_url }})
 
@@ -908,7 +943,12 @@ upgraded, they update and archive again by themselves
 **On the operator workstations** install the new Client version the same
 way as the old one (see [Installing the Client](#client-install)): unpack
 the new archive or disk image in place of the old one, or install the new
-package, with no `scada-setup` commands:
+package, with no `scada-setup` commands. The display module is not part of
+the Client packages: carry it over from the old Client folder to the new one
+(`display_runtime.dll` beside `client.exe`; on macOS
+`libdisplay_runtime.dylib` in the app's *Contents/Frameworks* folder), or the
+schematic windows show "No display runtime is installed".
+
 
 ```bat
 msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
@@ -990,7 +1030,22 @@ the whole `C:\Program Files\Telecontrol SCADA\data\Certificates` folder
 is then deleted, the certificate authority with it. The steps are
 in [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
 A Client unpacked from the archive or disk image is removed by deleting its
-folder (on macOS, the app in *Applications*).
+folder (on macOS, the app in *Applications*). The Client keeps its settings
+and data elsewhere, and those stay behind:
+
+* on Windows — the login settings in the registry key
+  `HKEY_CURRENT_USER\Software\Telecontrol\Workplace`, the profile, the `pki`
+  certificate folder and other per-user data in
+  `%APPDATA%\Telecontrol\SCADA Client`, shared data in
+  `%ProgramData%\Telecontrol\SCADA Client`, and logs in
+  `%LOCALAPPDATA%\Telecontrol\SCADA Client\logs`;
+* on macOS — the login settings in
+  `~/Library/Application Support/Telecontrol/SCADA Client/settings.json`, data
+  in the same folder, and logs in `~/Library/Logs/Telecontrol/SCADA Client`.
+
+When automatic login was on, the login settings also hold the user's password,
+unencrypted. When a workstation is decommissioned, delete that registry key
+and those folders for every user of the computer.
 
 ## Troubleshooting
 

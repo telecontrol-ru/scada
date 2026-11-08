@@ -12,6 +12,10 @@ permalink: /en/server/
 
 The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux, as system services or in console mode (see [Linux deployment](#linux)).
 
+> The version 2.6 Server packages (the Windows installer and the Linux
+> packages) are not published yet; until they are, only a 2.5.7 Server can be
+> installed (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
+
 The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
 
 ## Runtime modes
@@ -150,8 +154,8 @@ Client take effect in every process.
   too, or it prints `License: not available`. Give a full path (on Windows,
   beginning with the drive letter): the processes receive the path as
   written. On Linux the file must be readable by the `scada` account and must
-  not be under `/home`, `/root` or `/run/user`, which the services cannot
-  see.
+  not be under `/home`, `/root` or `/run/user`: the services cannot see
+  those folders, and `apply` and `migrate` refuse such a path.
 * `--svc-password <password>` (or the `SCADA_SETUP_SVC_PASSWORD` environment
   variable) — the password of the [svc account](#svc), required by `apply`
   and `migrate --execute`; for `set-password`, the new password. It may be
@@ -196,7 +200,11 @@ Client take effect in every process.
   (`%ProgramData%\Telecontrol\SCADA Server` by default, `/var/lib/scada`
   on Linux).
 * `--install-root` — the installation folder. There is no need to give it:
-  it defaults to the folder above the one holding `scada-setup.exe`.
+  it defaults to the folder above the one holding `scada-setup.exe`. On
+  Linux neither the data folder nor the installation folder may be under
+  `/home`, `/root` or `/run/user`: the services cannot see those folders,
+  and `apply` and `migrate` refuse to run. So do not unpack the `.tar.gz`
+  archive into a home folder.
 
 * `--host-name <name>` — this computer's name in place of the Windows
   computer name: `scada-setup` writes it into the parameter files and the
@@ -805,9 +813,13 @@ The license is checked at startup and then every 5 seconds:
 * **The license could not be verified** (for example, the Google Cloud
   metadata server did not answer) — the process keeps running but serves no
   requests until verification succeeds.
-* **The license has expired** — the process keeps running but refuses
-  requests. Once the license file is replaced, service resumes without a
-  restart.
+* **The license has expired** — the process keeps running but refuses every
+  request from Clients and from the site's other processes: reading and
+  subscribing to live values, control, writes, and browsing the
+  configuration and history. Open subscriptions are stopped and the values in
+  the Client turn bad. There is no grace period: requests are refused from
+  the moment the license expires. Once the license file is replaced, service
+  resumes without a restart.
 
 With an expired license `scada-setup` warns that it has expired but still
 goes by the processes the license names: `apply` without `--tiers` installs
@@ -818,7 +830,8 @@ period has not started yet.
 id names whom the license was issued to; quote it when asking Telecontrol
 about the license. During the last 30
 days the Server also raises a daily system event about the expiry, but it is
-visible only in the Client.
+visible only in the Client; there is no other warning, so watch the date with
+`scada-setup status`.
 
 Replace the license file in one step: copy the new file into the same folder
 under a temporary name and rename it to `license.json` over the old one
@@ -1778,7 +1791,9 @@ commands are `sudo /opt/telecontrol-scada/bin/scada-setup …`; the `icacls`
 step is not needed. Files put back as `root` (with `cp -r`, say) belong to
 `root`, but `scada-setup start` gives them back to the `scada` account before
 it starts the services, so on the same computer step 3 (`start`) is enough; on
-a new computer run `apply` as described below.
+a new computer run `apply` as in the steps above ("On a new or rebuilt
+computer"). If `start` reports that the `scada` account does not exist, the
+system was reinstalled — restore with the new-computer steps.
 
 ## `server.json` parameter reference {#parameters}
 
