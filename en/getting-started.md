@@ -1043,9 +1043,12 @@ and data elsewhere, and those stay behind:
   `~/Library/Application Support/Telecontrol/SCADA Client/settings.json`, data
   in the same folder, and logs in `~/Library/Logs/Telecontrol/SCADA Client`.
 
-When automatic login was on, the login settings also hold the user's password,
-unencrypted. When a workstation is decommissioned, delete that registry key
-and those folders for every user of the computer.
+When automatic login was on, the user's password is kept encrypted in the
+same registry key on Windows, and on macOS in the user's keychain, as the
+item "Telecontrol SCADA Client", which deleting the folders does not touch.
+When a workstation is decommissioned, delete that registry key and those
+folders — and on macOS that item in Keychain Access — for every user of the
+computer.
 
 ## Troubleshooting
 

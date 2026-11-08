@@ -286,12 +286,19 @@ forget the stored password.
 > the incoming operator works under the outgoing operator's account: events
 > are acknowledged and commands issued in somebody else's name.
 
-The stored password is kept **unencrypted** in the operating-system user's
-settings: on Windows in the registry, under
-`HKEY_CURRENT_USER\Software\Telecontrol\Workplace`; on macOS in the file
-`~/Library/Application Support/Telecontrol/SCADA Client/settings.json`.
-Anyone with access to that computer user's profile, or to a backup of it,
-can read it, so tick the box only on a computer you trust.
+The stored password is kept in the operating system's protected store, not
+in the client's settings: on Windows it is encrypted by Windows (DPAPI) for
+the user account and written to the registry under
+`HKEY_CURRENT_USER\Software\Telecontrol\Workplace` (value
+`PasswordProtected`); on macOS it is kept in the user's keychain (the
+Keychain Access app, item "Telecontrol SCADA Client"). Only the same user on
+the same computer can decrypt it. Still, anyone who signs in to the computer
+under that account also signs in to SCADA, so tick the box only on a
+computer you trust. A password stored unencrypted by Client 2.6.0 is moved
+into the protected store the first time the new version starts, and removed
+from the settings. After a client update, macOS may ask whether to allow it
+access to the "Telecontrol SCADA Client" keychain item; click Always Allow,
+or automatic login will ask for the password.
 
 How to sign in under another account, or clear the box:
 
