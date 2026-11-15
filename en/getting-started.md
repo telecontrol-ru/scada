@@ -15,8 +15,8 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 ## System requirements
 
-* Server: Windows 10 or newer, or x86-64 Linux with systemd and glibc 2.38
-  or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
+* Server: Windows 10 or newer, or x86-64 Linux with systemd, glibc 2.38
+  or newer and libstdc++ 13 or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
 * Client: Windows 10 or newer (x64), or macOS on a computer with Apple
   silicon, macOS 26 or later (the release notes name the exact minimum; see [Installing the Client](#client-install)); there is no Linux
   Client
@@ -160,7 +160,13 @@ folder, typing `scada-setup` is enough.
    Windows Installer options).
 
 2. Put the license file at
-   `%ProgramData%\Telecontrol\SCADA Server\license.json`.
+   `%ProgramData%\Telecontrol\SCADA Server\license.json`. The installer
+   does not create that folder, so on a new computer create it first:
+
+   ```bat
+   mkdir "%ProgramData%\Telecontrol\SCADA Server"
+   copy license.json "%ProgramData%\Telecontrol\SCADA Server\license.json"
+   ```
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
@@ -241,7 +247,15 @@ did not issue. So `apply` with `--central` but with neither
 Only a site whose computers are all set up with `--insecure-links` runs
 unencrypted.
 The central computer's `--advertise` is the address the other computers use
-in `--central`.
+in `--central`. **Give it at the central computer's first `apply`, even if
+the other computers join later** — including when all processes run on one
+computer for now. Without `--advertise` the central computer's certificate
+names only its computer name, `localhost` and `127.0.0.1`, and computers
+given its IP address in `--central` do not connect to it; fixing that later
+means replacing the certificate, which also changes its fingerprint (see
+[`--advertise`]({{ '/en/server/' | relative_url }}#scada-setup-options)). Or
+give the central computer's computer name in the other computers'
+`--central`.
 
 **Decide `--advertise` before the first `apply` on each protocol computer.**
 A computer set up with `--central` reports its *computer name* to
@@ -290,7 +304,9 @@ computer,** and keep with the passwords:
 passwords), and `--tiers` to every `start` as well, upgrades and restores
 included:
 
-* without `--tiers` both commands take **every** process in the license:
+* without `--tiers` both commands take **every** process in the license
+  (on Linux, except `scada-opc` and `scada-vidicon`, which run on Windows
+  only):
   `apply` installs processes that do not belong on the computer, and `start`
   starts only those whose services the computer has, printing
   `Skipped <process>: not installed on this host` for the rest; if the
@@ -401,8 +417,8 @@ The Server ships for Linux as a package in two forms —
 archive `telecontrol-scada-server-<version>-linux-amd64.tar.gz`. It holds the
 same processes as the Windows installer, except `scada-opc` and
 `scada-vidicon`, and the same `scada-setup` program. The package installs
-into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd and glibc
-2.38 or newer (installation was tried in an Ubuntu 24.04 container, not yet
+into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd, glibc
+2.38 or newer and libstdc++ 13 or newer (installation was tried in an Ubuntu 24.04 container, not yet
 on a working Linux site). There is no Linux Client: Windows and macOS
 Clients connect to a Linux Server just as they do to a Windows one.
 
@@ -626,7 +642,8 @@ So:
   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --root-password <new password>
   ```
 
-  on every computer running one of those processes. The command stores the
+  (on Linux, `sudo /opt/telecontrol-scada/bin/scada-setup set-password
+  --root-password <new password>`) on every computer running one of those processes. The command stores the
   new password and restarts this computer's process services;
 * **the root password is not changed from the Client**: the Server refuses
   such a change and the Client reports it in the event journal, rather than

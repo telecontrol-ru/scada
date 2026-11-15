@@ -59,12 +59,14 @@ reset) does not. The server sets what a password must satisfy — see
   kept in the computer's
   [password file]({{ '/en/server/' | relative_url }}#stored-passwords)
   (encrypted on Windows, readable only by `root` on Linux), and
-  each Server process writes it again every time it starts. So the Server
+  the `scada-config` and `scada-filesystem` processes write it again every
+  time they start. So the Server
   refuses a root password change made from the Client, and the Client
   reports the refusal in the event journal, naming the command that changes
   it. Change the root password with
-  `scada-setup set-password --root-password <new password>` on every Server
-  computer (see
+  `scada-setup set-password --root-password <new password>` on every
+  computer that runs `scada-config` or `scada-filesystem`; on the others the
+  command only restarts every process for nothing (see
   [Root password]({{ '/en/getting-started/' | relative_url }}#root-password)).
 * **The built-in `root` account allows one session at a time.** When `root`
   signs in a second time, from another workstation for example, the Client

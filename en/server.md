@@ -139,9 +139,10 @@ Client take effect in every process.
   license**, while `stop`, `status`, `remove` and `set-password` take every
   Server service the computer has. `generate` requires it.
   On Linux the default set leaves out `scada-opc` and `scada-vidicon`, which
-  run on Windows only, and naming either in `--tiers` is refused with
-  `… runs on Windows only, and this computer is not Windows; nothing was
-  changed`.
+  run on Windows only. Named in the `--tiers` of `apply` or `start`, either
+  is refused with `… runs on Windows only, and this computer is not Windows;
+  nothing was changed`; `stop`, `status`, `remove` and `generate` accept
+  them.
 * `--central <address>` — the central computer's address; required by
   `apply`, `migrate` and `generate` on a computer without `scada-config`.
 * `--advertise <address>` — this computer's address for the others. Without
@@ -355,6 +356,19 @@ when it starts each service and passes the passwords to the process in
 environment variables; the parameter files and service files carry no
 password. Do not give outsiders `root` rights on Server computers, and do not
 copy this file into backups others can read.
+
+**The rest of the data folder can be read by anyone who signs in to the
+computer.** `scada-setup` locks down only the `secrets` folder and the
+certificate's private key; the configuration database (including the Client
+users' password records), the archive and the process logs get ordinary
+permissions — on Windows those inherited from `%ProgramData%`, on Linux the
+defaults (folders `0755`). Restrict the data folder yourself: on Windows
+leave access to administrators and the system account (SYSTEM) only —
+the services run as SYSTEM; on Linux close the process folders inside it: `sudo chmod o-rwx
+/var/lib/scada/*/`. Leave `/var/lib/scada` itself alone: it belongs to
+`root`, and the processes, which run as `scada`, would no longer reach
+their folders and the license in it. Repeat the command after `apply` adds a
+process.
 
 Do not combine a Server computer with an operator workstation. The Server installer puts the
 Client on the computer too, with a desktop shortcut — do not let operators
@@ -1207,6 +1221,12 @@ command prompt:
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --svc-password <new password>
+```
+
+On Linux:
+
+```shell
+sudo /opt/telecontrol-scada/bin/scada-setup set-password --svc-password <new password>
 ```
 
 The command finds the data folder from the installed services, so
