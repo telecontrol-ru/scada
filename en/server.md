@@ -357,18 +357,26 @@ environment variables; the parameter files and service files carry no
 password. Do not give outsiders `root` rights on Server computers, and do not
 copy this file into backups others can read.
 
-**The rest of the data folder can be read by anyone who signs in to the
-computer.** `scada-setup` locks down only the `secrets` folder and the
-certificate's private key; the configuration database (including the Client
-users' password records), the archive and the process logs get ordinary
-permissions — on Windows those inherited from `%ProgramData%`, on Linux the
-defaults (folders `0755`). Restrict the data folder yourself: on Windows
-leave access to administrators and the system account (SYSTEM) only —
-the services run as SYSTEM; on Linux close the process folders inside it: `sudo chmod o-rwx
-/var/lib/scada/*/`. Leave `/var/lib/scada` itself alone: it belongs to
-`root`, and the processes, which run as `scada`, would no longer reach
-their folders and the license in it. Repeat the command after `apply` adds a
-process.
+**The data folder is closed to other users of the computer.** `apply`
+leaves the configuration database (including the Client users' password
+records), the archive and the process logs to the Server alone. On Windows
+the data folder gets access for administrators and the system account
+(SYSTEM), which the services run as, and nobody else — open it from a
+command prompt run as administrator: when Explorer offers to give your own
+account access instead, accepting adds that account to the folder for good.
+On Linux each process folder inside it belongs to `scada` and is closed to
+other users (`0750`), and so is everything the processes create later.
+`/var/lib/scada` itself stays `root`'s and open for reading: the processes,
+which run as `scada`, reach their folders and the license through it, so do
+not close it.
+
+If you restricted the folder yourself before, `apply` keeps what you set:
+on Windows a folder whose inherited permissions you turned off and which
+lets no ordinary users in is left as it is, extra entries included; on
+Linux no folder is opened wider than you left it. What stays your job: keep
+backups and copies of the data folder just as closed, and do not put the
+data folder at the root of a drive (`D:\`) — `apply` leaves the permissions
+of a whole drive alone and says so.
 
 Do not combine a Server computer with an operator workstation. The Server installer puts the
 Client on the computer too, with a desktop shortcut — do not let operators
