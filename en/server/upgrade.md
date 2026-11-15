@@ -227,8 +227,8 @@ Server* service has already been removed by `migrate --execute`. On the same
 computer, from an elevated command prompt:
 
 1. Uninstall both version 2.6 packages in *Control Panel — Programs and
-   Features* (publisher of both: ООО Телеконтроль): first the *Сервер*
-   (Server) program, then the version 2.6 *ОИК Телеконтроль* program. The
+   Features* (publisher of both: ООО Телеконтроль): first the *ОИК Телеконтроль — Сервер*
+   program, then the version 2.6 *ОИК Телеконтроль* program. The
    same from the command line:
 
    ```bat
@@ -244,7 +244,7 @@ computer, from an elevated command prompt:
 
    If the migration stopped before step 7 and the version 2.5
    *ОИК Телеконтроль* program is still in the list, uninstall only the
-   *Сервер* package, and before going further ask Telecontrol
+   *ОИК Телеконтроль — Сервер* package, and before going further ask Telecontrol
    (mail@telecontrol.ru) for the rollback procedure: that rollback has not
    been verified.
 2. Install release 2.5.7 (`telecontrol-scada-2.5.7.msi` from the
@@ -272,7 +272,7 @@ you are sure you will not need them.
 
 The same applies to an upgrade within version 2.6 (to a newer 2.6.x): the
 installer refuses to install an older version over a newer one (the message
-`A later version of ОИК Телеконтроль is already installed`), and restoring a
+`A later version of ОИК Телеконтроль — Сервер is already installed`), and restoring a
 backup [on the same computer]({{ '/en/server/backup/' | relative_url }}#restore) only puts the data back under the
 version that is installed now. **So back up every Server computer before every
 upgrade**: without that backup there is no way back.
@@ -282,7 +282,7 @@ reached, from an elevated command prompt:
 
 1. Stop the processes:
    `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
-2. Uninstall the newer version of the Server package: the *Сервер* (Server)
+2. Uninstall the newer version of the Server package: the *ОИК Телеконтроль — Сервер*
    program (publisher ООО Телеконтроль) in *Control Panel — Programs and
    Features*. The Server package removes the
    services and the Server certificate from the
@@ -374,7 +374,7 @@ On every Server computer:
    after a reinstall `apply` creates a new certificate authority, and every
    other computer of the site has to join again (see
    [A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)).
-2. Uninstall the Server package: the *Сервер* (Server) program (publisher
+2. Uninstall the Server package: the *ОИК Телеконтроль — Сервер* program (publisher
    ООО Телеконтроль) in *Control Panel — Programs and Features*, or from an
    elevated command prompt:
 

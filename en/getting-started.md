@@ -138,8 +138,9 @@ nobody serves those links.
 
 The Server is installed with the `scada-server-<version>.msi` package — one
 package for every Server process and the `scada-setup` tool; it is not
-published for version 2.6 yet (see [Download](#download)). It does not carry
-the Client, which is installed separately (see
+published for version 2.6 yet (see [Download](#download)). In *Control
+Panel — Programs and Features* it appears as *ОИК Телеконтроль — Сервер*. It
+does not carry the Client, which is installed separately (see
 [Installing the Client](#client-install)). You
 choose which processes run on a computer with the `--tiers` option; the
 license decides which of them are allowed.
@@ -945,7 +946,7 @@ changed nor deleted.
 
 ## Uninstalling {#uninstall}
 
-**On Windows**, uninstall the Server package — the *Сервер* (Server) program (publisher
+**On Windows**, uninstall the Server package — the *ОИК Телеконтроль — Сервер* program (publisher
 ООО Телеконтроль) — in *Control Panel — Programs and Features*, as described in
 [Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall). The Server package
 stops and removes the process services and this computer's Server
