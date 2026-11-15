@@ -85,12 +85,10 @@ On the same computer:
    `Certificates` folder, if it is gone, then restrict access to the key file
    with the `icacls` command given below in step 3 for a new computer) back
    from the backup.
-3. Run `scada-setup apply` with the same
-   [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options) and the `svc` and `root`
-   passwords (see [Re-running apply]({{ '/en/server/setup/' | relative_url }}#reapply)). The restored folder takes
+3. Start the processes: `scada-setup start` with the
+   [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options). The restored folder takes
    the permissions of `%ProgramData%`, which let any user of the computer read
-   it; `apply` closes it to other users again and starts the services, while
-   `scada-setup start` does not.
+   it; `start` closes it to other users again before it starts the services.
 4. Check the result: `scada-setup status`.
 
 On a new or rebuilt computer:
@@ -149,8 +147,7 @@ commands are `sudo /opt/telecontrol-scada/bin/scada-setup …`; the `icacls`
 step is not needed. Files put back as `root` (with `cp -r`, say) belong to
 `root`, but `scada-setup start` gives them back to the `scada` account and
 closes the process folders to other users again before it starts the
-services, so on the same computer `scada-setup start` is enough instead of
-step 3
+services, so on the same computer step 3 (`start`) is enough
 while the `secrets` folder is in place (otherwise run `apply` with the
 passwords); on
 a new computer run `apply` as in the steps above ("On a new or rebuilt
