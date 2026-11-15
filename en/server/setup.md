@@ -170,7 +170,9 @@ services):
 
 * `start` without `--tiers` takes every process in the license, starts those
   whose services the computer has, and prints
-  `Skipped <process>: not installed on this host` for the rest;
+  `Skipped <process>: not installed on this host` for the rest; if the
+  computer has none of those services, `start` fails with
+  `none of the requested tier services is installed on this host`;
 * `apply` without `--tiers` installs every process in the license on the
   computer. `remove --tiers <the extra processes>` removes the extra services
   (without `--purge-data` their data stays);

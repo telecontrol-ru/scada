@@ -68,10 +68,6 @@ minutes in the final day), but it is
 visible only in the Client; there is no other warning, so watch the date with
 `scada-setup status`.
 
-Replace the license file in one step: copy the new file into the same folder
-under a temporary name and rename it to `license.json` over the old one
-(`move /y`; on Linux `mv -f`) — see [License]({{ '/en/getting-started/' | relative_url }}#license).
-
 Versions 2.5 and earlier used a HASP or Guardant hardware key, and ran for two
 hours in demo mode without one. **Version 2.6 has no demo mode**: without a
 license the Server processes do not run. Once the 2.6 Server packages are
@@ -79,3 +75,52 @@ published, to evaluate the system or to order a license, contact Telecontrol
 (mail@telecontrol.ru) and name the processes the site needs (see
 [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
 Until then see [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now).
+
+## Replacing the license file {#license-replace}
+
+Running processes re-read the file every 5
+seconds and pick up a new license without a restart. So replace the file in
+one step: copy the new license into the same folder under a temporary name,
+then rename it to `license.json` over the old file:
+
+```bat
+copy new-license.json "%ProgramData%\Telecontrol\SCADA Server\license.new"
+move /y "%ProgramData%\Telecontrol\SCADA Server\license.new" "%ProgramData%\Telecontrol\SCADA Server\license.json"
+```
+
+On Linux the new file must be readable by the `scada` account:
+
+```sh
+sudo install -m 0644 new-license.json /var/lib/scada/license.new
+sudo mv -f /var/lib/scada/license.new /var/lib/scada/license.json
+```
+
+**WARNING:** if the file is missing or only partly written when a process
+checks it (for example while it is being copied over the old one), or on
+Linux is not readable by the `scada` account, the process concludes there is
+no license and stops. Neither Windows nor systemd on Linux restarts such a
+service: once the file is in place, start the processes with `start` and the
+[computer's parameters]({{ '/en/getting-started/' | relative_url }}#host-parameters):
+
+```bat
+"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
+```
+
+```sh
+sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's processes>
+```
+
+If the license was given with `--license` elsewhere at installation,
+replace the file at that path: `start` and `status` check the file named in
+the processes' parameter files, so `--license` need not be given again.
+
+If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
+
+## Adding a process {#license-add}
+
+Replace the file with the new license on every
+computer. On the computer that will run the new process, run
+`scada-setup apply` with that computer's full process list in `--tiers`, the
+new one included, and the same other options as at installation (see
+[Re-running apply]({{ '/en/server/setup/' | relative_url }}#reapply)). Write the
+new list down. If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).

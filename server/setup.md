@@ -172,7 +172,9 @@ permalink: /server/setup/
 
 * `start` без `--tiers` берет все процессы из лицензии, запускает те, службы
   которых есть на компьютере, и про остальные выводит
-  `Skipped <процесс>: not installed on this host`;
+  `Skipped <процесс>: not installed on this host`; если на компьютере нет ни
+  одной из этих служб, `start` завершается ошибкой
+  `none of the requested tier services is installed on this host`;
 * `apply` без `--tiers` устанавливает на компьютер все процессы из лицензии.
   Лишние службы удаляет команда `remove --tiers <лишние процессы>` (без
   `--purge-data` данные остаются);

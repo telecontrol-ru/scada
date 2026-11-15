@@ -153,6 +153,21 @@ and starts them in the right order; `status`, `start`, `stop`, `remove` and
   services depend on `scada-config.service`, and `scada-proxy.service` also
   on `scada-filesystem.service`: stopping a service stops the ones that
   depend on it.
+* The package (or, after the archive, `apply`) creates the `scada` account
+  and adds it to the `dialout` group, which owns the serial ports, also when
+  the account already existed. When `apply` reports that it added the account
+  to `dialout`, restart the services (`stop`, then `start` with the
+  [computer's parameters]({{ '/en/getting-started/' | relative_url }}#host-parameters)): a process
+  already running gets the ports only after a restart. If an RS-485 adapter
+  belongs to another group, add `scada` to it
+  (`sudo usermod -aG <group> scada`) and restart the services. The protocol
+  processes may listen on ports below 1024 (for example port 502 for
+  MODBUS TCP retransmission).
+* The `svc` and `root` passwords are kept in the file
+  `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
+  (see [Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords)).
+* `scada-setup status` prints each service's state as systemd names it:
+  `active` — running, `inactive` — stopped, `failed` — stopped on an error.
 * `apply` rewrites the service file on every run: put your own changes not
   in it but in the `server.override.json` parameter file (see
   [Your own parameters]({{ '/en/server/setup/' | relative_url }}#server-override)) or in a systemd drop-in

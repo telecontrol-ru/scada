@@ -186,16 +186,12 @@ folder, typing `scada-setup` is enough.
    `<root password>` is the password of the built-in `root` account; see
    [Root password](#root-password).
 
-`apply` writes each process's parameter file
-`%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` (the
-folder of `scada-filesystem` is named `filestore`), creates the
-[Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) in
-`C:\Program Files\Telecontrol SCADA\data\Certificates` unless one is already
-there, creates the configuration databases with an empty project (with `--demo`,
-with the demo project, see [Preparing the project](#project); it never
-overwrites an existing one; `scada-filesystem`'s keeps only the `svc`
-service account), registers one Windows service per process, and starts them in the
-right order. To check the result:
+`apply` creates each process's parameter file, the configuration databases —
+with an empty project, or with `--demo` the demo project (see
+[Preparing the project](#project)); existing databases are never
+overwritten — the [Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate)
+and one Windows service per process, and starts the services in order (see
+[Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }})). To check the result:
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" status
@@ -235,27 +231,21 @@ rem Computer running protocol processes:
 ```
 
 The protocol processes need no root password: `scada-config` keeps their
-accounts. `--central` is required on a computer without `scada-config`.
-With `--central-fingerprint`, the computer gets its certificate from the
-site's certificate authority on the central computer, and its processes
-connect to the others encrypted. **Without it, this computer's processes
-cannot connect to the others at all**: the other processes accept neither
-unencrypted connections nor certificates the site's certificate authority
-did not issue. So `apply` with `--central` but with neither
-`--central-fingerprint` nor `--insecure-links` fails and changes nothing (see
+accounts. A computer without `scada-config` needs `--central`, and
+`--central-fingerprint` to join the site: without it its processes cannot
+connect to the others, so `apply` refuses and changes nothing. Only a site
+whose computers are all set up with `--insecure-links` runs unencrypted (see
 [Site certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-site-ca)).
-Only a site whose computers are all set up with `--insecure-links` runs
-unencrypted.
-The central computer's `--advertise` is the address the other computers use
-in `--central`. **Give it at the central computer's first `apply`, even if
-the other computers join later** — including when all processes run on one
-computer for now. Without `--advertise` the central computer's certificate
-names only its computer name, `localhost` and `127.0.0.1`, and computers
-given its IP address in `--central` do not connect to it; fixing that later
-means replacing the certificate, which also changes its fingerprint (see
-[`--advertise`]({{ '/en/server/setup/' | relative_url }}#scada-setup-options)). Or
-give the central computer's computer name in the other computers'
-`--central`.
+
+**Give the central computer `--advertise` at its first `apply`, even if the
+other computers join later** — including when all processes run on one
+computer for now. It is the address the other computers give in
+`--central`; without it the central computer's certificate names only its
+computer name, `localhost` and `127.0.0.1`, computers given its IP address do
+not connect to it, and fixing that later means replacing the certificate,
+which also changes its fingerprint (see
+[`--advertise`]({{ '/en/server/setup/' | relative_url }}#scada-setup-options)). Or give the
+central computer's computer name in the other computers' `--central`.
 
 **Decide `--advertise` before the first `apply` on each protocol computer.**
 A computer set up with `--central` reports its *computer name* to
@@ -302,48 +292,14 @@ computer,** and keep with the passwords:
 
 **Give these options to every `apply` on that computer** (with the
 passwords), and `--tiers` to every `start` as well, upgrades and restores
-included:
-
-* without `--tiers` both commands take **every** process in the license
-  (on Linux, except `scada-opc` and `scada-vidicon`, which run on Windows
-  only):
-  `apply` installs processes that do not belong on the computer, and `start`
-  starts only those whose services the computer has, printing
-  `Skipped <process>: not installed on this host` for the rest; if the
-  computer has none of those services, `start` ends with an error;
-* without `--central`, on a computer without `scada-config`, `apply`
-  refuses to run (`start` does not need it);
-* `apply` without `--assigned-links-only` on a computer where it was given
-  makes that computer serve the links without a computer, and two computers
-  open the same links;
-* `apply` without `--host-name` on a computer where it was given writes the
-  Windows computer name, and the computer stops serving the links assigned
-  to the old name;
-* on a site without encryption, `apply` without `--insecure-links` on the
-  central computer creates a certificate authority, and the other computers
-  lose contact with it until they join again with `--central-fingerprint`;
-* `apply` without `--license` looks for the license at
-  `%ProgramData%\Telecontrol\SCADA Server\license.json` (on Linux,
-  `/var/lib/scada/license.json`) and writes that path into the parameter
-  files (but not into the services); `start` and `status` check the path the
-  last `apply` wrote;
-* give `--license` as a full path, beginning with the drive letter:
-  `scada-setup` hands the path to the processes as written, and a relative
-  path does not lead them to the same file.
-
-`stop`, `status` and `remove` without `--tiers` act on every Server service
-the computer has, so they need no `--tiers` or `--central`. Without
-`--license`, `status` and `start` check the license file whose path `apply`
-wrote into the processes' parameter files, so `--license` need not be given
-again. Likewise they take a non-standard data folder from the installed
-services, so `--data-root` need not be given again either.
-
-**If `apply` was run without `--tiers`** and installed processes that do not
-belong, remove their services (the processes' data stays):
-
-```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" remove --tiers <the extra processes, comma-separated>
-```
+included. What goes wrong when one is left out — processes that do not belong
+on the computer, two computers opening the same links, a site losing contact
+with its central computer — is listed under
+[Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}#scada-setup-options),
+together with how to remove services `apply` installed by mistake. `stop`,
+`status` and `remove` act on every Server service the computer has, and
+`status` and `start` take the license path and the data folder from what
+`apply` installed, so they need none of these options.
 
 ### Installing the Client {#client-install}
 
@@ -467,89 +423,13 @@ when only the `scada` group can read the license it prints
    ```
 
 The options of `apply` and the other commands are the same as on Windows
-(see [Installation on Windows](#installation-on-windows) and
-[Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}));
-only the locations differ:
-
-* the data folder is `/var/lib/scada`: it holds the process folders
-  (`/var/lib/scada/<process>/server.json`; `filestore` for
-  `scada-filesystem`) and the license;
-* every process runs as a systemd service `scada-<process>.service` (for
-  example `scada-config.service`) that `apply` creates; the services start
-  at boot, are restarted after a failure, and run as the system account
-  `scada`, which the package (or, after the archive, `apply`) creates. The
-  package and `apply` add the `scada` account to the `dialout` group, which
-  owns the serial ports, also when the account already existed. When `apply`
-  reports that it added the account to `dialout`, restart the services
-  (`stop`, then `start` with the [computer's parameters](#host-parameters)):
-  a process already running gets the ports only after a restart. If an
-  RS-485 adapter belongs to another group, add `scada` to it
-  (`sudo usermod -aG <group> scada`) and restart the services. The protocol
-  processes may listen on ports below 1024 (for example port 502 for
-  MODBUS TCP retransmission);
-* the `svc` and `root` passwords are kept in the file
-  `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
-  (see [Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords));
-* `scada-setup status` prints each service's state as systemd names it:
-  `active` — running, `inactive` — stopped, `failed` — stopped on an error.
-  Service details are `systemctl status scada-config`, the process's
-  messages `journalctl -u scada-config` and the log in the
-  `/var/lib/scada/<process>/Logs` folder;
-* `migrate --execute` is not available on Linux: the version 2.5 Server ran
-  on Windows only.
-
-**Upgrading.** As on Windows: stop the processes, install the new version
-and run `apply` with the same [computer's parameters](#host-parameters) and
-passwords — `apply` rewrites the parameter files and services from the new
-version's templates:
-
-```sh
-sudo /opt/telecontrol-scada/bin/scada-setup stop
-sudo apt install ./telecontrol-scada-server_<new version>_amd64.deb
-sudo /opt/telecontrol-scada/bin/scada-setup apply --tiers <this computer's processes> … --svc-password <password> --root-password <root password>
-```
-
-For an archive installation, unpack the new archive over the old one with
-the same `tar -xzf … -C /opt` command instead of `apt install`. An
-`apt install` of a newer `.deb` on its own, without `stop`, restarts the
-running services with the new executables, but only `apply` rewrites the
-parameter files.
-
-**Uninstalling.** `sudo apt remove telecontrol-scada-server` stops and
-removes the process services and the computer's certificate; the data in
-`/var/lib/scada` and the site certificate authority (on the central
-computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, so
-after a reinstall the other computers need not join again. The central
-computer's own certificate is removed, and the next `apply` creates a new one
-with a different fingerprint, but the other computers recognise it by the
-certificate authority, so nothing needs changing on them. The new
-fingerprint is needed only to join new computers; `scada-setup status` on the
-central computer prints it (see
-[The central computer's fingerprint changed]({{ '/en/server/opcua/' | relative_url }}#central-fingerprint-changed)).
-`sudo apt purge telecontrol-scada-server` also deletes the whole
-`data/Certificates` folder, the certificate authority included — uninstall
-that way only when the computer leaves the site for good. For an archive
-installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
-then delete the `/opt/telecontrol-scada` folder; on the central computer, if
-the program will be installed again, first save the `data/Certificates/ca`
-subfolder and put it back before `apply` (see
-[A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)).
-The `scada` account stays after uninstalling, `apt purge` included; if it is
-no longer needed, delete it with `sudo userdel scada`.
-
-**Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
-folder**: the configuration, history and license stay. `apt purge` deletes
-only its `secrets` folder, with the file `service-secrets.env` that holds the
-`svc` and `root` passwords unencrypted — also in a data folder chosen with
-`--data-root`, which `scada-setup` records in `/etc/scada/data-root`. After
-`apt remove` that file stays. Delete the `secrets` folder
-(`<data folder>/secrets`) by hand if the program was installed from the
-archive (`scada-setup remove` and deleting the installation folder), or if
-the data folder is not `/var/lib/scada` and the processes' services had
-already been removed before `apt purge`, which leaves no record of it. If
-the data is no longer needed, delete the
-folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
-created in [Network preparation](#network).
+(see [Installation on Windows](#installation-on-windows)). What differs on
+Linux — the data folder `/var/lib/scada`, the systemd services and the
+`scada` account they run as, serial ports, where the passwords are kept, how
+`status` names a service's state — is in
+[Linux deployment]({{ '/en/server/' | relative_url }}#linux). Upgrading and uninstalling on
+Linux are described under [Upgrading](#upgrading) and
+[Uninstalling](#uninstall).
 
 ## License {#license}
 
@@ -563,60 +443,14 @@ evaluate the system, request a license from Telecontrol (mail@telecontrol.ru)
 
 **Expiry.** `scada-setup status` shows when the license ends (the line
 `License: … (<license id>, expires …)`; an expired one shows `EXPIRED` and the
-date). The license id names whom the license was issued to; quote it when
-asking Telecontrol about the license.
-Check it yourself: the Server warns of the coming expiry only as system events
-in the Client, during the last 30 days. Once the license has expired, the
-processes keep running but refuse Client requests until the license is
-replaced.
+date). Check it yourself: the Server warns of the coming expiry only as
+system events in the Client, and once the license has expired the processes
+keep running but refuse Client requests until the license is replaced.
 
-With an expired license `scada-setup` warns but still goes by the processes
-the license names: `apply` without `--tiers` installs exactly those.
-
-**Replacing the license file.** Running processes re-read the file every 5
-seconds and pick up a new license without a restart. So replace the file in
-one step: copy the new license into the same folder under a temporary name,
-then rename it to `license.json` over the old file:
-
-```bat
-copy new-license.json "%ProgramData%\Telecontrol\SCADA Server\license.new"
-move /y "%ProgramData%\Telecontrol\SCADA Server\license.new" "%ProgramData%\Telecontrol\SCADA Server\license.json"
-```
-
-On Linux the new file must be readable by the `scada` account:
-
-```sh
-sudo install -m 0644 new-license.json /var/lib/scada/license.new
-sudo mv -f /var/lib/scada/license.new /var/lib/scada/license.json
-```
-
-**WARNING:** if the file is missing or only partly written when a process
-checks it (for example while it is being copied over the old one), or on
-Linux is not readable by the `scada` account, the process concludes there is
-no license and stops. Neither Windows nor systemd on Linux restarts such a
-service: once the file is in place, start the processes with `start` and the
-[computer's parameters](#host-parameters):
-
-```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
-```
-
-```sh
-sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's processes>
-```
-
-If the license was given with `--license` elsewhere at installation,
-replace the file at that path: `start` and `status` check the file named in
-the processes' parameter files, so `--license` need not be given again.
-
-If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
-
-**Adding a process.** Replace the file with the new license on every
-computer. On the computer that will run the new process, run
-`scada-setup apply` with that computer's full process list in `--tiers`, the
-new one included, and the same other options as at installation (see
-[Re-running apply]({{ '/en/server/setup/' | relative_url }}#reapply)). Write the
-new list down. If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
+To replace the license file, or to add a process to a computer, see
+[Replacing the license file]({{ '/en/server/licensing/' | relative_url }}#license-replace) and
+[Adding a process]({{ '/en/server/licensing/' | relative_url }}#license-add): a license file
+replaced the wrong way stops every process.
 
 A license issued for a Google Cloud virtual machine verifies only on that
 machine; any other license is bound to no computer and needs no setting. See
@@ -995,6 +829,23 @@ processes are being upgraded, their processes' objects are marked bad; once
 upgraded, they update and archive again by themselves
 (see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
 
+**On Linux**, as on Windows: stop the processes, install the new version
+and run `apply` with the same [computer's parameters](#host-parameters) and
+passwords — `apply` rewrites the parameter files and services from the new
+version's templates:
+
+```sh
+sudo /opt/telecontrol-scada/bin/scada-setup stop
+sudo apt install ./telecontrol-scada-server_<new version>_amd64.deb
+sudo /opt/telecontrol-scada/bin/scada-setup apply --tiers <this computer's processes> … --svc-password <password> --root-password <root password>
+```
+
+For an archive installation, unpack the new archive over the old one with
+the same `tar -xzf … -C /opt` command instead of `apt install`. An
+`apt install` of a newer `.deb` on its own, without `stop`, restarts the
+running services with the new executables, but only `apply` rewrites the
+parameter files.
+
 **On the operator workstations** install the new Client version the same
 way as the old one (see [Installing the Client](#client-install)): unpack
 the new archive or disk image in place of the old one, or install the new
@@ -1067,27 +918,48 @@ changed nor deleted.
 
 ## Uninstalling {#uninstall}
 
-Uninstall the *ОИК Телеконтроль* program (publisher ООО Телеконтроль) in
-*Control Panel — Programs and Features*. The installer itself stops and
-removes the process services together with their registry settings, and
-this computer's Server certificate and its private key. It leaves the
-`%ProgramData%\Telecontrol\SCADA Server` data folder (which also holds the
-`svc` and `root` password file) and the firewall rules created in
-[Network preparation](#network) — delete those by hand.
+**On Windows**, uninstall the *ОИК Телеконтроль* program (publisher
+ООО Телеконтроль) in *Control Panel — Programs and Features*, as described in
+[Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall). The installer
+stops and removes the process services and this computer's Server
+certificate. It leaves the `%ProgramData%\Telecontrol\SCADA Server` data
+folder (which also holds the `svc` and `root` password file), the site
+certificate authority on the central computer — so after a reinstall the
+other computers need not join again — and the firewall rules created in
+[Network preparation](#network); delete those by hand. If the computer leaves
+the site for good, uninstall it with
+`msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1`.
 
-**The installer leaves the site certificate authority on the central
-computer**, so after a reinstall the other computers need not join again.
-The installer removes the central computer's own certificate, and the next
-`apply` creates a new one with a different fingerprint, but the other
-computers recognise it by the certificate authority, so nothing needs
-changing on them. The new fingerprint is needed only to join new computers;
-`scada-setup status` on the central computer prints it (see
-[The central computer's fingerprint changed]({{ '/en/server/opcua/' | relative_url }}#central-fingerprint-changed)).
-If the computer leaves the site for good, uninstall it with
-`msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1` —
-the whole `C:\Program Files\Telecontrol SCADA\data\Certificates` folder
-is then deleted, the certificate authority with it. The steps are
-in [Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall).
+**On Linux**, `sudo apt remove telecontrol-scada-server` stops and
+removes the process services and the computer's certificate; the data in
+`/var/lib/scada` and the site certificate authority (on the central
+computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, as
+on Windows, so after a reinstall the other computers need not join again.
+`sudo apt purge telecontrol-scada-server` also deletes the whole
+`data/Certificates` folder, the certificate authority included — uninstall
+that way only when the computer leaves the site for good. For an archive
+installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
+then delete the `/opt/telecontrol-scada` folder; on the central computer, if
+the program will be installed again, first save the `data/Certificates/ca`
+subfolder and put it back before `apply` (see
+[A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)).
+The `scada` account stays after uninstalling, `apt purge` included; if it is
+no longer needed, delete it with `sudo userdel scada`.
+
+**Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
+folder**: the configuration, history and license stay. `apt purge` deletes
+only its `secrets` folder, with the file `service-secrets.env` that holds the
+`svc` and `root` passwords unencrypted — also in a data folder chosen with
+`--data-root`, which `scada-setup` records in `/etc/scada/data-root`. After
+`apt remove` that file stays. Delete the `secrets` folder
+(`<data folder>/secrets`) by hand if the program was installed from the
+archive (`scada-setup remove` and deleting the installation folder), or if
+the data folder is not `/var/lib/scada` and the processes' services had
+already been removed before `apt purge`, which leaves no record of it. If
+the data is no longer needed, delete the
+folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
+created in [Network preparation](#network).
+
 A Client unpacked from the archive or disk image is removed by deleting its
 folder (on macOS, the app in *Applications*). The Client keeps its settings
 and data elsewhere, and those stay behind:
@@ -1172,7 +1044,7 @@ the fix, have the operators restart the Client as a precaution.</dd>
 
 <dt>Every process stopped after the license file was replaced</dt>
 <dd>The file was missing or only partly written when it was checked. Put a
-valid file in place (see <a href="#license">Replacing the license file</a>)
+valid file in place (see <a href="{{ '/en/server/licensing/' | relative_url }}#license-replace">Replacing the license file</a>)
 and run <code>scada-setup start</code> with the
 <a href="#host-parameters">computer's parameters</a>. If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
