@@ -1,6 +1,6 @@
 ---
 title: Таблица
-nav_order: 3
+nav_order: 5
 parent: Клиент
 permalink: /client/table/
 ---

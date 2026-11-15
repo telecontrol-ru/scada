@@ -1,6 +1,6 @@
 ---
 title: Data
-nav_order: 5
+nav_order: 9
 parent: Client
 permalink: /en/client/data/
 ---

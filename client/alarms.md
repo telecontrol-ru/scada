@@ -1,6 +1,6 @@
 ---
 title: Оповещение о тревогах
-nav_order: 7
+nav_order: 4
 parent: Клиент
 permalink: /client/alarms/
 ---

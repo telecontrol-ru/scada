@@ -1,6 +1,6 @@
 ---
 title: Alarm annunciation
-nav_order: 7
+nav_order: 4
 parent: Client
 permalink: /en/client/alarms/
 ---

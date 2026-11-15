@@ -1,6 +1,6 @@
 ---
 title: Operator workbench
-nav_order: 16
+nav_order: 1
 parent: Client
 permalink: /en/client/workbench/
 ---
@@ -77,7 +77,7 @@ again.".
 
 By default the appearance follows the operating system; dark, light and
 high-contrast variants are also available
-([*Settings → Settings... → Colour scheme*](#appearance)).
+([*Settings → Settings... → Appearance → Colour scheme*](#appearance)).
 Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
 change, period selection, object creation, About — follow the same theme.
 
@@ -125,7 +125,7 @@ Right-click a page button for its menu:
 <dt>Open page</dt>
 <dd>Switch to it. Absent when the page is already open.</dd>
 
-<dt>Rename…</dt>
+<dt>Rename</dt>
 <dd>Set the title. Acts on the current page.</dd>
 
 <dt>Duplicate</dt>
@@ -638,7 +638,7 @@ not keeping up with the incoming data.
 Object and device parameters point at these databases: an object's value
 archive and a device's event archive are chosen from this list. Configuring the
 databases on the server side is described under
-[Server]({{ '/en/server/data/' | relative_url }}#history).
+[Databases and files]({{ '/en/server/data/' | relative_url }}#history).
 
 ### Formats {#ts-formats}
 

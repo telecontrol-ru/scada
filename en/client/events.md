@@ -1,6 +1,6 @@
 ---
 title: Event journal
-nav_order: 6
+nav_order: 3
 parent: Client
 permalink: /en/client/events/
 ---
@@ -159,8 +159,16 @@ An object's event severity is set in its properties — see
 * **Limit violations** and returns to normal (see
   [Limit checks]({{ '/en/architecture/' | relative_url }}#limits)).
 * **Manual input** and **unblocking**.
-* **Switching to the backup or primary** data source. Server 2.6 raises
-  these events; a 2.5.7 Server raises none.
+* **Switching to the backup or primary** data source — "Switched to backup
+  source", "Switched to primary source". Server 2.6 raises these
+  events; a 2.5.7 Server raises none. The event takes the object's severity:
+  a switch on a critical object is a critical event, with the tone and an
+  acknowledgement. When a channel fails, every object it feeds raises its own
+  event, and more than ten make an
+  [alarm flood]({{ '/en/client/alarms/' | relative_url }}#escalation). If something else
+  changed at the same moment, the texts are joined with "; ", for example
+  "State change; Switched to backup source". No event is raised if the backup
+  source's value is bad.
 * **Control commands** — the preparation, the command and its result (see
   [Command result]({{ '/en/client/' | relative_url }}#control-result)).
 * **Client messages** ("Local Event") — for example about the connection to
@@ -173,7 +181,7 @@ which only administrators can open — see
 ## Export and printing
 
 The journal can be exported to CSV or Excel (Excel on Windows only) and
-printed — see [Export and import]({{ '/en/client/export/' | relative_url }})
+printed — see [Export]({{ '/en/client/export/' | relative_url }})
 and [Printing]({{ '/en/client/print/' | relative_url }}). Exports contain the
 events themselves: collapsed repeats are expanded by default (the *Expand
 grouped rows* option of the CSV export dialog; an Excel export always expands

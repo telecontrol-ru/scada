@@ -1,6 +1,6 @@
 ---
 title: Portfolios
-nav_order: 12
+nav_order: 11
 parent: Client
 permalink: /en/client/portfolio/
 ---

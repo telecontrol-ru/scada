@@ -441,12 +441,12 @@ comma: `12.5` and `12,5` are the same.
 
 The "Control" dialog shows the present value with its quality marks: "?"
 after a bad value, and the flag letters in square brackets before the value —
-[С] no connection, [У] stale, [Н] connection failure, [К] configuration error,
-[Р] manual input and the rest, the same letters as in the object tree and
-tables (see [Reading values and colours](#quality-legend)). The Inspector
+С no connection, У stale, Н connection failure, К configuration error,
+Р manual input and the rest, the same letters as in the object tree and
+tables, all inside one pair of brackets, for example `[СУ]` (see [Reading values and colours](#quality-legend)). The Inspector
 labels a value "Bad" when it is bad, and also when the device connection is
 lost, the value is stale, or there is a connection failure or a
-configuration error. If [С], [Н], [К] or [У] precedes the value, the equipment's present
+configuration error. If the brackets before the value hold С, Н, К or У, the equipment's present
 state is unknown.
 
 If the object has a control permission condition, the dialog has a
@@ -466,8 +466,8 @@ while the dialog is open, the client reports that the command failed.
 
 1. Check the object's name on the first line of the "Control" dialog (the
    window title just says "Control" and does not name the object).
-2. Make sure the "Current value:" line shows none of [С], [Н], [К], [У] and
-   no "?" (see [Reading values and colours](#quality-legend)).
+2. Make sure the "Current value:" line has no brackets holding С, Н, К or У
+   before the value (for example `[С]` or `[СУ]`) and no "?" after it (see [Reading values and colours](#quality-legend)).
 3. Make sure the status bar reads "Connected".
 4. If the command ended in an error, check the object's present state before
    retrying (see [Command result](#control-result)).
@@ -607,9 +607,9 @@ or "Controlling...".
 > have received and executed the command while the answer never reached the
 > Server. Before retrying, check the object's present state — in the
 > "Control" dialog, the Inspector, the [object panel](#object-tree) or a
-> table: make sure no [С], [Н], [К] or [У] flag precedes the value, the value
+> table: make sure the brackets before the value hold none of С, Н, К or У, the value
 > is good, and it has not already become the commanded one. A schematic is
-> not enough for this check: it does not show the [С], [Н], [К] and [У] flags.
+> not enough for this check: it does not show these flags.
 
 The same setting turns on messages for other successful operations —
 configuration edits, object creation, password changes, unblocking. A failure
@@ -688,11 +688,14 @@ connection or a stale value — for those, see the letters in square
 brackets.</dd>
 
 <dt>Letters in square brackets before the value</dt>
-<dd>Quality flags, shown with their Russian letters: <code>[Р]</code> manual
-input, <code>[Б]</code> blocked, <code>[2]</code> backup channel (from Server 2.6),
-<code>[С]</code> no connection, <code>[Н]</code> connection failure,
-<code>[К]</code> configuration error, <code>[У]</code> stale, <code>[В]</code> limit
-violation. The full list is in
+<dd>Quality flags, shown with their Russian letters, all inside one pair of
+brackets: for example <code>[СУ]</code> is no connection and stale,
+<code>[РБ]</code> manual input and blocked. The letters: Н connection failure,
+К configuration error, С no connection (only one of these three is shown, in
+that order: a connection failure hides a lost connection); Р manual input,
+2 backup channel (from Server 2.6; only one of these two is shown: a manually
+entered value does not show the backup-channel flag); then Б blocked,
+У stale, В limit violation. The full list is in
 <a href="{{ '/en/architecture/' | relative_url }}#quality-flags">Quality flags</a>.</dd>
 
 <dt>The "Quality" column in a table</dt>
@@ -709,7 +712,7 @@ error <code>[К]</code>; the row's cell text is red too;</li>
 </ul>
 Unlike the "?", this column does take a lost connection and staleness into
 account. The "Control" dialog and the confirmation box show them as the
-letters [С], [Н], [К], [У], and the Inspector as "Bad" (see
+letters С, Н, К, У in the brackets before the value, and the Inspector as "Bad" (see
 <a href="#control-checklist">Before a control command</a>).</dd>
 
 <dt>The dot beside a value in the object tree</dt>
@@ -815,7 +818,7 @@ The main operator-facing views:
 * [Device metrics]({{ '/en/client/device-metrics/' | relative_url }})
 * [Debugger]({{ '/en/client/debugger/' | relative_url }})
 * [Portfolios]({{ '/en/client/portfolio/' | relative_url }})
-* [Export and import]({{ '/en/client/export/' | relative_url }})
+* [Export]({{ '/en/client/export/' | relative_url }})
 * [Printing]({{ '/en/client/print/' | relative_url }})
 * [Reports and analysis]({{ '/en/client/reports/' | relative_url }})
 

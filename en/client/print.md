@@ -1,6 +1,6 @@
 ---
 title: Printing
-nav_order: 14
+nav_order: 13
 parent: Client
 permalink: /en/client/print/
 ---
@@ -66,7 +66,7 @@ The table continues onto further pages by rows. It is **not** split by
 width: every column is squeezed to the page width, so a wide table (a summary
 of many objects, for example) prints in narrow columns with wrapped text.
 Choose landscape orientation in the print preview, or export the data to
-CSV ([Export and import]({{ '/en/client/export/' | relative_url }})).
+CSV ([Export]({{ '/en/client/export/' | relative_url }})).
 
 The printout holds what the window shows when you give the command. Print a
 summary once it has finished loading — see

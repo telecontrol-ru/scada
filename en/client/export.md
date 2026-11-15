@@ -1,11 +1,11 @@
 ---
-title: Export and import
-nav_order: 13
+title: Export
+nav_order: 12
 parent: Client
 permalink: /en/client/export/
 ---
 
-# Export and import
+# Export
 {:.no_toc}
 
 * TOC
@@ -57,12 +57,8 @@ different Windows language.
 <dt>Delimiter</dt>
 <dd>
 
-* Comma `,`
-* Semicolon `;`
-* Colon `:`
-* Tab
-* Space
-* A custom character
+An editable list: it offers the characters themselves, `,` `;` `:`, plus
+*Tab* and *Space*; another character can be typed into the field.
 
 The first export proposes the list separator of the Windows regional
 settings — the one Excel on that computer splits the file on: a semicolon `;`
@@ -81,9 +77,8 @@ is changed once in this dialog.
 <dt>Quote</dt>
 <dd>
 
-* Double quote `"`, used by default
-* Single quote `'`
-* A custom character
+An editable list offering the characters `"` (the default) and `'`; another
+character can be typed into the field.
 
 </dd>
 

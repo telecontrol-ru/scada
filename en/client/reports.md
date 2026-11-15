@@ -1,6 +1,6 @@
 ---
 title: Reports and analysis
-nav_order: 15
+nav_order: 8
 parent: Client
 permalink: /en/client/reports/
 ---
@@ -110,7 +110,7 @@ interval:
    give the command — so print or export once no grey values are left and
    new values have stopped appearing.
 6. Save or print the result: CSV export
-   ([Export and import]({{ '/en/client/export/' | relative_url }})) or
+   ([Export]({{ '/en/client/export/' | relative_url }})) or
    [printing]({{ '/en/client/print/' | relative_url }}) with a preview. The
    printout opens with a header: the window title, the period, the
    aggregation function and interval ("Maximum, 1-Hour", for example) and the

@@ -1,6 +1,6 @@
 ---
 title: Наблюдение
-nav_order: 8
+nav_order: 14
 parent: Клиент
 permalink: /client/device-watch/
 ---

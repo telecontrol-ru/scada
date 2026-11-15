@@ -1,6 +1,6 @@
 ---
 title: Пользовательская таблица
-nav_order: 11
+nav_order: 10
 parent: Клиент
 permalink: /client/sheet/
 ---

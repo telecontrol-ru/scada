@@ -7,29 +7,31 @@ permalink: /en/
 # Overview
 
 {: .note }
-> **Version 2.6.** This manual describes version 2.6, published as releases
-> [2.6.0, 2.6.3 and 2.6.4]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
-> have been published for version 2.6 so far: the Windows Server installer and the
-> Linux Server packages will be added later, and until then the version 2.6
-> Server cannot be installed
-> ([Download]({{ '/en/getting-started/' | relative_url }}#download); what can be bought and installed today is under [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)). So the 2.6 Client
-> can today connect only to a 2.5.7 Server — from release 2.6.3 on, and
-> without every version 2.6 capability; the 2.6 Client has not yet been tried
-> against a working 2.5.7 Server
-> ([Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
-> The previous release,
-> [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
-> differently: its Server is a single service with a HASP or Guardant
-> hardware key, not a set of separate processes. The version 2.6 license is
-> issued for a term: after it expires the Server processes refuse requests
-> ([Licensing]({{ '/en/server/licensing/' | relative_url }})). Before buying
-> or upgrading, read the version 2.6
-> [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
-> — in particular, the Client packages do not yet include the display
-> module (it is supplied separately, and without it schematics are not
-> shown), and an account created in the Client can only view data until an
-> administrator assigns it roles with the *Roles…* command
-> ([Assigning roles]({{ '/en/dev/users/' | relative_url }}#assign-roles)).
+> **Today only a 2.5.7 Server can be bought and installed; for version 2.6
+> the Client is published, and the version 2.6 Server is not published yet**
+> ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)).
+>
+> * This manual describes version 2.6, published as releases
+>   [2.6.0, 2.6.3 and 2.6.4]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
+>   have been published for it so far: the Windows Server installer and the
+>   Linux Server packages will be added later
+>   ([Download]({{ '/en/getting-started/' | relative_url }}#download)).
+> * So the 2.6 Client can today connect only to a 2.5.7 Server — from release
+>   2.6.3 on, and without every version 2.6 capability; the 2.6 Client has not
+>   yet been tried against a working 2.5.7 Server
+>   ([Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
+> * The previous release, [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
+>   differently: its Server is a single service with a HASP or Guardant
+>   hardware key, not a set of separate processes.
+> * The version 2.6 license is issued for a term: after it expires the Server
+>   processes refuse requests ([Licensing]({{ '/en/server/licensing/' | relative_url }})).
+> * Before buying or upgrading, read the version 2.6
+>   [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations) — in particular,
+>   the Client packages do not yet include the display module (it is supplied
+>   separately, and without it schematics are not shown), and an account
+>   created in the Client can only view data until an administrator assigns it
+>   roles with the *Roles…* command
+>   ([Assigning roles]({{ '/en/dev/users/' | relative_url }}#assign-roles)).
 
 Telecontrol SCADA is supervisory control and data acquisition software
 for collecting field data, presenting it to operators, issuing control
@@ -70,7 +72,12 @@ used to edit diagrams.
 
 ## Where to start {#roles}
 
-* **Administrator**, who installs and maintains the Server:
+* **Evaluating and buying**: the version 2.6
+  [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations), then
+  [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now).
+* **Administrator**, who installs and maintains the Server: today, a 2.5.7
+  Server ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)); for version 2.6,
+  once its Server is published,
   [Download]({{ '/en/getting-started/' | relative_url }}#download) and
   [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose), then install
   following [Getting started]({{ '/en/getting-started/' | relative_url }}) (on Linux,
@@ -90,12 +97,14 @@ used to edit diagrams.
   [Operator workbench]({{ '/en/client/workbench/' | relative_url }}),
   [Reading values and colours]({{ '/en/client/' | relative_url }}#quality-legend),
   [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}),
-  [Event journal]({{ '/en/client/events/' | relative_url }}), [Control]({{ '/en/client/' | relative_url }}#control)
-  and [Display]({{ '/en/client/display/' | relative_url }}).
-* **Manager**, who only views data: [Summary]({{ '/en/client/summary/' | relative_url }}),
+  [Event journal]({{ '/en/client/events/' | relative_url }}), [Control]({{ '/en/client/' | relative_url }}#control),
+  [Manual input]({{ '/en/client/' | relative_url }}#manual-input), [Display]({{ '/en/client/display/' | relative_url }})
+  and [Shift handover]({{ '/en/client/' | relative_url }}#shift-change).
+* **Manager**, who only views data:
+  [Reports and analysis]({{ '/en/client/reports/' | relative_url }}), [Summary]({{ '/en/client/summary/' | relative_url }}),
   [Graph]({{ '/en/client/graph/' | relative_url }}), [Table]({{ '/en/client/table/' | relative_url }}),
   [Printing]({{ '/en/client/print/' | relative_url }}) and
-  [Export and import]({{ '/en/client/export/' | relative_url }}).
+  [Export]({{ '/en/client/export/' | relative_url }}).
 
 What changed between versions is described in the
 [Change log]({{ '/en/changes/' | relative_url }}).

@@ -1,6 +1,6 @@
 ---
 title: Device watch
-nav_order: 8
+nav_order: 14
 parent: Client
 permalink: /en/client/device-watch/
 ---

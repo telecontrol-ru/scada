@@ -1,6 +1,6 @@
 ---
 title: Отладчик
-nav_order: 10
+nav_order: 16
 parent: Клиент
 permalink: /client/debugger/
 ---

@@ -1,6 +1,6 @@
 ---
 title: Debugger
-nav_order: 10
+nav_order: 16
 parent: Client
 permalink: /en/client/debugger/
 ---

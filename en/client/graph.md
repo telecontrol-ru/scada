@@ -1,6 +1,6 @@
 ---
 title: Graph
-nav_order: 1
+nav_order: 6
 parent: Client
 permalink: /en/client/graph/
 ---
