@@ -1,6 +1,6 @@
 ---
 title: Displays
-nav_order: 4
+nav_order: 6
 parent: Development
 permalink: /en/dev/displays/
 ---
@@ -69,8 +69,9 @@ reopen the display in the Client.
 To bind a discrete or measured object to a display, define an alias for
 the object in its Properties window (the Alias field), opened with
 `Properties` from the object's context menu. An alias may consist of Latin
-and Cyrillic letters, digits and the underscore `_`, must start with a letter
-or `_`, and must not contain spaces.
+and Cyrillic letters, digits and the underscore `_`, with no spaces. Start it
+with a letter or `_`: otherwise a [formula]({{ '/en/formulas/' | relative_url }})
+cannot refer to it (see Alias under [Data items]({{ '/en/dev/data-items/' | relative_url }})).
 
 After the alias is defined, bind it to a display element. Discrete objects
 are bound to elements that have the `положение` ("position") property, and

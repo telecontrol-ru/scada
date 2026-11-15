@@ -1,0 +1,8 @@
+{%- comment -%}
+  The footer in the page's language; the Russian one is site.footer_content.
+{%- endcomment -%}
+{%- if page.lang == 'en' and site.footer_content_en -%}
+  <p class="text-small mb-0">{{ site.footer_content_en }}</p>
+{%- elsif site.footer_content -%}
+  <p class="text-small mb-0">{{ site.footer_content }}</p>
+{%- endif -%}

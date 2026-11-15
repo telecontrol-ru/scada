@@ -1,6 +1,6 @@
 ---
 title: Protocols
-nav_order: 8
+nav_order: 3
 parent: Development
 permalink: /en/protocols/
 ---
@@ -119,8 +119,10 @@ with such a command (usually TIT objects), set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
 The Client sets No by itself, whether objects are created one at a time or
 with the [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
-wizard: on TIT objects, and Client 2.6.4 also on objects with an `INT16:` or
-`FLOAT:` override in the Control channel.
+wizard: on TIT objects. On objects created one at a time, Client 2.6.4 also
+sets No for an `INT16:` or `FLOAT:` override in the Control channel; the
+wizard does not fill that field and decides by the device and the object type
+only.
 
 With [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) of a TS
 object, `C_SC_NA_1` is sent first with the select flag (S/E = 1) and then

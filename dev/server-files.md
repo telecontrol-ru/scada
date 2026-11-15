@@ -1,6 +1,6 @@
 ---
 title: Серверные файлы
-nav_order: 6
+nav_order: 9
 parent: Проектирование
 permalink: /dev/server-files/
 ---

@@ -1,6 +1,6 @@
 ---
 title: Configuration export and import
-nav_order: 5
+nav_order: 8
 parent: Development
 permalink: /en/dev/excel/
 ---
@@ -31,8 +31,8 @@ editor can open. A large configuration is saved compressed (`.xml.gz`);
 decompress such a file before editing it. Either form can be imported.
 
 The file holds configuration only: current values, history and events are
-not part of it. User accounts and roles are left out by default and are never
-written by an import.
+not part of it. The Client does not export user accounts and roles, and an
+import never writes them.
 
 ## Import
 

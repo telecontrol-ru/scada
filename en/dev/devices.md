@@ -162,7 +162,7 @@ Server processes</a>.</dd>
 <dl>
 
 <dt>Address</dt>
-<dd>The device (slave) address in MODBUS requests. Default: 1.</dd>
+<dd>The device (slave) address in MODBUS requests: 1 to 247. Default: 1.</dd>
 
 <dt>Suspend duration, ms</dt>
 <dd>If several devices are polled cyclically and one device stops
@@ -671,11 +671,29 @@ object with a command without select. See
 
 #### Retransmission over MODBUS {#modbus-retransmission}
 
-MODBUS retransmission needs Mode = retransmission on the MODBUS direction:
-the SCADA then answers another system's requests as a slave. The
-transmission table is filled as for IEC 60870-5 (see above), but a rule's
-address is a MODBUS register number, numbered as in a channel address (see
-[MODBUS register addressing](#modbus-registers)):
+In MODBUS retransmission the SCADA answers another system's requests as a
+slave:
+
+1. In the Equipment window right-click an empty part of the window, with
+   nothing selected, and choose `Create -> Modbus direction`.
+2. In the direction's properties set:
+   * Mode — retransmission;
+   * Protocol — TCP for a network, RTU or ASCII for a serial line — whatever
+     the other system polls with;
+   * Transport — a new MODBUS direction is created without one. For a
+     network, in the Transport window: Type = TCP Server, Port = 502 (or the
+     agreed port), Host = `0.0.0.0` to accept connections on all network
+     interfaces; for a serial line, Type = Serial Port and the computer's port;
+   * Disabled = No.
+3. Under the direction create `Create -> Modbus device` for each slave address
+   the other system polls, and set its Address and Disabled = No. The SCADA
+   answers only these addresses: a request to another address gets no answer,
+   with the warning `Device with address N was not found`.
+4. Select the device and fill its transmission table as for IEC 60870-5 (see
+   above).
+
+A rule's address is a MODBUS register number, numbered as in a channel
+address (see [MODBUS register addressing](#modbus-registers)):
 
 | Rule address | Register |
 |:---|:---|

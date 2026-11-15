@@ -1,5 +1,20 @@
 title: "Телеконтроль"
 description: "Оперативный информационно-управляющий комплекс"
+lang: ru
+# The English pages' frame: their title, description, footer and "back to
+# top" text (used by _includes/head.html, footer_custom.html, title.html and
+# components/footer.html). `lang` and `description` reach them through the
+# `en/` defaults below.
+title_en: "Telecontrol SCADA"
+footer_content_en: '<a href="mailto:mail@telecontrol.ru">Telecontrol</a>'
+back_to_top_text_en: "Back to top"
+
+defaults:
+  - scope:
+      path: "en"
+    values:
+      lang: en
+      description: "Telecontrol SCADA user manual: installation, setup, and operation of the Server and the Client"
 
 theme: just-the-docs
 

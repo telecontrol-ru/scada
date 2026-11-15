@@ -1,6 +1,6 @@
 ---
 title: Formulas
-nav_order: 9
+nav_order: 5
 parent: Development
 permalink: /en/formulas/
 ---
@@ -97,7 +97,9 @@ expression, such as `{IEC_DEV.1!115} * 2` or the control condition
 Operators of equal precedence are applied left to right. Parentheses group.
 
 There is no "not equal" operator: `!=` and `<>` are errors. Instead of
-`a != b` write `!(a = b)` or `not(a = b)`.
+`a != b` write `!(a = b)` or `not(a = b)`. Without spaces `a!=b` reads
+differently: a `!` after a letter is taken as part of the name, so the formula
+refers to a non-existent object `a!` and the object gets the [К] flag.
 
 Unary `-` and `!` apply to the nearest operand only: `!a = b` means
 `(!a) = b`, and `-x^2` means `(-x)^2`. Use parentheses when you mean

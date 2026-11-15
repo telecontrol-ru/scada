@@ -1,6 +1,6 @@
 ---
 title: Server files
-nav_order: 6
+nav_order: 9
 parent: Development
 permalink: /en/dev/server-files/
 ---
