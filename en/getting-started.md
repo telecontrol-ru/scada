@@ -34,10 +34,11 @@ Client packages are in release [2.6.4](https://github.com/alexsmn/scada-client/r
 release 2.5.7 as the latest, because it is the last release that carries a
 Server installer.
 
-**WARNING:** releases 2.6.0, 2.6.3 and 2.6.4 carry only the Client packages for now;
-the Windows Server installer `telecontrol-scada-<version>.msi` and the Linux Server
-packages (`.deb` and `.tar.gz`) will be added later. Until they are, the
-Server installation steps on this page cannot be followed.
+**WARNING:** releases 2.6.0, 2.6.3 and 2.6.4 carry only the Client packages for now.
+Both Windows installers — the Server installer `scada-server-<version>.msi`
+and the Client package with the documentation, `telecontrol-scada-<version>.msi`
+— and the Linux Server packages (`.deb` and `.tar.gz`) will be added later.
+Until they are, the Server installation steps on this page cannot be followed.
 
 So today the 2.6.4 Client can be installed, for evaluation, on workstations
 that work with a 2.5.7 Server (see [Buying now](#buy-now)). What works in
@@ -135,9 +136,11 @@ nobody serves those links.
 
 ## Installation on Windows
 
-The Server installer is meant to carry every Server process and the
-`scada-setup` tool; it is not published for version 2.6 yet (see
-[Download](#download)). You
+The Server is installed with the `scada-server-<version>.msi` package — one
+package for every Server process and the `scada-setup` tool; it is not
+published for version 2.6 yet (see [Download](#download)). It does not carry
+the Client, which is installed separately (see
+[Installing the Client](#client-install)). You
 choose which processes run on a computer with the `--tiers` option; the
 license decides which of them are allowed.
 
@@ -150,7 +153,7 @@ folder, typing `scada-setup` is enough.
 1. Install the package:
 
    ```bat
-   msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log
+   msiexec /i scada-server-<version>.msi /qn /norestart /l*v install.log
    ```
 
    `/qn` installs the package without any windows, `/norestart` keeps
@@ -207,8 +210,8 @@ passwords.** `apply` stores them in an encrypted file that only the Server's
 services and administrators can open (see
 [Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords)).
 Do not give untrusted people administrator rights on the Server computers,
-and do not make a Server computer an operator workstation. The Server installer puts
-the Client on the computer too (see [Installing the Client](#client-install)).
+and do not make a Server computer an operator workstation, even if you
+install the Client on it (see [Installing the Client](#client-install)).
 
 **Several computers.** Set up the central computer first. Its `apply`
 prints a line with the fingerprint of its certificate (`scada-setup status`
@@ -322,32 +325,37 @@ version with every version 2.6 release:
 **These packages do not include the display module yet** (see
 [Displaying schematics](#displays)).
 
-The Server installer `telecontrol-scada-<version>.msi` is meant to carry the
-Windows Client too: the Client goes on every computer the package is
-installed on, with a *Клиент* (Client) shortcut on the desktop and in the
-*Start — ОИК Телеконтроль* menu. That installer is not published for
-version 2.6 yet (see [Download](#download)), so for now the Client is installed
-from the archive or the disk image. Once the installer is published:
+On Windows the Client can also be installed with the
+`telecontrol-scada-<version>.msi` package, which carries the Windows Client
+and the documentation and no Server process or `scada-setup`. The package
+creates a *Клиент* (Client) shortcut on the desktop and in the
+*Start — ОИК Телеконтроль* menu, and appears in *Control Panel — Programs and
+Features* as *ОИК Телеконтроль*. It is not published for version 2.6 yet (see
+[Download](#download)), so for now the Client is installed from the archive or
+the disk image. Once the package is published, install it with:
 
-* **On a Windows operator workstation** you may, instead of the archive,
-  install that package with the command
-  `msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`,
-  and **do not run `scada-setup`**: only `scada-setup` creates the Server
-  process services, so without it no Server process runs on that computer.
-  A workstation needs no license file.
-* **On a Server computer** the Client is installed as well. Do not use it as
-  an operator workstation (see the password warning above). If the
-  administrator does not need the Client on that computer, delete the
-  *Клиент* shortcut from the desktop.
+```bat
+msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log
+```
 
-**WARNING:** if Telecontrol has given you a separate Client or Server
-package, do not install it on a computer that already has the
-`telecontrol-scada-<version>.msi` package, nor the other way round, without
-checking the procedure with Telecontrol (mail@telecontrol.ru). Each version
-2.6 package has its own Windows Installer upgrade code, so installing one does
-not remove another, but they all install into the same
-`C:\Program Files\Telecontrol SCADA` folder, and installing them together has
-not been verified.
+* **An operator workstation** needs no license file and no `scada-setup`.
+* **A Server computer** needs the Client package only if an administrator
+  works there with the Client, or if it ran a 2.5 Server (see below). The Server and Client packages install into the
+  same `C:\Program Files\Telecontrol SCADA` folder and do not remove each
+  other. Do not use that Client as an operator workstation (see the password
+  warning above).
+* **On a computer that ran a 2.5 Server**, the Client package removes the
+  version 2.5 program, so it is installed only after the data has been
+  migrated (see [Upgrading from version 2.5](#upgrade-2-5)).
+
+**WARNING:** if Telecontrol has given you some other separate package (a
+Client-only one, for example), do not install it on a computer that already
+has the `scada-server-<version>.msi` or `telecontrol-scada-<version>.msi`
+package, nor the other way round, without checking the procedure with
+Telecontrol (mail@telecontrol.ru). Each version 2.6 package has its own
+Windows Installer upgrade code, so installing one does not remove another,
+but they all install into the same `C:\Program Files\Telecontrol SCADA`
+folder, and installing them together that way has not been verified.
 
 ### Displaying schematics {#displays}
 
@@ -696,8 +704,8 @@ For diagnostics, a process can be started in
 
 Run `client.exe` from the folder the Client archive was unpacked into, or on
 macOS *Telecontrol SCADA Client* from *Applications*. The desktop and Start
-menu shortcuts are created only by the Server installer, which is not
-published for version 2.6 yet. The login dialog asks for SCADA credentials and, optionally, the target server name or IP address.
+menu shortcuts are created only by the Client package
+`telecontrol-scada-<version>.msi`, which is not published for version 2.6 yet. The login dialog asks for SCADA credentials and, optionally, the target server name or IP address.
 
 ![]({{ '/img/client-login.png' | relative_url }})
 
@@ -810,7 +818,7 @@ computer running protocol processes — from an elevated command prompt:
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
+msiexec /i scada-server-<new version>.msi /qn /norestart /l*v install.log
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
 ```
 
@@ -857,8 +865,9 @@ folder: **before** replacing it, copy the module somewhere safe
 afterwards put it in the same place in the new Client. Otherwise the
 schematic windows show "No display runtime is installed".
 
-A workstation whose Client was installed by the Server installer (not yet
-published for version 2.6) is upgraded with:
+A workstation or Server computer whose Client was installed with the
+`telecontrol-scada-<version>.msi` package (not yet published for version 2.6)
+is upgraded with:
 
 ```bat
 msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
@@ -867,9 +876,17 @@ msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 ### Upgrading from version 2.5 {#upgrade-2-5}
 
 A version 2.5 Server ran as a single *Telecontrol SCADA Server* service and
-used a hardware key. The version 2.6 installer replaces the version 2.5
-program, so **check the migration plan before installing 2.6**: what blocks
-the migration can only be fixed in version 2.5.
+used a hardware key. The migration removes the version 2.5 service, and the
+version 2.6 Client package removes the 2.5 program itself, so **check the
+migration plan before installing 2.6**: what blocks the migration can only be
+fixed in version 2.5.
+
+**The order of the packages matters here:** first the Server package
+`scada-server-<version>.msi` and the data migration, and only then the Client
+package `telecontrol-scada-<version>.msi`. The Server package installs beside
+version 2.5 and removes nothing of it, while the Client package upgrades the
+version 2.5 program and so removes it together with its service — which must
+not happen before the data is migrated.
 
 How to go back to version 2.5 is described in
 [Rolling back to version 2.5]({{ '/en/server/upgrade/' | relative_url }}#rollback-2-5).
@@ -879,13 +896,15 @@ On the computer where the 2.5 Server ran:
 1. Obtain a version 2.6 license and put it at
    `%ProgramData%\Telecontrol\SCADA Server\license.json`.
 2. Back up the `%ProgramData%\Telecontrol\SCADA Server` folder.
-3. Unpack the 2.6 package into a temporary folder without installing it, and
+3. Unpack the 2.6 Server package into a temporary folder without installing it, and
    run `scada-setup migrate` from there — it changes nothing and prints the
    plan. Fix in version 2.5 whatever blocks the migration, and check again.
    The steps are in
    [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
-4. Install the version 2.6 package
-   (`msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`).
+4. Stop the *Telecontrol SCADA Server* service (Control Panel — Services)
+   and install the version 2.6 Server package
+   (`msiexec /i scada-server-<version>.msi /qn /norestart /l*v install.log`).
+   It installs into the same folder as version 2.5.
 5. From an elevated command prompt, run:
 
    ```bat
@@ -908,19 +927,24 @@ On the computer where the 2.5 Server ran:
    **If the command fails after copying, do not run `migrate` again** —
    finish with `apply` with the same `--tiers` and passwords (see
    [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5)).
-6. Install the version 2.6 Client on **every** workstation (see
+6. Only then install the Client package on this same computer
+   (`msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`):
+   it removes the version 2.5 program from *Programs and Features*. Then check
+   the services with `scada-setup status` (details in
+   [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5)).
+7. Install the version 2.6 Client on **every** workstation (see
    [Installing the Client](#client-install)): whether a version 2.5 Client works
    with a 2.6 Server has not been verified.
-7. Check the result from the Client.
+8. Check the result from the Client.
 
 The old `Configuration`, `History` and `FileSystem` folders are neither
 changed nor deleted.
 
 ## Uninstalling {#uninstall}
 
-**On Windows**, uninstall the *ОИК Телеконтроль* program (publisher
-ООО Телеконтроль) in *Control Panel — Programs and Features*, as described in
-[Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall). The installer
+**On Windows**, uninstall the Server package — the *Сервер* (Server) program (publisher
+ООО Телеконтроль) — in *Control Panel — Programs and Features*, as described in
+[Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall). The Server package
 stops and removes the process services and this computer's Server
 certificate. It leaves the `%ProgramData%\Telecontrol\SCADA Server` data
 folder (which also holds the `svc` and `root` password file), the site
@@ -928,7 +952,9 @@ certificate authority on the central computer — so after a reinstall the
 other computers need not join again — and the firewall rules created in
 [Network preparation](#network); delete those by hand. If the computer leaves
 the site for good, uninstall it with
-`msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1`.
+`msiexec /x scada-server-<version>.msi SCADA_PURGE_CERTIFICATES=1`. A Client
+installed on this computer with the `telecontrol-scada-<version>.msi` package
+stays; uninstall it separately — the *ОИК Телеконтроль* program.
 
 **On Linux**, `sudo apt remove telecontrol-scada-server` stops and
 removes the process services and the computer's certificate; the data in

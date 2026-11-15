@@ -318,7 +318,7 @@ backups and copies of the data folder just as closed, and do not put the
 data folder at the root of a drive (`D:\`) — `apply` leaves the permissions
 of a whole drive alone and says so.
 
-Do not combine a Server computer with an operator workstation. The Server installer puts the
-Client on the computer too, with a desktop shortcut — do not let operators
-work with it on a Server computer (see
+Do not combine a Server computer with an operator workstation. If the Client
+package (with its desktop shortcut) is installed on a Server computer too, do
+not let operators work with it (see
 [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install)).
