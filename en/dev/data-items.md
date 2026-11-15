@@ -324,8 +324,8 @@ the same way.</dd>
 <dd>If the value is not updated within this interval, it is marked as
 stale.</dd>
 
-<dt>Display parameters</dt>
-<dd>For discrete objects, selects the display format used in the UI.
+<dt>Parameters</dt>
+<dd>The display format of a discrete object. For discrete objects, selects the display format used in the UI.
 The available formats can be managed from <code>More -&gt; Formats</code>.</dd>
 
 <dt>Inversion</dt>

@@ -150,6 +150,9 @@ The ASDU type can be overridden in the Control channel with the format
 * `INT16` to use `P_ME_NB_1`
 * `FLOAT` to use `P_ME_NC_1`
 
+The type is written in upper case: the Server rejects an address such as
+`float:5`.
+
 This override is useful when a measured object must be controlled with
 `C_SC_NA_1` instead of the default measured-value command ASDU.
 

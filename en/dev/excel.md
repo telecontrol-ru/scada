@@ -16,6 +16,12 @@ menu:
 - `Export Configuration...` saves the configuration to a file;
 - `Import Configuration...` loads a file back into the server.
 
+Both commands work only with a version 2.6 Server. With a 2.5.7 Server the
+Client reports "The configuration could not be exported: The Server does
+not support this. It requires Server version 2.6 or later." (on import,
+"&lt;file&gt; cannot be imported: …" with the same explanation; see
+[Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
+
 ## The file
 
 The configuration is saved as a standard OPC UA

@@ -304,7 +304,7 @@ Fields:
   is the same as `;swapwords`; for DOUBLE it is the way to read the most
   significant word first
 
-Coils and discrete inputs (numbers 1–9999 and 10001–19999) accept only
+Coils and discrete inputs (numbers 1–10000 and 10001–20000) accept only
 `BOOL`; the Server rejects an address such as `INT16:123`.
 
 Examples:
