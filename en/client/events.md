@@ -159,7 +159,6 @@ An object's event severity is set in its properties — see
 * **Limit violations** and returns to normal (see
   [Limit checks]({{ '/en/architecture/' | relative_url }}#limits)).
 * **Manual input** and **unblocking**.
-* **Switching to the backup or primary** data source.
 * **Control commands** — the preparation, the command and its result (see
   [Command result]({{ '/en/client/' | relative_url }}#control-result)).
 * **Client messages** ("Local Event") — for example about the connection to

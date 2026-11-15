@@ -35,17 +35,18 @@ context menu.
 
 ## Context menu
 
-Right-clicking the graph area opens a context menu with commands to:
+Right-clicking the graph area opens a context menu with these commands:
 
-* show or hide the legend
-* show or hide point markers
-* switch between stepped and linear rendering
-* show or hide the horizontal scrollbar
-* change the line color
-* change the graph background color
-* jump to the current time and re-enable auto-scrolling
-* add a new sub-graph area
-* remove the selected sub-graph area
+* **Legend** — show or hide the legend.
+* **Dots** — show or hide point markers.
+* **Steps** — switch between stepped and linear rendering.
+* **Scroll Bar** — show or hide the horizontal scrollbar.
+* **Scroll to Now** — jump to the current time and re-enable auto-scrolling.
+* **Line Color...** — change the line color.
+* **Graph Setup...** — set the color and weight of the selected line.
+* **Background Color...** — change the graph background color.
+* **Add Pane** — add a new graph pane.
+* **Delete Pane** — remove the selected pane.
 
 ## Series inspector
 
@@ -106,7 +107,7 @@ automatically as new historical ranges become visible.
 The time interval can also be changed from the *Period* submenu of the
 **Item** menu by selecting a period relative to the current time. To return to the latest
 data and resume automatic scrolling as new values arrive, use the
-`Current time` command from the graph context menu.
+**Scroll to Now** command from the graph context menu.
 
 To zoom, drag on the corresponding scale:
 

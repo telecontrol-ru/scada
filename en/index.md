@@ -55,7 +55,8 @@ For operation, the system requires one computer for a single-machine
 deployment or multiple computers for a distributed deployment. The Server
 processes run on Windows 10 or newer and on x86-64 Linux (`.deb` and
 `.tar.gz` packages, systemd services; see
-[Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)).
+[Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux));
+the version 2.6 Server installer and packages are not published yet.
 The Client runs on Windows 10 or newer and on macOS 26 or newer on computers with Apple
 silicon (see
 [Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
@@ -86,7 +87,7 @@ Example of a distributed deployment:
 
 ## Key features
 
-* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows and Linux and the Client on Windows and macOS
+* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows and Linux (the version 2.6 Server is not published yet) and the Client on Windows and macOS
 * Modus and Vidicon [displays]({{ '/en/client/display/' | relative_url }}) with live
   switch positions and values; for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).

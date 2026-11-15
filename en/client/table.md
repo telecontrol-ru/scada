@@ -71,34 +71,33 @@ rendering of values and timestamps.
 ## Context menu
 
 The row context menu includes the following commands. Commands that do not
-apply to the current selection (for example *Delete* or *Move* with no row
-selected) are greyed out:
+apply to the current selection (for example *Delete Row* or *Move Up* with no
+row selected) are greyed out:
 
 <dl>
-
-<dt>Object commands</dt>
-<dd>Commands for the selected object, such as
-<a href="{{ '/en/client/graph/' | relative_url }}">Graph</a>,
-<a href="{{ '/en/client/table/' | relative_url }}">Table</a>,
-<a href="{{ '/en/client/display/' | relative_url }}">Display</a>,
-<a href="{{ '/en/client/data/' | relative_url }}">Data</a>,
-<a href="{{ '/en/client/summary/' | relative_url }}">Summary</a>, and
-<a href="{{ '/en/client/events/' | relative_url }}">Event journal</a>.</dd>
 
 <dt>Rename (F2)</dt>
 <dd>Lets the user edit the formula or object reference for the selected
 row.</dd>
 
-<dt>Move up / Move down</dt>
+<dt>Move Up / Move Down</dt>
 <dd>Changes the row order inside the table.</dd>
 
-<dt>Delete</dt>
+<dt>Delete Row</dt>
 <dd>Removes the selected rows from the table.</dd>
 
 <dt>Sort</dt>
 <dd>Provides name-based and channel-based sorting options.</dd>
 
 </dl>
+
+The same menu then lists the commands for the selected object, such as
+[Graph]({{ '/en/client/graph/' | relative_url }}),
+[Table]({{ '/en/client/table/' | relative_url }}),
+[Display]({{ '/en/client/display/' | relative_url }}),
+[Data]({{ '/en/client/data/' | relative_url }}),
+[Summary]({{ '/en/client/summary/' | relative_url }}) and
+[Event journal]({{ '/en/client/events/' | relative_url }}).
 
 ## Formulas {#formulas}
 
@@ -115,11 +114,11 @@ Two sort modes are available from the `Sort` submenu:
 
 <dl>
 
-<dt>By name</dt>
+<dt>Name</dt>
 <dd>Sort rows alphabetically, using a natural number order so names like
 `Object 2` appear before `Object 10`.</dd>
 
-<dt>By channels</dt>
+<dt>Channel</dt>
 <dd>Sort rows first by object type and then by input-channel number to
 group values by device channels.</dd>
 

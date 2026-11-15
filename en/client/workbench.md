@@ -61,7 +61,7 @@ on it, so reconnecting interrupts the exchange with all of them. The button is
 available to an account with the control right; with a version 2.5.7 Server
 neither the link rows nor the button are shown.
 
-> **Caution.** The status bar can be hidden (*Settings → Settings… →
+> **Caution.** The status bar can be hidden (*Settings → Settings... →
 > Workspace → Status Bar*, separately for each main window), and then nothing
 > in that window reports a lost connection to the Server except the messages
 > in the event panel, and nothing at all reports an old display module. Do not hide the status bar at an operator workstation.
@@ -77,7 +77,7 @@ again.".
 
 By default the appearance follows the operating system; dark, light and
 high-contrast variants are also available
-([*Settings → Settings… → Colour scheme*](#appearance)).
+([*Settings → Settings... → Colour scheme*](#appearance)).
 Values and timestamps in all tables render in a monospace font. Dialogs — login, control and manual input, limits, password
 change, period selection, object creation, About — follow the same theme.
 
@@ -168,7 +168,7 @@ long path is shortened to fit the strip.
 
 ## Settings {#settings}
 
-*Settings → Settings…* opens the client's settings. The Settings button at the
+*Settings → Settings...* opens the client's settings. The Settings button at the
 foot of the [section rail](#activity-bar) opens the same thing — one command
 behind both, so the settings live in exactly one place.
 
@@ -212,7 +212,7 @@ speech-synthesis voice it is shown disabled — see
 
 ## Appearance {#appearance}
 
-The appearance is chosen in *Settings → Settings…*, from the
+The appearance is chosen in *Settings → Settings...*, from the
 **Colour scheme** list — next to *Style*, and behaving the same way: the
 choice applies immediately and in full, with no restart.
 

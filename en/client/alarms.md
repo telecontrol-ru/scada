@@ -14,12 +14,14 @@ permalink: /en/client/alarms/
 The client announces unacknowledged events in several ways: a count and
 severity tiles, opening the event panel, flashing the window, a tone and a
 spoken message. The count and the tiles are always on; the rest are switched
-on and off on the settings screen: **Settings → Settings… → Events & alarms**.
+on and off on the settings screen: **Settings → Settings... → Events & alarms**.
 
 These preferences live in the user's profile, which is saved on this computer
 and, when the client exits or on *More → Disconnect from Server*, on the
 Server (see
-[Shift handover]({{ '/en/client/' | relative_url }}#shift-change)).
+[Shift handover]({{ '/en/client/' | relative_url }}#shift-change)). The
+exception is **Speech**: the client does not save it, so it is on again at
+every sign-in, even if it was turned off last time.
 
 ## Which events raise the alarm {#escalation}
 
@@ -50,6 +52,10 @@ of errors. They count according to their severity:
   "Unacknowledged N"), in the "Unacknowledged critical" and "Alarm flood"
   indicators, and towards both conditions above. An error message is critical
   and so sounds, while a single warning does not sound on its own;
+* **a disconnection because the same credentials signed in at another
+  workstation** ("Disconnected from server … These credentials are being used
+  to log in from another workstation.") is reported as an error, so it is
+  critical and sounds;
 * **the client's information messages** — a successful command or the
   connection being restored, for example — are not in the tiles and sound
   neither the tone nor the spoken message.
@@ -92,7 +98,7 @@ With the option off, the panel stays on screen until the operator closes it.
 
 > **Caution.** The tone is off for **every new** account: the setting is kept
 > in the user's profile, so it has to be turned on under each operator account
-> — **Settings → Settings… → Events & alarms → Sound Alarm on Event**. Spoken
+> — **Settings → Settings... → Events & alarms → Sound Alarm on Event**. Spoken
 > announcements exist on Windows only, so on macOS this tone is the only
 > audible alarm: while it is off, the client on macOS raises alarms silently.
 >
@@ -127,7 +133,10 @@ silent on an alarm without saying so.
 > Server uses a 0–100 scale — set 80) and performs
 > [Manual input]({{ '/en/client/' | relative_url }}#manual-input) on it; the
 > manual-input event carries the object's severity. Afterwards acknowledge
-> the event. Keep a sound assigned to the Windows
+> the event. To repeat the test, first remove manual input from the object
+> (*Unlock*): another manual input on an object already in manual mode may
+> raise no new event. Instead of manual input you can also change one of the
+> object's limits so that its value crosses it. Keep a sound assigned to the Windows
 > "Exclamation" event and the volume up on that computer, and test the tone
 > again after changing the Windows sound scheme or the audio device.
 {: #tone-check}
@@ -167,14 +176,17 @@ to hold again — a new critical event after the previous one was acknowledged,
 say — it speaks again.
 
 Spoken announcements are switched on and off on the settings screen with
-**Speech** in **Events & alarms**, next to the tone. On a computer without a
+**Speech** in **Events & alarms**, next to the tone. Turning it off lasts only
+until the next sign-in: at sign-in speech is on again. On a computer without a
 speech-synthesis voice the switch is shown disabled.
 
 ## What is always visible
 
 The status bar shows the number of unacknowledged events ("Events: N",
-client messages included), the event panel's severity threshold ("Severity: N") and
-the highest severity among the Server's unacknowledged events.
+client messages included; "No events" when there are none), the event panel's
+severity threshold ("Severity: N") and the highest severity among the Server's
+unacknowledged events — the word "Critical" or "Warning" in the severity's
+colour; with no unacknowledged critical event or warning, that place is empty.
 
 The context strip at the top shows the "Critical N", "Warning N" and
 "Unacknowledged N" tiles — for the Server's events and the client's own

@@ -24,8 +24,8 @@ the visible time range — see
 [Graph: printing and export]({{ '/en/client/graph/' | relative_url }}#print-export).
 Displays and user tables cannot be exported.
 
-To export data, choose the `Export to CSV` command in the window's
-context menu.
+To export data, choose *Export — Export to CSV* in the window's context
+menu.
 
 ### Export options
 
@@ -78,7 +78,7 @@ is changed once in this dialog.
 
 </dd>
 
-<dt>Quote character</dt>
+<dt>Quote</dt>
 <dd>
 
 * Double quote `"`, used by default
@@ -140,7 +140,7 @@ summary once it has finished loading — see
 
 ## Export to Excel {#excel}
 
-The `Export to Excel` command opens the window's data in a new Microsoft
+The *Export — Export to Excel* context-menu command opens the window's data in a new Microsoft
 Excel workbook. It is offered for the same windows as CSV export and writes
 the same cell text. The command exists only on Windows, and only on a
 computer with Microsoft Excel installed; elsewhere it is not in the menu. If

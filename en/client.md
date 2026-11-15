@@ -107,8 +107,9 @@ search for commands and signals by name.
 The status bar shows:
 
 * the number of unacknowledged events, "Events: N" (the client's own messages
-  are included in it), and the highest severity among the Server's
-  unacknowledged events
+  are included in it; "No events" when there are none), and the highest
+  severity among the Server's unacknowledged events — "Critical" or
+  "Warning" in the severity's colour, empty when there is neither
 * the current-events panel's severity threshold ("Severity: N"). It hides
   events from that panel only: the count, the tiles, the tone, the spoken
   announcement, window flashing and *More → Acknowledge All* take every event
@@ -188,7 +189,9 @@ account on another computer and ends your session (see
 ("Disconnected from server … These credentials are being used to log in from
 another workstation.", «Отключено от сервера … С этими учётными данными
 выполнен вход на другом рабочем месте.») and does **not** reconnect by itself —
-otherwise it would end the session on the other workstation in turn.
+otherwise it would end the session on the other workstation in turn. The
+message is an error: it is critical and turns on the tone and the spoken
+announcement.
 
 ## Shift handover {#shift-change}
 
@@ -355,7 +358,7 @@ as:
 * *Acknowledge* — acknowledges all of the object's unacknowledged events
 * *Unlock* — removes the object's blocking (available only while the object
   is blocked; see [Manual input](#manual-input))
-* *Control…* — a control command (see [Control](#control))
+* *Control...* — a control command (see [Control](#control))
 * *Manual Input* (see [Manual input](#manual-input))
 
 If a matching window is already open for the same object, the client
@@ -418,8 +421,8 @@ acknowledged too: the threshold hides them from the panel only (see
 
 ## Control {#control}
 
-A telecontrol or teleadjustment command is issued with *Control…* — in the
-object's context menu, in the **Item** menu, or with the button in the
+A telecontrol or teleadjustment command is issued with *Control...* in the
+object's context menu or the **Item** menu, or with the *Control…* button in the
 [Inspector]({{ '/en/client/workbench/' | relative_url }}#inspector). It needs
 the Control privilege.
 
@@ -471,7 +474,7 @@ while the dialog is open, the client reports that the command failed.
 
 ### Command confirmation {#control-confirmation}
 
-The *Control Confirmation* setting (*Settings → Settings… → Control*) is on by
+The *Control Confirmation* setting (*Settings → Settings... → Control*) is on by
 default and is on again at every sign-in. While it is on, before a command goes to the equipment the client
 shows a confirmation box: the object's name, "Present:" and "Command:" — the
 present and the commanded values — and the warning "This control command is
@@ -590,7 +593,7 @@ or "Controlling...".
   Client message naming the signal and the value sent, ending "Operation
   completed successfully".
 * **Failure.** A message box titled "Control" (or "Manual Input") shows the
-  reason, for example "Not enough rights to perform the operation." The
+  reason, for example "Not enough rights to perform the operation". The
   control dialog stays open so the command can be retried. The event journal
   records a "Control - Failed (…)" event with the error code in brackets, for
   example "Control - Failed (Bad_Timeout)" («Управление - Ошибка
@@ -686,7 +689,7 @@ brackets.</dd>
 
 <dt>Letters in square brackets before the value</dt>
 <dd>Quality flags, shown with their Russian letters: <code>[Р]</code> manual
-input, <code>[Б]</code> blocked, <code>[2]</code> backup channel,
+input, <code>[Б]</code> blocked,
 <code>[С]</code> no connection, <code>[Н]</code> connection failure,
 <code>[К]</code> configuration error, <code>[У]</code> stale, <code>[В]</code> limit
 violation. The full list is in
@@ -777,7 +780,7 @@ whole. When nothing shown is waiting, the command is unavailable.
 
 With *Show Events on Arrival* on, the panel opens by itself when a new
 unacknowledged event arrives, and *Hide Events on Acknowledge* closes it again
-once the last one is acknowledged. Both are on the *Settings → Settings… →
+once the last one is acknowledged. Both are on the *Settings → Settings... →
 Events & alarms* screen; they, the alarm tone and the severity threshold are
 covered on the
 [alarm annunciation page]({{ '/en/client/alarms/' | relative_url }}).
