@@ -22,15 +22,15 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. The Server is split into separate processes: `scada-config` (configuration), `scada-proxy` (Client connections), `scada-historian` (archive), `scada-filesystem` (files), the protocol processes `scada-modbus`, `scada-iec104` and `scada-iec61850`, and `scada-opc` and `scada-vidicon` (Windows only). Each process runs as its own Windows service (*Telecontrol SCADA Config*, *Telecontrol SCADA Proxy*, *Telecontrol SCADA Historian* and so on) instead of the single *Telecontrol SCADA Server* service. The processes are purchased separately. See [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
 
-1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows (Windows services) and Linux (systemd services). See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
+1. The `scada-setup` program: `apply` creates the parameter files, configuration databases and services of the processes and starts them; `status`, `start`, `stop` and `remove` manage the services; `migrate` moves the data of a version 2.5 Server. `scada-setup` runs on Windows (Windows services) and Linux (systemd services). See [Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}).
 
 1. The Windows Server installer, `telecontrol-scada-<version>.msi`, is meant as one package carrying every Server process, `scada-setup` and the Windows Client; it is not published for version 2.6 yet. In addition, the releases page carries Client packages: an archive for Windows (`Telecontrol-SCADA-Client-<version>-windows-x64.zip`) and a disk image for macOS 26 or later on Apple silicon (`Telecontrol-SCADA-Client-<version>-macos-arm64.dmg`). See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
-1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+1. The license is a signed `license.json` file listing the purchased processes, instead of a HASP or Guardant hardware key. A process not named in the license does not run. The license is bound to no computer and needs no setting, except one issued for a Google Cloud virtual machine, which runs only there. `scada-setup status` shows the license id — whom the license was issued to. See [Licensing]({{ '/en/server/licensing/' | relative_url }}).
 
-1. There is no longer an unlicensed demo mode: in version 2.5 a Server without a hardware key ran for two hours in demo mode, whereas in version 2.6 a process the license does not name — including when there is no license file — stops right after it starts. To evaluate version 2.6, request a license from Telecontrol once the 2.6 Server packages are published; until then see [What to buy now]({{ '/en/getting-started/' | relative_url }}#buy-now). See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+1. There is no longer an unlicensed demo mode: in version 2.5 a Server without a hardware key ran for two hours in demo mode, whereas in version 2.6 a process the license does not name — including when there is no license file — stops right after it starts. To evaluate version 2.6, request a license from Telecontrol once the 2.6 Server packages are published; until then see [What to buy now]({{ '/en/getting-started/' | relative_url }}#buy-now). See [Licensing]({{ '/en/server/licensing/' | relative_url }}).
 
-1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data and the site certificate authority stay. The `SCADA_PURGE_CERTIFICATES=1` parameter (on Linux, `apt purge`) deletes the whole certificate folder, the authority included. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+1. Uninstalling the program removes the process services itself (with `scada-setup remove`) and the Server certificate; the processes' data and the site certificate authority stay. The `SCADA_PURGE_CERTIFICATES=1` parameter (on Linux, `apt purge`) deletes the whole certificate folder, the authority included. See [Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall).
 
 1. The same protocol process can be installed on several computers, splitting the devices of its protocol between them: a link's Computer property names the computer that serves it, and the computers that serve only the links assigned to them run `scada-setup apply` with `--assigned-links-only`. A link moves to another computer when that property changes, with no restart. See [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
@@ -38,23 +38,23 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. Each object's value is held by one Server process: device objects by the protocol process serving the device, computed and simulated objects by `scada-config`.
 
-1. The Server processes connect to each other signed and encrypted (the OPC UA security policy Basic256Sha256), each accepting only computers whose certificate the site's own certificate authority issued: `scada-setup apply` creates the authority on the central computer, and the other computers join with `--central-fingerprint`. `--insecure-links` allows unencrypted links. See [Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca).
+1. The Server processes connect to each other signed and encrypted (the OPC UA security policy Basic256Sha256), each accepting only computers whose certificate the site's own certificate authority issued: `scada-setup apply` creates the authority on the central computer, and the other computers join with `--central-fingerprint`. `--insecure-links` allows unencrypted links. See [Site certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-site-ca).
 
-1. `scada-config` and `scada-proxy` accept a process registration only from a computer whose certificate the site certificate authority issued, and only under a name that certificate carries; a certificate moved into the trusted certificates folder lets a system connect, never register. A site certificate is issued to the `svc` account only: no role assigned in the Client grants it, so joining a computer to the site needs the `svc` password. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
+1. `scada-config` and `scada-proxy` accept a process registration only from a computer whose certificate the site certificate authority issued, and only under a name that certificate carries; a certificate moved into the trusted certificates folder lets a system connect, never register. A site certificate is issued to the `svc` account only: no role assigned in the Client grants it, so joining a computer to the site needs the `svc` password. See [OPC UA server]({{ '/en/server/opcua/' | relative_url }}#opcua).
 
-1. `scada-setup apply` does not join a computer to the site unencrypted: on a computer without `scada-config` that has no certificate from the site certificate authority yet, `apply` without `--central-fingerprint` and without `--insecure-links` fails and changes nothing. See [OPC UA server]({{ '/en/server/' | relative_url }}#opcua).
+1. `scada-setup apply` does not join a computer to the site unencrypted: on a computer without `scada-config` that has no certificate from the site certificate authority yet, `apply` without `--central-fingerprint` and without `--insecure-links` fails and changes nothing. See [OPC UA server]({{ '/en/server/opcua/' | relative_url }}#opcua).
 
-1. A computer needs `--central-fingerprint` only to join the site and after the central computer gets a new certificate authority. A computer that has joined recognises the central one by the certificate authority, so renewing or re-making the central computer's certificate, or reinstalling it, needs no change on the other computers, and `apply` on them still runs when the central computer is unreachable. `scada-setup status` shows this computer's certificate fingerprint and validity dates, and on the central computer the fingerprint the other computers join with. See [The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed).
+1. A computer needs `--central-fingerprint` only to join the site and after the central computer gets a new certificate authority. A computer that has joined recognises the central one by the certificate authority, so renewing or re-making the central computer's certificate, or reinstalling it, needs no change on the other computers, and `apply` on them still runs when the central computer is unreachable. `scada-setup status` shows this computer's certificate fingerprint and validity dates, and on the central computer the fingerprint the other computers join with. See [The central computer's fingerprint changed]({{ '/en/server/opcua/' | relative_url }}#central-fingerprint-changed).
 
-1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) if there is none yet.
+1. `scada-setup apply` creates the [OPC UA Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) if there is none yet.
 
-1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config` or `scada-filesystem`. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
+1. The password of the built-in `root` account is set with the `--root-password` option of `scada-setup apply`, and is required on a computer running `scada-config` or `scada-filesystem`. See [Root password]({{ '/en/server/security/' | relative_url }}#root-password).
 
 1. `scada-setup start`, like `stop`, acts only on the services installed on this computer: processes named in `--tiers` or in the license that are not installed here are skipped with a message. See [The computer's parameters]({{ '/en/getting-started/' | relative_url }}#host-parameters).
 
-1. The `svc` and `root` passwords are changed with the `scada-setup set-password` command, run on every Server computer starting with the central one. See [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate).
+1. The `svc` and `root` passwords are changed with the `scada-setup set-password` command, run on every Server computer starting with the central one. See [Changing the svc password]({{ '/en/server/security/' | relative_url }}#svc-rotate).
 
-1. The `svc` and `root` passwords are stored in an encrypted file that only the Server's services and the computer's administrators can open, not in plain text in the registry; the first `apply` or `set-password` moves them out of the registry. See [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords).
+1. The `svc` and `root` passwords are stored in an encrypted file that only the Server's services and the computer's administrators can open, not in plain text in the registry; the first `apply` or `set-password` moves them out of the registry. See [Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords).
 
 1. The [Control condition]({{ '/en/dev/data-items/' | relative_url }}) is checked by the Server on every command, including one arriving over retransmission or from an OPC UA client, not only by the Client's Control window.
 
@@ -62,11 +62,11 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. The configuration is kept in one copy, by `scada-config`: `scada-proxy`, `scada-historian` and the protocol processes read it from `scada-config`, so a change made in the Client — objects, devices, users, their passwords and roles — takes effect in every process at once. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
-1. A process's own parameters go in a `server.override.json` file beside `server.json`: `scada-setup apply` never changes it and lays it over the template, so they survive re-running `apply` and upgrades. See [Your own parameters]({{ '/en/server/' | relative_url }}#server-override).
+1. A process's own parameters go in a `server.override.json` file beside `server.json`: `scada-setup apply` never changes it and lays it over the template, so they survive re-running `apply` and upgrades. See [Your own parameters]({{ '/en/server/setup/' | relative_url }}#server-override).
 
-1. An error in the parameter file is written to the process log, not only printed to the screen; the lowest level of the log messages is set with the `log.severity` parameter (or `--log-severity`). See [Logging]({{ '/en/server/' | relative_url }}#logging).
+1. An error in the parameter file is written to the process log, not only printed to the screen; the lowest level of the log messages is set with the `log.severity` parameter (or `--log-severity`). See [Logging]({{ '/en/server/monitoring/' | relative_url }}#logging).
 
-1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+1. Upgrading from version 2.5 is done with `scada-setup migrate`: it copies the configuration, users with their passwords, the archives and the display files, and leaves the version 2.5 folders unchanged. See [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
 
 1. A new installation starts from an empty project — no objects, devices, links or users; sign in with the built-in `root` account. The demo project (objects with emulation, IEC 60870-5-104 links, users with no passwords, schematics) is installed on request: `scada-setup apply --demo`. See [Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
 
@@ -136,7 +136,7 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. Fixed: CSV export honours the chosen encoding. On Windows, *System* writes the file in the Windows code page and *Unicode (UTF-8)* writes UTF-8 with a byte-order mark, so Microsoft Excel opens the file by double-clicking it without garbling Russian text. See [Opening the file in Excel]({{ '/en/client/export/' | relative_url }}#open-in-excel).
 
-1. Configuration export and import (*More — Export Configuration...* and *Import Configuration...*) use the OPC UA NodeSet (XML) format instead of version 2.5.7's CSV table. CSV files exported by version 2.5 cannot be imported: a version 2.5 Server's configuration is moved over by `scada-setup migrate`. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) and [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+1. Configuration export and import (*More — Export Configuration...* and *Import Configuration...*) use the OPC UA NodeSet (XML) format instead of version 2.5.7's CSV table. CSV files exported by version 2.5 cannot be imported: a version 2.5 Server's configuration is moved over by `scada-setup migrate`. See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}) and [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
 
 1. Event severity is a number from 1 to 1000 instead of the former scale up to 100: *Critical* is 800 and above, *Warning* from 600. Severity set in object properties and the severity of archived events are recalculated once (multiplied by 10), as is the minimum severity saved in the profile. See [Severity]({{ '/en/client/events/' | relative_url }}#severity).
 
@@ -216,7 +216,7 @@ Read this list before buying and before upgrading: each limitation is described 
 
 1. The Client packages do not include the display module yet: its licence terms are not settled, and the module is supplied separately. Without it a display window shows "No display runtime is installed." See [When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown).
 
-1. An external OPC UA system that connected to a 2.5 Server unencrypted (policy None) or with anonymous sign-in will not connect to a 2.6 Server that way: `scada-proxy`'s port 4840 accepts only secured connections that sign in with a user name. Trust the system's certificate and create a user for it, or run `apply` on the computer with `scada-proxy` with `--allow-anonymous-opcua`. See [Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external).
+1. An external OPC UA system that connected to a 2.5 Server unencrypted (policy None) or with anonymous sign-in will not connect to a 2.6 Server that way: `scada-proxy`'s port 4840 accepts only secured connections that sign in with a user name. Trust the system's certificate and create a user for it, or run `apply` on the computer with `scada-proxy` with `--allow-anonymous-opcua`. See [Connecting an external system]({{ '/en/server/opcua/' | relative_url }}#opcua-external).
 
 1. A version 2.5 Client working with a 2.6 Server has not been tested: install the 2.6 Client on every workstation. See [Upgrading from version 2.5]({{ '/en/getting-started/' | relative_url }}#upgrade-2-5).
 
@@ -246,23 +246,23 @@ Read this list before buying and before upgrading: each limitation is described 
 
 #### Installation and security {#limits-setup}
 
-1. The license is issued for a term; after it expires the Server processes refuse requests. See [Licensing]({{ '/en/server/' | relative_url }}#licensing).
+1. The license is issued for a term; after it expires the Server processes refuse requests. See [Licensing]({{ '/en/server/licensing/' | relative_url }}).
 
-1. Version 2.6 does not read the version 2.5 HASP or Guardant key: on upgrading, it is exchanged for a license using the `TIERS=…` line that the `scada-setup migrate` plan prints. See [Exchanging the hardware key]({{ '/en/server/' | relative_url }}#license-exchange).
+1. Version 2.6 does not read the version 2.5 HASP or Guardant key: on upgrading, it is exchanged for a license using the `TIERS=…` line that the `scada-setup migrate` plan prints. See [Exchanging the hardware key]({{ '/en/server/upgrade/' | relative_url }}#license-exchange).
 
-1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup).
+1. `scada-setup` has not yet been tried on a site under Windows. If the result of any command differs from the description, report that to Telecontrol. See [Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}).
 
 1. The Linux Server has been tried only in an Ubuntu 24.04 container: not yet on a working site, with several computers or with serial (RS-485) links. See [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
 
-1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+1. Uninstalling the program, which removes the process services itself, has not yet been tried under Windows; if the uninstall is cancelled with an error, the program stays installed. See [Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall).
 
-1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read. See [Where the passwords are kept]({{ '/en/server/' | relative_url }}#stored-passwords).
+1. On Linux the `svc` and `root` passwords are kept in an unencrypted file only `root` can read. See [Where the passwords are kept]({{ '/en/server/setup/' | relative_url }}#stored-passwords).
 
-1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/' | relative_url }}#root-password).
+1. The built-in `root` account's password is changed only with `scada-setup set-password` on every Server computer: the Server refuses such a change from the Client. See [Root password]({{ '/en/server/security/' | relative_url }}#root-password).
 
-1. The site certificate authority is kept only on the central computer, in the `data\Certificates\ca` folder. An uninstall with `SCADA_PURGE_CERTIFICATES=1` (on Linux, `apt purge` or deleting `/opt/telecontrol-scada`), or a restore without that folder, makes the next `apply` create a new authority, and every other computer must then join again with `apply` and the new fingerprint in `--central-fingerprint`. A computer's certificate is valid for 5 years, the certificate authority's for 10. See [Lifetime and a new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal).
+1. The site certificate authority is kept only on the central computer, in the `data\Certificates\ca` folder. An uninstall with `SCADA_PURGE_CERTIFICATES=1` (on Linux, `apt purge` or deleting `/opt/telecontrol-scada`), or a restore without that folder, makes the next `apply` create a new authority, and every other computer must then join again with `apply` and the new fingerprint in `--central-fingerprint`. A computer's certificate is valid for 5 years, the certificate authority's for 10. See [Lifetime and a new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal).
 
-1. The `svc` password may be at most 64 bytes long (a Cyrillic letter takes two): `scada-setup` refuses a longer one. See [scada-setup options]({{ '/en/server/' | relative_url }}#scada-setup-options).
+1. The `svc` password may be at most 64 bytes long (a Cyrillic letter takes two): `scada-setup` refuses a longer one. See [scada-setup options]({{ '/en/server/setup/' | relative_url }}#scada-setup-options).
 
 1. The Client packages are not digitally signed: on first launch Windows SmartScreen warns about the program, and macOS refuses to open it until it is allowed in the system settings. See [Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
@@ -348,7 +348,7 @@ Published on the releases page on 9 February 2026 (installer `telecontrol-scada-
 
 ### New features
 
-1. Server: added the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem). It is enabled automatically on new installations and can be enabled on existing installations with `filesystem.enabled=true` in `server.json`. *This applies to versions 2.2–2.5, where the Server ran as one service; in version 2.6 the file system is served by the separate `scada-filesystem` process — see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).*
+1. Server: added the [server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem). It is enabled automatically on new installations and can be enabled on existing installations with `filesystem.enabled=true` in `server.json`. *This applies to versions 2.2–2.5, where the Server ran as one service; in version 2.6 the file system is served by the separate `scada-filesystem` process — see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).*
 1. Client: added the server file-system panel under `Further -> Files`. *That was the menu in version 2.2; in the current Client files open with the "Files" mode on the [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar).*
 1. Client: added drag-and-drop in the configuration tree.
 1. Client: added retransmission support for all device types.
@@ -425,7 +425,7 @@ This release removed obsolete functionality.
 
 ### Removed features
 
-1. Removed support for the GigaBASE (`configuration.gb`) configuration database format. See the [migration]({{ '/en/server/' | relative_url }}#migration) instructions.
+1. Removed support for the GigaBASE (`configuration.gb`) configuration database format. See the [migration]({{ '/en/server/data/' | relative_url }}#migration) instructions.
 1. Removed GigaBASE support for historical databases. SQLite has been used for history for the last five years.
 
 ## 2.0.60

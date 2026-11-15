@@ -24,7 +24,7 @@ Client.
 | [IEC 61850](#iec-61850) | `scada-iec61850` | client | no |
 | [OPC DA](#opc) (Windows) | `scada-opc` | client of external OPC servers | no |
 | [Vidicon](#vidicon) (Windows) | `scada-vidicon` | the objects of a Vidicon SCADA project, through its OPC server | no |
-| OPC UA | `scada-proxy` | — | [OPC UA server for external systems]({{ '/en/server/' | relative_url }}#opcua), port 4840 |
+| OPC UA | `scada-proxy` | — | [OPC UA server for external systems]({{ '/en/server/opcua/' | relative_url }}#opcua), port 4840 |
 
 ## MODBUS {#modbus}
 
@@ -304,11 +304,11 @@ Server's address space and are bound to objects. The Server refuses the
 select of two-stage control on an OPC object, so set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on such
 objects. The Client sets No on new OPC objects by itself; check objects
-created by earlier Client versions. See [OPC client on Windows]({{ '/en/server/' | relative_url }}#opc-classic).
+created by earlier Client versions. See [OPC client on Windows]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
 
 ## Vidicon integration (Windows) {#vidicon}
 
 The `scada-vidicon` process runs on Windows only and links the Server with
 the Telecontrol Vidicon system for migrating existing projects: the Server
 imports objects from the Vidicon configuration into its address space. See
-[Vidicon integration]({{ '/en/server/' | relative_url }}#vidicon).
+[Vidicon integration]({{ '/en/server/opcua/' | relative_url }}#vidicon).

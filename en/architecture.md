@@ -22,7 +22,7 @@ The main data flow is:
 1. The historian (`scada-historian`) archives value changes and system events.
 1. Clients display live and historical information and send control commands back to the Server.
 
-The Server can also provide data to external systems over [OPC UA]({{ '/en/server/' | relative_url }}#opcua) and receive data from external [OPC servers]({{ '/en/server/' | relative_url }}#opc-classic).
+The Server can also provide data to external systems over [OPC UA]({{ '/en/server/opcua/' | relative_url }}#opcua) and receive data from external [OPC servers]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
 
 ## Server processes {#tiers}
 
@@ -33,16 +33,16 @@ The SCADA Server is not a single program but a set of processes. Each one is ins
 | `scada-config` | Telecontrol SCADA Config | Holds the configuration (objects, equipment, users) and serves it to the other processes |
 | `scada-proxy` | Telecontrol SCADA Proxy | Accepts Client connections and combines the other processes into one address space |
 | `scada-historian` | Telecontrol SCADA Historian | [Archiving](#archiving) of values and events; serves history |
-| `scada-filesystem` | Telecontrol SCADA Filesystem | [Server-side file system]({{ '/en/server/' | relative_url }}#filesystem) (displays and other files) |
+| `scada-filesystem` | Telecontrol SCADA Filesystem | [Server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem) (displays and other files) |
 | `scada-modbus` | Telecontrol SCADA Modbus | Data acquisition over MODBUS RTU/ASCII/TCP |
 | `scada-iec104` | Telecontrol SCADA IEC 104 | Data acquisition over IEC 60870-5-101/104 |
 | `scada-iec61850` | Telecontrol SCADA IEC 61850 | Data acquisition over IEC 61850 |
 | `scada-opc` | Telecontrol SCADA OPC | [OPC client](#opc-client-on-windows) (Windows only) |
-| `scada-vidicon` | Telecontrol SCADA Vidicon | [Vidicon integration]({{ '/en/server/' | relative_url }}#vidicon) (Windows only) |
+| `scada-vidicon` | Telecontrol SCADA Vidicon | [Vidicon integration]({{ '/en/server/opcua/' | relative_url }}#vidicon) (Windows only) |
 
 Retransmission to a dispatch centre is carried out by the protocol process of the protocol the DC receives data over: `scada-iec104` for IEC 60870-5-101/104, or `scada-modbus` for MODBUS. So retransmission needs that process installed and named in the license, even when the objects sent to the DC are received by another process (see [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)).
 
-The processes exchange data with each other over OPC UA; the links between them are encrypted (see [OPC UA server]({{ '/en/server/' | relative_url }}#opcua)).
+The processes exchange data with each other over OPC UA; the links between them are encrypted (see [OPC UA server]({{ '/en/server/opcua/' | relative_url }}#opcua)).
 
 The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it. **The smallest installation** the `scada-setup` tool builds is `scada-config`, one or more protocol processes, `scada-filesystem`, and `scada-proxy`, which the Clients connect to. Without `scada-filesystem` the server-side file system is unavailable (`scada-setup` warns about it). Add `scada-historian` for a value and event archive: only it stores history. The license must name every installed process — see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
 
@@ -60,7 +60,7 @@ live value updates, request historical data, execute control commands,
 and edit configuration when the user role allows it.
 
 Address and port configuration is described in the Server section on
-[client connections]({{ '/en/server/' | relative_url }}#sessions).
+[client connections]({{ '/en/server/monitoring/' | relative_url }}#sessions).
 
 ## Roles and permissions
 
@@ -337,7 +337,7 @@ Archived history can then be queried and displayed in the
 
 Creating archives and assigning them to objects is described under
 [Archiving]({{ '/en/dev/history/' | relative_url }}); storage on the Server,
-under [historical databases]({{ '/en/server/' | relative_url }}#history).
+under [historical databases]({{ '/en/server/data/' | relative_url }}#history).
 
 ## External integration
 
@@ -353,13 +353,13 @@ process on port 4840 and can access current values, historical data, and
 subscriptions.
 
 Configuration is described in the Server section on
-[OPC UA]({{ '/en/server/' | relative_url }}#opcua). External systems
+[OPC UA]({{ '/en/server/opcua/' | relative_url }}#opcua). External systems
 connect to port 4840 of `scada-proxy`. On a site with encryption it accepts
 only secured connections that sign in with a user name; unsecured
 connections (security policy None) and anonymous sign-in, which many systems
 that connected to a 2.5 Server use, it accepts only when the
 `--allow-anonymous-opcua` option allows them — see
-[Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external).
+[Connecting an external system]({{ '/en/server/opcua/' | relative_url }}#opcua-external).
 Open the OPC UA ports only to the site's computers, and allow an external
 system port 4840 from its address only.
 
@@ -370,7 +370,7 @@ servers. Their tags then appear in the Telecontrol SCADA address space
 and can be bound to SCADA objects.
 
 Configuration is described in the Server section on
-[OPC client]({{ '/en/server/' | relative_url }}#opc-classic).
+[OPC client]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
 
 ## Configuration
 
@@ -391,12 +391,12 @@ requires the *Configure* right.
 
 The built-in `root` account has every user right and always exists,
 whatever the configuration contains. It cannot obtain a site certificate to
-join a computer: only the [`svc`]({{ '/en/server/' | relative_url }}#svc) account can.
+join a computer: only the [`svc`]({{ '/en/server/security/' | relative_url }}#svc) account can.
 
 **WARNING:** while no root password is configured, the Server accepts
 `root` with an empty password. `scada-setup apply` sets it
 (the `--root-password` option); in a hand-built setup, set it with
-[`security.rootPassword`]({{ '/en/server/' | relative_url }}#root-password)
+[`security.rootPassword`]({{ '/en/server/security/' | relative_url }}#root-password)
 before the Server is reachable over the network.
 
 For more details, see [Development]({{ '/en/development/' | relative_url }})

@@ -22,7 +22,7 @@ permalink: /en/
 > differently: its Server is a single service with a HASP or Guardant
 > hardware key, not a set of separate processes. The version 2.6 license is
 > issued for a term: after it expires the Server processes refuse requests
-> ([Licensing]({{ '/en/server/' | relative_url }}#licensing)). Before buying
+> ([Licensing]({{ '/en/server/licensing/' | relative_url }})). Before buying
 > or upgrading, read the version 2.6
 > [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations)
 > — in particular, the Client packages do not yet include the display
@@ -75,11 +75,11 @@ used to edit diagrams.
   [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose), then install
   following [Getting started]({{ '/en/getting-started/' | relative_url }}) (on Linux,
   [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux));
-  [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup),
-  [Licensing]({{ '/en/server/' | relative_url }}#licensing),
-  [Root password]({{ '/en/server/' | relative_url }}#root-password),
-  [Backup]({{ '/en/server/' | relative_url }}#backup),
-  [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+  [Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}),
+  [Licensing]({{ '/en/server/licensing/' | relative_url }}),
+  [Root password]({{ '/en/server/security/' | relative_url }}#root-password),
+  [Backup]({{ '/en/server/backup/' | relative_url }}),
+  [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
 * **Project engineer**, who builds the project:
   [Architecture]({{ '/en/architecture/' | relative_url }}), then the
   [Development]({{ '/en/development/' | relative_url }}) section —
@@ -146,7 +146,7 @@ Example of a distributed deployment:
   [manual input]({{ '/en/architecture/' | relative_url }}#manual-write),
   and [limit checks]({{ '/en/architecture/' | relative_url }}#limits)
 * Object emulation for testing without field hardware
-* [Historical archives]({{ '/en/server/' | relative_url }}#history)
+* [Historical archives]({{ '/en/server/data/' | relative_url }}#history)
   (the `scada-historian` process) with automatic removal of expired data
   (set up as described under
   [Archiving]({{ '/en/dev/history/' | relative_url }}))

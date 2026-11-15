@@ -46,7 +46,7 @@ is
 A version 2.5 Server kept them in
 `%ProgramData%\Telecontrol\SCADA Server\FileSystem`; moving to 2.6 copies
 them to the new folder. See
-[Server-side file system]({{ '/en/server/' | relative_url }}#filesystem).
+[Server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem).
 
 With this arrangement, changing a schematic file once on the Server is
 enough for the updated version to become available to all Clients

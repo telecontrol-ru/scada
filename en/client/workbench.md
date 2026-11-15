@@ -438,7 +438,7 @@ address reaches only one of the objects. The Server accepts and transmits such
 rules. A version 2.6 Server writes a "Duplicate destination address" warning
 for every further rule that takes an address already in use (not for the
 first one) to the
-[log]({{ '/en/server/' | relative_url }}#logging) of the process that
+[log]({{ '/en/server/monitoring/' | relative_url }}#logging) of the process that
 serves the device; it does not warn about overlapping registers, and a 2.5.7
 Server does not warn at all. Correct the addresses yourself.
 
@@ -638,7 +638,7 @@ not keeping up with the incoming data.
 Object and device parameters point at these databases: an object's value
 archive and a device's event archive are chosen from this list. Configuring the
 databases on the server side is described under
-[Server]({{ '/en/server/#history' | relative_url }}).
+[Server]({{ '/en/server/data/' | relative_url }}#history).
 
 ### Formats {#ts-formats}
 

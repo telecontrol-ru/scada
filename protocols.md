@@ -20,7 +20,7 @@ permalink: /protocols/
 | [МЭК 61850](#iec-61850) | `scada-iec61850` | клиент | нет |
 | [OPC DA](#opc) (Windows) | `scada-opc` | клиент внешних OPC-серверов | нет |
 | [Видикон](#vidicon) (Windows) | `scada-vidicon` | объекты проекта ОИК Видикон через его OPC-сервер | нет |
-| OPC UA | `scada-proxy` | — | [сервер OPC UA для внешних систем]({{ '/server/' | relative_url }}#opcua), порт 4840 |
+| OPC UA | `scada-proxy` | — | [сервер OPC UA для внешних систем]({{ '/server/opcua/' | relative_url }}#opcua), порт 4840 |
 
 ## MODBUS {#modbus}
 
@@ -271,11 +271,11 @@ OPC-серверам по протоколу OPC DA (Classic OPC): теги вн
 [«Двухэтапное управление»]({{ '/dev/data-items/' | relative_url }}) = «Нет».
 Новым объектам OPC Клиент ставит «Нет» сам; проверьте объекты, созданные
 прежними версиями Клиента.
-Смотрите [Клиент OPC (Windows)]({{ '/server/' | relative_url }}#opc-classic).
+Смотрите [Клиент OPC (Windows)]({{ '/server/opcua/' | relative_url }}#opc-classic).
 
 ## Интеграция с ОИК Видикон (Windows) {#vidicon}
 
 Процесс `scada-vidicon` работает только под Windows и связывает Сервер с
 системой ОИК Видикон для перевода существующих проектов: Сервер импортирует
 объекты из конфигурации Видикон в свое адресное пространство. Смотрите
-[Интеграция с ОИК Видикон]({{ '/server/' | relative_url }}#vidicon).
+[Интеграция с ОИК Видикон]({{ '/server/opcua/' | relative_url }}#vidicon).

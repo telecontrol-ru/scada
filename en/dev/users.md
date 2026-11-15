@@ -47,7 +47,7 @@ reset) does not. The server sets what a password must satisfy — see
   be deleted, renamed or disabled, nor its password or roles changed, and
   `Delete` is not offered for it. Its password is changed with
   `scada-setup set-password` on every Server computer (see
-  [Changing the svc password]({{ '/en/server/' | relative_url }}#svc-rotate)).
+  [Changing the svc password]({{ '/en/server/security/' | relative_url }}#svc-rotate)).
 * **The `root` user in the demo project's list is not the built-in `root`
   account.** It exists only in the
   [demo project]({{ '/en/getting-started/' | relative_url }}#demo) and can
@@ -57,7 +57,7 @@ reset) does not. The server sets what a password must satisfy — see
 * **The built-in `root` account's password is not changed in this
   window.** On a Server installed with `scada-setup` the root password is
   kept in the computer's
-  [password file]({{ '/en/server/' | relative_url }}#stored-passwords)
+  [password file]({{ '/en/server/setup/' | relative_url }}#stored-passwords)
   (encrypted on Windows, readable only by `root` on Linux), and
   the `scada-config` and `scada-filesystem` processes write it again every
   time they start. So the Server

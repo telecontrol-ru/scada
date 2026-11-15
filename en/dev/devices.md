@@ -616,7 +616,7 @@ to.
    such rules. A version 2.6 Server writes a "Duplicate destination address"
    warning for every further rule that takes an address already in use (not
    for the first of them; a rule with no source is not checked) to the
-   [log]({{ '/en/server/' | relative_url }}#logging) of the process that
+   [log]({{ '/en/server/monitoring/' | relative_url }}#logging) of the process that
    serves the receiving device (IEC 104 or MODBUS); it does not warn about
    overlapping registers, and a 2.5.7 Server writes no such warning at all.
    Correct the addresses yourself.

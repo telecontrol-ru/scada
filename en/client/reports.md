@@ -20,7 +20,7 @@ acknowledging events, which needs the *Control* or *Configure* right.
 
 The Server license is issued for a term: after it expires the Server
 processes refuse requests, and reports stop working — see
-[Licensing]({{ '/en/server/' | relative_url }}#licensing).
+[Licensing]({{ '/en/server/licensing/' | relative_url }}).
 
 ## Where the data comes from {#archive}
 

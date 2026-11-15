@@ -28,7 +28,7 @@ the changes described below take effect at once: a new archive starts
 filling, a new depth applies, and an object starts or stops being archived
 within a few seconds — no service needs restarting. Archive assignments moved
 from version 2.5 with
-[`scada-setup migrate`]({{ '/en/server/' | relative_url }}#upgrade-2-5) are
+[`scada-setup migrate`]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5) are
 kept.
 
 After the service of a protocol process (for example,
@@ -58,7 +58,7 @@ An archive is renamed with *Rename* or the *Name* field in its properties.
 
 Once a minute the Server deletes data older than the archive's depth; reducing
 the depth deletes the excess at once. The formula under
-[Historical databases]({{ '/en/server/' | relative_url }}#history) helps
+[Historical databases]({{ '/en/server/data/' | relative_url }}#history) helps
 estimate the disk space needed.
 
 ## Assigning an archive to objects

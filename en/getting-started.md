@@ -64,7 +64,7 @@ this manual: ask Telecontrol (mail@telecontrol.ru) for it, and about keys
 and licenses. Without a hardware key a 2.5.7 Server runs for two hours in
 demo mode, which is enough for a trial. A 2.5.7 hardware key can later be
 exchanged for a version 2.6 license (see
-[Exchanging the hardware key]({{ '/en/server/' | relative_url }}#license-exchange)).
+[Exchanging the hardware key]({{ '/en/server/upgrade/' | relative_url }}#license-exchange)).
 For running a site on a 2.5.7 Server, the 2.5.7 Client from the same
 installer remains the tested choice; it is also the one for managing users
 and exporting the configuration, which the 2.6 Client cannot do with a
@@ -85,7 +85,7 @@ The smallest set `scada-setup` builds is:
 * one or more protocol processes (`scada-modbus`, `scada-iec104`,
   `scada-iec61850`, and on Windows also `scada-opc` and `scada-vidicon`);
 * `scada-filesystem` — without it `scada-setup apply` prints a warning and
-  the [server-side file system]({{ '/en/server/' | relative_url }}#filesystem)
+  the [server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem)
   (displays stored on the Server) is unavailable;
 * `scada-proxy`, which the Clients connect to.
 
@@ -182,14 +182,14 @@ folder, typing `scada-setup` is enough.
    password of the `svc` service account the processes use to connect to each
    other. It must be the same on every computer of the site; to change it
    later, run `scada-setup set-password` on every computer (see
-   [The svc account]({{ '/en/server/' | relative_url }}#svc)).
+   [The svc account]({{ '/en/server/security/' | relative_url }}#svc)).
    `<root password>` is the password of the built-in `root` account; see
    [Root password](#root-password).
 
 `apply` writes each process's parameter file
 `%ProgramData%\Telecontrol\SCADA Server\<process>\server.json` (the
 folder of `scada-filesystem` is named `filestore`), creates the
-[Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate) in
+[Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) in
 `C:\Program Files\Telecontrol SCADA\data\Certificates` unless one is already
 there, creates the configuration databases with an empty project (with `--demo`,
 with the demo project, see [Preparing the project](#project); it never
@@ -209,7 +209,7 @@ running).
 **WARNING: an administrator of this computer can read the `svc` and `root`
 passwords.** `apply` stores them in an encrypted file that only the Server's
 services and administrators can open (see
-[Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords)).
+[Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords)).
 Do not give untrusted people administrator rights on the Server computers,
 and do not make a Server computer an operator workstation. The Server installer puts
 the Client on the computer too (see [Installing the Client](#client-install)).
@@ -243,7 +243,7 @@ cannot connect to the others at all**: the other processes accept neither
 unencrypted connections nor certificates the site's certificate authority
 did not issue. So `apply` with `--central` but with neither
 `--central-fingerprint` nor `--insecure-links` fails and changes nothing (see
-[Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
+[Site certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-site-ca)).
 Only a site whose computers are all set up with `--insecure-links` runs
 unencrypted.
 The central computer's `--advertise` is the address the other computers use
@@ -253,7 +253,7 @@ computer for now. Without `--advertise` the central computer's certificate
 names only its computer name, `localhost` and `127.0.0.1`, and computers
 given its IP address in `--central` do not connect to it; fixing that later
 means replacing the certificate, which also changes its fingerprint (see
-[`--advertise`]({{ '/en/server/' | relative_url }}#scada-setup-options)). Or
+[`--advertise`]({{ '/en/server/setup/' | relative_url }}#scada-setup-options)). Or
 give the central computer's computer name in the other computers'
 `--central`.
 
@@ -265,14 +265,14 @@ computer (check with `ping <computer name>` on the central computer), give
 each protocol computer its own IP address as `--advertise`, as in the example
 (10.0.0.11 is the protocol computer's own address). Otherwise the devices of
 that computer never appear in the Client. The
-[Server certificate]({{ '/en/server/' | relative_url }}#opcua-certificate)
+[Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate)
 records the computer's addresses only when it is created: if you add
 `--advertise` later, also replace the certificate so that it carries the new
 address.
 
 The remaining links between processes are set up automatically. All
 `scada-setup` commands are described in the
-[Server]({{ '/en/server/' | relative_url }}#scada-setup) section.
+[Server]({{ '/en/server/setup/' | relative_url }}) section.
 
 How to install the Client on the operator workstations is described below,
 in [Installing the Client](#client-install).
@@ -468,7 +468,7 @@ when only the `scada` group can read the license it prints
 
 The options of `apply` and the other commands are the same as on Windows
 (see [Installation on Windows](#installation-on-windows) and
-[Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup));
+[Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}));
 only the locations differ:
 
 * the data folder is `/var/lib/scada`: it holds the process folders
@@ -489,7 +489,7 @@ only the locations differ:
   MODBUS TCP retransmission);
 * the `svc` and `root` passwords are kept in the file
   `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
-  (see [Where the passwords are stored]({{ '/en/server/' | relative_url }}#stored-passwords));
+  (see [Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords));
 * `scada-setup status` prints each service's state as systemd names it:
   `active` — running, `inactive` — stopped, `failed` — stopped on an error.
   Service details are `systemctl status scada-config`, the process's
@@ -525,7 +525,7 @@ with a different fingerprint, but the other computers recognise it by the
 certificate authority, so nothing needs changing on them. The new
 fingerprint is needed only to join new computers; `scada-setup status` on the
 central computer prints it (see
-[The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed)).
+[The central computer's fingerprint changed]({{ '/en/server/opcua/' | relative_url }}#central-fingerprint-changed)).
 `sudo apt purge telecontrol-scada-server` also deletes the whole
 `data/Certificates` folder, the certificate authority included — uninstall
 that way only when the computer leaves the site for good. For an archive
@@ -533,7 +533,7 @@ installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
 then delete the `/opt/telecontrol-scada` folder; on the central computer, if
 the program will be installed again, first save the `data/Certificates/ca`
 subfolder and put it back before `apply` (see
-[A new certificate authority]({{ '/en/server/' | relative_url }}#opcua-renewal)).
+[A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)).
 The `scada` account stays after uninstalling, `apt purge` included; if it is
 no longer needed, delete it with `sudo userdel scada`.
 
@@ -559,7 +559,7 @@ process the license does not name stops right after it starts. A license
 whose validity period has not started yet is accepted neither by the
 processes nor by `scada-setup`. Version 2.6 has no unlicensed demo mode: to
 evaluate the system, request a license from Telecontrol (mail@telecontrol.ru)
-(see [Licensing]({{ '/en/server/' | relative_url }}#licensing)).
+(see [Licensing]({{ '/en/server/licensing/' | relative_url }})).
 
 **Expiry.** `scada-setup status` shows when the license ends (the line
 `License: … (<license id>, expires …)`; an expired one shows `EXPIRED` and the
@@ -615,12 +615,12 @@ If this computer has no `scada-proxy` (protocol processes only), nothing else ne
 computer. On the computer that will run the new process, run
 `scada-setup apply` with that computer's full process list in `--tiers`, the
 new one included, and the same other options as at installation (see
-[Re-running apply]({{ '/en/server/' | relative_url }}#reapply)). Write the
+[Re-running apply]({{ '/en/server/setup/' | relative_url }}#reapply)). Write the
 new list down. If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
 A license issued for a Google Cloud virtual machine verifies only on that
 machine; any other license is bound to no computer and needs no setting. See
-[Licensing]({{ '/en/server/' | relative_url }}#licensing).
+[Licensing]({{ '/en/server/licensing/' | relative_url }}).
 
 ## Root password
 
@@ -632,7 +632,7 @@ those processes keep the configuration in databases of their own, each has
 its own `root` account, which would otherwise accept an empty password.
 
 `scada-setup` stores the password in the computer's
-[password file]({{ '/en/server/' | relative_url }}#stored-passwords) rather
+[password file]({{ '/en/server/setup/' | relative_url }}#stored-passwords) rather
 than in the parameter files, and the processes write it again on every start.
 So:
 
@@ -650,7 +650,7 @@ So:
   accepting a password that the next start of the process would replace;
 * give the current root password on every later `apply`, upgrades included.
 
-See [Root password]({{ '/en/server/' | relative_url }}#root-password).
+See [Root password]({{ '/en/server/security/' | relative_url }}#root-password).
 
 ## Network preparation {#network}
 
@@ -727,7 +727,7 @@ its protocol process, for the addresses that must connect only.
 **OPC UA ports 4840–4848 must be reachable from the site's computers only.**
 The processes connect to each other encrypted and accept only the computers
 whose certificate the site's certificate authority issued (see
-[Site certificate authority]({{ '/en/server/' | relative_url }}#opcua-site-ca)).
+[Site certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-site-ca)).
 `scada-config` accepts a connection with any computer's certificate, so that
 a new computer can join the site. It issues a site certificate to the `svc`
 account only: neither `root` nor a user with the Configure right can obtain
@@ -740,7 +740,7 @@ a system connect, never register. If an external OPC UA system must connect to t
 port 4840 from its address only: that port accepts only secured connections
 that sign in with a user name, and unsecured connections and anonymous
 sign-in only with the `--allow-anonymous-opcua` option (see
-[Connecting an external system]({{ '/en/server/' | relative_url }}#opcua-external)).
+[Connecting an external system]({{ '/en/server/opcua/' | relative_url }}#opcua-external)).
 **On a site set up with `--insecure-links`**, the firewall is the only
 protection of these ports: a computer that reaches them can connect to the
 Server processes or pose as one of them.
@@ -833,7 +833,7 @@ it also carries over the user passwords version 2.5 kept in a separate file
 
 On each workstation, copy the schematic files (`.sde`) to
 `%ProgramData%\Telecontrol\SCADA Client`, or upload them to the
-[server-side file system]({{ '/en/server/' | relative_url }}#filesystem)
+[server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem)
 if that feature is used.
 
 To explore the system without field equipment, install the
@@ -953,7 +953,7 @@ After you sign in:
 
    The user list contains the `svc` service account: the Server processes
    connect to each other through it, and the server does not let the Client
-   change it. Only `scada-setup set-password` changes its password (see [The svc account]({{ '/en/server/' | relative_url }}#svc)).
+   change it. Only `scada-setup set-password` changes its password (see [The svc account]({{ '/en/server/security/' | relative_url }}#svc)).
 
 For the main operator interface, continue with
 [Client]({{ '/en/client/' | relative_url }}).
@@ -965,11 +965,11 @@ was a single process with a single service, and its data has to be moved into
 the version 2.6 processes — see [below](#upgrade-2-5).
 
 **Before every upgrade, back up every Server computer** — see
-[Backup]({{ '/en/server/' | relative_url }}#backup). That backup is the only
+[Backup]({{ '/en/server/backup/' | relative_url }}). That backup is the only
 way back: the installer refuses to install an older version over a newer
 one, so a failed upgrade is undone by reinstalling the older version and
 restoring the backup (see
-[Rolling back a failed upgrade]({{ '/en/server/' | relative_url }}#rollback-upgrade)).
+[Rolling back a failed upgrade]({{ '/en/server/upgrade/' | relative_url }}#rollback-upgrade)).
 
 **On the Server computers** — the central computer first, then each
 computer running protocol processes — from an elevated command prompt:
@@ -986,7 +986,7 @@ installation — `--central-fingerprint`, `--assigned-links-only`,
 included, if they were given — and the
 current `svc` password. The installer replaces only the
 executables; `apply` rewrites the parameter files (keep your own parameters
-in [`server.override.json`]({{ '/en/server/' | relative_url }}#server-override),
+in [`server.override.json`]({{ '/en/server/setup/' | relative_url }}#server-override),
 which is preserved) and leaves the data alone. On computers running only protocol
 processes, `--root-password` may be omitted.
 
@@ -1021,7 +1021,7 @@ program, so **check the migration plan before installing 2.6**: what blocks
 the migration can only be fixed in version 2.5.
 
 How to go back to version 2.5 is described in
-[Rolling back to version 2.5]({{ '/en/server/' | relative_url }}#rollback-2-5).
+[Rolling back to version 2.5]({{ '/en/server/upgrade/' | relative_url }}#rollback-2-5).
 
 On the computer where the 2.5 Server ran:
 
@@ -1032,7 +1032,7 @@ On the computer where the 2.5 Server ran:
    run `scada-setup migrate` from there — it changes nothing and prints the
    plan. Fix in version 2.5 whatever blocks the migration, and check again.
    The steps are in
-   [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+   [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
 4. Install the version 2.6 package
    (`msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`).
 5. From an elevated command prompt, run:
@@ -1056,7 +1056,7 @@ On the computer where the 2.5 Server ran:
    the one given as `--root-password` (see [Root password](#root-password)).
    **If the command fails after copying, do not run `migrate` again** —
    finish with `apply` with the same `--tiers` and passwords (see
-   [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5)).
+   [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5)).
 6. Install the version 2.6 Client on **every** workstation (see
    [Installing the Client](#client-install)): whether a version 2.5 Client works
    with a 2.6 Server has not been verified.
@@ -1082,12 +1082,12 @@ The installer removes the central computer's own certificate, and the next
 computers recognise it by the certificate authority, so nothing needs
 changing on them. The new fingerprint is needed only to join new computers;
 `scada-setup status` on the central computer prints it (see
-[The central computer's fingerprint changed]({{ '/en/server/' | relative_url }}#central-fingerprint-changed)).
+[The central computer's fingerprint changed]({{ '/en/server/opcua/' | relative_url }}#central-fingerprint-changed)).
 If the computer leaves the site for good, uninstall it with
 `msiexec /x telecontrol-scada-<version>.msi SCADA_PURGE_CERTIFICATES=1` —
 the whole `C:\Program Files\Telecontrol SCADA\data\Certificates` folder
 is then deleted, the certificate authority with it. The steps are
-in [Uninstalling the Server]({{ '/en/server/' | relative_url }}#uninstall).
+in [Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall).
 A Client unpacked from the archive or disk image is removed by deleting its
 folder (on macOS, the app in *Applications*). The Client keeps its settings
 and data elsewhere, and those stay behind:
@@ -1127,21 +1127,21 @@ is allowed by the firewall and reachable over the network.</dd>
 
 <dt>A Server process stops right after starting</dt>
 <dd>There is no valid license file, or the license does not include this
-process, or one of the <a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
+process, or one of the <a href="{{ '/en/server/opcua/' | relative_url }}#opcua-certificate">Server certificate</a>
 files was deleted (the log shows <code>Can't open file</code>;
 <code>scada-setup apply</code> then says which file is missing). The reason is
-written to the <a href="{{ '/en/server/' | relative_url }}#logging">process
+written to the <a href="{{ '/en/server/monitoring/' | relative_url }}#logging">process
 log</a>. See
-<a href="{{ '/en/server/' | relative_url }}#licensing">Licensing</a>.</dd>
+<a href="{{ '/en/server/licensing/' | relative_url }}">Licensing</a>.</dd>
 
 <dt>A service stops or keeps restarting after a parameter change</dt>
 <dd>Most likely the <code>server.json</code> parameter file has an error (for
 example after a hand edit): the
-<a href="{{ '/en/server/' | relative_url }}#logging">process log</a> — in the
+<a href="{{ '/en/server/monitoring/' | relative_url }}#logging">process log</a> — in the
 <code>Logs</code> folder beside the parameter file — has a
 <code>Can't load parameters file</code> or <code>Invalid log configuration</code>
 line describing it. Put your own parameters not in <code>server.json</code> but
-in <a href="{{ '/en/server/' | relative_url }}#server-override"><code>server.override.json</code></a>,
+in <a href="{{ '/en/server/setup/' | relative_url }}#server-override"><code>server.override.json</code></a>,
 and run <code>scada-setup apply</code>.</dd>
 
 <dt>Protocol processes get no configuration</dt>
@@ -1149,7 +1149,7 @@ and run <code>scada-setup apply</code>.</dd>
 <code>svc</code> password on that computer differs from the central
 computer's. Run <code>scada-setup set-password --svc-password &lt;the central
 computer's current svc password&gt;</code> there (see
-<a href="{{ '/en/server/' | relative_url }}#svc-rotate">Changing the svc password</a>). If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
+<a href="{{ '/en/server/security/' | relative_url }}#svc-rotate">Changing the svc password</a>). If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
 
 <dt>The devices of a protocol computer never appear</dt>
 <dd>The Client does not show the devices served by a computer running
@@ -1161,7 +1161,7 @@ reported; if the central computer cannot resolve that name (check with
 with its <a href="#host-parameters">computer's parameters</a> plus
 <code>--advertise &lt;its IP address&gt;</code>, and write the option down. For
 the new address to be in the
-<a href="{{ '/en/server/' | relative_url }}#opcua-certificate">Server certificate</a>
+<a href="{{ '/en/server/opcua/' | relative_url }}#opcua-certificate">Server certificate</a>
 too, delete both certificate files before that <code>apply</code>.
 Also check that its firewall lets the central computer reach the OPC UA ports
 of its processes (see <a href="#network">Network preparation</a>).
@@ -1211,7 +1211,7 @@ not include it yet — contact Telecontrol (see
 <a href="#displays">Displaying schematics</a>).
 Otherwise, check that the schematic file is in
 <em>%ProgramData%\Telecontrol\SCADA Client</em> or in the
-<a href="{{ '/en/server/' | relative_url }}#filesystem">server-side file system</a>.</dd>
+<a href="{{ '/en/server/data/' | relative_url }}#filesystem">server-side file system</a>.</dd>
 
 <dt>Object values are shown in gray</dt>
 <dd>Gray value text means the value is not valid, for example because the
