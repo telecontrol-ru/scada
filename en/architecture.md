@@ -217,7 +217,7 @@ interface language:
 | `С` | No communication |
 | `Н` | Connection error |
 | `Р` | Manual input |
-| `2` | Backup channel (not set in version 2.6) |
+| `2` | Backup channel (set by Server 2.6; a 2.5.7 Server never sets it) |
 | `Б` | Blocked channel |
 | `У` | Stale value |
 | `В` | Limit violation |

@@ -689,7 +689,7 @@ brackets.</dd>
 
 <dt>Letters in square brackets before the value</dt>
 <dd>Quality flags, shown with their Russian letters: <code>[Р]</code> manual
-input, <code>[Б]</code> blocked,
+input, <code>[Б]</code> blocked, <code>[2]</code> backup channel (from Server 2.6),
 <code>[С]</code> no connection, <code>[Н]</code> connection failure,
 <code>[К]</code> configuration error, <code>[У]</code> stale, <code>[В]</code> limit
 violation. The full list is in
