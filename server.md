@@ -128,6 +128,10 @@ permalink: /server/
   не задан, `apply`, `start` и `migrate` берут **все процессы из лицензии**,
   а `stop`, `status`, `remove` и `set-password` — все службы Сервера, которые
   есть на компьютере. Для `generate` параметр обязателен.
+  Под Linux процессы `scada-opc` и `scada-vidicon`, которые работают только
+  под Windows, в набор по умолчанию не входят, а указанные в `--tiers`
+  вызывают отказ `… runs on Windows only, and this computer is not Windows;
+  nothing was changed`.
 * `--central <адрес>` — адрес центрального компьютера; обязателен для
   `apply`, `migrate` и `generate` на компьютере без `scada-config`.
 * `--advertise <адрес>` — адрес этого компьютера для остальных. Без него

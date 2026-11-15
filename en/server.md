@@ -138,6 +138,10 @@ Client take effect in every process.
   absent, `apply`, `start` and `migrate` take **every process in the
   license**, while `stop`, `status`, `remove` and `set-password` take every
   Server service the computer has. `generate` requires it.
+  On Linux the default set leaves out `scada-opc` and `scada-vidicon`, which
+  run on Windows only, and naming either in `--tiers` is refused with
+  `… runs on Windows only, and this computer is not Windows; nothing was
+  changed`.
 * `--central <address>` — the central computer's address; required by
   `apply`, `migrate` and `generate` on a computer without `scada-config`.
 * `--advertise <address>` — this computer's address for the others. Without
