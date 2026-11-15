@@ -68,9 +68,36 @@ agreed with them (see
 [Modus graphical editor](http://swman.ru/content/blogcategory/19/47/) is
 used to edit diagrams.
 
-Installation is described in
-[Getting started]({{ '/en/getting-started/' | relative_url }}), and what
-changed between versions in the
+## Where to start {#roles}
+
+* **Administrator**, who installs and maintains the Server:
+  [Download]({{ '/en/getting-started/' | relative_url }}#download) and
+  [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose), then install
+  following [Getting started]({{ '/en/getting-started/' | relative_url }}) (on Linux,
+  [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux));
+  [Setting up with scada-setup]({{ '/en/server/' | relative_url }}#scada-setup),
+  [Licensing]({{ '/en/server/' | relative_url }}#licensing),
+  [Root password]({{ '/en/server/' | relative_url }}#root-password),
+  [Backup]({{ '/en/server/' | relative_url }}#backup),
+  [Upgrading from version 2.5]({{ '/en/server/' | relative_url }}#upgrade-2-5).
+* **Project engineer**, who builds the project:
+  [Architecture]({{ '/en/architecture/' | relative_url }}), then the
+  [Development]({{ '/en/development/' | relative_url }}) section —
+  [Equipment]({{ '/en/dev/devices/' | relative_url }}), [Data items]({{ '/en/dev/data-items/' | relative_url }}),
+  [Displays]({{ '/en/dev/displays/' | relative_url }}), [Protocols]({{ '/en/protocols/' | relative_url }}),
+  [Formulas]({{ '/en/formulas/' | relative_url }}) and [Users]({{ '/en/dev/users/' | relative_url }}).
+* **Operator**: [Connection to the Server]({{ '/en/client/' | relative_url }}#connection),
+  [Operator workbench]({{ '/en/client/workbench/' | relative_url }}),
+  [Reading values and colours]({{ '/en/client/' | relative_url }}#quality-legend),
+  [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}),
+  [Event journal]({{ '/en/client/events/' | relative_url }}), [Control]({{ '/en/client/' | relative_url }}#control)
+  and [Display]({{ '/en/client/display/' | relative_url }}).
+* **Manager**, who only views data: [Summary]({{ '/en/client/summary/' | relative_url }}),
+  [Graph]({{ '/en/client/graph/' | relative_url }}), [Table]({{ '/en/client/table/' | relative_url }}),
+  [Printing]({{ '/en/client/print/' | relative_url }}) and
+  [Export and import]({{ '/en/client/export/' | relative_url }}).
+
+What changed between versions is described in the
 [Change log]({{ '/en/changes/' | relative_url }}).
 
 All schematics are stored as vector graphics, so even large process

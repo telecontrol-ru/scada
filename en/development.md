@@ -63,3 +63,11 @@ See [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}).
 ## Server files
 
 See [Server files]({{ '/en/dev/server-files/' | relative_url }}).
+
+## Protocols
+
+See [Supported protocols]({{ '/en/protocols/' | relative_url }}).
+
+## Formulas
+
+See [Formulas]({{ '/en/formulas/' | relative_url }}).

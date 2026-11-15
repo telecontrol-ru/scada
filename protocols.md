@@ -1,6 +1,7 @@
 ---
 title: Протоколы
-nav_order: 5
+nav_order: 8
+parent: Проектирование
 permalink: /protocols/
 ---
 

@@ -63,3 +63,11 @@ permalink: /development/
 ## Серверные файлы
 
 Смотрите [Серверные файлы]({{ '/dev/server-files/' | relative_url }}).
+
+## Протоколы
+
+Смотрите [Поддерживаемые протоколы]({{ '/protocols/' | relative_url }}).
+
+## Формулы
+
+Смотрите [Формулы]({{ '/formulas/' | relative_url }}).
