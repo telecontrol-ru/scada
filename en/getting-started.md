@@ -145,9 +145,9 @@ does not carry the Client, which is installed separately (see
 choose which processes run on a computer with the `--tiers` option; the
 license decides which of them are allowed.
 
-**Run `scada-setup` from an elevated command prompt**, `status` included:
-the data folder, which holds the license and the parameter files, is closed
-to other users. The installer does not add the program's folder to `PATH`, so the
+**Run `scada-setup` from an elevated command prompt** (`status` works
+without one, but shows a license in the data folder, which is closed to other
+users, only with one). The installer does not add the program's folder to `PATH`, so the
 examples call it by its full path,
 `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe"`; from that
 folder, typing `scada-setup` is enough.
@@ -388,11 +388,10 @@ into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd, glibc
 on a working Linux site). There is no Linux Client: Windows and macOS
 Clients connect to a Linux Server just as they do to a Windows one.
 
-Run every command as `root` (with `sudo`), `status` included: the process
-folders are closed to other users, so without `sudo` the command cannot read
-the parameter files — it checks the license at the default path
-`/var/lib/scada/license.json` instead of the one recorded at installation, or
-prints `License: not available`.
+Run every command as `root` (with `sudo`). `status` works without `sudo`,
+but cannot read a license in the data folder (the process folders are closed
+to other users) and says so with
+`License: <path> can be read by administrators only; to see it, run scada-setup status with sudo`.
 
 1. Install the package:
 

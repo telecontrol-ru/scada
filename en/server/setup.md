@@ -29,13 +29,17 @@ On Linux `scada-setup` does the same with systemd services — see
 Windows.** If the result of any command differs from what this page
 describes, report that to Telecontrol (mail@telecontrol.ru).
 
-**Run `scada-setup` from an elevated command prompt** (except `generate`
-and `migrate` without `--execute`; `status` needs one too, because the data
-folder is closed to other users):
+**Run `scada-setup` from an elevated command prompt** (except `status`,
+`generate` and `migrate` without `--execute`):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" <command> <options>
 ```
+
+The data folder is closed to other users, so without one `status` shows the
+certificate and the services' state, and in place of the license summary,
+when the license is in the data folder, prints
+`License: <path> can be read by administrators only; to see it, run scada-setup status from an elevated prompt`.
 
 The installer does not add the program's folder to `PATH`, so outside that
 folder call the program by its full path. `scada-setup` finds its templates
@@ -45,7 +49,7 @@ in the installation folder, the one above the folder holding
 | Command | Does | Needs admin |
 |---|---|:-:|
 | `apply` | Write parameter files and databases, create the [Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) if there is none, register and start the processes' services | yes |
-| `status` | License summary, this computer's certificate and each process's service state | yes |
+| `status` | License summary, this computer's certificate and each process's service state | no (yes for the summary of a license in the data folder) |
 | `start` / `stop` | Start / stop this computer's services in order | yes |
 | `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the data of the processes named in `--tiers` too — see [Removing services and data](#remove)) | yes |
 | `generate --tiers <list> --output <dir>` | Write the parameter files only, for inspection | no |

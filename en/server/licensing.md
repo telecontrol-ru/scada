@@ -60,7 +60,9 @@ goes by the processes the license names: `apply` without `--tiers` installs
 exactly those. `scada-setup apply` does not accept a license whose validity
 period has not started yet.
 
-`scada-setup status` shows the license id and when the license expires. The
+`scada-setup status` shows the license id and when the license expires (for
+a license in the data folder, from an elevated command prompt; on Linux, with
+`sudo`). The
 id names whom the license was issued to; quote it when asking Telecontrol
 about the license. During the last 30
 days the Server also raises a daily system event about the expiry (every 15
@@ -113,8 +115,8 @@ sudo /opt/telecontrol-scada/bin/scada-setup start --tiers <this computer's proce
 ```
 
 If the license was given with `--license` elsewhere at installation,
-replace the file at that path: `start` and `status` check the file named in
-the processes' parameter files, so `--license` need not be given again.
+replace the file at that path: `start` and `status` check the file the
+processes' services name, so `--license` need not be given again.
 
 If this computer has no `scada-proxy` (protocol processes only), nothing else needs restarting: its processes' objects update and archive again by themselves — see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart).
 
