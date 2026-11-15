@@ -15,7 +15,10 @@ permalink: /en/server/upgrade/
 
 **WARNING:** the version 2.6 Server installer is not published yet
 (see [Download]({{ '/en/getting-started/' | relative_url }}#download));
-until it is, the upgrade cannot be carried out.
+until it is, the upgrade cannot be carried out. The order below is how the
+two version 2.6 packages are meant to be installed; it has not been run on
+Windows yet. Before following it on a working site, check in the release
+description or with Telecontrol (mail@telecontrol.ru) that it is confirmed.
 
 Versions 2.5 and earlier installed a single process — the *Telecontrol SCADA
 Server* service — and kept its data in the `Configuration`, `History` and
