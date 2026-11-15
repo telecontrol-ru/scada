@@ -290,7 +290,10 @@ Fields:
 * `NUMBER` is the decimal register number
 * `bit` is the first bit to mask, numbered from 1 (the least significant bit)
   to 16. Bits can be selected only in registers, and only for `BOOL`, `INT8`,
-  `UINT8`, `INT16` and `UINT16`
+  `UINT8`, `INT16` and `UINT16`. The Server does not accept a coil or
+  discrete-input address with a bit (`BOOL:5:3`, for example): the object gets
+  no values from the device, and the device log records the warning
+  `Wrong variable path`
 * `bitcount` is the number of **additional** bits after `bit`, so
   `bitcount + 1` bits are read in all: `INT16:40123:3+2` masks bits 3, 4
   and 5
