@@ -83,9 +83,15 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 
 1. Остановите процессы: `scada-setup stop`.
 2. Верните на место папку `%ProgramData%\Telecontrol\SCADA Server` (и, если
-   ее нет, папку `Certificates`) из резервной копии.
-3. Запустите процессы: `scada-setup start` с
-   [параметрами компьютера]({{ '/server/setup/' | relative_url }}#scada-setup-options).
+   ее нет, папку `Certificates`, а затем ограничьте доступ к файлу ключа
+   командой `icacls`, приведенной ниже, в шаге 3 для нового компьютера) из
+   резервной копии.
+3. Выполните `scada-setup apply` с теми же
+   [параметрами компьютера]({{ '/server/setup/' | relative_url }}#scada-setup-options) и паролями `svc` и `root`
+   (смотрите [Повторный apply]({{ '/server/setup/' | relative_url }}#reapply)). Возвращенная папка получает права
+   папки `%ProgramData%`, которые позволяют читать ее любому пользователю
+   компьютера; `apply` снова закрывает ее для остальных пользователей и
+   запускает службы, а `scada-setup start` этого не делает.
 4. Проверьте результат: `scada-setup status`.
 
 На новом или переустановленном компьютере:
@@ -138,8 +144,9 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 `/var/lib/scada` и `/opt/telecontrol-scada/data/Certificates`, а команды —
 `sudo /opt/telecontrol-scada/bin/scada-setup …`; шаг с `icacls` не нужен.
 Файлы, возвращенные под `root` (например, `cp -r`), принадлежат `root`, но
-`scada-setup start` перед запуском служб возвращает их учетной записи `scada`,
-поэтому на том же компьютере достаточно шага 3 (`start`), если папка
+`scada-setup start` перед запуском служб возвращает их учетной записи `scada`
+и снова закрывает папки процессов для остальных пользователей, поэтому на
+том же компьютере вместо шага 3 достаточно `scada-setup start`, если папка
 `secrets` на месте (иначе выполните `apply` с паролями); на новом компьютере
 выполните `apply`, как описано выше («На новом или переустановленном
 компьютере»). Если `start` сообщает, что учетной записи `scada` нет, система

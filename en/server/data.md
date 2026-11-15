@@ -104,8 +104,9 @@ For administration and diagnostics, a history database can be opened with
 the `sqlite3` command-line tool. Version 2.6 does not install it (versions 2.5
 and earlier did); download it from the
 [SQLite download page](https://sqlite.org/download.html). The database file is
-named `history` and sits in the database's folder: change to that folder and
-run `sqlite3 history`. Open a database for writing only while its process is
+named `history` and sits in the database's folder. The data folder is closed
+to other users, so on Windows work from an elevated command prompt and on
+Linux with `sudo`: change to that folder and run `sqlite3 history`. Open a database for writing only while its process is
 stopped (`scada-setup stop`).
 
 The Server maintains its databases automatically, so this is optional. A

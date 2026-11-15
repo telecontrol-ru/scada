@@ -29,8 +29,9 @@ On Linux `scada-setup` does the same with systemd services — see
 Windows.** If the result of any command differs from what this page
 describes, report that to Telecontrol (mail@telecontrol.ru).
 
-**Run `scada-setup` from an elevated command prompt** (except `status`,
-`generate` and `migrate` without `--execute`):
+**Run `scada-setup` from an elevated command prompt** (except `generate`
+and `migrate` without `--execute`; `status` needs one too, because the data
+folder is closed to other users):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" <command> <options>
@@ -44,7 +45,7 @@ in the installation folder, the one above the folder holding
 | Command | Does | Needs admin |
 |---|---|:-:|
 | `apply` | Write parameter files and databases, create the [Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) if there is none, register and start the processes' services | yes |
-| `status` | License summary, this computer's certificate and each process's service state | no |
+| `status` | License summary, this computer's certificate and each process's service state | yes |
 | `start` / `stop` | Start / stop this computer's services in order | yes |
 | `remove [--purge-data]` | Stop and unregister the services (with `--purge-data`, delete the data of the processes named in `--tiers` too — see [Removing services and data](#remove)) | yes |
 | `generate --tiers <list> --output <dir>` | Write the parameter files only, for inspection | no |
@@ -77,7 +78,8 @@ Client take effect in every process.
   license**, while `stop`, `status`, `remove` and `set-password` take every
   Server service the computer has. `generate` requires it.
   On Linux the default set leaves out `scada-opc` and `scada-vidicon`, which
-  run on Windows only. Named in the `--tiers` of `apply` or `start`, either
+  run on Windows only. Named in the `--tiers` of `apply`, `start` or `migrate` (a dry run
+  included), either
   is refused with `… runs on Windows only, and this computer is not Windows;
   nothing was changed`; `stop`, `status`, `remove` and `generate` accept
   them.

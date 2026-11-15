@@ -300,8 +300,14 @@ reached, from an elevated command prompt:
 4. Put back, from the backup taken **before the upgrade**, the data folder
    (`%ProgramData%\Telecontrol\SCADA Server`, or the folder given as
    `--data-root`), replacing what is there, and the
-   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder. If the
-   backup does not have it, `apply` creates a new certificate, and OPC UA
+   `C:\Program Files\Telecontrol SCADA\data\Certificates` folder. The
+   restored key file takes the folder's permissions, so restrict access to it:
+
+   ```bat
+   icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
+   ```
+
+   If the backup has no `Certificates` folder, `apply` creates a new certificate, and OPC UA
    clients that trusted the old one must be made to trust the new one. Do not keep the data the newer version worked with: whether a newer
    version changes the databases when it first starts has not been verified,
    so only the pre-upgrade backup is known to suit the older version.
@@ -309,6 +315,21 @@ reached, from an elevated command prompt:
    [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options) and the same `svc` and
    `root` passwords.
 6. Check the result: `scada-setup status`, then sign in from a Client.
+
+**On Linux** the steps are the same, with the commands run through `sudo`.
+There is no need to remove the newer version first: stop the processes
+(`sudo /opt/telecontrol-scada/bin/scada-setup stop`) and install the older
+package over the newer one:
+
+```sh
+sudo apt install --allow-downgrades ./telecontrol-scada-server_<older version>_amd64.deb
+```
+
+For an archive installation, unpack the older archive with the same
+`tar -xzf … -C /opt` command. Then put back, from the backup, the data folder
+(`/var/lib/scada`, or the folder given as `--data-root`) and the
+`/opt/telecontrol-scada/data/Certificates` folder, and do steps 5 and 6; the
+`icacls` step is not needed.
 
 Changes made to the configuration and values archived after the backup are
 lost. If the workstations, or the Client package on a Server computer, were
@@ -395,3 +416,35 @@ On every Server computer:
 
    Delete in the same way any rule you created for links that accept
    connections (for example port 2404), by the name you gave it.
+
+### On Linux {#uninstall-linux}
+
+**On Linux**, `sudo apt remove telecontrol-scada-server` stops and
+removes the process services and the computer's certificate; the data in
+`/var/lib/scada` and the site certificate authority (on the central
+computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, as
+on Windows, so after a reinstall the other computers need not join again.
+`sudo apt purge telecontrol-scada-server` also deletes the whole
+`data/Certificates` folder, the certificate authority included — uninstall
+that way only when the computer leaves the site for good. For an archive
+installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
+then delete the `/opt/telecontrol-scada` folder; on the central computer, if
+the program will be installed again, first save the `data/Certificates/ca`
+subfolder and put it back before `apply` (see
+[A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)).
+The `scada` account stays after uninstalling, `apt purge` included; if it is
+no longer needed, delete it with `sudo userdel scada`.
+
+**Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
+folder**: the configuration, history and license stay. `apt purge` deletes
+only its `secrets` folder, with the file `service-secrets.env` that holds the
+`svc` and `root` passwords unencrypted — also in a data folder chosen with
+`--data-root`, which `scada-setup` records in `/etc/scada/data-root`. After
+`apt remove` that file stays. Delete the `secrets` folder
+(`<data folder>/secrets`) by hand if the program was installed from the
+archive (`scada-setup remove` and deleting the installation folder), or if
+the data folder is not `/var/lib/scada` and the processes' services had
+already been removed before `apt purge`, which leaves no record of it. If
+the data is no longer needed, delete the
+folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
+created in [Network preparation]({{ '/en/getting-started/' | relative_url }}#network).

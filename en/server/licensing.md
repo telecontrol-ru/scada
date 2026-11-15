@@ -81,7 +81,9 @@ Until then see [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)
 Running processes re-read the file every 5
 seconds and pick up a new license without a restart. So replace the file in
 one step: copy the new license into the same folder under a temporary name,
-then rename it to `license.json` over the old file:
+then rename it to `license.json` over the old file. On Windows run the
+commands from an elevated command prompt: the data folder is closed to other
+users.
 
 ```bat
 copy new-license.json "%ProgramData%\Telecontrol\SCADA Server\license.new"

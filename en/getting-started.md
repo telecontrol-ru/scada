@@ -144,8 +144,9 @@ the Client, which is installed separately (see
 choose which processes run on a computer with the `--tiers` option; the
 license decides which of them are allowed.
 
-**Run `scada-setup` from an elevated command prompt** (`status` does not
-need one). The installer does not add the program's folder to `PATH`, so the
+**Run `scada-setup` from an elevated command prompt**, `status` included:
+the data folder, which holds the license and the parameter files, is closed
+to other users. The installer does not add the program's folder to `PATH`, so the
 examples call it by its full path,
 `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe"`; from that
 folder, typing `scada-setup` is enough.
@@ -386,9 +387,11 @@ into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd, glibc
 on a working Linux site). There is no Linux Client: Windows and macOS
 Clients connect to a Linux Server just as they do to a Windows one.
 
-Run every command as `root` (with `sudo`; `status` does not need it, but
-when only the `scada` group can read the license it prints
-`License: not available` without `sudo`).
+Run every command as `root` (with `sudo`), `status` included: the process
+folders are closed to other users, so without `sudo` the command cannot read
+the parameter files — it checks the license at the default path
+`/var/lib/scada/license.json` instead of the one recorded at installation, or
+prints `License: not available`.
 
 1. Install the package:
 
@@ -956,35 +959,14 @@ the site for good, uninstall it with
 installed on this computer with the `telecontrol-scada-<version>.msi` package
 stays; uninstall it separately — the *ОИК Телеконтроль* program.
 
-**On Linux**, `sudo apt remove telecontrol-scada-server` stops and
-removes the process services and the computer's certificate; the data in
-`/var/lib/scada` and the site certificate authority (on the central
-computer, the `/opt/telecontrol-scada/data/Certificates/ca` folder) stay, as
-on Windows, so after a reinstall the other computers need not join again.
-`sudo apt purge telecontrol-scada-server` also deletes the whole
-`data/Certificates` folder, the certificate authority included — uninstall
-that way only when the computer leaves the site for good. For an archive
-installation run `sudo /opt/telecontrol-scada/bin/scada-setup remove` first,
-then delete the `/opt/telecontrol-scada` folder; on the central computer, if
-the program will be installed again, first save the `data/Certificates/ca`
-subfolder and put it back before `apply` (see
-[A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)).
-The `scada` account stays after uninstalling, `apt purge` included; if it is
-no longer needed, delete it with `sudo userdel scada`.
-
-**Neither `apt remove` nor `apt purge` deletes the `/var/lib/scada` data
-folder**: the configuration, history and license stay. `apt purge` deletes
-only its `secrets` folder, with the file `service-secrets.env` that holds the
-`svc` and `root` passwords unencrypted — also in a data folder chosen with
-`--data-root`, which `scada-setup` records in `/etc/scada/data-root`. After
-`apt remove` that file stays. Delete the `secrets` folder
-(`<data folder>/secrets`) by hand if the program was installed from the
-archive (`scada-setup remove` and deleting the installation folder), or if
-the data folder is not `/var/lib/scada` and the processes' services had
-already been removed before `apt purge`, which leaves no record of it. If
-the data is no longer needed, delete the
-folder with `sudo rm -rf /var/lib/scada`, and remove the firewall rules
-created in [Network preparation](#network).
+**On Linux**, remove the package with `sudo apt remove telecontrol-scada-server`
+(for an archive installation, `sudo /opt/telecontrol-scada/bin/scada-setup remove`
+and delete the `/opt/telecontrol-scada` folder). `sudo apt purge` also deletes
+the site certificate authority — uninstall that way only when the computer
+leaves the site for good. The `/var/lib/scada` data folder stays either way.
+What else stays and what to delete by hand — the password file, the `scada`
+account, the firewall rules — is in
+[Uninstalling on Linux]({{ '/en/server/upgrade/' | relative_url }}#uninstall-linux).
 
 A Client unpacked from the archive or disk image is removed by deleting its
 folder (on macOS, the app in *Applications*). The Client keeps its settings
@@ -1013,7 +995,7 @@ computer.
 
 ## Troubleshooting
 
-Run the `scada-setup` commands below, other than `status`, from an elevated
+Run the `scada-setup` commands below, `status` included, from an elevated
 command prompt (on Linux, with `sudo`).
 
 <dl>

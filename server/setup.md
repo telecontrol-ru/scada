@@ -29,7 +29,8 @@ permalink: /server/setup/
 сообщите в ООО «Телеконтроль» (mail@telecontrol.ru).
 
 **Запускайте `scada-setup` из командной строки с правами администратора**
-(кроме `status`, `generate` и `migrate` без `--execute`):
+(кроме `generate` и `migrate` без `--execute`; `status` тоже нужны права
+администратора — папка данных закрыта для остальных пользователей):
 
 ```bat
 "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" <команда> <параметры>
@@ -43,7 +44,7 @@ permalink: /server/setup/
 | Команда | Действие | Права администратора |
 |---|---|:-:|
 | `apply` | Создать файлы параметров, БД и, если его нет, [сертификат Сервера]({{ '/server/opcua/' | relative_url }}#opcua-certificate), зарегистрировать и запустить службы процессов | да |
-| `status` | Сведения о лицензии, сертификате компьютера и состояние служб процессов | нет |
+| `status` | Сведения о лицензии, сертификате компьютера и состояние служб процессов | да |
 | `start` / `stop` | Запуск / остановка служб компьютера в нужном порядке | да |
 | `remove [--purge-data]` | Остановить и удалить службы (с `--purge-data` — и данные процессов, перечисленных в `--tiers`, смотрите [Удаление служб и данных](#remove)) | да |
 | `generate --tiers <список> --output <папка>` | Только создать файлы параметров, для просмотра | нет |
@@ -78,7 +79,7 @@ permalink: /server/setup/
   есть на компьютере. Для `generate` параметр обязателен.
   Под Linux процессы `scada-opc` и `scada-vidicon`, которые работают только
   под Windows, в набор по умолчанию не входят. Указанные в `--tiers` команд
-  `apply` и `start`, они вызывают отказ `… runs on Windows only, and this
+  `apply`, `start` и `migrate` (в том числе без `--execute`), они вызывают отказ `… runs on Windows only, and this
   computer is not Windows; nothing was changed`; `stop`, `status`, `remove` и
   `generate` их принимают.
 * `--central <адрес>` — адрес центрального компьютера; обязателен для
