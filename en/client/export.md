@@ -22,7 +22,9 @@ Data from the [Table]({{ '/en/client/table/' | relative_url }}),
 can be exported to a CSV file. A graph exports the values of its lines over
 the visible time range — see
 [Graph: printing and export]({{ '/en/client/graph/' | relative_url }}#print-export).
-Displays and user tables cannot be exported.
+A Vidicon schematic can be saved as a PNG image with the "Export" button
+above it (see [Working with a schematic]({{ '/en/client/display/' | relative_url }}#working));
+Modus schematics and user tables cannot be exported.
 
 To export data, choose *Export — Export to CSV* in the window's context
 menu.

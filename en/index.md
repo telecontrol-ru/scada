@@ -37,11 +37,13 @@ Telecontrol SCADA is supervisory control and data acquisition software
 for collecting field data, presenting it to operators, issuing control
 commands, archiving telemetry, and displaying historical information.
 
-The system uses a client-server architecture. The Server is a set of
-separate processes: protocol processes (MODBUS, IEC 60870-5-104, IEC 61850
+The system uses a client-server architecture. In version 2.6 the Server is a
+set of separate processes: protocol processes (MODBUS, IEC 60870-5-104, IEC 61850
 and others), the archive, the configuration, the file store, and a proxy
 that Clients connect to. The processes are purchased separately and the
-license lists the ones purchased. A protocol process on its own is not
+license lists the ones purchased; that is how the 2.6 Server will be sold once
+its installer is published, while today a 2.5.7 Server is bought (see
+[Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)). A protocol process on its own is not
 enough, even on a small site: the smallest set is `scada-config`, one or more protocol
 processes, `scada-filesystem` and `scada-proxy`, and the archive of values
 and events — and so any report or summary over the archive — also needs
@@ -74,7 +76,8 @@ used to edit diagrams.
 
 * **Evaluating and buying**: the version 2.6
   [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations), then
-  [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now).
+  [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now). Terms and
+  prices, keys and licences: Telecontrol, mail@telecontrol.ru.
 * **Administrator**, who installs and maintains the Server: today, a 2.5.7
   Server ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)); for version 2.6,
   once its Server is published,

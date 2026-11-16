@@ -101,8 +101,11 @@ not IEC 60870-5-104, the pane shows the frame's raw octets without a decode.
 Below the tree, a **Mapped node** group resolves the object addresses found in
 the frame against the address space, giving each one the signal's name and its
 node identifier. An address that is not in the device's address map is marked
-as such — so it is visible that something arrived from the device and is bound
-to nothing.
+"Not in the device's address map" — so it is visible that something arrived
+from the device and is bound to nothing. Only a retransmission device has an
+address map (it lists the device's retransmission rules), so on a polled
+device every address is marked this way and this group does not resolve
+anything yet.
 
 ## Pause, save and clear
 

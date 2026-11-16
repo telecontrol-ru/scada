@@ -89,7 +89,7 @@ Time* columns keep the user and time; an unacknowledged event shows
 
 The client's own messages ("Local Event") are acknowledged **on this
 workstation only**: they are not sent to the Server, other workstations do not
-have them, and they are not kept across a restart of the client.
+have them, and they are not kept across a restart of the client or a sign-out with *Disconnect from Server* — even if the same account signs in again.
 
 When more than ten events are unacknowledged, repeats of the same message from
 the same source collapse into one row marked "×N". Acknowledging that row

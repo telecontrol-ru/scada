@@ -1,11 +1,11 @@
 ---
-title: Portfolios
+title: Portfolio
 nav_order: 11
 parent: Client
 permalink: /en/client/portfolio/
 ---
 
-# Portfolios
+# Portfolio
 {:.no_toc}
 
 * TOC

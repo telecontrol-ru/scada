@@ -210,16 +210,21 @@ position and size of the main windows are taken from the computer.
 
 To hand over a shift without closing the client:
 
-1. The outgoing operator makes sure the status bar reads "Connected" and
+1. The outgoing operator reviews the client's own messages in the events
+   panel and tells the incoming operator about anything still open — for
+   example, that a device may have been left in the selected state. These
+   messages are deleted on disconnection, and the incoming operator will not
+   see them.
+2. The outgoing operator makes sure the status bar reads "Connected" and
    chooses *More → Disconnect from Server*. The client saves their profile on
    the Server, ends the session and opens the sign-in window.
-2. The incoming operator enters their own name and password in the sign-in
+3. The incoming operator enters their own name and password in the sign-in
    window.
-3. The client closes the outgoing operator's pages and opens the incoming
+4. The client closes the outgoing operator's pages and opens the incoming
    operator's profile: their pages, portfolios, alarm tone and severity
    threshold. If the incoming account has no profile on the Server yet, the
    default profile opens. Whatever the incoming operator changes is saved into
-   **their** profile. The "Control confirmation" setting is not kept in the
+   **their** profile. The "Control Confirmation" setting is not kept in the
    profile: it is on again at every sign-in.
 
 The sign-in window this command opens always waits for input: the outgoing
@@ -623,9 +628,12 @@ other event — otherwise they hold the event panel open.
 
 ### Manual input {#manual-input}
 
-*Manual Input* opens the "Manual Input" dialog: "Current value:", "New value:"
-and a "Lock:" checkbox. The "Write" button writes the value. No confirmation
-box is shown for manual input, whatever the *Control Confirmation* setting.
+*Manual Input...* (in a data item's context menu and the **Item** menu) opens
+the "Manual Input" dialog: "Current value:", "New value:" and a "Lock:"
+checkbox. The "Write" button writes the value. No confirmation box is shown
+for manual input, whatever the *Control Confirmation* setting. As for control,
+it needs the Control privilege: without it neither *Manual Input...* nor
+*Unlock* appears in the menu.
 
 On a successful write the dialog closes. When the *Control Success Message*
 setting is on (it is by default), the event panel shows a client message:
@@ -668,9 +676,24 @@ group. In administration mode, objects can also be dragged between
 groups.
 
 The toggle at the left side of each object or group controls whether the
-object is included in the current view. Double-clicking an object opens
-its graph. Double-clicking a group opens a table for all objects in that
-group.
+object is included in the current view. Clicking a group's toggle includes
+every object under it; a group's toggle is ticked when the current view holds
+all of its objects.
+
+Double-clicking an object opens its graph, a group opens a table for all
+objects in that group, and a device opens
+[Device watch]({{ '/en/client/device-watch/' | relative_url }}). But if the
+current view is of the same kind — a table is open and you double-click a
+group, or a graph is open and you double-click an object — no new window
+opens: the objects go into the current view.
+
+* **Without *Ctrl*, a group replaces the table's contents**: the table you
+  assembled is cleared and holds only the group's objects.
+* On a graph, the object goes into the first empty pane, or into the selected
+  pane if none is empty.
+* With *Ctrl* held, objects are added to the current view without removing
+  anything, including a view of another kind (for example, an object into an
+  open table).
 
 ## Reading values and colours {#quality-legend}
 
@@ -817,7 +840,7 @@ The main operator-facing views:
 * [Device watch]({{ '/en/client/device-watch/' | relative_url }})
 * [Device metrics]({{ '/en/client/device-metrics/' | relative_url }})
 * [Debugger]({{ '/en/client/debugger/' | relative_url }})
-* [Portfolios]({{ '/en/client/portfolio/' | relative_url }})
+* [Portfolio]({{ '/en/client/portfolio/' | relative_url }})
 * [Export]({{ '/en/client/export/' | relative_url }})
 * [Printing]({{ '/en/client/print/' | relative_url }})
 * [Reports and analysis]({{ '/en/client/reports/' | relative_url }})

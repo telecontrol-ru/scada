@@ -131,10 +131,11 @@ silent on an alarm without saying so.
 > not bound to equipment: the engineer sets its
 > [Severity]({{ '/en/dev/data-items/' | relative_url }}) to 800 (a 2.5.7
 > Server uses a 0–100 scale — set 80) and performs
-> [Manual input]({{ '/en/client/' | relative_url }}#manual-input) on it; the
-> manual-input event carries the object's severity. Afterwards acknowledge
+> [Manual input]({{ '/en/client/' | relative_url }}#manual-input) on it with
+> the "Lock:" box ticked; the manual-input event carries the object's
+> severity. Afterwards acknowledge
 > the event. To repeat the test, first remove manual input from the object
-> (*Unlock*): another manual input on an object already in manual mode may
+> with *Unlock* (available only when the input was made with the lock): another manual input on an object already in manual mode may
 > raise no new event. Instead of manual input you can also change one of the
 > object's limits so that its value crosses it. Keep a sound assigned to the Windows
 > "Exclamation" event and the volume up on that computer, and test the tone

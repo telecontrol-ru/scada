@@ -150,7 +150,10 @@ What a click does depends on the kind of schematic.
   in the **Item** menu — and adds it to the "Measurements" panel. A
   double-click does nothing: acknowledge events in the event panel. The
   shapes show live values on the schematic itself — see
-  [Live values on a Vidicon schematic](#live-values-vidicon).
+  [Live values on a Vidicon schematic](#live-values-vidicon). Above a
+  Vidicon schematic are the zoom buttons ("-", "+", "Fit", "100%") and an
+  "Export" button (tooltip "Export image"), which saves the schematic as it
+  is shown now to a PNG file.
 
 Clicking a shape that has no object behind it, or empty space on the
 schematic, clears the selection: the **Item** menu commands, the Inspector and

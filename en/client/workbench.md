@@ -518,6 +518,11 @@ selection:
   control is unavailable, the reason appears under the button: the object
   cannot be controlled (a computed expression or a folder, for example), the
   signal has no output channel, or the session lacks the Control privilege.
+  The caption under an available button ("Opens the two-stage command
+  confirm. Actions are logged.") is the same for every object: whether the command is
+  two-stage and whether the client asks for confirmation depends on the
+  object and on the *Control Confirmation* setting (see
+  [Control]({{ '/en/client/' | relative_url }}#control)).
 
 Selecting a table row — including a formula row — fills the Inspector; the
 value keeps updating while the row stays selected. Clicking a shape bound to

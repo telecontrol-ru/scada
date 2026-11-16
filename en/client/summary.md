@@ -102,6 +102,14 @@ out**: a value flagged invalid, offline, stale or misconfigured is skipped.
 When the interval holds no valid value, the cell stays empty (*Count* shows
 0).
 
+> **Caution: a 2.5.7 Server computes *Minimum*, *Maximum*, *Average* and
+> *Count* the old way, and the Client does not warn about it.** It counts
+> invalid values too, and over an interval whose values are all negative it
+> shows *Maximum* as about 0. The rule above is what a version 2.6 Server
+> does. While the site runs on a 2.5.7 Server, cross-check these functions
+> against the graph or the *Last* column, and do not use *Maximum* for a
+> quantity that is only ever negative.
+
 *First*, *Last*, *Count*, *Minimum*, *Maximum* and *Average* work on the
 individual recorded points. *Time Average* and *Time Integral* take into
 account how long each value was in force: a value holds from the moment it
