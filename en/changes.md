@@ -188,7 +188,7 @@ The release 2.6.0 Client packages were built on 2 November 2026, before some of 
 
 1. Two-stage control of an object whose device cannot select — an IEC 60870-5 command other than a single command (C_SC_NA_1), an IEC 61850 object with direct control, a MODBUS object, or an OPC object — is refused by the Server at the select stage, with nothing sent to the device, and the Client explains this in an error box. Such a select used to be confirmed without asking the device, and the Client said "The remote device is ready to execute the command." One-stage control of such an object works as before. See [Two-stage control]({{ '/en/client/' | relative_url }}#two-stage).
 
-1. Deleting a portfolio, or an object from one, asks for confirmation first. See [Portfolios]({{ '/en/client/portfolio/' | relative_url }}).
+1. Deleting a portfolio, or an object from one, asks for confirmation first. See [Portfolio]({{ '/en/client/portfolio/' | relative_url }}).
 
 1. In the Multiple Create wizard the "NodeId template" field is empty by default, so the Server assigns the identifiers; the former default was one the Server refused. See [Data items]({{ '/en/dev/data-items/' | relative_url }}).
 
@@ -297,7 +297,7 @@ Published on the releases page on 9 February 2026 (installer `telecontrol-scada-
 
 ### Fixes
 
-1. Client: fixed controller registration for Favorites and Portfolios.
+1. Client: fixed controller registration for Favorites and Portfolio.
 1. Client: fixed report generation during configuration export.
 
 ## 2.4.8
