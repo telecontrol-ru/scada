@@ -46,7 +46,9 @@ model default for that property is Yes, so check it after creating. The
 ## Device properties
 
 To edit an element's parameters, open the element context menu and
-choose `Properties`.
+choose `Properties`. Changed values are written only by Apply (see
+[Properties]({{ '/en/development/' | relative_url }})); in the steps below,
+"set in its properties" always means: change the fields and click Apply.
 
 ### Fields with a list of values {#enum-lists}
 
@@ -64,15 +66,16 @@ IEC 60870-5 direction's protocol is set by the command that creates it
 
 ### Address map
 
-Besides the tabs carrying its own parameters, a device has an **Address map**
-tab — the list of signals read from it, with the columns Signal, Type, IOA and
-NodeId. The tab is read-only: an address is set in the data item's own
-parameters, in its Channel field (see
-[Data items]({{ '/en/dev/data-items/' | relative_url }})). The map answers the
-reverse question — which object is behind an address that arrived from the
-device — and it is the same map the
-[frame decode]({{ '/en/client/device-watch/' | relative_url }}) uses in the
-device watch window.
+A device the SCADA [retransmits](#retransmission) data to has, besides the
+tabs carrying its own parameters, an **Address map** tab: the list of its
+retransmission rules, with the columns Signal (the source object), Type
+(`TS` or `TI`), Address and NodeId. The tab is read-only and appears only when
+the device has rules; a device the SCADA polls has none — its signals'
+addresses are set in the data items' own Channel field (see
+[Data items]({{ '/en/dev/data-items/' | relative_url }})). The
+[frame decode]({{ '/en/client/device-watch/' | relative_url }}) in the device
+watch window uses the same map, so it does not decode addresses in a polled
+device's frames.
 
 ### Checking the setup {#commissioning}
 
@@ -134,7 +137,14 @@ answers another system's requests.</dd>
 
 <dt>Transport</dt>
 <dd>The communication channel: a serial port or a TCP/UDP network, set in the
-Transport window opened by the button in the field.</dd>
+Transport window opened by the button in the field. A new MODBUS direction
+is created without a transport, so always set one: for polling over a network
+(Protocol = TCP), Type = TCP Client, Host = the device's IP address, Port =
+502 (or the device's port); for a serial line (RTU or ASCII), Type = Serial
+Port, Port = the computer's port (for example COM1 or <code>/dev/ttyS0</code>),
+and Baud Rate, Bit Count, Parity, Stop Bits and Flow Control as set in the
+device. For retransmission see
+<a href="#modbus-retransmission">Retransmission over MODBUS</a>.</dd>
 
 <dt>Request delay, ms</dt>
 <dd>An artificial delay between the response and the next request. This
@@ -151,6 +161,12 @@ When the property changes, the old computer closes the link and the new one
 opens it, with no process restart. See
 <a href="{{ '/en/getting-started/' | relative_url }}#choose">Choosing the
 Server processes</a>.</dd>
+
+<dt>Event archive</dt>
+<dd>The archive that stores the direction's events, such as loss and restoration
+of communication. Exchanged frames are not archived; the
+<a href="{{ '/en/client/device-watch/' | relative_url }}">Device watch</a>
+window shows them.</dd>
 
 <dt>Disabled</dt>
 <dd>Yes — the direction does not run.</dd>
@@ -176,6 +192,12 @@ respond; after that, communication loss is reported. Default: 3.</dd>
 <dt>Response timeout, ms</dt>
 <dd>The maximum wait for a device response, in milliseconds, before the
 request is retried. Default: 1000.</dd>
+
+<dt>Event archive</dt>
+<dd>The archive that stores the device's events, such as loss and restoration
+of communication. Exchanged frames are not archived; the
+<a href="{{ '/en/client/device-watch/' | relative_url }}">Device watch</a>
+window shows them.</dd>
 
 <dt>Disabled</dt>
 <dd>Yes — the device is not polled.</dd>
@@ -532,7 +554,7 @@ window shows it.</dd>
 <dd>How often the general interrogation is repeated (0). 0 means no periodic
 interrogation; only the startup one runs, if enabled.</dd>
 
-<dt>Group 1...16 poll period, s</dt>
+<dt>Group 1 poll period, s … Group 16 poll period, s</dt>
 <dd>Per-group interrogation periods (0 — the group is not
 interrogated).</dd>
 
@@ -576,7 +598,9 @@ to.
      clock synchronisation commands;
    * Mode — retransmission;
    * k, w, t1–t3 and the field sizes — as agreed with the DC;
-   * Disabled = No.
+   * Disabled = No;
+
+   and click Apply.
 
    The ASDU types of retransmission are not configurable: in general
    interrogation and spontaneous traffic alike the SCADA sends TS objects as
@@ -584,7 +608,8 @@ to.
    as `M_ME_TF_1` (36, short floating-point value with time tag). Agree these
    types with the DC.
 3. Under the direction, `Create -> IEC 60870 device`. Set its Address — the
-   common ASDU address the DC uses for the SCADA — and Disabled = No.
+   common ASDU address the DC uses for the SCADA — and Disabled = No, then
+   click Apply.
 4. Select the device and open the `Transmission Table`. The table has no
    command to add a rule: a rule is created when you tick a SCADA object in
    the object tree, and removed when you clear the tick. The table shows the
@@ -684,9 +709,12 @@ slave:
      network, in the Transport window: Type = TCP Server, Port = 502 (or the
      agreed port), Host = `0.0.0.0` to accept connections on all network
      interfaces; for a serial line, Type = Serial Port and the computer's port;
-   * Disabled = No.
+   * Disabled = No;
+
+   and click Apply.
 3. Under the direction create `Create -> Modbus device` for each slave address
-   the other system polls, and set its Address and Disabled = No. The SCADA
+   the other system polls, and set its Address and Disabled = No (and click
+   Apply). The SCADA
    answers only these addresses: a request to another address gets no answer,
    with the warning `Device with address N was not found`.
 4. Select the device and fill its transmission table as for IEC 60870-5 (see
@@ -713,7 +741,7 @@ the registers at addresses 0x0000–0x270F.
 * To send a value of another type, set the rule's Value format property.
   The transmission table and the Transmission rule panel do not show it: in
   the Equipment window expand the destination device, right-click the rule
-  and choose `Properties`. The Value format is
+  and choose `Properties` (Apply writes the change). The Value format is
   the type and the byte- and word-order options written as in a channel
   address, but without the register number: `FLOAT;swapwords`, `INT32`,
   `DOUBLE;reversewords`, `;swapbytes`. A rule at address 40001 with the
@@ -776,7 +804,8 @@ connection to the receiver.
 A device is created with `Create -> IEC 61850 device` from the Equipment
 window's context menu (right-click an empty part of the window). Its
 properties are Host — the device's network address — and Port (default
-102), plus Disabled = No. The Computer property is the name of the computer
+102), plus Disabled = No (then click Apply); Event archive is the archive
+for the device's events, as on other devices. The Computer property is the name of the computer
 whose `scada-iec61850` process serves the device (the computer's name or
 `scada-setup`'s `--host-name` value, letter case ignored); empty (the
 default) means the computer where `scada-setup apply` ran without

@@ -20,7 +20,7 @@ The commands below are available only with the Configure right.
 <dl>
 
 <dt>Properties</dt>
-<dd>Opens the property window for the selected SCADA object.</dd>
+<dd>Opens the property window for the selected SCADA object. Its properties are grouped on tabs (the first is General). Edited values are not written at once: a dot by the title marks unsaved changes, Apply writes them and Revert discards them. <b>Closing the window or selecting another object without clicking Apply discards the changes without a warning.</b></dd>
 
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 

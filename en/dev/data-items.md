@@ -46,7 +46,9 @@ Incoming values can be:
 * calculated using a [formula]({{ '/en/formulas/' | relative_url }})
 
 Object configuration is edited through either `Properties` for a single
-object or `Element Properties` for an object group.
+object or `Element Properties` for an object group. In the Properties window
+changed values are written only by Apply; closing the window without it
+discards them (see [Properties]({{ '/en/development/' | relative_url }})).
 
 ![]({{ '/img/menu-parameters.png' | relative_url }})
 
@@ -89,12 +91,19 @@ the name template (see below). Each object gets that address in its Channel
 field, exactly as if the device and channel had been chosen in its properties
 by hand. For an IEC 60870-5 device it is the information object address (for
 example <code>1{nn}</code>); for MODBUS it is a MODBUS channel address (for
-example <code>HOLDREG:INT16:{n}</code>). With no device selected, or an empty
-template, the objects are created without a source. On objects of a MODBUS
-device and on TIT objects of an IEC 60870-5 device the wizard sets
-<a href="#two-stage-control">Two-stage control</a> to No; it leaves Yes on the
-rest, and sets nothing on objects created without a source (so does Client
-2.6.4; Client 2.6.3 set No on those too).</dd>
+example <code>HOLDREG:INT16:{n}</code>). The Device list holds every device
+and direction of the Equipment window (IEC 61850 ones included), and one is
+always selected. The Source path template starts as <code>Signal{n}</code>,
+which is no protocol's address: replace it with the address pattern for the
+selected device, or clear it to create objects without a source (for
+example for objects with a <a href="{{ '/en/formulas/' | relative_url }}">formula</a>).
+The Name template starts as <code>TS{n} current</code> and Count as 12; set
+your own. On objects of a MODBUS device and on TIT objects of an IEC 60870-5
+device the wizard sets <a href="#two-stage-control">Two-stage control</a> to
+No, on TS objects of an IEC 60870-5 device to Yes; on objects of other devices
+and on objects created without a source it sets nothing, so they keep the
+default Yes (so does Client 2.6.4; Client 2.6.3 set No on objects without a
+source too).</dd>
 
 <dt>Pattern: naming and addressing</dt>
 <dd>The "Name template", "NodeId template" and "Source path template" take
@@ -183,10 +192,11 @@ window:
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
 {: .note }
-> In the Properties window the device and channel fields are grouped under
-> three rows, and are labelled differently from the names used below:
+> The Properties window is split into tabs (the first is General) and
+> sections; the device and channel fields are grouped in three sections, and
+> are labelled differently from the names used below:
 >
-> | Group in the window (Russian UI) | Field label in the window | Field in this manual |
+> | Section in the window (Russian UI) | Field label in the window | Field in this manual |
 > |---|---|---|
 > | Primary input («Основной ввод») | Device («Устройство») | Device |
 > | Primary input («Основной ввод») | Channel («Канал») | Channel |
@@ -237,8 +247,9 @@ object's command from the type override in its Control channel:
 is <code>C_SC_NA_1</code> (Yes); without an override a TIT (analog) object
 gets No and a TS object Yes. It does so for objects
 created one at a time; the <a href="#bulk-create">Multiple Create</a> wizard
-creates objects only on MODBUS and IEC 60870-5 devices and sets No on MODBUS
-and IEC 60870-5 TIT objects. The device is the one
+does not fill the Control channel, so it decides by device and object type
+only: No on MODBUS and IEC 60870-5 TIT objects, Yes on IEC 60870-5 TS objects;
+on objects of other devices it sets nothing. The device is the one
 named by the Control channel, or by the Channel when no control channel is
 set; an object with no channel gets Yes.
 When an object's channel moves to another device, or the IEC 60870-5 type
