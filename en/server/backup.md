@@ -119,10 +119,10 @@ On a new or rebuilt computer:
    recorded parameters: it differs once the central computer's certificate
    has been renewed.
 4. Run `scada-setup apply` with the same
-   [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options) as before, **the same `svc`
-   password**, and the `root` password. The `svc` password is stored in the
-   restored databases, and with a different one the processes cannot connect
-   to each other. `apply` registers and starts the services, and keeps the
+   [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options) as before, the `svc` password of
+   the site's other computers, and the `root` password. You need not know the
+   `svc` password stored in the restored databases: at start the processes
+   write the one given to `apply` into the database. `apply` registers and starts the services, and keeps the
    restored databases and certificate. If the site's other computers name this
    one in `--central` by an address that has changed, run `apply` there with
    the new address. If this computer runs protocol

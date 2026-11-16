@@ -159,7 +159,7 @@ Client take effect in every process.
   and `apply` and `start` refuse to run. So do not unpack the `.tar.gz`
   archive into a home folder.
 
-* `--host-name <name>` — this computer's name in place of the Windows
+* `--host-name <name>` — this computer's name in place of its system
   computer name: `scada-setup` writes it into the parameter files and the
   certificate, and it is the name a link's Computer property gives (see
   [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)).
@@ -188,7 +188,7 @@ services):
   makes that computer serve the links without a computer — and two computers
   open the same links;
 * `apply` without `--host-name` on a computer where it was given writes the
-  Windows computer name into the parameter files, and the computer stops
+  computer name into the parameter files, and the computer stops
   serving the links assigned to the old name;
 * on a site set up with `--insecure-links`, `apply` without that option on
   the central computer creates the site certificate authority and switches

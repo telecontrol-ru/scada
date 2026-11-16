@@ -36,7 +36,7 @@ Server installer.
 
 **WARNING:** releases 2.6.0, 2.6.3 and 2.6.4 carry only the Client packages for now.
 Both Windows installers — the Server installer `scada-server-<version>.msi`
-and the Client package with the documentation, `telecontrol-scada-<version>.msi`
+and the Client package `telecontrol-scada-<version>.msi` (the Client, the Designer and the documentation)
 — and the Linux Server packages (`.deb` and `.tar.gz`) will be added later.
 Until they are, the Server installation steps on this page cannot be followed.
 
@@ -114,7 +114,7 @@ each group of devices:
 * a link's Computer property says which computer serves it (an IEC 61850
   device, which has no link, has the property itself). It holds the computer
   name `scada-setup` writes into that computer's configuration files — the
-  Windows computer name or the `--host-name` value; letter case does not
+  computer name or the `--host-name` value; letter case does not
   matter;
 * the devices of a link are served by the same computer as the link;
 * the links whose Computer is empty are served by the computer where
@@ -175,6 +175,11 @@ folder, typing `scada-setup` is enough.
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
+
+   Before the next step, make sure Windows Firewall is on and open only the
+   ports the site needs (see [Network preparation](#network)): `apply` starts the
+   processes at once, and they accept connections on every network
+   interface, including user logins on ports 2000–2008.
 
 4. Run:
 
@@ -328,9 +333,10 @@ version with every version 2.6 release:
 [Displaying schematics](#displays)).
 
 On Windows the Client can also be installed with the
-`telecontrol-scada-<version>.msi` package, which carries the Windows Client
-and the documentation and no Server process or `scada-setup`. The package
-creates a *Клиент* (Client) shortcut on the desktop and in the
+`telecontrol-scada-<version>.msi` package, which carries the Windows Client,
+the Designer (an editor for Vidicon schematics) and the documentation, and no
+Server process or `scada-setup`. The package creates *Клиент* (Client) and
+*Дизайнер* (Designer) shortcuts on the desktop and in the
 *Start — ОИК Телеконтроль* menu, and appears in *Control Panel — Programs and
 Features* as *ОИК Телеконтроль*. It is not published for version 2.6 yet (see
 [Download](#download)), so for now the Client is installed from the archive or
@@ -388,9 +394,11 @@ into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd, glibc
 on a working Linux site). There is no Linux Client: Windows and macOS
 Clients connect to a Linux Server just as they do to a Windows one.
 
-Run every command as `root` (with `sudo`). `status` works without `sudo`,
-but cannot read a license in the data folder (the process folders are closed
-to other users) and says so with
+Run every command as `root` (with `sudo`). `status` works without `sudo`
+and reads a license in the usual place, `/var/lib/scada/license.json`
+(installed readable by everyone, see below). Only if the license was given
+with `--license` and lies where an ordinary user cannot read it does `status`
+without `sudo` say so with
 `License: <path> can be read by administrators only; to see it, run scada-setup status with sudo`.
 
 1. Install the package:
@@ -426,6 +434,13 @@ to other users) and says so with
 
 3. Decide which processes run on this computer, and
    [write down the computer's parameters](#host-parameters).
+
+   Before the next step, turn the firewall on and open only the ports the
+   site needs (see [Network preparation](#network)): `apply` starts the processes
+   at once, and they accept connections on every network interface,
+   including user logins on ports 2000–2008. On Ubuntu the ufw firewall is
+   off by default, and until it is on those ports are open to the whole
+   network.
 
 4. Run:
 
@@ -664,9 +679,10 @@ To put a ready project configuration database (a version 2.6
    installation. It keeps the copied database and adds the `svc` service
    account (id 100) to it, without which the processes cannot connect to
    each other. **A project user with id 100 is replaced by the `svc`
-   account.** A database taken from another version 2.6 site keeps that
-   site's `svc` password: this site then needs the same `svc` password, or
-   the processes cannot connect to each other.
+   account.** A database taken from another version 2.6 site does not
+   need that site's `svc` password: at start the processes write the `svc`
+   password given to `apply` into the database. What matters is that it
+   matches the `svc` password of this site's other computers.
 
 On Linux the commands are the same — `sudo /opt/telecontrol-scada/bin/scada-setup stop`
 and `apply` — and the `config/Configuration` folder is under

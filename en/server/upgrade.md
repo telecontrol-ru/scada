@@ -57,8 +57,8 @@ unpacked from the 2.6 Server package without installing it.
 **Version 2.6 is installed with two packages, and their order matters.** The
 Server package `scada-server-<version>.msi` (every Server process and
 `scada-setup`) installs beside version 2.5 and removes nothing of it. The
-Client package `telecontrol-scada-<version>.msi` (the Client and the
-documentation) is an upgrade of the program release 2.5 installed: it
+Client package `telecontrol-scada-<version>.msi` (the Client, the Designer
+and the documentation) is an upgrade of the program release 2.5 installed: it
 removes the version 2.5 program. So the Server package is installed and the
 data migrated first (steps 5 and 6), and the Client package only after that
 (step 7).
