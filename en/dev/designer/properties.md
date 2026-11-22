@@ -25,18 +25,52 @@ At the top the panel names the selection: the shape's name (or its text, or
 its master) and what it is — a shape, a group, an instance of a master; with
 several shapes selected, how many; with nothing selected, the page. A shape
 on a locked layer says so there too, which is why its values will not
-change.
+change. The name of a single selected shape can be corrected right there,
+and the list below it sets the style of the selected shapes.
 
 Below are three tabs:
 
 | Tab | What it holds |
 |---|---|
-| *Shape* | [position and size](#transform) |
+| *Shape* | [position and size](#transform), [fill, line, text and behaviour](#shape-tab) |
 | *Data* | [custom properties](#custom-properties) |
 | *Sheet* | every cell of the shape — described below |
 
 A section on a tab folds when you click its heading. The tab you used last
 opens next time.
+
+### The Shape tab {#shape-tab}
+
+Below [Position and size](#transform) come sections that show what the
+shape is actually drawn with — including the values it takes from its master
+or style:
+
+| Section | Fields |
+|---|---|
+| Fill | Pattern, Colour, for a hatch a Second colour, Transparency |
+| Line | Weight, Colour, Pattern, Begin and End arrow, Rounding, Transparency |
+| Text | Font, Size, style (bold, italic, underline), Colour, horizontal and vertical alignment |
+| Behaviour | Layers (*Edit...* opens the layer choice), Non-printing, Double-click (*Edit...* opens the Behavior dialog), Locks — buttons that lock width, height, horizontal and vertical move, rotation, deletion, text editing and formatting; for a group, Select and Display |
+
+The Text section appears only when the shape has text; the text itself is
+edited on the schematic with a double-click. The sections show when at least
+one shape is selected.
+
+Every field shows where its value comes from:
+
+- **A dot before the name** — the shape sets the value itself.
+- **A dimmed name** — the value comes from the master or the style.
+  Changing it gives the shape a value of its own.
+- **An `ƒx` button** — a formula computes the value. The field cannot be
+  edited here, so a binding cannot be erased by accident; the button opens
+  the formula in the Formula bar.
+- **A dash `—`** — the selected shapes have different values. A new value
+  goes to all of them.
+
+Every change is one undo step named after its section, e.g. *Undo Line*. A
+field's context menu: *Reset to Master* (or *to Style*) — remove the shape's
+own value; *Remove Formula* — replace the formula with its current value;
+*Edit Formula*; *Show in Sheet*.
 
 ### Sheet {#sheet}
 
