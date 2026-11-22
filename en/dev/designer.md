@@ -27,7 +27,7 @@ The pages of this section cover the work in detail:
 - [Stencils]({{ '/en/dev/designer/stencils/' | relative_url }}) — symbols,
   creating and editing masters, *vdc* libraries;
 - [Properties and formulas]({{ '/en/dev/designer/properties/' | relative_url }})
-  — the Properties, Transform and Custom Properties panels, the Formula bar
+  — the Properties panel with its Shape, Data and Sheet tabs, the Formula bar
   and the function reference;
 - [Rulers, grid and view]({{ '/en/dev/designer/view/' | relative_url }}) —
   zoom, scrolling, rulers, guides, grid and snapping.
@@ -58,8 +58,8 @@ From top to bottom:
 ![The Standard toolbar]({{ '/img/designer-toolbar-standard-en.png' | relative_url }}){: width="407"}
 
 On the left are the vertical *Tools* bar with the drawing tools, and the
-*Stencils* and *Navigator* panels. On the right is the *Transform* panel with
-*Properties* and *Custom Properties* below it. Panels stacked as tabs switch
+*Stencils* and *Navigator* panels. On the right is the *Properties* panel
+with its *Shape*, *Data* and *Sheet* tabs. Panels stacked as tabs switch
 by the tabs above them; any panel, the Formula bar or a toolbar can be closed
 or reopened from the *View* menu. Panels and toolbars can be dragged to
 another edge of the window; where you put them is remembered.

@@ -19,9 +19,28 @@ and to tags.
 
 ## The Properties panel {#property-panel}
 
-![The Properties panel]({{ '/img/designer-properties-en.png' | relative_url }}){: width="360"}
+![The Properties panel on its Sheet tab]({{ '/img/designer-properties-en.png' | relative_url }}){: width="360"}
 
-The panel shows the cells of the selected shape. With nothing selected it
+At the top the panel names the selection: the shape's name (or its text, or
+its master) and what it is — a shape, a group, an instance of a master; with
+several shapes selected, how many; with nothing selected, the page. A shape
+on a locked layer says so there too, which is why its values will not
+change.
+
+Below are three tabs:
+
+| Tab | What it holds |
+|---|---|
+| *Shape* | [position and size](#transform) |
+| *Data* | [custom properties](#custom-properties) |
+| *Sheet* | every cell of the shape — described below |
+
+A section on a tab folds when you click its heading. The tab you used last
+opens next time.
+
+### Sheet {#sheet}
+
+The tab shows the cells of the selected shape. With nothing selected it
 shows the document's cells (page width, height and colour, layers and
 others), and in a master's tab that master's cells. At the top, *Info* gives
 the shape's ID, type, name, master and style.
@@ -35,8 +54,8 @@ the shape's ID, type, name, master and style.
 - Cells that hold a choice — line pattern, arrowheads, fill pattern, text
   alignment, resize mode — show the value's name, e.g. `Solid`, not the
   number the file stores; editing one opens a list.
-- The *XForm* row starts folded: the same values are on the Transform panel
-  above.
+- The *XForm* row starts folded: the same values are in *Position and size*
+  on the *Shape* tab.
 - Geometry rows are named `Row 1 - MoveTo`, `Row 2 - LineTo` and so on; the
   `Component` row holds flags such as `NoFill` and `NoShow`.
 - A value can be edited right in the table (double-click it).
@@ -139,11 +158,11 @@ found), `Replace(s, old, new)`, `IntToStr(n)`, `StrToInt(s)` and
 `StrToFloat(s)` (0 on error), `Format(fmt, …)` in printf style (`%d`, `%f`,
 `%e`, `%g`, `%s`).
 
-## The Transform panel {#transform}
+## Position and size {#transform}
 
-![The Transform panel]({{ '/img/designer-transform-en.png' | relative_url }}){: width="360"}
+![The Shape tab's Position and size section]({{ '/img/designer-transform-en.png' | relative_url }}){: width="360"}
 
-Sets the selected shape's geometry as numbers, when handles are not precise
+A section on the Properties panel's *Shape* tab. Sets the selected shape's geometry as numbers, when handles are not precise
 enough.
 
 | Field | What it sets |
@@ -156,14 +175,13 @@ enough.
 
 Type a value and press `Enter`, or use the field's arrows. Every change is one
 undo step. The fields are enabled only when exactly one shape is selected;
-otherwise they are blank. The panel sits above the Properties panel; the
-divider between them can be dragged, and in a narrow panel the fields fall
-into one column. The same values in the property table (*Object — XForm*) can
+otherwise they are blank. In a narrow panel the fields fall into one column.
+The same values in the property table (*Object — XForm*) can
 be set by formulas.
 
-## The Custom Properties panel {#custom-properties}
+## Custom properties {#custom-properties}
 
-Shows the visible rows of the selected shape's *Prop* section:
+A section on the Properties panel's *Data* tab. Shows the visible rows of the selected shape's *Prop* section:
 
 | Column | Purpose |
 |---|---|

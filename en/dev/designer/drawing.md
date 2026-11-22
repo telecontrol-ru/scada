@@ -95,8 +95,9 @@ drag.
   (`Ctrl+D`) puts a copy next to the original.
 - Drag a corner or side handle to resize; with `Shift` to keep proportions.
 
-Exact position, size and angle are set on the
-[Transform panel]({{ '/en/dev/designer/properties/' | relative_url }}#transform).
+Exact position, size and angle are set in
+[Position and size]({{ '/en/dev/designer/properties/' | relative_url }}#transform)
+on the Properties panel.
 
 ### Moving with the arrow keys {#nudging}
 
