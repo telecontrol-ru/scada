@@ -61,7 +61,9 @@ place it.
   nothing selected in the master's tab, the Properties panel shows the
   master's own properties.
 - **Properties...** in the context menu — the master's name, description
-  (shown in its tooltip) and icon.
+  (shown in its tooltip) and icon. The panel draws each symbol from the
+  master itself, so it always shows the master as it is now; the icon is
+  shown only for a master that draws nothing.
 - **Rename...** and **Delete** — in the same menu. Instances of a deleted
   master on the schematic lose their link to it.
 
