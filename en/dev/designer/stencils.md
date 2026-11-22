@@ -21,20 +21,24 @@ libraries — *vdc* files.
 
 ![The Stencils panel]({{ '/img/designer-stencils-en.png' | relative_url }}){: width="262"}
 
-The *Document* tab shows the current schematic's masters, the other tabs the
-open libraries. **Drag a symbol onto the schematic** to place it.
+The libraries are a list of headers: *Document* first — the current
+schematic's masters — then every open library. Each header shows its number of
+masters; clicking a header opens that library (one is open at a time, marked
+`▾`; folded ones are marked `▸`). **Drag a symbol onto the schematic** to
+place it.
 
-- The *Search* field keeps the symbols whose name contains what you type; the
-  count beside it reads e.g. `3 of 214`, so an empty search result is not
-  mistaken for an empty library.
-- The `☰` button switches every tab from icons to a list that shows each name
+- The *Search* field searches every library at once: each header then shows
+  its matches, and if the open library has none, the first one that does
+  opens. The count beside the field reads e.g. `3 of 214` across all
+  libraries, so an empty search result is not mistaken for an empty library.
+- The `☰` button switches every library from icons to a list that shows each name
   in full; the choice is remembered. Hover over a symbol to see its full
   name.
 
 ## Stencil libraries {#libraries}
 
-- *File — Open Stencil...* (`Ctrl+Shift+O`) opens a *vdc* library as a new
-  tab.
+- *File — Open Stencil...* (`Ctrl+Shift+O`) opens a *vdc* library and
+  unfolds it.
 - *File — Open Default Stencils* (`F3`) opens every library in the folder set
   in *Tools — Options...* (*Stencils folder*).
 - Saving a schematic records the list of open libraries in it; they reopen
@@ -44,9 +48,9 @@ open libraries. **Drag a symbol onto the schematic** to place it.
 
 - **From the selection**: select shapes and choose
   *Shape — Create Master from Selection*; the Designer asks for a name, and
-  the new master appears on the *Document* tab.
-- **By dragging**: drag a selected shape with `Ctrl` held onto the *Document*
-  tab of the Stencils panel — the same thing.
+  the new master appears in the *Document* library.
+- **By dragging**: drag a selected shape with `Ctrl` held into the *Document*
+  library of the Stencils panel — the same thing.
 - **Editing**: double-click a master (or *Edit Master* in its context menu) to
   open it in a tab of its own. Edit the shapes as on any schematic and close
   the tab — the changes go into the master, and every instance on the
@@ -100,5 +104,5 @@ unchanged.
    *File — Open Stencil...*.
 
 To change an existing library, open it as a stencil and edit masters right
-on its tab, or open the *vdc* file with *File — Open...* if you need to add,
+in its section of the panel, or open the *vdc* file with *File — Open...* if you need to add,
 rename or delete masters.
