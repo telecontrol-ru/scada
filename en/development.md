@@ -20,7 +20,7 @@ The commands below are available only with the Configure right.
 <dl>
 
 <dt>Properties</dt>
-<dd>Opens the property window for the selected SCADA object. Its properties are grouped on tabs (the first is General). Edited values are not written at once: a dot by the title marks unsaved changes, Apply writes them and Revert discards them. Since Client 2.6.8, when changes are left unapplied the Client asks: "“…” has changes that were not applied. Apply them before closing?" — Apply, Don't apply or Cancel. It asks when the window or the main window is closed, when you switch to another page, create, duplicate or delete a page, and when you sign out; Cancel leaves everything as it was. <b>In Clients 2.6.0–2.6.4 all of these discarded the changes without asking.</b></dd>
+<dd>Opens the property window for the selected SCADA object. Its properties are grouped on tabs (the first is Атрибуты, Attributes; the rest follow in alphabetical order: Каналы, Отображение, Преобразование, Прочее, Уставки, Фильтрация, Эмуляция). Edited values are not written at once: a dot by the title marks unsaved changes, Apply writes them and Revert discards them. Since Client 2.6.8, when changes are left unapplied the Client asks: "“…” has changes that were not applied. Apply them before closing?" — Apply, Don't apply or Cancel. It asks when the window or the main window is closed, when you switch to another page, create, duplicate or delete a page, and when you sign out; Cancel leaves everything as it was. <b>In Clients 2.6.0–2.6.4 all of these discarded the changes without asking.</b></dd>
 
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 

@@ -199,7 +199,7 @@ window:
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
 {: .note }
-> The Properties window is split into tabs (the first is General) and
+> The Properties window is split into tabs (the first is Атрибуты, Attributes) and
 > sections; the device and channel fields are grouped in three sections, and
 > are labelled differently from the names used below:
 >

@@ -156,8 +156,7 @@ default), is listed by **its file name without the extension**: the file
 `Substation 1.sde` appears in the menu as "Substation 1". Give display files
 names the operator will recognise in that case too.
 
-An example of the menu (captured from an earlier Client version, where the
-menu was called «Схема»):
+An example of the Мнемосхема (Schematic) menu:
 
 ![]({{ '/img/menu-scheme.png' | relative_url }})
 
