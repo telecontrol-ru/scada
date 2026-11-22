@@ -23,6 +23,8 @@ permalink: /en/dev/designer/view/
 - **Pan** — drag with the space bar held.
 - *View — Center Selection* (`Alt+C`) puts the selection in the middle of the
   window.
+- *View — Zoom to Selection* (`Ctrl+2`) zooms so the selected shapes fill the
+  window, and centres them.
 
 ## Rulers {#rulers}
 
@@ -66,6 +68,10 @@ Guides are drawn as blue dashed lines; the one being dragged turns orange.
 
 Shapes always snap to connection points within reach, even when the points
 themselves are hidden.
+
+Grid lines are never drawn closer than 8 pixels apart: zoomed out, every 2nd,
+5th, 10th, 20th… line is drawn, so the grid does not hide the schematic.
+Snapping still uses every step of the document's grid.
 
 ## The View menu {#view-menu}
 

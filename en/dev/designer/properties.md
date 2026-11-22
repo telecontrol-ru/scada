@@ -32,6 +32,9 @@ the shape's ID, type, name, master and style.
   `Width*0.5`. Formulas that refer to tags or other shapes are shown as text.
 - Colours are shown as a swatch and an `RGB(r,g,b)` value, Windows system
   colours by name, e.g. `System: Window`.
+- Cells that hold a choice — line pattern, arrowheads, fill pattern, text
+  alignment, resize mode — show the value's name, e.g. `Solid`, not the
+  number the file stores; editing one opens a list.
 - The *XForm* row starts folded: the same values are on the Transform panel
   above.
 - Geometry rows are named `Row 1 - MoveTo`, `Row 2 - LineTo` and so on; the

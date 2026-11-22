@@ -96,9 +96,16 @@ The choices are remembered per Windows user.
 | *File — Recent Files* | — |
 | *File — Print...* | `Ctrl+P` |
 | *File — Print Preview...* | — |
+| *File — Export...* | — |
 
 A schematic is stored in the binary *vds* format. The print preview lets you
 change the page orientation, zoom and printer before printing.
+
+*Export...* saves the schematic's page as a picture for documentation or
+mail: *PNG* is a bitmap the size of the page (the schematic at 100%), *PDF* a
+document whose lines and text stay vector and stay sharp when enlarged. The
+schematic is exported the way it prints: shapes on non-printing layers are
+left out.
 
 **Modus schematics** (*sde*, *xsde*) open too, to convert them to the Vidicon
 format: such a schematic is saved with *Save As...* and only as *vds*; the
@@ -130,6 +137,15 @@ closes without writing, *Cancel* keeps the schematic open. Opening a file
 while an empty new *Untitled* schematic that you have not changed is in front
 replaces it.
 
+**Autosave.** Every two minutes the Designer copies modified schematics to a
+folder in the user's profile; a copy is deleted when its schematic is saved or
+closed. If the Designer closed abnormally (the program failed, the computer
+went down), the next start offers to recover the unsaved schematics.
+*Recover* opens them with their changes unsaved — check them and save; a
+schematic opened from a file is saved back to that file. *Discard* deletes the
+copies. Autosave does not replace saving: the schematic's file changes only
+when you *Save*.
+
 The *Window* menu:
 
 | Command | Shortcut | Action |
@@ -159,6 +175,7 @@ macOS, press `⌘` wherever this manual says `Ctrl`. The main ones:
 | `Alt+Enter` | Properties panel |
 | `Ctrl++` / `Ctrl+-` / `Ctrl+0` | Zoom in / out / to fit |
 | `Alt+C` | Center the selection |
+| `Ctrl+2` | Zoom to the selection |
 | Mouse wheel / `Ctrl` + wheel (`⌘` + scroll on macOS) | Scroll / zoom around the pointer |
 | Space + drag | Pan the schematic |
 | Arrows (`Ctrl`, `Alt`) | Move the selection by a ruler division (grid step, pixel) |

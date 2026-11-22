@@ -115,6 +115,6 @@ The *Arrange* bar has three buttons with lists of the same commands as the
 
 | Button | Commands |
 |---|---|
-| Align | left, right, top or bottom edges, or centres horizontally and vertically — for two or more shapes; the others align to the first selected |
+| Align | left, right, top or bottom edges, or centres horizontally and vertically — for two or more shapes; the others align to the first selected. *Distribute Horizontally* and *Vertically* — for three or more shapes: the outermost two stay put and the rest move so the gaps between the shapes are equal |
 | Order and group | Bring to Front, Send to Back, Group, Ungroup, Regroup |
 | Rotate and flip | 90° right and left, flip horizontal and vertical |
