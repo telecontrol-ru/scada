@@ -163,8 +163,9 @@ menu was called «Схема»):
 
 ## Vidicon displays {#vidicon}
 
-The Client shows Vidicon displays — files with the *vds* extension — in the
-same `Display` window. A shape takes an object's value through its tags: in
+Vidicon displays — files with the *vds* extension — are made in the
+[Designer]({{ '/en/dev/designer/' | relative_url }}), and the Client shows them in
+the same `Display` window. A shape takes an object's value through its tags: in
 each tag (the shape's *Tag* section) the *Raw* field holds the object's
 address, for example `{VIDICON.Share.1\Substation.TS.Breaker 1}`, and the
 shape's formulas read the tag's value (`Tag.State`) — that is how a breaker

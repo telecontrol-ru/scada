@@ -109,6 +109,9 @@
 - ru: /dev/displays/
   en: /en/dev/displays/
 
+- ru: /dev/designer/
+  en: /en/dev/designer/
+
 - ru: /dev/excel/
   en: /en/dev/excel/
 

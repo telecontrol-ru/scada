@@ -334,7 +334,7 @@ version with every version 2.6 release:
 
 On Windows the Client can also be installed with the
 `telecontrol-scada-<version>.msi` package, which carries the Windows Client,
-the Designer (an editor for Vidicon schematics) and the documentation, and no
+the [Designer]({{ '/en/dev/designer/' | relative_url }}) (an editor for Vidicon schematics) and the documentation, and no
 Server process or `scada-setup`. The package creates *Клиент* (Client) and
 *Дизайнер* (Designer) shortcuts on the desktop and in the
 *Start — ОИК Телеконтроль* menu, and appears in *Control Panel — Programs and
