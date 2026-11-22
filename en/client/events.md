@@ -57,6 +57,10 @@ event journal opened with [*Unacknowledged Only*](#filters) already set.
 New events appear in the journal at once; past events are loaded from the
 Server when the window opens and whenever the period changes.
 
+![Event journal]({{ '/img/events-alarm-surface.png' | relative_url }})
+
+*The event journal for a day: unacknowledged events carry a dot in the first column, and the foot shows a summary and the Acknowledge All button.*
+
 ## Acknowledgement
 
 Acknowledging confirms the operator has seen an event. Ways to do it:

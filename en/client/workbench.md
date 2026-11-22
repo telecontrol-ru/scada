@@ -689,6 +689,10 @@ objects write into it, Written values, Write queue, Write latency (µs), and how
 long event and value cleanup take. A growing write queue means the database is
 not keeping up with the incoming data.
 
+![The Databases window]({{ '/img/admin-historical-dbs.png' | relative_url }})
+
+*The Databases window with three archives; the first columns are in view, the rest are to the right.*
+
 Object and device parameters point at these databases: an object's value
 archive and a device's event archive are chosen from this list. Configuring the
 databases on the server side is described under
@@ -700,7 +704,12 @@ The Formats window defines how two-state (discrete) signals look on screen.
 Each format is a pair of states: "Label 0" and "Label 1" — the texts the states
 are captioned with — and "Colour 0" and "Colour 1" — the colours they are drawn
 in. A colour is chosen from the client's palette by name, not entered as RGB
-components.
+components. In version 2.6.8 the colour names are shown in English even in the
+Russian interface.
+
+![The Formats window]({{ '/img/admin-formats.png' | relative_url }})
+
+*The Formats window: the labels and colours of each format's two states.*
 
 A format is assigned to an object in its parameters (see
 [Data items]({{ '/en/dev/data-items/' | relative_url }})), so one edit to a
@@ -713,6 +722,11 @@ with no device involved. Each carries a Type — the waveform — a Period (ms),
 Phase (ms) and an Update interval (ms) saying how often a new value is
 produced. Simulated signals are used for commissioning and training: they let
 displays, graphs and alarms be exercised before any equipment is connected.
+In version 2.6.8 the Type column of this window may be missing.
+
+![The Simulated signals window]({{ '/img/admin-simulation.png' | relative_url }})
+
+*The Simulated signals window: each signal's waveform, period, phase and update interval.*
 
 ## Nodes {#nodes}
 
