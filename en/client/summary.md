@@ -17,6 +17,10 @@ by the chosen [aggregation function](#function). A summary is built from
 the Server's archive (see
 [Reports and analysis]({{ '/en/client/reports/' | relative_url }})).
 
+![Summary]({{ '/img/summary.png' | relative_url }})
+
+*A summary of four objects with a 1-hour interval.*
+
 To open a summary, select one or more objects (in the object panel or a
 table, say) and choose *Summary* («Сводка») in the object's context menu
 or in the **Item** menu («Сигнал»).

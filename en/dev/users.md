@@ -72,6 +72,14 @@ administrator account migrated from version 2.5 can set another user's
 password (see the limitation above). The server sets what a password must satisfy —
 see [Password policy]({{ '/en/client/workbench/#password-policy' | relative_url }}).
 
+![The Set Password window for another user]({{ '/img/change-password.png' | relative_url }})
+
+*Resetting another user's password: the new password and its repeat; the current password is not asked for.*
+
+![Password policy window]({{ '/img/password-policy.png' | relative_url }})
+
+*The Password policy window: this installation sets no length limit and requires no character classes.*
+
 A user without the Configure right — a Dispatcher (level 2) or a Manager
 (level 0), for example — cannot change even their own password in version
 2.6: they have no command for it. To get a new password, they ask the
@@ -165,6 +173,10 @@ holds checked; check the ones needed (for example `Operator` and
 `ConfigureAdmin` for level 3), clear the rest and press OK. The server
 records every change in the [audit log]({{ '/en/client/workbench/#audit-log' | relative_url }}).
 
+![Account roles window]({{ '/img/account-roles.png' | relative_url }})
+
+*The window opened by `Roles...`: both roles are checked for the user «Администратор» (Administrator).*
+
 The change takes effect at the user's next sign-in: a session already open
 keeps its previous rights (to end it at once, see [above](#cut-off)).
 
@@ -206,10 +218,22 @@ the roles that the
 workbench's Access rights panel show; the panel derives from them what the
 account may view, control and configure.
 
+![Access rights panel]({{ '/img/users-rbac.png' | relative_url }})
+
+*The Access rights panel for the user «Администратор» (Administrator): the roles held and the permissions derived from them.*
+
 The [Roles]({{ '/en/client/workbench/#roles' | relative_url }}) window shows
 role membership; it is changed with `Roles...` on a user (see
 [Assigning roles](#assign-roles)).
 
+![Roles window]({{ '/img/roles.png' | relative_url }})
+
+*The Roles window: the members of each role.*
+
 Sign-ins and every action on accounts, passwords and role membership —
 successful or refused — are recorded in the
 [audit log]({{ '/en/client/workbench/#audit-log' | relative_url }}).
+
+![Audit log window]({{ '/img/audit-log.png' | relative_url }})
+
+*The Audit log window: sign-ins and account actions; a refused action is highlighted.*

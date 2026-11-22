@@ -35,6 +35,10 @@ The client first asks for the file. It proposes the folder of the last
 export, and the file name defaults to the window title (with colons replaced
 by hyphens). It then shows a dialog for CSV format parameters:
 
+![CSV export options dialog]({{ '/img/csv-export.png' | relative_url }})
+
+*The CSV export options; the Expand grouped rows box is shown for the event journal.*
+
 <dl>
 
 <dt>Encoding</dt>

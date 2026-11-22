@@ -57,6 +57,10 @@ and the line's current display modes — "Own pane", "Show dots" and "Stepped".
 The colour is set by clicking a palette swatch; the display modes are shown
 there but toggled from the graph's context menu, described above.
 
+![Inspector with the Series section]({{ '/img/series-inspector.png' | relative_url }})
+
+*The inspector with a trend line selected: the element card, the limits and the Series section.*
+
 ## Display modes
 
 Stepped mode is enabled by default because it better reflects discrete
@@ -114,8 +118,13 @@ To zoom, drag on the corresponding scale:
 * drag left or right on the time scale to change the time range
 * drag up or down on the value scale to change the visible value range
 
-The exact time boundaries can also be set from the *Period* submenu of
-the **Item** menu.
+The exact time boundaries can also be set with the *Custom...* command of
+the *Period* submenu of the **Item** menu, which opens the *Time Range*
+dialog (see [Choosing a period]({{ '/en/client/reports/' | relative_url }}#period)).
+
+![Time Range dialog]({{ '/img/time-range.png' | relative_url }})
+
+*The Time Range dialog: start and end dates, and times when the Time box is checked.*
 
 To keep real-time rendering responsive, the number of simultaneously
 displayed points is limited to 10,000. If that limit would be exceeded,

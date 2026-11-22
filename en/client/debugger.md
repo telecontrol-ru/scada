@@ -39,6 +39,10 @@ an object with data is selected.</dd>
 
 ## The Debugger window
 
+![Debugger window]({{ '/img/debugger.png' | relative_url }})
+
+*The Debugger window, Requests tab*
+
 Above the request table are the buttons "Pause" ("Resume" while paused) and
 "Clear", the "Filter title or id" field, and the "Save trace" button, which
 writes the shown requests to a text file.
@@ -54,7 +58,7 @@ The table has these columns:
 | Title | Request description |
 
 When a request row is selected, the full contents of the request and
-response are shown on the right.
+response are shown on the right, also in English.
 
 The table keeps at most the 1,000 most recent requests; older ones are
 dropped. While paused, new requests are not recorded.

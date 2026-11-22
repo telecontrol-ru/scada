@@ -403,6 +403,11 @@ You can also:
 > the prompt, and remember to enable it again. Yes is the default button in the
 > prompt, so *Enter* disables the device.
 
+![A confirmation prompt]({{ '/img/message-box.png' | relative_url }})
+
+*A Client confirmation prompt. The default button has a frame around it, and
+that is the one the Enter key presses, so check which button it is first.*
+
 A forced poll and clock synchronization are offered on devices only, not on
 data objects: select the device itself, for example in the equipment panel.
 
@@ -893,6 +898,17 @@ The main operator-facing views:
 A window is added with *Window → Add to Favourites* or from its title's
 context menu. A saved window opens from the *Favourites* panel, and graphs and
 tables also from the bottom of the *Graph* and *Table* menus.
+
+In the Add to Favourites window the «Имя» (Name) field holds the window's
+title, which you can change. Type the folder the window goes into in the
+«Группа» (Folder) field: the list below it shows the existing folders, but in
+version 2.6.8 choosing one there does not fill the field — type the name.
+With «Группа» empty the window is added without a folder; a new folder name
+creates the folder.
+
+![The Add to Favourites window]({{ '/img/add-favourites.png' | relative_url }})
+
+*The Add to Favourites window.*
 
 ![]({{ '/img/favorites.png' | relative_url }})
 

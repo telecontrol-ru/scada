@@ -39,6 +39,10 @@ Link"; rename it in its properties. A -104 direction is created as a TCP
 client to `localhost`, port 2404, a -101 direction on serial port COM1.
 Set its Transport to match your site.
 
+![Transport window]({{ '/img/transport.png' | relative_url }})
+
+*The Transport window: a TCP client direction with the device's Host and Port.*
+
 A device or direction works only while its Disabled property is No. The
 model default for that property is Yes, so check it after creating. The
 `Enable` and `Disable` context-menu commands switch it as well.
@@ -79,6 +83,10 @@ when the list is not empty; IEC 61850 devices have none. The
 watch window uses the same map. In Clients 2.6.0–2.6.4 the map held the
 retransmission rules only, so a polled device had no tab and its frames'
 addresses were not decoded.
+
+![Address map tab]({{ '/img/config-address-map.png' | relative_url }})
+
+*The Address map tab in a device's Properties window.*
 
 ### Checking the setup {#commissioning}
 

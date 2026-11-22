@@ -167,6 +167,10 @@ view, the path ends at the view; when the view is named after its object, the
 object's name is not repeated. No object is named for a multiple selection. A
 long path is shortened to fit the strip.
 
+![The path in the context strip]({{ '/img/breadcrumb.png' | relative_url }})
+
+*The path "page / view / object": the page and the object in bold.*
+
 ## Settings {#settings}
 
 *Settings → Settings...* opens the client's settings. The Settings button at the
@@ -328,6 +332,23 @@ regular page.
 palette: an input line filtering as you type, every registered command and
 window-open action, plus signal search by name — a chosen signal opens in a
 table. *Enter* runs the selected entry.
+
+![The search field in the context strip]({{ '/img/command-field.png' | relative_url }})
+
+*The search field in the context strip. On the right is the shortcut hint: ⌘K
+on macOS, Ctrl+K on Windows.*
+
+## About {#about}
+
+*Help → About...* («Справка → О программе...») opens a window with details of
+the Client: version, build, runtime, server address, connection state and the
+account that is signed in. The «Скопировать сведения» (Copy details) button
+puts those details on the clipboard, ready to paste into a support request.
+
+![The About window]({{ '/img/about.png' | relative_url }})
+
+*The About window. The values in the screenshot are an example: the version,
+build and server address depend on the installation.*
 
 ## Table: the toolbar {#table-toolbar}
 
@@ -593,6 +614,11 @@ Its explorer lists the administrative windows: Users, Roles, Password policy,
 Audit log, Databases, Formats, Simulated Signals. A window missing from the installation, or one this session may not open,
 is not offered.
 
+![The Administration explorer]({{ '/img/administration-explorer.png' | relative_url }})
+
+*The Administration mode's explorer, for an administrator holding the configure
+right.*
+
 ### Users {#users}
 
 The Users window reads the server's standard account list and shows, for each
@@ -699,4 +725,9 @@ It is a diagnostic view of the configuration: it shows everything the server
 publishes, including the service branches that the Objects and Devices panes do
 not carry. The tree starts at the root folder's contents — no separate root row
 is drawn.
+
+![The Nodes mode]({{ '/img/object-tree.png' | relative_url }})
+
+*The Nodes mode: the tree starts at the «Объекты» (Objects) and «Типы» (Types)
+branches, under the «Фильтр» (Filter) field.*
 

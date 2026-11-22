@@ -20,6 +20,10 @@ The portfolio panel is in the *Objects* mode of the
 [section rail]({{ '/en/client/workbench/' | relative_url }}#activity-bar),
 below the object tree; the `More -> Portfolio` command opens it as well.
 
+![Portfolio panel]({{ '/img/portfolio.png' | relative_url }})
+
+*The portfolio panel: two portfolios and their objects.*
+
 ## Where portfolios are kept {#storage}
 
 Portfolios are kept in your **user profile**, like the window layout and

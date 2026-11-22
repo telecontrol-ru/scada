@@ -21,6 +21,10 @@ object as a table with the following columns:
 | Quality | Value quality flag |
 | Server Timestamp | Time when the Server received the value |
 
+![Data window]({{ '/img/data.png' | relative_url }})
+
+*The Data window: the archived value changes of one object.*
+
 Each row is one change of the value recorded in the archive. The window is
 built from the Server's archive: an object without a value archive shows no
 rows for past periods (see

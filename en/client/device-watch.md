@@ -60,6 +60,10 @@ selected one.
 
 ## Filter
 
+![Filter bar]({{ '/img/watch-filter-bar.png' | relative_url }})
+
+*The filter bar above the table*
+
 A filter bar sits above the table. It applies in both modes, and it narrows not
 only the visible rows but also what `Save as` writes.
 
@@ -83,14 +87,20 @@ sequence numbers and the message text.</dd>
 
 ## Frame decode
 
+![Frame decode pane]({{ '/img/frame-decode-pane.png' | relative_url }})
+
+*The decode pane for an IEC 60870-5-104 frame*
+
 In trace mode a decode pane for the selected frame sits to the right of the
 table. It shows:
 
-* a header naming the selected frame (direction, time and a short summary)
+* a header naming the selected frame: direction, time and the frame length in
+  bytes
 * every captured octet of the frame, in hexadecimal
-* the decoded field tree, with the columns Field, Offset and Value — the APCI,
-  the ASDU and the information objects. Offset says which byte of the frame
-  carried the field.
+* the decoded field tree — the APCI, the ASDU and the information objects. The
+  columns have no headings: each row gives the field name, its offset and its
+  value. The offset ("@6", "@12-19") says which byte of the frame carried the
+  field.
 
 The pane decodes **the frame's own octets** rather than the fields the server
 already extracted, so it shows exactly what the device sent.

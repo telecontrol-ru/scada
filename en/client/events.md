@@ -26,6 +26,10 @@ arrives and hides once every event is acknowledged — controlled by the
 *Show Events on Arrival* and *Hide Events on Acknowledge*
 [settings]({{ '/en/client/workbench/' | relative_url }}#settings).
 
+![Event panel]({{ '/img/events.png' | relative_url }})
+
+*The event panel with unacknowledged events*
+
 The *Severity* group of the panel's context menu sets the
 [severity threshold]({{ '/en/client/alarms/' | relative_url }}#threshold):
 *All* shows every event, *Custom...* only those at or above the severity you

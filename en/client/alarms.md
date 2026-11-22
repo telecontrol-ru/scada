@@ -189,6 +189,10 @@ severity threshold ("Severity: N") and the highest severity among the Server's
 unacknowledged events — the word "Critical" or "Warning" in the severity's
 colour; with no unacknowledged critical event or warning, that place is empty.
 
+![Severity tiles]({{ '/img/severity-tiles.png' | relative_url }})
+
+*Severity tiles in the context strip*
+
 The context strip at the top shows the "Critical N", "Warning N" and
 "Unacknowledged N" tiles — for the Server's events and the client's own
 warnings and errors. Beside the tiles appear:
