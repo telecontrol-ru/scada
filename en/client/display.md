@@ -26,8 +26,8 @@ lists the available schematics.
 
 ## Live values on a Modus schematic {#live-values}
 
-Some of what follows (hatching, "?", the separator's colouring, voltage
-colours, value boards) is drawn only by the display module's next build — see
+Some of what follows (hatching, "?", voltage colours, value boards) is drawn
+only by the display module's next build — see
 [A display module from an earlier build](#old-runtime).
 
 Shapes of a Modus schematic that the designer bound to SCADA objects (the
@@ -41,12 +41,9 @@ those objects' present state and update with it:
   colours the schematic's settings define for a closed and an open breaker;
   when the schematic defines none, bright green when closed and red when
   open. An **отделитель** (separator) is drawn with the same symbol as in the
-  Modus graphics editor. A separator with a voltage is drawn whole in that
-  voltage's colour, as Modus draws it, and does not show its position. A
-  separator with no voltage has its whole symbol — its lines and arrowhead —
-  coloured by position with the colours the schematic's settings define for
-  a closed and an open **separator** (not those of a breaker); when the
-  schematic defines none, bright green and red.
+  Modus graphics editor and, as in Modus, does not show its position: a
+  separator with a voltage is drawn in that voltage's colour, any other in
+  black. Read a separator's position in a table or the Inspector.
 * **A text field** (a shape with the *текст*, "text", property) shows the
   value of its measured (ТИТ) object the way a table does: with its units and
   with a "?" mark on an unreliable value. When there is no value — the
@@ -106,12 +103,10 @@ unreliable value or no value they show "?".
 ## A display module from an earlier build {#old-runtime}
 
 The display module, not the Client itself, draws the marks for unreliable
-and missing values (hatching and "?"), the separator's colouring, voltage
-colours and value boards. Every module supplied so far (as of Client 2.6.8)
+and missing values (hatching and "?"), voltage colours and value boards. Every module supplied so far (as of Client 2.6.8)
 is an earlier build: it does not draw them, and the changes
 arrive with the module's next build. An earlier-built module may show an
-unreliable or missing value as a reliable one, and a separator in black, with
-no position. The Client checks whether the
+unreliable or missing value as a reliable one. The Client checks whether the
 installed module can mark unreliable values and, if it cannot, shows the
 warning "Old display runtime: bad values may not be marked" («Устаревший
 модуль отображения мнемосхем: недостоверные значения могут не отмечаться») in

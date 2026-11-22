@@ -128,18 +128,15 @@ Hyperlinks have not yet been tried on working sites' schematics in version
 The Client draws a breaker's position with the fill colours that the
 switching-device table in the schematic's settings defines for a closed and
 an open breaker. When the table defines no colour, or a transparent one, the
-breaker is filled bright green when closed and red when open. Each device
-takes its colours from the rows of its own object type: a separator from the
-separator's rows (closed and open), not the breaker's, and also falls back to
-bright green and red; its symbol's lines take the position colour too. A
-separator given a voltage class on the schematic is drawn in that voltage's
-colour, as the Modus graphics editor draws it, and does not show its position
-by colour; read such a separator's position in a table or the Inspector. Not
-every display module draws the separator's colouring: if, while a display is
-open, the Client's status bar shows the warning "Old display runtime: bad
-values may not be marked" («Устаревший модуль отображения мнемосхем:
-недостоверные значения могут не отмечаться»), the installed module does not
-draw it (see
+breaker is filled bright green when closed and red when open. A separator,
+as in the Modus graphics editor, does not show its position by colour, and the
+separator's rows of the switching-device table do not affect it: one given a
+voltage class on the schematic is drawn in that voltage's colour, any other in
+black; read a separator's position in a table or the Inspector. Not every
+display module draws the voltage colour: if, while a display is open, the
+Client's status bar shows the warning "Old display runtime: bad values may not
+be marked" («Устаревший модуль отображения мнемосхем: недостоверные значения
+могут не отмечаться»), the installed module does not draw it (see
 [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 ![]({{ '/img/modus-f11-bus.png' | relative_url }})
