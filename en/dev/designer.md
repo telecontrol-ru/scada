@@ -144,8 +144,8 @@ first nine are reached with `Alt+1` … `Alt+9`.
 
 ## Keyboard shortcuts {#keys}
 
-*Help — Keyboard Shortcuts* lists every menu command that has a shortcut. The
-main ones:
+*Help — Keyboard Shortcuts* lists every menu command that has a shortcut. On
+macOS, press `⌘` wherever this manual says `Ctrl`. The main ones:
 
 | Keys | Action |
 |---|---|
