@@ -27,12 +27,13 @@ masters; clicking a header opens that library (one is open at a time, marked
 `▾`; folded ones are marked `▸`). **Drag a symbol onto the schematic** to
 place it.
 
-- The *Search* field searches every library at once: each header then shows
-  its matches, and if the open library has none, the first one that does
-  opens. The count beside the field reads e.g. `3 of 214` across all
-  libraries, so an empty search result is not mistaken for an empty library.
-- The `☰` button switches every library from icons to a list that shows each name
-  in full; the choice is remembered. Hover over a symbol to see its full
+- The search field searches every library at once; while empty it says how
+  many masters there are to search (e.g. "Search 42 masters"). During a search
+  each header shows its matches, and if the open library has none, the first
+  one that does opens.
+- The button right of the field switches every library between icons and a
+  list that shows each name in full; its icon shows the current view, and the
+  choice is remembered. Hover over a symbol to see its full
   name.
 
 ## Stencil libraries {#libraries}
