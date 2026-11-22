@@ -33,8 +33,10 @@ place it.
   one that does opens.
 - The button right of the field switches every library between icons and a
   list that shows each name in full; its icon shows the current view, and the
-  choice is remembered. Hover over a symbol to see its full
-  name.
+  choice is remembered.
+- In the icon view every symbol has a cell of the same size, and the cells
+  fill the panel's width. A name takes at most two lines and is shortened
+  with "…" when longer; hover over a symbol to see its full name.
 
 ## Stencil libraries {#libraries}
 
