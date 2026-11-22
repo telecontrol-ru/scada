@@ -2,6 +2,7 @@
 title: Designer
 nav_order: 6.5
 parent: Development
+has_children: true
 permalink: /en/dev/designer/
 ---
 
@@ -16,13 +17,20 @@ libraries — *vdc* files. The Client shows a finished schematic in its
 `Display` window; how schematic elements get the values of SCADA objects is
 described in [Vidicon displays]({{ '/en/dev/displays/' | relative_url }}#vidicon).
 
-The Designer also opens Modus schematics (*sde*, *xsde*), to convert them to
-the Vidicon format. Such a schematic is saved only as *vds*; the original
-Modus file is left unchanged. Check the schematic after converting it:
-elements with no Vidicon counterpart may look different.
+The pages of this section cover the work in detail:
 
-The Designer's interface language follows the system, or the choice in
-*View — Language*; this page gives the English names.
+- [Drawing and editing]({{ '/en/dev/designer/drawing/' | relative_url }}) —
+  tools, selection, moving, rotation, grouping, order;
+- [Formatting]({{ '/en/dev/designer/formatting/' | relative_url }}) — the
+  Format bar, the Line, Fill, Text and Behavior dialogs, styles, layers,
+  document properties;
+- [Stencils]({{ '/en/dev/designer/stencils/' | relative_url }}) — symbols,
+  creating and editing masters, *vdc* libraries;
+- [Properties and formulas]({{ '/en/dev/designer/properties/' | relative_url }})
+  — the Properties, Transform and Custom Properties panels, the Formula bar
+  and the function reference;
+- [Rulers, grid and view]({{ '/en/dev/designer/view/' | relative_url }}) —
+  zoom, scrolling, rulers, guides, grid and snapping.
 
 ## Installation {#install}
 
@@ -45,172 +53,94 @@ From top to bottom:
   *Format* controls — font and text alignment — move into the `»` menu at its
   right end.
 - **The Formula bar** — edits the formula of the chosen cell of the selected
-  shape (see [Properties and formulas](#properties)).
+  shape (see [Properties and formulas]({{ '/en/dev/designer/properties/' | relative_url }}#formula-bar)).
+
+![The Standard toolbar]({{ '/img/designer-toolbar-standard-en.png' | relative_url }}){: width="407"}
 
 On the left are the vertical *Tools* bar with the drawing tools, and the
 *Stencils* and *Navigator* panels. On the right is the *Transform* panel with
 *Properties* and *Custom Properties* below it. Panels stacked as tabs switch
-by the tabs above them; any panel can be closed or reopened from the *View*
-menu.
+by the tabs above them; any panel, the Formula bar or a toolbar can be closed
+or reopened from the *View* menu. Panels and toolbars can be dragged to
+another edge of the window; where you put them is remembered.
 
-At the bottom is the **status bar**: the pointer's coordinates over the
-schematic, the size of the selected shape (or the page size when nothing is
-selected), the *Grid* and *Snap* toggles, and the zoom.
+At the bottom is the **status bar**:
 
-Each open schematic is a tab of its own. The tab strip appears when a second
-schematic is opened; with one, its name is in the window title.
+- the pointer's coordinates over the schematic, e.g. `X = 123.4    Y = 567.8`;
+- the selection: for one shape its name, width, height, angle and position,
+  for a line its length, angle and offsets, for several shapes their count,
+  and with nothing selected the page size, e.g. `Page 2760 × 1960`;
+- the *Grid* and *Snap* toggles and the zoom: zoom out, the zoom field (pick
+  or type, e.g. `150%`), zoom in, zoom to fit.
 
-## Creating, opening and saving {#files}
+### Language, style and renderer {#settings}
 
-![The Standard toolbar]({{ '/img/designer-toolbar-standard-en.png' | relative_url }}){: width="407"}
+- *View — Language* — the interface language: Russian, English or the
+  system's. Takes effect after a restart.
+- *View — Style* — the widget style; *Fusion* by default.
+- *View — Renderer* — how the schematic is drawn: *Scene* or *QPainter*, and
+  *GDI+* on Windows. The same submenu holds the *Anti-aliasing* toggle: off
+  gives crisper thin lines, on gives smoother curves.
+
+The choices are remembered per Windows user.
+
+## Files {#files}
 
 | Command | Shortcut |
 |---|---|
 | *File — New* | `Ctrl+N` |
+| *File — New Stencil Document* | — |
 | *File — Open...* (*vds*, *vdc*, *sde*, *xsde*) | `Ctrl+O` |
 | *File — Save* | `Ctrl+S` |
 | *File — Save As...* | — |
 | *File — Recent Files* | — |
 | *File — Print...* | `Ctrl+P` |
+| *File — Print Preview...* | — |
+
+A schematic is stored in the binary *vds* format. The print preview lets you
+change the page orientation, zoom and printer before printing.
+
+**Modus schematics** (*sde*, *xsde*) open too, to convert them to the Vidicon
+format: such a schematic is saved with *Save As...* and only as *vds*; the
+original Modus file is left unchanged. Modus meters, switches and buttons are
+drawn with Modus's own pictures when the `SCADA_MODUS_STENCIL` environment
+variable names a Modus stencil (an administrator makes it once from the `dat`
+folder of a Modus installation); otherwise they are drawn in simplified form.
+The same stencil can be opened with *File — Open Stencil...* to place Modus
+pictures and elements on schematics. Check the schematic after converting it:
+elements with no Vidicon counterpart may look different.
+
+## Tabs, unsaved changes and the Window menu {#tabs}
+
+Every open schematic — and every master opened for editing — is a tab of its
+own. The tab strip appears when a second schematic is opened; with one, its
+name is in the window title.
+
+![Two schematics open]({{ '/img/designer-tabs-en.png' | relative_url }})
 
 A schematic with unsaved changes is marked with an asterisk `*` on its tab
 and in the window title. **If you close such a schematic** — its tab, the
 Designer window or the whole program — the Designer asks whether to save the
-changes: you can save them, discard them, or cancel the close.
+changes:
 
-Opening a file while an empty new *Untitled* schematic that you have not
-changed is in front replaces it.
+![Asking to save changes]({{ '/img/designer-save-prompt-en.png' | relative_url }}){: width="413"}
 
-## Drawing {#drawing}
+*Save* writes the file (asking for a name for a new schematic), *Don't Save*
+closes without writing, *Cancel* keeps the schematic open. Opening a file
+while an empty new *Untitled* schematic that you have not changed is in front
+replaces it.
 
-The drawing tools are on the *Tools* bar at the left edge of the window. One
-tool is active at a time.
+The *Window* menu:
 
-| Tool | What it does | Key |
+| Command | Shortcut | Action |
 |---|---|---|
-| Select | Select and move shapes | `V` |
-| Line | Line | `L` |
-| Rect | Rectangle | `R` |
-| Ellipse | Ellipse | `E` |
-| Arc | Arc — a quarter of an ellipse | `A` |
-| Text | Text box | `X` |
-| Button | Button | `B` |
-| Polyline | Polyline | `P` |
-| Rotate Mode | Corner handles rotate the shape around its pin instead of resizing it | `Shift+R` |
-| Connection Point | Points that line ends snap to | `Shift+C` |
+| Next | `Ctrl+F6` | next tab |
+| Previous | `Ctrl+Shift+F6` | previous tab |
+| Close | `Ctrl+F4` | close the current tab |
+| Close All | — | close every tab |
 
-- The arrow keys move the selection by one ruler division, with `Ctrl` by one
-  grid step, with `Alt` by one screen pixel.
-- Dragging with `Ctrl` held copies the selection; *Edit — Duplicate*
-  (`Ctrl+D`) puts a copy next to the original.
-- *Edit — Cut*, *Copy*, *Paste*, *Delete* and *Select All* (`Ctrl+A`) work as
-  usual.
-
-## Stencils {#stencils}
-
-![The Stencils panel]({{ '/img/designer-stencils-en.png' | relative_url }}){: width="262"}
-
-The *Stencils* panel shows the symbols of the current schematic (the
-*Document* tab) and of the open stencil libraries. Drag a symbol onto the
-schematic to place it. The *Search* field keeps the symbols whose name
-contains what you type. The `☰` button next to it switches the panel from
-icons to a list that shows each name in full.
-
-- *File — Open Stencil...* (`Ctrl+Shift+O`) opens a *vdc* library.
-- *File — Open Default Stencils* (`F3`) opens every library in the stencil
-  folder set in *Tools — Options...*.
-- *File — Synchronize Stencils...* updates the schematic's symbols from a
-  reference library.
-- *Shape — Create Master from Selection* asks for a name and makes a new
-  symbol on the *Document* tab from the selected shapes.
-
-## Formatting {#format}
-
-![The Format toolbar]({{ '/img/designer-toolbar-format-en.png' | relative_url }}){: width="925"}
-
-The *Format* bar is unavailable until something is selected. From left to
-right:
-
-- **Fill colour, line colour, text colour** — the strip under the icon shows
-  the selection's current colour (chequered when the selected shapes differ);
-- **line width, line pattern, arrow style** — clicking the button re-applies
-  the value it shows, the arrow beside it opens the list;
-- the document **style**, the **font** and the **size**;
-- **bold, italic, underline**;
-- **text alignment** — horizontal and vertical, one button with a list.
-
-Detailed settings are in the *Format* menu: *Line...*, *Fill...*, *Text...*,
-*Behavior...*, *Document...* (page size and colour), *Layers...* and
-*Styles...*.
-
-## Arranging {#arrange}
-
-![The Arrange toolbar]({{ '/img/designer-toolbar-arrange-en.png' | relative_url }}){: width="147"}
-
-The *Arrange* bar has three buttons with lists of the same commands as the
-*Shape* menu:
-
-| Button | Commands |
-|---|---|
-| Align | left, right, top or bottom edges, or centres — for two or more shapes |
-| Order and group | Bring to Front (`Ctrl+Shift+]`), Send to Back (`Ctrl+Shift+[`), Group (`Ctrl+G`), Ungroup (`Ctrl+Shift+G`), Regroup |
-| Rotate and flip | 90° right (`Ctrl+R`) and left (`Ctrl+L`), flip horizontal and vertical |
-
-## Properties and formulas {#properties}
-
-![The Properties panel with a shape selected]({{ '/img/designer-properties-en.png' | relative_url }}){: width="360"}
-
-![The Transform panel]({{ '/img/designer-transform-en.png' | relative_url }}){: width="360"}
-
-Every shape is described by a table of cells: section — row — cell (for
-example *Object — XForm — PinX*). A cell holds a number or a formula.
-
-- **The Properties panel** shows the cells of the selected shape, or of the
-  document when nothing is selected. The *Filter* field keeps the rows whose
-  name or value contains what you type. Colours are shown as a swatch and an
-  `RGB(r,g,b)` value, Windows system colours by name. The `ƒx` button
-  (`Ctrl+``) shows formulas instead of computed values. The *Bound values*
-  section at the top lists every cell of the shape set by a formula. Copying
-  a value and all properties is in the table's context menu.
-- **The Formula bar**: select a shape, choose a cell in the list on the left
-  (or click its row in the Properties panel), type a formula and accept it
-  with the check-mark button or `Enter`; `Esc` or the cross button restores
-  the previous formula. The `f(x)` button (`Ctrl+Space`) inserts a built-in
-  function.
-- **The Transform panel** sets the position, size, angle and resize behaviour
-  of the selected shape; each change is undone in one step.
-- **The Custom Properties panel** shows the shape's *Prop* section; its
-  *Define...* button adds, removes and renames them.
-- *Shape — Properties* (`Alt+Enter`) opens the Properties panel.
-
-To make a schematic element show the value of a SCADA object, put the
-object's address in its tag (section *Tag*, cell *Raw*) and read the tag's
-value in the element's formulas — see
-[Vidicon displays]({{ '/en/dev/displays/' | relative_url }}#vidicon).
-
-**The Navigator** shows every shape of the schematic as a tree; a row is
-named after the shape's name, its text or its master. Clicking a row selects
-the shape on the schematic.
-
-![The Navigator panel]({{ '/img/designer-navigator-en.png' | relative_url }}){: width="262"}
-
-## Viewing the schematic {#view}
-
-- **Scroll** — the mouse wheel or two fingers on a touchpad; with `Shift` the
-  wheel scrolls sideways.
-- **Zoom** — `Ctrl` + wheel or a touchpad pinch (zooming around the pointer),
-  `Ctrl++` and `Ctrl+-`, *View — Zoom to Fit* (`Ctrl+0`), or the zoom field in
-  the status bar, which also takes a typed value such as `150%`.
-- **Pan** — drag with the space bar held.
-- *View — Center Selection* (`Alt+C`) puts the selection in the middle of the
-  window.
-
-The *View* menu turns the grid, guides, connection points and rulers on and
-off, and snapping to the grid, to guides and to ruler subdivisions. The grid
-and grid snapping are also toggled by the *Grid* and *Snap* buttons in the
-status bar. Add a guide by dragging it from a ruler onto the schematic, and
-remove it by dragging it back. The grid and ruler spacing is set in
-*Tools — Ruler & Grid...*.
+Below them the menu lists the open schematics (the current one checked); the
+first nine are reached with `Alt+1` … `Alt+9`.
 
 ## Keyboard shortcuts {#keys}
 
@@ -224,9 +154,15 @@ main ones:
 | `Ctrl+X` / `Ctrl+C` / `Ctrl+V` | Cut / copy / paste |
 | `Ctrl+A` / `Ctrl+D` / `Delete` | Select all / duplicate / delete |
 | `Ctrl+G` / `Ctrl+Shift+G` | Group / ungroup |
+| `Ctrl+Shift+]` / `Ctrl+Shift+[` | Bring to front / send to back |
 | `Ctrl+R` / `Ctrl+L` | Rotate 90° right / left |
 | `Alt+Enter` | Properties panel |
 | `Ctrl++` / `Ctrl+-` / `Ctrl+0` | Zoom in / out / to fit |
+| `Alt+C` | Center the selection |
+| Mouse wheel / `Ctrl` + wheel | Scroll / zoom around the pointer |
 | Space + drag | Pan the schematic |
+| Arrows (`Ctrl`, `Alt`) | Move the selection by a ruler division (grid step, pixel) |
+| `Ctrl` + drag | Copy the selection |
+| `Ctrl+Shift+O` / `F3` | Open Stencil / Open Default Stencils |
 | `Ctrl+F6` / `Ctrl+Shift+F6` / `Ctrl+F4` | Next / previous / close tab |
 | `Esc` | Cancel the current action, leave text editing |

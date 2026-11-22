@@ -112,6 +112,21 @@
 - ru: /dev/designer/
   en: /en/dev/designer/
 
+- ru: /dev/designer/drawing/
+  en: /en/dev/designer/drawing/
+
+- ru: /dev/designer/formatting/
+  en: /en/dev/designer/formatting/
+
+- ru: /dev/designer/stencils/
+  en: /en/dev/designer/stencils/
+
+- ru: /dev/designer/properties/
+  en: /en/dev/designer/properties/
+
+- ru: /dev/designer/view/
+  en: /en/dev/designer/view/
+
 - ru: /dev/excel/
   en: /en/dev/excel/
 
