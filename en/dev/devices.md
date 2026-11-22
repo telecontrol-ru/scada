@@ -396,6 +396,12 @@ Examples:
   `0x03`, as a double-precision float; `0x2710` is the least significant word
   (see the DOUBLE warning above)
 
+> **Client 2.6.8:** the Каналы (Channels) tab of the Properties window has no
+> Основной ввод, Резервный ввод and Вывод sections, so in this version an object's
+> device and channel are set in the group's [Element Properties]({{ '/en/development/' | relative_url }})
+> table (the Устройство and Канал columns). The Properties screenshots on this page
+> come from a later Client build that has those sections.
+
 The two parameter screenshots below show where these MODBUS channel
 definitions are entered for discrete and measured objects:
 

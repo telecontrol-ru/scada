@@ -154,6 +154,12 @@ value either.
   are in state 0;
 * `!(TS.1 = TS.2)` — true when the two TS objects differ.
 
+> **Client 2.6.8:** the Каналы (Channels) tab of the Properties window has no
+> Основной ввод, Резервный ввод and Вывод sections, so in this version an object's
+> device and channel are set in the group's [Element Properties]({{ '/en/development/' | relative_url }})
+> table (the Устройство and Канал columns). The Properties screenshots on this page
+> come from a later Client build that has those sections.
+
 ![]({{ '/img/ti-formula.png' | relative_url }})
 
 `TIT.637`, `TIT.638` and `TIT.639` are the designations the Server assigned
