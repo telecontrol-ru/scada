@@ -26,15 +26,12 @@ list of archives, their depth and which objects each one archives are part of
 the Server's configuration, which `scada-config` keeps like all the rest. So
 the changes described below take effect at once: a new archive starts
 filling, a new depth applies, and an object starts or stops being archived
-within a few seconds — no service needs restarting. Archive assignments moved
-from version 2.5 with
-[`scada-setup migrate`]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5) are
-kept.
+within a few seconds — no process needs restarting. On moving from version
+2.5, the archive assignments are kept.
 
-After the service of a protocol process (for example,
-*Telecontrol SCADA IEC 104*) restarts, archiving of its objects' values
-resumes by itself, usually within a minute; the
-*Telecontrol SCADA Historian* service needs no restart.
+After a protocol process — for example, the site gateway — restarts,
+archiving of its objects' values resumes by itself, usually within a minute;
+`scada-historian` needs no restart.
 
 ## The Server's archives
 
@@ -57,9 +54,8 @@ every Server event for 30 days, and cannot be changed or deleted.
 An archive is renamed with *Rename* or the *Name* field in its properties.
 
 Once a minute the Server deletes data older than the archive's depth; reducing
-the depth deletes the excess at once. The formula under
-[Historical databases]({{ '/en/server/data/' | relative_url }}#history) helps
-estimate the disk space needed.
+the depth deletes the excess at once. Telecontrol provides the disk space for
+the archives of the hosted Server.
 
 ## Assigning an archive to objects
 

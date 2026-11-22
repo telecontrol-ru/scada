@@ -10,315 +10,85 @@ permalink: /en/getting-started/
 * TOC
 {:toc}
 
-This page describes version 2.6, in which the Server is a set of separate
-processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers)).
+This page describes the version 2.6 Client and how to start working with the
+SCADA Server.
+
+{: .note }
+> **The Server is provided only as a hosted service** run by Telecontrol: a
+> Server to install on your own computers is no longer offered. What
+> Telecontrol does and what you do is described on the
+> [Server]({{ '/en/server/' | relative_url }}) page; existing Server 2.5.7
+> installations are covered under
+> [Server 2.5.7]({{ '/en/server/' | relative_url }}#legacy).
+
+You install the Clients on the workstations (see
+[Installing the Client](#client-install)) and, to reach the field devices,
+the site gateway next to them (see
+[Site gateway]({{ '/en/server/' | relative_url }}#gateway)). You set up the
+project — objects, devices, schematics, users and roles — in the Client.
 
 ## System requirements
 
-* Server: Windows 10 or newer, or x86-64 Linux with systemd, glibc 2.38
-  or newer and libstdc++ 13 or newer, such as Ubuntu 24.04 (see [Installation on Linux](#linux))
 * Client: Windows 10 or newer (x64), or macOS on a computer with Apple
   silicon, macOS 26 or later (the release notes name the exact minimum; see [Installing the Client](#client-install)); there is no Linux
   Client
-* Windows administrator rights (`root` on Linux) to install and set up the
-  Server
-* A TCP/IP network between the site's computers; Clients connect to the
-  `scada-proxy` process on port 2000 (see [Network preparation](#network))
-* A license file issued for the Server processes you need (see [License](#license))
+* Network access from the Client workstations to the Server address that
+  Telecontrol gives you
+* The site gateway has requirements of its own, see
+  [Site gateway]({{ '/en/server/' | relative_url }}#gateway)
 
 ## Download {#download}
 
-Distributions are published on the
+The Client packages are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases). The version 2.6
 Client packages are in release [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8), which replaces releases 2.6.0, 2.6.3 and 2.6.4. The page marks
 release 2.5.7 as the latest, because it is the last release that carries a
-Server installer.
+Server installer; that Server is no longer offered (see
+[Server 2.5.7]({{ '/en/server/' | relative_url }}#legacy)).
 
-**WARNING:** releases 2.6.0, 2.6.3, 2.6.4 and 2.6.8 carry only the Client packages for now.
-Both Windows installers — the Server installer `scada-server-<version>.msi`
-and the Client package `telecontrol-scada-<version>.msi` (the Client, the Designer and the documentation)
-— and the Linux Server packages (`.deb` and `.tar.gz`) will be added later.
-Until they are, the Server installation steps on this page cannot be followed.
+Releases 2.6.0, 2.6.3, 2.6.4 and 2.6.8 carry only the Client packages (see
+[Installing the Client](#client-install)). The Windows Client package
+`telecontrol-scada-<version>.msi` (the Client, the Designer and the
+documentation) will be added later. The display module is not part of the
+releases and is supplied separately (see
+[Displaying schematics](#displays)). There are no Server or site gateway
+packages to download: Telecontrol supplies the gateway package with the
+service.
 
-So today the 2.6.8 Client can be installed, for evaluation, on workstations
-that work with a 2.5.7 Server (see [Buying now](#buy-now)). What works in
-that combination and what does not is listed under
+**Do not use the 2.6.0 Client** — it also stores the remembered
+automatic-login password unencrypted; use the 2.6.8 Client. At sites still
+running a 2.5.7 Server, the 2.6.8 Client can be installed for evaluation;
+what works in that combination and what does not is listed under
 [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
-2.6 Clients before 2.6.3 connect to a 2.5.7 Server but cannot control
-objects in two stages through it. **Do not use the 2.6.0 Client**
-at all — it also stores the remembered automatic-login password
-unencrypted; use the 2.6.8 Client.
 
-**WARNING:** this page describes release 2.6.0 and later. Release 2.5.7 and
-earlier install the Server as a single *Telecontrol SCADA Server* service and
-do not contain the separate 2.6 processes. The earlier rules apply to them: the
-*Telecontrol SCADA Server* service, a HASP or Guardant hardware key, and the
-configuration in `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
+### Getting the hosted Server {#buy-now}
 
-### Buying now {#buy-now}
+To get the Server, contact Telecontrol (mail@telecontrol.ru). The service
+terms, the region the Server is hosted in and the price are agreed in the
+contract. Telecontrol installs, updates and licenses the Server, backs it up
+and monitors it (see [Server]({{ '/en/server/' | relative_url }}#service)).
 
-Until the 2.6 Server packages are published, a new site can
-install only a 2.5.7 Server, with the installer `telecontrol-scada-2.5.7.msi`
-from release [2.5.7](https://github.com/alexsmn/scada-client/releases/tag/v2.5.7).
-In version 2.5.7 the file of that name installs both the Server and the
-Client, unlike the 2.6 Client package of the same name. It has no `scada-setup` command, and its installation is not described in
-this manual: ask Telecontrol (mail@telecontrol.ru) for it, and about keys
-and licenses. Without a hardware key a 2.5.7 Server runs for two hours in
-demo mode, which is enough for a trial. A 2.5.7 hardware key can later be
-exchanged for a version 2.6 license (see
-[Exchanging the hardware key]({{ '/en/server/upgrade/' | relative_url }}#license-exchange)).
-For running a site on a 2.5.7 Server, the 2.5.7 Client from the same
-installer remains the tested choice; it is also the one for managing users
-and exporting the configuration, which the 2.6 Client cannot do with a
-2.5.7 Server. The 2.6.8 Client with a 2.5.7 Server is, for now, for
-evaluation. The schematic display module is not part of the releases and is
-supplied separately; agree the terms of its supply with Telecontrol.
+When you are connected, Telecontrol gives you:
 
-**Securing a 2.5.7 Server.** After installation a 2.5.7 Server lets `root`
-sign in with an empty password: set a strong password at the first sign-in
-and create separate accounts. Clients connect to it on TCP port 2000
-unencrypted, passwords included, so open that port only to the Client
-workstations and never beyond the site network.
+* the Server address the Clients connect to;
+* the SHA-256 fingerprint of the Server certificate, by which the Client
+  checks the Server's identity (see [Checking the Server certificate](#server-certificate-check));
+* the name and password of a named account, under which you sign in to the
+  Client and set up users, roles and the project;
+* to reach the field devices, the site gateway package with its parameter
+  file, and the address the Server connects to the gateway from (see
+  [Site gateway]({{ '/en/server/' | relative_url }}#gateway)).
 
+What you do is listed under
+[What the customer does]({{ '/en/server/' | relative_url }}#customer).
+The display module is supplied separately; agree the terms of its supply
+with Telecontrol.
 
-## Choose the Server processes {#choose}
+Server features that need a Windows Server (the OPC DA client and the
+Vidicon integration) are not available with the hosted Server (see
+[Unavailable features]({{ '/en/server/' | relative_url }}#unavailable)).
 
-A version 2.6 Server is always installed as several processes: the protocol
-processes receive their configuration from `scada-config` and keep none of
-their own, so a protocol process cannot run without `scada-config`.
-
-The smallest set `scada-setup` builds is:
-
-* `scada-config`, which holds the configuration;
-* one or more protocol processes (`scada-modbus`, `scada-iec104`,
-  `scada-iec61850`, and on Windows also `scada-opc` and `scada-vidicon`);
-* `scada-filesystem` — without it `scada-setup apply` prints a warning and
-  the [server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem)
-  (displays stored on the Server) is unavailable;
-* `scada-proxy`, which the Clients connect to.
-
-Add `scada-historian` to archive values and events; without it there is no
-archive.
-
-**The license must name every one of these processes**, `config`,
-`filesystem` and `proxy` included, not only the protocol processes: a process
-the license does not name stops right after it starts, and
-`scada-setup apply` refuses to install it.
-
-All the processes may run on one computer or be spread over several.
-**`scada-config`, `scada-proxy`, `scada-historian` and `scada-filesystem`
-always go on one and the same computer — the central one**; the protocol
-processes go on it too or on other computers of the site. What each process
-does, and the start order, are described in
-[Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
-
-Different protocol processes may go on different computers (for example
-`scada-modbus` on one and `scada-iec104` on another). **The same protocol
-process may also be installed on several computers**, splitting the devices
-of its protocol between them — for example, with an `scada-iec104` next to
-each group of devices:
-
-* a link's Computer property says which computer serves it (an IEC 61850
-  device, which has no link, has the property itself). It holds the computer
-  name `scada-setup` writes into that computer's configuration files — the
-  computer name or the `--host-name` value; letter case does not
-  matter;
-* the devices of a link are served by the same computer as the link;
-* the links whose Computer is empty are served by the computer where
-  `scada-setup apply` ran **without** the `--assigned-links-only` option.
-  On every other computer running that process, run `apply` with
-  `--assigned-links-only`: such a computer serves only the links assigned to
-  it by name;
-* to move a link to another computer, change its Computer property in the
-  Client: the old computer closes the connection and the new one opens it,
-  with no process restart.
-
-Clients, the archive and retransmission work with the devices of every
-computer through `scada-proxy`, as with one Server.
-
-**WARNING:** among the computers running one protocol process,
-`--assigned-links-only` must be given on all but one. If neither of two
-computers has it, both open every link without a computer; if all have it,
-nobody serves those links.
-
-## Installation on Windows
-
-The Server is installed with the `scada-server-<version>.msi` package — one
-package for every Server process and the `scada-setup` tool; it is not
-published for version 2.6 yet (see [Download](#download)). In *Control
-Panel — Programs and Features* it appears as *ОИК Телеконтроль — Сервер*. It
-does not carry the Client, which is installed separately (see
-[Installing the Client](#client-install)). You
-choose which processes run on a computer with the `--tiers` option; the
-license decides which of them are allowed.
-
-**Run `scada-setup` from an elevated command prompt** (`status` works
-without one, but shows a license in the data folder, which is closed to other
-users, only with one). The installer does not add the program's folder to `PATH`, so the
-examples call it by its full path,
-`"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe"`; from that
-folder, typing `scada-setup` is enough.
-
-1. Install the package:
-
-   ```bat
-   msiexec /i scada-server-<version>.msi /qn /norestart /l*v install.log
-   ```
-
-   `/qn` installs the package without any windows, `/norestart` keeps
-   Windows Installer from restarting the computer by itself, and
-   `/l*v install.log` writes a detailed installation log to `install.log`,
-   which is what an installation error is diagnosed from (these are general
-   Windows Installer options).
-
-2. Put the license file at
-   `%ProgramData%\Telecontrol\SCADA Server\license.json`. The installer
-   does not create that folder, so on a new computer create it first:
-
-   ```bat
-   mkdir "%ProgramData%\Telecontrol\SCADA Server"
-   copy license.json "%ProgramData%\Telecontrol\SCADA Server\license.json"
-   ```
-
-3. Decide which processes run on this computer, and
-   [write down the computer's parameters](#host-parameters).
-
-   Before the next step, make sure Windows Firewall is on and open only the
-   ports the site needs (see [Network preparation](#network)): `apply` starts the
-   processes at once, and they accept connections on every network
-   interface, including user logins on ports 2000–2008.
-
-4. Run:
-
-   ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
-   ```
-
-   In `--tiers`, list this computer's processes (the example has every
-   process on one computer, with IEC 60870-5-104). `<password>` is the
-   password of the `svc` service account the processes use to connect to each
-   other. It must be the same on every computer of the site; to change it
-   later, run `scada-setup set-password` on every computer (see
-   [The svc account]({{ '/en/server/security/' | relative_url }}#svc)).
-   `<root password>` is the password of the built-in `root` account; see
-   [Root password](#root-password).
-
-`apply` creates each process's parameter file, the configuration databases —
-with an empty project, or with `--demo` the demo project (see
-[Preparing the project](#project)); existing databases are never
-overwritten — the [Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate)
-and one Windows service per process, and starts the services in order (see
-[Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }})). To check the result:
-
-```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" status
-```
-
-In `scada-setup`'s messages the processes are called *tiers*: the line
-`Entitled tiers: …` lists the processes the license allows, and below it the
-state of each process's service is printed (`SERVICE_RUNNING` means it is
-running).
-
-**WARNING: an administrator of this computer can read the `svc` and `root`
-passwords.** `apply` stores them in an encrypted file that only the Server's
-services and administrators can open (see
-[Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords)).
-Do not give untrusted people administrator rights on the Server computers,
-and do not make a Server computer an operator workstation, even if you
-install the Client on it (see [Installing the Client](#client-install)).
-
-**Several computers.** Set up the central computer first. Its `apply`
-prints a line with the fingerprint of its certificate (`scada-setup status`
-on the central computer shows it again later):
-
-```
-Links are encrypted (SignAndEncrypt). Join the other computers of the site with
-  --central-fingerprint 30:CE:C4:DB:...:66:6F
-('scada-setup status' prints it again)
-```
-
-Then set up the computers running protocol processes, giving each the central
-computer's address and that fingerprint:
-
-```bat
-rem Central computer:
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers config,historian,filesystem,proxy --advertise 10.0.0.10 --svc-password <password> --root-password <root password>
-rem Computer running protocol processes:
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers modbus,iec104 --central 10.0.0.10 --central-fingerprint 30:CE:C4:DB:...:66:6F --advertise 10.0.0.11 --svc-password <password>
-```
-
-The protocol processes need no root password: `scada-config` keeps their
-accounts. A computer without `scada-config` needs `--central`, and
-`--central-fingerprint` to join the site: without it its processes cannot
-connect to the others, so `apply` refuses and changes nothing. Only a site
-whose computers are all set up with `--insecure-links` runs unencrypted (see
-[Site certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-site-ca)).
-
-**Give the central computer `--advertise` at its first `apply`, even if the
-other computers join later** — including when all processes run on one
-computer for now. It is the address the other computers give in
-`--central`; without it the central computer's certificate names only its
-computer name, `localhost` and `127.0.0.1`, computers given its IP address do
-not connect to it, and fixing that later means replacing the certificate,
-which also changes its fingerprint (see
-[`--advertise`]({{ '/en/server/setup/' | relative_url }}#scada-setup-options)). Or give the
-central computer's computer name in the other computers' `--central`.
-
-**Decide `--advertise` before the first `apply` on each protocol computer.**
-A computer set up with `--central` reports its *computer name* to
-`scada-proxy`, and `scada-proxy` connects to that computer's processes by
-that name. Unless the central computer resolves the name of every protocol
-computer (check with `ping <computer name>` on the central computer), give
-each protocol computer its own IP address as `--advertise`, as in the example
-(10.0.0.11 is the protocol computer's own address). Otherwise the devices of
-that computer never appear in the Client. The
-[Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate)
-records the computer's addresses only when it is created: if you add
-`--advertise` later, also replace the certificate so that it carries the new
-address.
-
-The remaining links between processes are set up automatically. All
-`scada-setup` commands are described in the
-[Server]({{ '/en/server/setup/' | relative_url }}) section.
-
-How to install the Client on the operator workstations is described below,
-in [Installing the Client](#client-install).
-
-### The computer's parameters {#host-parameters}
-
-`scada-setup` remembers only the license file path and the data folder; it
-does not remember the other options. **Write down, for each
-computer,** and keep with the passwords:
-
-* `--tiers` — this computer's processes;
-* `--central` — the central computer's address (on a computer without
-  `scada-config`);
-* `--advertise` — if you gave one;
-* `--central-fingerprint` — the fingerprint of the central computer's
-  certificate (on a computer without `scada-config`);
-* `--assigned-links-only` — if you gave it;
-* `--host-name` — if you gave one;
-* `--insecure-links` — if the site is set up without encryption;
-* `--allow-anonymous-opcua` — if you gave it (on the computer with
-  `scada-proxy`);
-* `--license` — if the license file is not at
-  `%ProgramData%\Telecontrol\SCADA Server\license.json` (on Linux, not at
-  `/var/lib/scada/license.json`);
-* `--data-root` — if you gave a non-standard data folder;
-* the `svc` password and the `root` password.
-
-**Give these options to every `apply` on that computer** (with the
-passwords), and `--tiers` to every `start` as well, upgrades and restores
-included. What goes wrong when one is left out — processes that do not belong
-on the computer, two computers opening the same links, a site losing contact
-with its central computer — is listed under
-[Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}#scada-setup-options),
-together with how to remove services `apply` installed by mistake. `stop`,
-`status` and `remove` act on every Server service the computer has, and
-`status` and `start` take the license path and the data folder from what
-`apply` installed, so they need none of these options.
-
-### Installing the Client {#client-install}
+## Installing the Client {#client-install}
 
 The [releases page](#download) carries two Client packages of the same
 version with every version 2.6 release:
@@ -339,12 +109,11 @@ version with every version 2.6 release:
   once in Terminal after copying the app.
 
 **These packages do not include the display module yet** (see
-[Displaying schematics](#displays)).
+[Displaying schematics](#displays)). A workstation needs no license file.
 
 On Windows the Client can also be installed with the
 `telecontrol-scada-<version>.msi` package, which carries the Windows Client,
-the [Designer]({{ '/en/dev/designer/' | relative_url }}) (an editor for Vidicon schematics) and the documentation, and no
-Server process or `scada-setup`. The package creates *Клиент* (Client) and
+the [Designer]({{ '/en/dev/designer/' | relative_url }}) (an editor for Vidicon schematics) and the documentation. The package creates *Клиент* (Client) and
 *Дизайнер* (Designer) shortcuts on the desktop and in the
 *Start — ОИК Телеконтроль* menu, and appears in *Control Panel — Programs and
 Features* as *ОИК Телеконтроль*. It is not published for version 2.6 yet (see
@@ -355,24 +124,16 @@ the disk image. Once the package is published, install it with:
 msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log
 ```
 
-* **An operator workstation** needs no license file and no `scada-setup`.
-* **A Server computer** needs the Client package only if an administrator
-  works there with the Client, or if it ran a 2.5 Server (see below). The Server and Client packages install into the
-  same `C:\Program Files\Telecontrol SCADA` folder and do not remove each
-  other. Do not use that Client as an operator workstation (see the password
-  warning above).
-* **On a computer that ran a 2.5 Server**, the Client package removes the
-  version 2.5 program, so it is installed only after the data has been
-  migrated (see [Upgrading from version 2.5](#upgrade-2-5)).
-
-**WARNING:** if Telecontrol has given you some other separate package (a
-Client-only one, for example), do not install it on a computer that already
-has the `scada-server-<version>.msi` or `telecontrol-scada-<version>.msi`
-package, nor the other way round, without checking the procedure with
-Telecontrol (mail@telecontrol.ru). Each version 2.6 package has its own
-Windows Installer upgrade code, so installing one does not remove another,
-but they all install into the same `C:\Program Files\Telecontrol SCADA`
-folder, and installing them together that way has not been verified.
+**WARNING:** on a computer with a 2.5.7 Server installed, the version 2.6
+Client package removes the version 2.5 program together with the Server
+service. Do not install it on such a computer until the move to the hosted
+Server has been arranged with Telecontrol (see
+[Server 2.5.7]({{ '/en/server/' | relative_url }}#legacy)). If Telecontrol
+has given you some other separate package, check with Telecontrol
+(mail@telecontrol.ru) how to install it next to
+`telecontrol-scada-<version>.msi`: they all install into the same
+`C:\Program Files\Telecontrol SCADA` folder, and installing them together
+that way has not been verified.
 
 ### Displaying schematics {#displays}
 
@@ -387,387 +148,93 @@ Telecontrol. Until it is there, a display window shows the message "No
 display runtime is installed." with the reason; the Client's other windows
 work. Editing Modus schematics still needs the Modus graphics editor.
 
-## Installation on Linux {#linux}
-
-**WARNING:** the Linux Server packages are not published for version 2.6 yet
-(see [Download](#download)); until they are, the steps in this section cannot
-be followed.
-
-The Server ships for Linux as a package in two forms —
-`telecontrol-scada-server_<version>_amd64.deb` (Ubuntu, Debian) and the
-archive `telecontrol-scada-server-<version>-linux-amd64.tar.gz`. It holds the
-same processes as the Windows installer, except `scada-opc` and
-`scada-vidicon`, and the same `scada-setup` program. The package installs
-into `/opt/telecontrol-scada`; it needs x86-64 Linux with systemd, glibc
-2.38 or newer and libstdc++ 13 or newer (installation was tried in an Ubuntu 24.04 container, not yet
-on a working Linux site). There is no Linux Client: Windows and macOS
-Clients connect to a Linux Server just as they do to a Windows one.
-
-Run every command as `root` (with `sudo`). `status` works without `sudo`
-and reads a license in the usual place, `/var/lib/scada/license.json`
-(installed readable by everyone, see below). Only if the license was given
-with `--license` and lies where an ordinary user cannot read it does `status`
-without `sudo` say so with
-`License: <path> can be read by administrators only; to see it, run scada-setup status with sudo`.
-
-1. Install the package:
-
-   ```sh
-   sudo apt install ./telecontrol-scada-server_<version>_amd64.deb
-   ```
-
-   or unpack the archive:
-
-   ```sh
-   sudo tar -xzf telecontrol-scada-server-<version>-linux-amd64.tar.gz -C /opt
-   ```
-
-2. Put the license file at `/var/lib/scada/license.json`, readable by
-   everyone: the processes read it as the `scada` account. The
-   `/var/lib/scada` folder does not exist yet after the package is
-   installed, so create it:
-
-   ```sh
-   sudo mkdir -p /var/lib/scada
-   sudo install -m 0644 license.json /var/lib/scada/license.json
-   ```
-
-   To keep the license elsewhere, give its path with `--license`; the file
-   must be readable by the `scada` account and must not be under `/home`,
-   `/root` or `/run/user` (the folder it was downloaded to, for example): the
-   services cannot see those folders, and `apply` and `start` refuse such a
-   path. Every folder above the file must also be open to the `scada`
-   account; `apply` and `start` warn when it is not. `apply` and `start` likewise
-   refuse a data folder (`--data-root`) or an installation folder in those
-   places, so unpack the `.tar.gz` archive into `/opt`, not a home folder.
-
-3. Decide which processes run on this computer, and
-   [write down the computer's parameters](#host-parameters).
-
-   Before the next step, turn the firewall on and open only the ports the
-   site needs (see [Network preparation](#network)): `apply` starts the processes
-   at once, and they accept connections on every network interface,
-   including user logins on ports 2000–2008. On Ubuntu the ufw firewall is
-   off by default, and until it is on those ports are open to the whole
-   network.
-
-4. Run:
-
-   ```sh
-   sudo /opt/telecontrol-scada/bin/scada-setup apply --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
-   ```
-
-The options of `apply` and the other commands are the same as on Windows
-(see [Installation on Windows](#installation-on-windows)). What differs on
-Linux — the data folder `/var/lib/scada`, the systemd services and the
-`scada` account they run as, serial ports, where the passwords are kept, how
-`status` names a service's state — is in
-[Linux deployment]({{ '/en/server/' | relative_url }}#linux). Upgrading and uninstalling on
-Linux are described under [Upgrading](#upgrading) and
-[Uninstalling](#uninstall).
-
-## License {#license}
-
-The license is a signed `license.json` file listing the processes purchased
-and its validity period. The same file goes on every computer of the site. A
-process the license does not name stops right after it starts. A license
-whose validity period has not started yet is accepted neither by the
-processes nor by `scada-setup`. Version 2.6 has no unlicensed demo mode: to
-evaluate the system, request a license from Telecontrol (mail@telecontrol.ru)
-(see [Licensing]({{ '/en/server/licensing/' | relative_url }})).
-
-**Expiry.** `scada-setup status` shows when the license ends (the line
-`License: … (<license id>, expires …)`; an expired one shows `EXPIRED` and the
-date). Check it yourself: the Server warns of the coming expiry only as
-system events in the Client, and once the license has expired the processes
-keep running but refuse Client requests until the license is replaced.
-
-To replace the license file, or to add a process to a computer, see
-[Replacing the license file]({{ '/en/server/licensing/' | relative_url }}#license-replace) and
-[Adding a process]({{ '/en/server/licensing/' | relative_url }}#license-add): a license file
-replaced the wrong way stops every process.
-
-A license issued for a Google Cloud virtual machine verifies only on that
-machine; any other license is bound to no computer and needs no setting. See
-[Licensing]({{ '/en/server/licensing/' | relative_url }}).
-
-## Root password
-
-The built-in `root` account has all rights. Its password is set by the
-`--root-password` option of `scada-setup apply` (or the
-`SCADA_SETUP_ROOT_PASSWORD` environment variable). A password given on the
-command line stays in the shell history and is visible in the process list,
-so on a permanent installation prefer setting both passwords through the
-`SCADA_SETUP_ROOT_PASSWORD` and `SCADA_SETUP_SVC_PASSWORD` environment
-variables (under Linux `sudo` does not pass the environment by default: use
-`sudo --preserve-env=SCADA_SETUP_SVC_PASSWORD,SCADA_SETUP_ROOT_PASSWORD` or
-`sudo -E`; see the example in [scada-setup options]({{ '/en/server/setup/' | relative_url }}#scada-setup-options)). On a computer running
-`scada-config` or `scada-filesystem`, `apply` refuses to run without it:
-those processes keep the configuration in databases of their own, each has
-its own `root` account, which would otherwise accept an empty password.
-
-`scada-setup` stores the password in the computer's
-[password file]({{ '/en/server/setup/' | relative_url }}#stored-passwords) rather
-than in the parameter files, and the processes write it again on every start.
-So:
-
-* **to change the root password, run from an elevated command prompt**
-
-  ```bat
-  "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" set-password --root-password <new password>
-  ```
-
-  (on Linux, `sudo /opt/telecontrol-scada/bin/scada-setup set-password
-  --root-password <new password>`) on every computer running one of those processes. The command stores the
-  new password and restarts this computer's process services;
-* **the root password is not changed from the Client**: the Server refuses
-  such a change and the Client reports it in the event journal, rather than
-  accepting a password that the next start of the process would replace;
-* give the current root password on every later `apply`, upgrades included.
-
-See [Root password]({{ '/en/server/security/' | relative_url }}#root-password).
-
-## Network preparation {#network}
-
-`scada-setup` does not create firewall rules — open the inbound ports by
-hand:
-
-* **for the Client workstations** — TCP port 2000 on the central computer
-  (the one running `scada-proxy`);
-* **when the processes run on several computers:**
-  * on the central computer — ports 4840 (`scada-proxy`), 4841
-    (`scada-config`) and 4842 (`scada-historian`) for the computers running
-    protocol processes: at start-up they read their objects' latest values
-    from the archive;
-  * on each computer running protocol processes — the OPC UA port of each of
-    its processes (from the table below) for the central computer:
-    `scada-proxy` connects to them.
-
-When every process runs on one computer, only port 2000 needs opening.
-
-**WARNING:** the Client connection on port 2000 (server type «Телеконтроль»,
-Telecontrol) is not encrypted: data and passwords cross the network in clear.
-Open port 2000 only to the Client workstations' subnet or through a VPN, and
-never expose it beyond the site network.
-
-The rules can be created from an elevated command prompt (replace the
-addresses in the example with your computers'; `remoteip` takes them
-comma-separated):
-
-```bat
-rem Central computer: Clients (may be limited to the workstations' addresses with remoteip=...)
-netsh advfirewall firewall add rule name="Telecontrol SCADA Clients" dir=in action=allow protocol=TCP localport=2000
-rem Central computer, when there are other Server computers (here 10.0.0.11 and 10.0.0.12):
-netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4840,4841,4842 remoteip=10.0.0.11,10.0.0.12
-rem Computer running scada-modbus and scada-iec104 (the central computer is 10.0.0.10):
-netsh advfirewall firewall add rule name="Telecontrol SCADA OPC UA" dir=in action=allow protocol=TCP localport=4843,4844 remoteip=10.0.0.10
-```
-
-**On Linux** open the same ports with your distribution's tools, for example
-on Ubuntu:
-
-```sh
-# Central computer: Clients
-sudo ufw allow proto tcp to any port 2000
-# Central computer, when there are other Server computers:
-sudo ufw allow proto tcp from 10.0.0.11 to any port 4840,4841,4842
-sudo ufw allow proto tcp from 10.0.0.12 to any port 4840,4841,4842
-# Computer running scada-modbus and scada-iec104:
-sudo ufw allow proto tcp from 10.0.0.10 to any port 4843,4844
-```
-
-On Ubuntu ufw is off by default, and the rules take effect only after
-`sudo ufw enable`; check its state with `sudo ufw status`. If you are
-connected to the computer over SSH, allow SSH before enabling it
-(`sudo ufw allow OpenSSH`), or you lose access to the computer.
-
-On distributions with firewalld, rules such as
-`sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.0.0.11 port port=4840-4842 protocol=tcp accept'`
-do the same (for the Clients' port, `sudo firewall-cmd --permanent --add-port=2000/tcp`),
-followed by `sudo firewall-cmd --reload`.
-
-**Links that accept connections.** When a link works passively — its
-Transport is of type TCP Server and the SCADA waits to be connected to (for
-example [retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)
-over IEC 60870-5-104, usually port 2404) — open its port on the computer of
-its protocol process, for the addresses that must connect only.
-
-| Process | OPC UA | Clients |
-|---|:-:|:-:|
-| `scada-proxy` | 4840 | 2000 |
-| `scada-config` | 4841 | 2001 |
-| `scada-historian` | 4842 | 2002 |
-| `scada-modbus` | 4843 | 2003 |
-| `scada-iec104` | 4844 | 2004 |
-| `scada-iec61850` | 4845 | 2005 |
-| `scada-filesystem` | 4846 | 2006 |
-| `scada-opc` | 4847 | 2007 |
-| `scada-vidicon` | 4848 | 2008 |
-
-**OPC UA ports 4840–4848 must be reachable from the site's computers only.**
-The processes connect to each other encrypted and accept only the computers
-whose certificate the site's certificate authority issued (see
-[Site certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-site-ca)).
-`scada-config` accepts a connection with any computer's certificate, so that
-a new computer can join the site. It issues a site certificate to the `svc`
-account only: neither `root` nor a user with the Configure right can obtain
-one, and the Client cannot give that right. So joining a computer to the site
-takes the `svc` password; keep it as you keep the `root` password.
-`scada-config` and `scada-proxy` accept a process's registration only over a
-certificate the site certificate authority issued, and only under a name
-that certificate carries; a certificate moved into the `trusted` folder lets
-a system connect, never register. If an external OPC UA system must connect to the Server, allow it
-port 4840 from its address only: that port accepts only secured connections
-that sign in with a user name, and unsecured connections and anonymous
-sign-in only with the `--allow-anonymous-opcua` option (see
-[Connecting an external system]({{ '/en/server/opcua/' | relative_url }}#opcua-external)).
-**On a site set up with `--insecure-links`**, the firewall is the only
-protection of these ports: a computer that reaches them can connect to the
-Server processes or pose as one of them.
-
-Ports 2001–2008 of the other processes accept user sign-ins too, but Clients
-do not need them: keep them closed.
-
 ## Preparing the project {#project}
 
-**A new installation starts from an empty project.** The configuration
-databases `apply` creates hold no objects, devices, links or users: only the
-`svc` service account the processes use to connect to each other. Sign in to
-the Client with the built-in `root` account and the password given as
-`--root-password`. The protocol processes connect to nothing and take no
-device ports until you create links. Build the project's configuration in
-the Client (see [Development]({{ '/en/development/' | relative_url }})) or
-put a ready project database in place (below).
+**Unless agreed otherwise, the Server starts with an empty project:** no
+objects, devices or links. Sign in to the Client with the account
+Telecontrol gave you (see [Client login](#client-start)) and build the
+project's configuration in the Client (see
+[Development]({{ '/en/development/' | relative_url }})).
 
-The configuration is kept in one copy, in the `config/Configuration` folder
-of `scada-config`. The other processes read it from `scada-config`: the
-protocol processes their devices and objects, `scada-historian` the archive
-list and the archive assigned to each object, and `scada-proxy` the names,
-passwords and roles of Client users. So a configuration change made in the
-Client — creating, renaming and deleting objects, devices and users, and
-assigning roles — takes effect in every process at once. `scada-filesystem`
-has a database of its own, in `filestore/Configuration`, but it holds only
-the `svc` service account: `apply` removes everything else from it, and it
-needs no replacing.
-
-### Demo project {#demo}
-
-To explore the system without field equipment, install the demo project:
-add `--demo` to the first `apply` on the central computer. The configuration
-databases are then created from the demo configuration shipped with the
-installer: 41 analog and 52 discrete objects, emulation signals, two enabled
-IEC 60870-5-104 links (one of them accepts connections on port 2404 of this
-computer, which the `scada-iec104` process takes if installed), two
-archives, and the users «Клиент 1» … «Клиент 10» and `guest`, which **have
-no passwords set**. The demo schematics are copied into the file store of
-`scada-filesystem`.
-
-**Do not install the demo project on a Server reachable from the site
-network**: anyone can sign in as its users, with no password. The demo
-project's user list also has a `root` user. It is not the built-in `root`
-account: signing in as `root` always uses the built-in account, with the
-password given as `--root-password`, and this user can never sign in. Do
-not change or delete it thinking it is the real `root`.
-
-`--demo` acts only on configuration databases that do not exist yet: on a
-computer already set up, `apply --demo` replaces nothing and prints
-`Kept the existing configuration DB of …`. To go from the demo project to an
-empty one, stop the processes, delete the `configuration.sqlite3` file from
-the `config/Configuration` folder of the data folder, and run `apply`
-without `--demo` with the same [computer's parameters](#host-parameters) and
-passwords. Delete the demo schematics from the `filestore/FileSystem`
-folder. You can also delete the demo devices, objects and users in the
-Client: the change reaches every process. Either way, check afterwards that
-nothing listens on port 2404 any more (`netstat -ano | findstr :2404` on the
-computer of `scada-iec104` prints nothing) and that «Клиент 1» can no longer
-sign in.
-
-### A ready project database {#project-db}
-
-To put a ready project configuration database (a version 2.6
-`configuration.sqlite3`) in place, on the central computer:
-
-1. Stop the processes:
-   `"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop`.
-2. Copy the file into the `config\Configuration` folder under
-   `%ProgramData%\Telecontrol\SCADA Server`, replacing the database `apply`
-   created. The other processes keep no configuration database of their
-   own. A `proxy\Configuration` folder left by an earlier 2.6 build is no
-   longer used.
-3. Run `scada-setup apply` with the same
-   [computer's parameters](#host-parameters) and passwords as at
-   installation. It keeps the copied database and adds the `svc` service
-   account (id 100) to it, without which the processes cannot connect to
-   each other. **A project user with id 100 is replaced by the `svc`
-   account.** A database taken from another version 2.6 site does not
-   need that site's `svc` password: at start the processes write the `svc`
-   password given to `apply` into the database. What matters is that it
-   matches the `svc` password of this site's other computers.
-
-On Linux the commands are the same — `sudo /opt/telecontrol-scada/bin/scada-setup stop`
-and `apply` — and the `config/Configuration` folder is under
-`/var/lib/scada` (see [Installation on Linux](#linux)).
-
-Move a version 2.5 Server's configuration with `scada-setup migrate` instead:
-it also carries over the user passwords version 2.5 kept in a separate file
-(see [Upgrading from version 2.5](#upgrade-2-5)).
+The configuration is kept on the Server in one copy. A configuration change
+made in the Client — creating, renaming and deleting objects, devices and
+users, and assigning roles — takes effect across the Server at once and is
+seen by every Client. The Server reaches the site's devices through the site
+gateway (see [Site gateway]({{ '/en/server/' | relative_url }}#gateway)):
+until the gateway is installed and connected, the devices stay without a
+connection in the Client.
 
 On each workstation, copy the schematic files (`.sde`) to
-`%ProgramData%\Telecontrol\SCADA Client`, or upload them to the
-[server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem)
-if that feature is used.
+`%ProgramData%\Telecontrol\SCADA Client`, or upload them to the Server in
+the *Files* window (see [Server files]({{ '/en/dev/server-files/' | relative_url }})).
 
-To explore the system without field equipment, install the
-[demo project](#demo) or give your project's objects
-[emulation]({{ '/en/architecture/' | relative_url }}#emulation).
+To explore the system without field equipment, give your project's objects
+[emulation]({{ '/en/architecture/' | relative_url }}#emulation), or arrange
+the [demo project](#demo) with Telecontrol.
 
 For project engineering details, see [Development]({{ '/en/development/' | relative_url }}).
 
-## Start the Server
+### Demo project {#demo}
 
-The process services start automatically with Windows; a user sign-in is not
-required. When a process fails, Windows restarts its service (see
-[Windows services]({{ '/en/server/' | relative_url }}#services)).
-`start` and `stop` start or stop all of the computer's processes in the right
-order; `start` only with the [computer's parameters](#host-parameters):
+A Server with the demo project instead of an empty one is started by
+arrangement with Telecontrol. The demo project has 41 analog and 52 discrete
+objects, emulated signals, two archives, demo schematics in the server files,
+and the users "Клиент 1" … "Клиент 10" and `guest`, **with no passwords
+set**.
 
-```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" start --tiers <this computer's processes>
-```
+**WARNING:** the hosted Server is reachable over the network, and anyone who
+knows its address can sign in as a demo user without a password. Right after
+the first sign-in, set passwords for those users or delete them (see
+[User configuration]({{ '/en/dev/users/' | relative_url }})). The `root` user
+in the demo project's user list can never sign in; do not change or delete
+it.
 
-For diagnostics, a process can be started in
-[console mode]({{ '/en/server/' | relative_url }}#console).
+To move from the demo project to your own, delete the demo devices, objects,
+schematics and users in the Client (the change takes effect on the Server at
+once), or arrange with Telecontrol to replace the configuration with an
+empty one. Then check that "Клиент 1" can no longer sign in.
+
+### A ready project database {#project-db}
+
+A ready project configuration database (a version 2.6
+`configuration.sqlite3`), for example one prepared at another site, is put
+on the Server by Telecontrol: arrange it with Telecontrol. Note that **the
+project user with ID 100 is replaced by the `svc` service account**, through
+which the Server processes connect to each other.
+
+Moving a 2.5.7 Server's configuration to the hosted Server is also arranged
+with Telecontrol (see [Server 2.5.7]({{ '/en/server/' | relative_url }}#legacy)).
 
 ## Client login {#client-start}
 
 Run `client.exe` from the folder the Client archive was unpacked into, or on
 macOS *Telecontrol SCADA Client* from *Applications*. The desktop and Start
 menu shortcuts are created only by the Client package
-`telecontrol-scada-<version>.msi`, which is not published for version 2.6 yet. The login dialog asks for SCADA credentials and, optionally, the target server name or IP address.
+`telecontrol-scada-<version>.msi`, which is not published for version 2.6 yet. The login dialog asks for SCADA credentials to connect to the Server:
 
 ![]({{ '/img/client-login.png' | relative_url }})
 
-For the first login, use `root` with the password given as
-`--root-password` during installation.
-
 The `Server` row has two fields. On the left is the list of server types
-(shown only when the Client supports more than one type): choose
-**"Telecontrol"**.
+(shown only when the Client supports more than one type; otherwise a
+"Connecting to: …" line under the fields names that type): choose
+**"OPC UA"**. On the right, enter the Server address exactly as Telecontrol
+gave it to you.
 
-> **Caution.** The "OPC UA" type connects the Client over OPC UA. After the
-> connection is lost the Client reconnects by itself, as with the
-> "Telecontrol" type (see
-> [Connection to the Server]({{ '/en/client/' | relative_url }}#connection)).
-> Use the "Telecontrol" type to work with the SCADA Server.
+Expand the "Security and certificates" section and choose the
+**"Sign and encrypt"** security mode (or "Most secure available"). In these
+modes the connection is encrypted and the Client checks the Server's
+identity (below).
 
-On the right, enter the host name or IP address of the computer running
-`scada-proxy` only if it is a different computer. Otherwise, leave the field
-empty.
+Sign in with the named account whose name and password Telecontrol gave you.
+You create the accounts for everyone else yourself (see
+[First steps after login](#first-steps)).
 
-The "Security and certificates" disclosure (the security mode, the client
-certificate and private key) appears only for the "OPC UA" type; with the
-"Telecontrol" type there is nothing to fill in.
+With the "OPC UA" server type the user profile — pages, portfolios and
+workstation settings — is kept only on this computer and does not follow the
+account to another computer (see
+[Shift change]({{ '/en/client/' | relative_url }}#shift-change)). After the
+connection is lost the Client reconnects by itself (see
+[Connection to the Server]({{ '/en/client/' | relative_url }}#connection)).
 
 In the "Most secure available" and "Sign and encrypt" modes the Client checks
 the Server's identity by its certificate:
@@ -777,14 +244,14 @@ the Server's identity by its certificate:
   empty, the Client creates its own certificate on the first connection.
 * The first time it meets a Server's certificate, the Client asks: "The server
   presented a certificate this computer has not trusted before", and shows its
-  subject and SHA-256 fingerprint. Compare the fingerprint with the one the
-  Server's administrator publishes, and answer *Yes* to trust the certificate
-  and connect.
+  subject and SHA-256 fingerprint. Compare the fingerprint with the one
+  Telecontrol gave you, and answer *Yes* only if they match: the Client then
+  trusts the certificate and connects.
 * If the server at the same address presents a *different* certificate, the
   Client warns: "WARNING: the server at this address presented a DIFFERENT
   certificate…". That is what an intercepted connection would look like: trust
-  the new certificate only if the Server's administrator confirms it was
-  replaced.
+  the new certificate only if Telecontrol confirms it was replaced and gives
+  you the new fingerprint.
 
 The certificates are kept in the `pki` folder of the Client's user data:
 `%APPDATA%\Telecontrol\SCADA Client\pki` on Windows and
@@ -804,12 +271,12 @@ always waits for input.
 > sign in. You can also press *Cancel* while automatic sign-in is in progress
 > (see [Automatic sign-in]({{ '/en/client/' | relative_url }}#auto-login)).
 
-## First steps after login
+## First steps after login {#first-steps}
 
-**In a new installation the project is empty:** the objects and equipment
-panels show nothing until you build the configuration or put a ready project
-database in place (see [Preparing the project](#project)). If the Server was
-set up with `--demo`, you see the [demo project](#demo).
+**A new project is empty:** the objects and equipment panels show nothing
+until you build the configuration (see [Preparing the project](#project)).
+If the Server was started with the demo project, you see the
+[demo project](#demo).
 
 After you sign in:
 
@@ -820,8 +287,8 @@ After you sign in:
    [Display]({{ '/en/client/display/' | relative_url }}) menu.
 1. Check equipment status with `More -> Hardware`. The icons to the left of
    the devices show the connection state.
-1. Create user accounts with `More -> Users`, and work under them rather
-   than as `root`. See
+1. Create user accounts with `More -> Users`, and work under them, keeping
+   the account Telecontrol gave you for administration. See
    [User configuration]({{ '/en/dev/users/' | relative_url }}). After
    creating a user and setting a password, check that you can sign in as
    that user.
@@ -834,77 +301,26 @@ After you sign in:
 
    The user list contains the `svc` service account: the Server processes
    connect to each other through it, and the server does not let the Client
-   change it. Only `scada-setup set-password` changes its password (see [The svc account]({{ '/en/server/security/' | relative_url }}#svc)).
+   change it. Telecontrol manages it.
 
 For the main operator interface, continue with
 [Client]({{ '/en/client/' | relative_url }}).
 
-## Upgrading
+## Upgrading the Client {#client-upgrade}
 
-These steps upgrade version 2.6 and later. A version 2.5 or earlier Server
-was a single process with a single service, and its data has to be moved into
-the version 2.6 processes — see [below](#upgrade-2-5).
-
-**Before every upgrade, back up every Server computer** — see
-[Backup]({{ '/en/server/backup/' | relative_url }}). That backup is the only
-way back: the installer refuses to install an older version over a newer
-one, so a failed upgrade is undone by reinstalling the older version and
-restoring the backup (see
-[Rolling back a failed upgrade]({{ '/en/server/upgrade/' | relative_url }}#rollback-upgrade)).
-
-**On the Server computers** — the central computer first, then each
-computer running protocol processes — from an elevated command prompt:
-
-```bat
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" stop
-msiexec /i scada-server-<new version>.msi /qn /norestart /l*v install.log
-"C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> [--central <address>] [--advertise <address>] [--license <path>] --svc-password <password> --root-password <root password>
-```
-
-Give `apply` all the [computer's parameters](#host-parameters) given at
-installation — `--central-fingerprint`, `--assigned-links-only`,
-`--host-name`, `--insecure-links`, `--allow-anonymous-opcua` and `--data-root`
-included, if they were given — and the
-current `svc` password. The installer replaces only the
-executables; `apply` rewrites the parameter files (keep your own parameters
-in [`server.override.json`]({{ '/en/server/setup/' | relative_url }}#server-override),
-which is preserved) and leaves the data alone. On computers running only protocol
-processes, `--root-password` may be omitted.
-
-On a site with several computers, while the computers running protocol
-processes are being upgraded, their processes' objects are marked bad; once
-upgraded, they update and archive again by themselves
-(see [After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
-
-**On Linux**, as on Windows: stop the processes, install the new version
-and run `apply` with the same [computer's parameters](#host-parameters) and
-passwords — `apply` rewrites the parameter files and services from the new
-version's templates:
-
-```sh
-sudo /opt/telecontrol-scada/bin/scada-setup stop
-sudo apt install ./telecontrol-scada-server_<new version>_amd64.deb
-sudo /opt/telecontrol-scada/bin/scada-setup apply --tiers <this computer's processes> … --svc-password <password> --root-password <root password>
-```
-
-For an archive installation, unpack the new archive over the old one with
-the same `tar -xzf … -C /opt` command instead of `apt install`. An
-`apt install` of a newer `.deb` on its own, without `stop`, restarts the
-running services with the new executables, but only `apply` rewrites the
-parameter files.
-
-**On the operator workstations** install the new Client version the same
+Telecontrol upgrades the Server. **On the operator workstations** install
+the new Client version the same
 way as the old one (see [Installing the Client](#client-install)): unpack
 the new archive or disk image in place of the old one, or install the new
-package, with no `scada-setup` commands. The display module is not part of
-the Client packages, and replacing the program deletes it with the old
+package. The display module is not part of the
+Client packages, and replacing the program deletes it with the old
 folder: **before** replacing it, copy the module somewhere safe
 (`display_runtime.dll` beside `client.exe`; on macOS
 `libdisplay_runtime.dylib` in the app's *Contents/Frameworks* folder), and
 afterwards put it in the same place in the new Client. Otherwise the
 schematic windows show "No display runtime is installed".
 
-A workstation or Server computer whose Client was installed with the
+A workstation whose Client was installed with the
 `telecontrol-scada-<version>.msi` package (not yet published for version 2.6)
 is upgraded with:
 
@@ -912,101 +328,13 @@ is upgraded with:
 msiexec /i telecontrol-scada-<new version>.msi /qn /norestart /l*v install.log
 ```
 
-### Upgrading from version 2.5 {#upgrade-2-5}
-
-A version 2.5 Server ran as a single *Telecontrol SCADA Server* service and
-used a hardware key. The migration removes the version 2.5 service, and the
-version 2.6 Client package removes the 2.5 program itself, so **check the
-migration plan before installing 2.6**: what blocks the migration can only be
-fixed in version 2.5.
-
-**The order of the packages matters here:** first the Server package
-`scada-server-<version>.msi` and the data migration, and only then the Client
-package `telecontrol-scada-<version>.msi`. The Server package installs beside
-version 2.5 and removes nothing of it, while the Client package upgrades the
-version 2.5 program and so removes it together with its service — which must
-not happen before the data is migrated.
-
-How to go back to version 2.5 is described in
-[Rolling back to version 2.5]({{ '/en/server/upgrade/' | relative_url }}#rollback-2-5).
-
-On the computer where the 2.5 Server ran:
-
-1. Obtain a version 2.6 license and put it at
-   `%ProgramData%\Telecontrol\SCADA Server\license.json`.
-2. Back up the `%ProgramData%\Telecontrol\SCADA Server` folder.
-3. Unpack the 2.6 Server package into a temporary folder without installing it, and
-   run `scada-setup migrate` from there — it changes nothing and prints the
-   plan. Fix in version 2.5 whatever blocks the migration, and check again.
-   The steps are in
-   [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
-4. Stop the *Telecontrol SCADA Server* service (Control Panel — Services)
-   and install the version 2.6 Server package
-   (`msiexec /i scada-server-<version>.msi /qn /norestart /l*v install.log`).
-   It installs into the same folder as version 2.5.
-5. From an elevated command prompt, run:
-
-   ```bat
-   "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" migrate --execute --tiers config,historian,filesystem,iec104,proxy --svc-password <password> --root-password <root password>
-   ```
-
-   In `--tiers`, list this computer's processes: `config`, `historian`,
-   `filesystem`, `proxy` and **a protocol process for every protocol** the
-   version 2.5 devices use (in the example `iec104`; `modbus` for MODBUS,
-   `iec61850` for IEC 61850). When one is missing, the migration plan warns
-   with a line `WARNING: … will not run the '<process>' process`: no data is
-   then collected from that protocol's devices, unless the process runs on
-   another computer.
-
-   It removes the old service, copies the configuration, the users with their
-   passwords, the history and the schematic files into the version 2.6
-   process folders, and starts the processes as `apply` does (creating the
-   Server certificate included). The version 2.5 root password is replaced by
-   the one given as `--root-password` (see [Root password](#root-password)).
-   **If the command fails after copying, do not run `migrate` again** —
-   finish with `apply` with the same `--tiers` and passwords (see
-   [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5)).
-6. Only then install the Client package on this same computer
-   (`msiexec /i telecontrol-scada-<version>.msi /qn /norestart /l*v install.log`):
-   it removes the version 2.5 program from *Programs and Features*. Then check
-   the services with `scada-setup status` (details in
-   [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5)).
-7. Install the version 2.6 Client on **every** workstation (see
-   [Installing the Client](#client-install)): whether a version 2.5 Client works
-   with a 2.6 Server has not been verified.
-8. Check the result from the Client.
-
-The old `Configuration`, `History` and `FileSystem` folders are neither
-changed nor deleted.
-
-## Uninstalling {#uninstall}
-
-**On Windows**, uninstall the Server package — the *ОИК Телеконтроль — Сервер* program (publisher
-ООО Телеконтроль) — in *Control Panel — Programs and Features*, as described in
-[Uninstalling the Server]({{ '/en/server/upgrade/' | relative_url }}#uninstall). The Server package
-stops and removes the process services and this computer's Server
-certificate. It leaves the `%ProgramData%\Telecontrol\SCADA Server` data
-folder (which also holds the `svc` and `root` password file), the site
-certificate authority on the central computer — so after a reinstall the
-other computers need not join again — and the firewall rules created in
-[Network preparation](#network); delete those by hand. If the computer leaves
-the site for good, uninstall it with
-`msiexec /x scada-server-<version>.msi SCADA_PURGE_CERTIFICATES=1`. A Client
-installed on this computer with the `telecontrol-scada-<version>.msi` package
-stays; uninstall it separately — the *ОИК Телеконтроль* program.
-
-**On Linux**, remove the package with `sudo apt remove telecontrol-scada-server`
-(for an archive installation, `sudo /opt/telecontrol-scada/bin/scada-setup remove`
-and delete the `/opt/telecontrol-scada` folder). `sudo apt purge` also deletes
-the site certificate authority — uninstall that way only when the computer
-leaves the site for good. The `/var/lib/scada` data folder stays either way.
-What else stays and what to delete by hand — the password file, the `scada`
-account, the firewall rules — is in
-[Uninstalling on Linux]({{ '/en/server/upgrade/' | relative_url }}#uninstall-linux).
+## Uninstalling the Client {#uninstall}
 
 A Client unpacked from the archive or disk image is removed by deleting its
-folder (on macOS, the app in *Applications*). The Client keeps its settings
-and data elsewhere, and those stay behind:
+folder (on macOS, the app in *Applications*). A Client installed with the
+`telecontrol-scada-<version>.msi` package is removed in *Control Panel —
+Programs and Features* as the program *ОИК Телеконтроль*. The Client keeps
+its settings and data elsewhere, and those stay behind:
 
 * on Windows — the login settings in the registry key
   `HKEY_CURRENT_USER\Software\Telecontrol\Workplace`, the profile, the `pki`
@@ -1031,94 +359,24 @@ computer.
 
 ## Troubleshooting
 
-Run the `scada-setup` commands below, `status` included, from an elevated
-command prompt (on Linux, with `sudo`).
-
 <dl>
 
 <dt>Client cannot connect to the Server</dt>
-<dd>Check that the <em>Telecontrol SCADA Proxy</em> service is running
-(<code>scada-setup status</code> on its computer). Also verify that port 2000
-is allowed by the firewall and reachable over the network.</dd>
+<dd>Check that the "OPC UA" server type is chosen, the address is entered
+exactly as Telecontrol gave it, and the security mode is "Sign and encrypt"
+or "Most secure available". Check that the workstation's network (the
+company firewall included) lets connections through to that address. If the
+Client warns that the server presented a <em>different</em> certificate, do
+not connect until Telecontrol confirms the replacement (see
+<a href="#server-certificate-check">Checking the Server certificate</a>). If
+nothing helps, contact Telecontrol (mail@telecontrol.ru).</dd>
 
-<dt>A Server process stops right after starting</dt>
-<dd>There is no valid license file, or the license does not include this
-process, or one of the <a href="{{ '/en/server/opcua/' | relative_url }}#opcua-certificate">Server certificate</a>
-files was deleted (the log shows <code>Can't open file</code>;
-<code>scada-setup apply</code> then says which file is missing). The reason is
-written to the <a href="{{ '/en/server/monitoring/' | relative_url }}#logging">process
-log</a>. See
-<a href="{{ '/en/server/licensing/' | relative_url }}">Licensing</a>.</dd>
-
-<dt>A service stops or keeps restarting after a parameter change</dt>
-<dd>Most likely the <code>server.json</code> parameter file has an error (for
-example after a hand edit): the
-<a href="{{ '/en/server/monitoring/' | relative_url }}#logging">process log</a> — in the
-<code>Logs</code> folder beside the parameter file — has a
-<code>Can't load parameters file</code> or <code>Invalid log configuration</code>
-line describing it. Put your own parameters not in <code>server.json</code> but
-in <a href="{{ '/en/server/setup/' | relative_url }}#server-override"><code>server.override.json</code></a>,
-and run <code>scada-setup apply</code>.</dd>
-
-<dt>Protocol processes get no configuration</dt>
-<dd>If a protocol process's log shows <code>Bad_UserAccessDenied</code>, the
-<code>svc</code> password on that computer differs from the central
-computer's. Run <code>scada-setup set-password --svc-password &lt;the central
-computer's current svc password&gt;</code> there (see
-<a href="{{ '/en/server/security/' | relative_url }}#svc-rotate">Changing the svc password</a>). If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
-
-<dt>The devices of a protocol computer never appear</dt>
-<dd>The Client does not show the devices served by a computer running
-protocol processes, although <code>scada-setup status</code> there shows them
-running. <code>scada-proxy</code> connects to that computer by the name it
-reported; if the central computer cannot resolve that name (check with
-<code>ping &lt;computer name&gt;</code> on the central computer), run
-<code>scada-setup apply</code> on the protocol computer
-with its <a href="#host-parameters">computer's parameters</a> plus
-<code>--advertise &lt;its IP address&gt;</code>, and write the option down. For
-the new address to be in the
-<a href="{{ '/en/server/opcua/' | relative_url }}#opcua-certificate">Server certificate</a>
-too, delete both certificate files before that <code>apply</code>.
-Also check that its firewall lets the central computer reach the OPC UA ports
-of its processes (see <a href="#network">Network preparation</a>).
-Once the address is fixed, the <em>Telecontrol SCADA Historian</em> service
-needs no restart: the archive starts receiving those objects' values by
-itself. If Client windows showing this computer's objects were open before
-the fix, have the operators restart the Client as a precaution.</dd>
-
-<dt>Every process stopped after the license file was replaced</dt>
-<dd>The file was missing or only partly written when it was checked. Put a
-valid file in place (see <a href="{{ '/en/server/licensing/' | relative_url }}#license-replace">Replacing the license file</a>)
-and run <code>scada-setup start</code> with the
-<a href="#host-parameters">computer's parameters</a>. If this computer has no <code>scada-proxy</code>, nothing else needs restarting: its processes' objects update and archive again by themselves (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a protocol process restarts</a>).</dd>
-
-<dt><code>scada-setup start</code> stops with an error</dt>
-<dd><code>start</code> skips the processes whose services the computer does
-not have (<code>Skipped &lt;process&gt;: not installed on this host</code>),
-and fails with <code>none of the requested tier services is installed on
-this host</code> only when the computer has none of the requested services:
-<code>--tiers</code> names the wrong processes, or <code>apply</code> has not
-run on this computer yet. Run it again with the
-<a href="#host-parameters">computer's parameters</a>.</dd>
-
-<dt>A process runs but refuses requests</dt>
-<dd>The license is not verified or has expired (the expiry is in the
-<code>scada-setup status</code> output). If the process's parameter file was
-written by hand, check the path in <code>"license": {"file": ...}</code>
-(<code>scada-setup</code> sets it itself). A license issued for a Google Cloud
-virtual machine does not verify on any other computer. For an expired
-license, replace the file — no restart is needed.</dd>
-
-<dt>Values are no longer archived</dt>
-<dd>While a protocol process's service (for example
-<em>Telecontrol SCADA IEC 104</em>) is stopped or restarting, automatic
-restarts after a failure included, its objects' values are not archived.
-Once the process starts, archiving resumes by itself, usually within a
-minute; neither <em>Telecontrol SCADA Historian</em> nor the Client needs a
-restart (see <a href="{{ '/en/server/' | relative_url }}#edge-restart">After a
-protocol process restarts</a>). If archiving has not resumed, check
-<code>scada-setup status</code> on that process's computer and contact
-Telecontrol.</dd>
+<dt>Devices stay without a connection</dt>
+<dd>The Server reaches the devices through the site gateway. Check that the
+gateway is installed and running, that its inbound port is open to the
+address Telecontrol gave you, and that the devices are reachable from the
+gateway computer (see
+<a href="{{ '/en/server/' | relative_url }}#gateway">Site gateway</a>).</dd>
 
 <dt>Schematics do not open</dt>
 <dd>If the display window says "No display runtime is installed.", the
@@ -1127,12 +385,13 @@ not include it yet — contact Telecontrol (see
 <a href="#displays">Displaying schematics</a>).
 Otherwise, check that the schematic file is in
 <em>%ProgramData%\Telecontrol\SCADA Client</em> or in the
-<a href="{{ '/en/server/data/' | relative_url }}#filesystem">server-side file system</a>.</dd>
+<a href="{{ '/en/dev/server-files/' | relative_url }}">server files</a>.</dd>
 
 <dt>Object values are shown in gray</dt>
 <dd>Gray value text means the value is not valid, for example because the
 device is unreachable. Check the device state in the equipment panel
-(<code>More -> Hardware</code>). A blinking yellow row background means
-something else — the object has an unacknowledged event.</dd>
+(<code>More -> Hardware</code>) and that the site gateway is running. A
+blinking yellow row background means something else — the object has an
+unacknowledged event.</dd>
 
 </dl>

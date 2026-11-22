@@ -18,10 +18,6 @@ the `Operator` nor the `ConfigureAdmin` role (see
 Everything described here is available to such an account, except
 acknowledging events, which needs the *Control* or *Configure* right.
 
-The Server license is issued for a term: after it expires the Server
-processes refuse requests, and reports stop working — see
-[Licensing]({{ '/en/server/licensing/' | relative_url }}).
-
 ## Where the data comes from {#archive}
 
 Reports are built from the Server's archive, kept by the `scada-historian`
@@ -30,9 +26,9 @@ periods — not in a summary, not on a graph, not in the Data window.
 Archiving is set up by the engineer — see
 [Archiving]({{ '/en/dev/history/' | relative_url }}).
 
-While the service of a protocol process (for example,
-*Telecontrol SCADA IEC 104*) is stopped or restarting, its objects' values
-are not archived; once the service starts, archiving resumes by itself.
+While a protocol process (for example, the site gateway) is stopped or
+restarting, its objects' values are not archived; once it starts again,
+archiving resumes by itself.
 
 If a report for a recent period is empty while the object is working, tell
 the administrator: the object may have no archive assigned.

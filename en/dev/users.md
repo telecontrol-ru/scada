@@ -15,20 +15,11 @@ The users window is opened from the main menu with `More -> Users`, or from the
 Users button at the foot of the section rail. It is available only to an
 account holding the Configure right (the `ConfigureAdmin` role).
 
-**A 2.6 limitation: only `root` or an administrator account migrated from
-version 2.5 can manage users.** The server allows creating, changing and
-deleting users, assigning roles and setting another user's password not by
-the session's roles but by the old Permissions level («Права»), which only
-`root` and accounts migrated from version 2.5 with level 1 or 3 have. So:
-
-* an administrator created in version 2.6 and given the `ConfigureAdmin` role
-  sees the Users window and changes the configuration, but the server refuses
-  to let them create or delete users, use `Roles...`, or set another user's
-  password;
-* removing `ConfigureAdmin` from an account migrated from version 2.5 does not
-  take these powers away from it on the server.
-
-Manage users as `root` or as a migrated administrator account.
+Creating, changing and deleting users, assigning roles and setting another
+user's password are open to an account holding the `ConfigureAdmin` role.
+Telecontrol supplies the first such account with the service (see
+[What we do]({{ '/en/server/' | relative_url }}#service)); create the other
+users and assign their roles under it.
 
 ![]({{ '/img/users.png' | relative_url }})
 
@@ -56,9 +47,9 @@ effect at the next sign-in. To stop a user working at once:
 * **delete the user** — the server closes all of their sessions at once; the
   account's roles and profile go with it, so a user created again with the
   same name starts with no roles;
-* or disable the account and **restart the `scada-proxy` process** (the
-  *Telecontrol SCADA Proxy* service): the restart closes every user's session,
-  and the disabled user cannot sign in again.
+* or disable the account and **ask Telecontrol to restart the Server's
+  `scada-proxy` process**: the restart closes every user's session, and the
+  disabled user cannot sign in again.
 
 To assign roles to a user, choose `Roles...` from the user context menu (see
 [Assigning roles](#assign-roles)).
@@ -67,9 +58,7 @@ To change a password, choose `Set Password...` (*Задать пароль…*) 
 user context menu. The command is available only with the Configure right and
 only when a user is selected; the Users window, too, opens only with that
 right. Your own account requires the current password; someone else's (an
-administrator reset) does not, and in version 2.6 only `root` or an
-administrator account migrated from version 2.5 can set another user's
-password (see the limitation above). The server sets what a password must satisfy —
+administrator reset) does not. The server sets what a password must satisfy —
 see [Password policy]({{ '/en/client/workbench/#password-policy' | relative_url }}).
 
 ![The Set Password window for another user]({{ '/img/change-password.png' | relative_url }})
@@ -90,9 +79,9 @@ administrator, who sets one.
 * **The `svc` user is the service account** the Server processes connect to
   each other with. The server does not let the Client change it: it cannot
   be deleted, renamed or disabled, nor its password or roles changed, and
-  `Delete` is not offered for it. Its password is changed with
-  `scada-setup set-password` on every Server computer (see
-  [Changing the svc password]({{ '/en/server/security/' | relative_url }}#svc-rotate)).
+  `Delete` is not offered for it. Telecontrol changes its password; the
+  `svc` password for the site gateway comes with the gateway's parameters
+  (see [Site gateway]({{ '/en/server/' | relative_url }}#gateway)).
 * **The `root` user in the demo project's list is not the built-in `root`
   account.** It exists only in the
   [demo project]({{ '/en/getting-started/' | relative_url }}#demo) and can
@@ -100,19 +89,9 @@ administrator, who sets one.
   signing in as `root` always uses the built-in account. Changing or
   deleting this user does not affect the built-in account.
 * **The built-in `root` account's password is not changed in this
-  window.** On a Server installed with `scada-setup` the root password is
-  kept in the computer's
-  [password file]({{ '/en/server/setup/' | relative_url }}#stored-passwords)
-  (encrypted on Windows, readable only by `root` on Linux), and
-  the `scada-config` and `scada-filesystem` processes write it again every
-  time they start. So the Server
-  refuses a root password change made from the Client, and the Client
-  reports the refusal in the event journal, naming the command that changes
-  it. Change the root password with
-  `scada-setup set-password --root-password <new password>` on every
-  computer that runs `scada-config` or `scada-filesystem`; on the others the
-  command only restarts every process for nothing (see
-  [Root password]({{ '/en/getting-started/' | relative_url }}#root-password)).
+  window.** The Server refuses a root password change made from the Client,
+  and the Client reports the refusal in the event journal. On the hosted
+  Server the root password is set and kept by Telecontrol.
 * **Every account created in version 2.6, and the built-in `root`, allows
   one session at a time.** Several sessions at once are allowed only to
   accounts migrated from version 2.5 with that permission; a user's
@@ -137,9 +116,8 @@ limits.</dd>
 
 <dt>ConfigureAdmin — the Configure right</dt>
 <dd>Creating, changing and deleting objects and devices. It does not grant
-control commands, manual value entry or limit changes. In version 2.6 this
-role does not grant user management — see the limitation at the top of the
-page.</dd>
+control commands, manual value entry or limit changes. It grants user
+management.</dd>
 
 </dl>
 
@@ -164,10 +142,8 @@ of service and back needs only the Control right.
 
 ### Assigning roles {#assign-roles}
 
-An administrator assigns an account's roles. In version 2.6 the server
-accepts role assignments only from `root` or from an administrator account
-migrated from version 2.5 (see the limitation at the top of the page). In the
-Users window, select the user and choose `Roles...`
+An administrator — an account holding the `ConfigureAdmin` role — assigns an
+account's roles. In the Users window, select the user and choose `Roles...`
 from its context menu. The window that opens has the roles the user already
 holds checked; check the ones needed (for example `Operator` and
 `ConfigureAdmin` for level 3), clear the rest and press OK. The server
@@ -208,8 +184,7 @@ The roles the server grants a session:
   `SecurityAdmin` — changing the configuration, including adding and deleting
   nodes, but not writing object values or their limits and not issuing
   control commands: the server allows those to the `Operator` role alone;
-  despite the `SecurityAdmin` role, it does not allow managing users in
-  version 2.6 (see the limitation at the top of the page)
+  it also grants user management
 * an anonymous session gets the `Anonymous` role alone
 
 An account may hold several roles at once, and their permissions combine. It is

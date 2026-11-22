@@ -38,7 +38,7 @@ The Designer is part of the Windows Client package
 `telecontrol-scada-<version>.msi`, which creates *Дизайнер* (Designer)
 shortcuts on the desktop and in the *Start — ОИК Телеконтроль* menu.
 **That package is not yet published for version 2.6** — see
-[Getting started]({{ '/en/getting-started/' | relative_url }}).
+[Installing the Client]({{ '/en/getting-started/' | relative_url }}#client-install).
 
 ## The Designer window {#window}
 

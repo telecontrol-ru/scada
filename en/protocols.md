@@ -22,9 +22,14 @@ Client.
 | [MODBUS RTU, ASCII, TCP](#modbus) | `scada-modbus` | master | slave — [MODBUS retransmission]({{ '/en/dev/devices/' | relative_url }}#modbus-retransmission) |
 | [IEC 60870-5-101, -104](#iec-60870) | `scada-iec104` | master; for -101 also listening on a line | controlled station — [retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission) |
 | [IEC 61850](#iec-61850) | `scada-iec61850` | client | no |
-| [OPC DA](#opc) (Windows) | `scada-opc` | client of external OPC servers | no |
-| [Vidicon](#vidicon) (Windows) | `scada-vidicon` | the objects of a Vidicon SCADA project, through its OPC server | no |
-| OPC UA | `scada-proxy` | — | [OPC UA server for external systems]({{ '/en/server/opcua/' | relative_url }}#opcua), port 4840 |
+| [OPC DA](#opc) (not available with the hosted Server) | `scada-opc` | client of external OPC servers | no |
+| [Vidicon](#vidicon) (not available with the hosted Server) | `scada-vidicon` | the objects of a Vidicon SCADA project, through its OPC server | no |
+| OPC UA | `scada-proxy` | — | [OPC UA server for external systems]({{ '/en/architecture/' | relative_url }}#opc-ua-server) |
+
+The MODBUS, IEC 60870-5 and IEC 61850 processes run in Telecontrol's cloud
+or at the site, as the site gateway next to the devices; devices on serial
+links are reached through the site gateway (see
+[Site gateway]({{ '/en/server/' | relative_url }}#gateway)).
 
 ## MODBUS {#modbus}
 
@@ -308,17 +313,16 @@ description of the protocol.
 
 ## OPC DA (Windows) {#opc}
 
-The `scada-opc` process runs on Windows only and connects to external OPC
-servers over OPC DA (Classic OPC): the external servers' tags appear in the
-Server's address space and are bound to objects. The Server refuses the
-select of two-stage control on an OPC object, so set
-[Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on such
-objects. The Client sets No on new OPC objects by itself; check objects
-created by earlier Client versions. How to bind an object to an OPC server's tag is described in [OPC DA objects]({{ '/en/dev/devices/' | relative_url }}#opc). See [OPC client on Windows]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
+The `scada-opc` process connects to external OPC servers over OPC DA
+(Classic OPC). It runs only on Windows, so it is **not available with the
+hosted Server**; a site that needs it stays on Server 2.5.7 (see
+[Unavailable features]({{ '/en/server/' | relative_url }}#unavailable)).
+How an object is bound to an OPC server's tag is described in
+[OPC DA objects]({{ '/en/dev/devices/' | relative_url }}#opc).
 
 ## Vidicon integration (Windows) {#vidicon}
 
-The `scada-vidicon` process runs on Windows only and links the Server with
-the Telecontrol Vidicon system for migrating existing projects: the Server
-imports objects from the Vidicon configuration into its address space. See
-[Vidicon integration]({{ '/en/server/opcua/' | relative_url }}#vidicon).
+The `scada-vidicon` process links the Server with the Telecontrol Vidicon
+system for migrating existing projects. It runs only on Windows, so it is
+**not available with the hosted Server**; a site that needs it stays on
+Server 2.5.7 (see [Unavailable features]({{ '/en/server/' | relative_url }}#unavailable)).

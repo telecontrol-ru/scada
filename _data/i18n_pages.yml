@@ -67,33 +67,6 @@
 - ru: /server/
   en: /en/server/
 
-- ru: /server/setup/
-  en: /en/server/setup/
-
-- ru: /server/licensing/
-  en: /en/server/licensing/
-
-- ru: /server/upgrade/
-  en: /en/server/upgrade/
-
-- ru: /server/security/
-  en: /en/server/security/
-
-- ru: /server/opcua/
-  en: /en/server/opcua/
-
-- ru: /server/data/
-  en: /en/server/data/
-
-- ru: /server/monitoring/
-  en: /en/server/monitoring/
-
-- ru: /server/backup/
-  en: /en/server/backup/
-
-- ru: /server/parameters/
-  en: /en/server/parameters/
-
 - ru: /development/
   en: /en/development/
 

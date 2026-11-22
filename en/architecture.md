@@ -12,7 +12,7 @@ permalink: /en/architecture/
 
 ## Overview
 
-Telecontrol SCADA uses a client-server architecture. The [Server]({{ '/en/server/' | relative_url }}) collects data from field devices, processes it in real time, stores history, and serves client sessions. The Server is a set of separate processes, each owning one part of that work; see [Server processes](#tiers). [Clients]({{ '/en/client/' | relative_url }}) connect to the Server over TCP/IP and give the operator visualization and control. The number of Clients is not limited.
+Telecontrol SCADA uses a client-server architecture. The [Server]({{ '/en/server/' | relative_url }}) collects data from field devices, processes it in real time, stores history, and serves client sessions. The Server is a set of separate processes, each owning one part of that work; see [Server processes](#tiers). The Server runs in Telecontrol's cloud. [Clients]({{ '/en/client/' | relative_url }}) connect to it over encrypted OPC UA and give the operator visualization and control. The number of Clients is not limited.
 
 The main data flow is:
 
@@ -22,45 +22,42 @@ The main data flow is:
 1. The historian (`scada-historian`) archives value changes and system events.
 1. Clients display live and historical information and send control commands back to the Server.
 
-The Server can also provide data to external systems over [OPC UA]({{ '/en/server/opcua/' | relative_url }}#opcua) and receive data from external [OPC servers]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
+The Server can also provide data to external systems over [OPC UA](#opc-ua-server).
 
 ## Server processes {#tiers}
 
-The SCADA Server is not a single program but a set of processes. Each one is installed as its own Windows service (on Linux, as its own systemd service `scada-<process>.service`; see [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux)), reads its own parameter file, and is purchased separately: one Server installer is meant to carry every process (it is not published for version 2.6 yet; see [Download]({{ '/en/getting-started/' | relative_url }}#download)), and the license names the ones purchased for the site.
+The SCADA Server is not a single program but a set of processes. The Server runs in Telecontrol's cloud: Telecontrol installs, upgrades, backs up and monitors the processes there, and which processes the service includes is agreed in the contract (see [Server]({{ '/en/server/' | relative_url }}#service)). The protocol processes run either in the cloud or at the site — as the **site gateway**, on a Linux computer next to the devices, which the customer installs (see [Site gateway]({{ '/en/server/' | relative_url }}#gateway)).
 
-| Process | Windows service | Role |
+| Process | Where it runs | Role |
 |:---|:---|:---|
-| `scada-config` | Telecontrol SCADA Config | Holds the configuration (objects, equipment, users) and serves it to the other processes |
-| `scada-proxy` | Telecontrol SCADA Proxy | Accepts Client connections and combines the other processes into one address space |
-| `scada-historian` | Telecontrol SCADA Historian | [Archiving](#archiving) of values and events; serves history |
-| `scada-filesystem` | Telecontrol SCADA Filesystem | [Server-side file system]({{ '/en/server/data/' | relative_url }}#filesystem) (displays and other files) |
-| `scada-modbus` | Telecontrol SCADA Modbus | Data acquisition over MODBUS RTU/ASCII/TCP |
-| `scada-iec104` | Telecontrol SCADA IEC 104 | Data acquisition over IEC 60870-5-101/104 |
-| `scada-iec61850` | Telecontrol SCADA IEC 61850 | Data acquisition over IEC 61850 |
-| `scada-opc` | Telecontrol SCADA OPC | [OPC client](#opc-client-on-windows) (Windows only) |
-| `scada-vidicon` | Telecontrol SCADA Vidicon | [Vidicon integration]({{ '/en/server/opcua/' | relative_url }}#vidicon) (Windows only) |
+| `scada-config` | cloud | Holds the configuration (objects, equipment, users) and serves it to the other processes |
+| `scada-proxy` | cloud | Accepts Client connections and combines the other processes into one address space |
+| `scada-historian` | cloud | [Archiving](#archiving) of values and events; serves history |
+| `scada-filesystem` | cloud | [Server-side file system]({{ '/en/dev/server-files/' | relative_url }}) (displays and other files) |
+| `scada-modbus` | cloud or site gateway | Data acquisition over MODBUS RTU/ASCII/TCP |
+| `scada-iec104` | cloud or site gateway | Data acquisition over IEC 60870-5-101/104 |
+| `scada-iec61850` | cloud or site gateway | Data acquisition over IEC 61850 |
 
-Retransmission to a dispatch centre is carried out by the protocol process of the protocol the DC receives data over: `scada-iec104` for IEC 60870-5-101/104, or `scada-modbus` for MODBUS. So retransmission needs that process installed and named in the license, even when the objects sent to the DC are received by another process (see [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)).
+The `scada-opc` ([OPC client](#opc-client-on-windows)) and `scada-vidicon` ([Vidicon integration]({{ '/en/protocols/' | relative_url }}#vidicon)) processes run only on Windows and are not available with the hosted Server (see [Unavailable features]({{ '/en/server/' | relative_url }}#unavailable)).
 
-The processes exchange data with each other over OPC UA; the links between them are encrypted (see [OPC UA server]({{ '/en/server/opcua/' | relative_url }}#opcua)).
+Retransmission to a dispatch centre is carried out by the protocol process of the protocol the DC receives data over: `scada-iec104` for IEC 60870-5-101/104, or `scada-modbus` for MODBUS. So retransmission needs that process in the service, even when the objects sent to the DC are received by another process (see [Retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)).
 
-The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it. **The smallest installation** the `scada-setup` tool builds is `scada-config`, one or more protocol processes, `scada-filesystem`, and `scada-proxy`, which the Clients connect to. Without `scada-filesystem` the server-side file system is unavailable (`scada-setup` warns about it). Add `scada-historian` for a value and event archive: only it stores history. The license must name every installed process — see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
+The processes exchange data with each other over OPC UA; the links between them are encrypted.
 
-The processes may run on one computer or be spread over several. **`scada-config`, `scada-historian`, `scada-filesystem` and `scada-proxy` always run on one computer — the central one**: the protocol processes reach `scada-config`, `scada-proxy` and `scada-historian` (at start-up, for their objects' latest archived values) at the central computer's single address, and `scada-proxy` connects to `scada-historian` and `scada-filesystem` on its own computer only. The protocol processes run on the central computer or on other computers of the site; the same process may run on several computers, splitting the devices of its protocol between them — a link's Computer property says which computer serves it (see [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)). Start them in this order: `scada-config`; then `scada-historian`, `scada-filesystem` and the protocol processes; then `scada-proxy`. `scada-setup start` keeps this order on each computer.
+The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it; the site gateway works the same way. The cloud connects to the gateway: the customer opens the inbound encrypted OPC UA port on the gateway computer, only to the cloud address Telecontrol gives (see [Gateway port]({{ '/en/server/' | relative_url }}#gateway-port)). Only `scada-historian` stores the history of values and events, so without it there is no archive and no report or summary over the archive.
 
-Running the processes — startup, Windows services, parameter files — is described in the [Server]({{ '/en/server/' | relative_url }}) section.
+The devices of one protocol may be served by different computers — for example, the cloud and a site gateway, or several gateways. A link's Computer property says which computer serves it (see [Equipment]({{ '/en/dev/devices/' | relative_url }})).
 
 ## Client-server interaction
 
-Clients connect to the Server over TCP/IP on port `2000` by default —
-to `scada-proxy`.
+Clients connect to the Server's `scada-proxy` process over OPC UA with
+signing and encryption, under a named account; the Client verifies the
+Server certificate by its SHA-256 fingerprint, which Telecontrol gives (see
+[Connecting Clients]({{ '/en/server/' | relative_url }}#client-connection)).
 Client sessions tolerate short network interruptions and reconnect
 automatically. Through a single session, the Client can subscribe to
 live value updates, request historical data, execute control commands,
 and edit configuration when the user role allows it.
-
-Address and port configuration is described in the Server section on
-[client connections]({{ '/en/server/monitoring/' | relative_url }}#sessions).
 
 ## Roles and permissions
 
@@ -121,10 +118,10 @@ Incoming values can be:
 
 This describes redundancy of an object's data sources. **Redundancy of the
 Server itself (a second, hot-standby Server) is not a supported
-configuration in version 2.6**, and `scada-setup` does not set it up. So the
-central computer (`scada-config`, `scada-proxy`, `scada-historian` and
-`scada-filesystem`) is a single point of failure of the site: while it is
-down, the Clients get no data. Ask Telecontrol about redundancy.
+configuration in version 2.6**. So the `scada-config`, `scada-proxy`,
+`scada-historian` and `scada-filesystem` processes in the cloud are a single
+point of failure: while they are down, the Clients get no data. Ask
+Telecontrol about redundancy and the availability of the service.
 
 ## Devices and protocols
 
@@ -214,8 +211,7 @@ converts the physical scale into the logical one.
 
 After a protocol process restarts, its archived objects take their latest
 values from history — with the quality and time they were archived with —
-and show them until the devices report new values (see
-[After a protocol process restarts]({{ '/en/server/' | relative_url }}#edge-restart)).
+and show them until the devices report new values.
 
 It also supports out-of-order values: data that belongs to an earlier
 timestamp than already received data is still processed and archived
@@ -370,8 +366,7 @@ Archived history can then be queried and displayed in the
 [Summary]({{ '/en/client/summary/' | relative_url }}) views.
 
 Creating archives and assigning them to objects is described under
-[Archiving]({{ '/en/dev/history/' | relative_url }}); storage on the Server,
-under [historical databases]({{ '/en/server/data/' | relative_url }}#history).
+[Archiving]({{ '/en/dev/history/' | relative_url }}).
 
 ## External integration
 
@@ -379,59 +374,41 @@ under [historical databases]({{ '/en/server/data/' | relative_url }}#history).
 
 The SCADA Server processes exchange data with each other over
 [OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) with
-encryption (security policy Basic256Sha256, mode Sign and Encrypt), and
-accept from each other only certificates issued by the site certificate
-authority (except `scada-config`, which a computer joining the site
-reaches before it has one). External systems connect to the `scada-proxy`
-process on port 4840 and can access current values, historical data, and
-subscriptions.
+encryption (security policy Basic256Sha256, mode Sign and Encrypt).
+External systems can connect to the `scada-proxy` process and access
+current values, historical data, and subscriptions.
 
-Configuration is described in the Server section on
-[OPC UA]({{ '/en/server/opcua/' | relative_url }}#opcua). External systems
-connect to port 4840 of `scada-proxy`. On a site with encryption it accepts
-only secured connections that sign in with a user name; unsecured
-connections (security policy None) and anonymous sign-in, which many systems
-that connected to a 2.5 Server use, it accepts only when the
-`--allow-anonymous-opcua` option allows them — see
-[Connecting an external system]({{ '/en/server/opcua/' | relative_url }}#opcua-external).
-Open the OPC UA ports only to the site's computers, and allow an external
-system port 4840 from its address only.
+The Server accepts only secured connections that sign in with a user name.
+Arrange connecting an external system to the hosted Server with Telecontrol
+(see [Server]({{ '/en/server/' | relative_url }}#service)).
 
 ### OPC client on Windows
 
-On Windows, the `scada-opc` process can connect outward to Classic OPC (OPC DA)
-servers. Their tags then appear in the Telecontrol SCADA address space
-and can be bound to SCADA objects.
-
-Configuration is described in the Server section on
-[OPC client]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
+The `scada-opc` process connects outward to Classic OPC (OPC DA) servers.
+It runs only on Windows, so it is not available with the hosted Server (see
+[Unavailable features]({{ '/en/server/' | relative_url }}#unavailable)).
 
 ## Configuration
 
 The configuration stored on disk contains all SCADA objects, equipment
-structure, and users. It lives in a local database owned by
-`scada-config` (`scada-filesystem` has a database of its own too, holding
-only the `svc` service account; `scada-proxy`, `scada-historian` and the
-protocol processes receive their configuration from `scada-config`). It is updated immediately when edited so that
+structure, and users. It lives in a database owned by
+`scada-config` (`scada-proxy`, `scada-historian` and the protocol
+processes, the site gateway included, receive their configuration from
+`scada-config`). It is updated immediately when edited so that
 changes are reflected across the running system without waiting for a
 manual save step.
 
-A new installation starts from an empty configuration, with no objects,
-devices or users; the demo project is installed on request — see
-[Preparing the project]({{ '/en/getting-started/' | relative_url }}#project).
+The customer creates and changes the project — objects, equipment,
+displays, users and roles — in the Client (see
+[What the customer does]({{ '/en/server/' | relative_url }}#customer)).
 
 Configuration is edited with the built-in engineering tools, and
 requires the *Configure* right.
 
 The built-in `root` account has every user right and always exists,
-whatever the configuration contains. It cannot obtain a site certificate to
-join a computer: only the [`svc`]({{ '/en/server/security/' | relative_url }}#svc) account can.
-
-**WARNING:** while no root password is configured, the Server accepts
-`root` with an empty password. `scada-setup apply` sets it
-(the `--root-password` option); in a hand-built setup, set it with
-[`security.rootPassword`]({{ '/en/server/security/' | relative_url }}#root-password)
-before the Server is reachable over the network.
+whatever the configuration contains. On the hosted Server its password is
+set and kept by Telecontrol; the customer works in the Client under named
+accounts (see [Users]({{ '/en/dev/users/' | relative_url }})).
 
 For more details, see [Development]({{ '/en/development/' | relative_url }})
 and [Configuration export and import]({{ '/en/dev/excel/' | relative_url }}).

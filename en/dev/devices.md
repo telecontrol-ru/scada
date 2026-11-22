@@ -164,14 +164,12 @@ receive modes. Default: 0.</dd>
 
 <dt>Computer</dt>
 <dd>The name of the computer whose process serves the direction and its
-devices: the computer's name or the value of <code>scada-setup</code>'s
-<code>--host-name</code> option; letter case does not matter. Empty (the
-default) — the direction is served by the computer where
-<code>scada-setup apply</code> ran without <code>--assigned-links-only</code>.
-When the property changes, the old computer closes the link and the new one
-opens it, with no process restart. See
-<a href="{{ '/en/getting-started/' | relative_url }}#choose">Choosing the
-Server processes</a>.</dd>
+devices — for example, the site gateway computer; letter case does not
+matter. Empty (the default) — the computer chosen when the Server was set
+up; Telecontrol tells you which value to give the site gateway's
+directions. When the property changes, the old computer closes the link and
+the new one opens it, with no process restart. See
+<a href="{{ '/en/server/' | relative_url }}#gateway">Site gateway</a>.</dd>
 
 <dt>Event archive</dt>
 <dd>The archive that stores the direction's events, such as loss and restoration
@@ -519,14 +517,12 @@ only when the equipment requires it (No).</dd>
 
 <dt>Computer</dt>
 <dd>The name of the computer whose process serves the direction and its
-devices: the computer's name or the value of <code>scada-setup</code>'s
-<code>--host-name</code> option; letter case does not matter. Empty (the
-default) — the direction is served by the computer where
-<code>scada-setup apply</code> ran without <code>--assigned-links-only</code>.
-When the property changes, the old computer closes the link and the new one
-opens it, with no process restart. See
-<a href="{{ '/en/getting-started/' | relative_url }}#choose">Choosing the
-Server processes</a>.</dd>
+devices — for example, the site gateway computer; letter case does not
+matter. Empty (the default) — the computer chosen when the Server was set
+up; Telecontrol tells you which value to give the site gateway's
+directions. When the property changes, the old computer closes the link and
+the new one opens it, with no process restart. See
+<a href="{{ '/en/server/' | relative_url }}#gateway">Site gateway</a>.</dd>
 
 <dt>Disabled</dt>
 <dd>Yes — the direction does not run.</dd>
@@ -700,7 +696,7 @@ to.
    such rules. A version 2.6 Server writes a "Duplicate destination address"
    warning for every further rule that takes an address already in use (not
    for the first of them; a rule with no source is not checked) to the
-   [log]({{ '/en/server/monitoring/' | relative_url }}#logging) of the process that
+   log of the process that
    serves the receiving device (IEC 104 or MODBUS); it does not warn about
    overlapping registers, and a 2.5.7 Server writes no such warning at all.
    Correct the addresses yourself.
@@ -716,8 +712,11 @@ to.
    by a rule of the device or by another row is marked "duplicate address";
    that rule is created too. The wizard creates one rule per selected object,
    in the order of their identifiers.
-5. Open the port in the firewall of the computer running the Server's
-   IEC 104 process.
+5. If the site gateway serves the direction, open its port in the
+   gateway's firewall to the DC's addresses only (see
+   [Gateway port]({{ '/en/server/' | relative_url }}#gateway-port)); arrange
+   with Telecontrol for a process in the cloud to accept the DC's
+   connections.
 6. Check: once the DC connects, the
    [Watch]({{ '/en/client/device-watch/' | relative_url }}) window shows the
    exchange, and the DC's general interrogation returns the object values.
@@ -865,12 +864,12 @@ window's context menu (right-click an empty part of the window). Its
 properties are Host — the device's network address — and Port (default
 102), plus Disabled = No (then click Apply); Event archive is the archive
 for the device's events, as on other devices. The Computer property is the name of the computer
-whose `scada-iec61850` process serves the device (the computer's name or
-`scada-setup`'s `--host-name` value, letter case ignored); empty (the
-default) means the computer where `scada-setup apply` ran without
-`--assigned-links-only`. When it changes, the device moves to the other
+whose `scada-iec61850` process serves the device, for example the site
+gateway computer (letter case ignored); empty (the default) means the
+computer chosen when the Server was set up, and Telecontrol tells you the
+value for the site gateway. When it changes, the device moves to the other
 computer with no process restart; see
-[Choosing the Server processes]({{ '/en/getting-started/' | relative_url }}#choose).
+[Site gateway]({{ '/en/server/' | relative_url }}#gateway).
 Under the device an `IEC 61850 RCB` (report control
 block) can be created, with its Address set to the block's MMS address in
 the device model, for example `LD0/LLN0$RP$urcbA01` (unbuffered) or

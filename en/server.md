@@ -1,7 +1,6 @@
 ---
 title: Server
 nav_order: 6
-has_children: true
 permalink: /en/server/
 ---
 
@@ -11,183 +10,203 @@ permalink: /en/server/
 * TOC
 {:toc}
 
-The Server is the central runtime component of Telecontrol SCADA. It acquires data from equipment, processes live values, archives history, records events, and maintains client sessions. It runs on Windows and Linux, as system services or in console mode (see [Linux deployment](#linux)).
+The SCADA Server acquires data from equipment, processes live values, keeps
+the history archive and the event journal, and serves Client connections.
+**The Server is offered only as a service:** Telecontrol LLC runs and
+maintains it on Linux in its cloud. A Server for installation on the
+customer's computers is no longer offered (see
+[Server 2.5.7 and on-site installations](#legacy)).
 
-{: .warning }
-> The version 2.6 Server packages (the Windows installer and the Linux
-> packages) are not published yet; until they are, only a 2.5.7 Server can be
-> installed (see [Download]({{ '/en/getting-started/' | relative_url }}#download)).
+Clients connect to the Server over encrypted OPC UA (see
+[Connecting Clients](#client-connection)), and the site's devices are reached
+through a gateway that the customer installs on site (see
+[Site gateway](#gateway)). How to get the service is described in
+[Getting the hosted Server]({{ '/en/getting-started/' | relative_url }}#buy-now).
 
-The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
+![Clients connect to the Server in Telecontrol's cloud, and the Server connects to the gateway at the customer's site, which polls the devices]({{ '/img/hosted-deployment-en.svg' | relative_url }})
 
-A hot-standby Server is not supported in version 2.6, so the central computer is a single point of failure of the site (see [Redundancy]({{ '/en/architecture/' | relative_url }}#redundancy)).
+## What we do {#service}
 
+* We install the Server in the cloud, update it, back it up and monitor it.
+* We license the Server and the site gateway.
+* We give the customer what is needed to connect: the Server address for
+  Clients, the SHA-256 fingerprint of its certificate, an account for the
+  first login, and for the gateway its package, licence file and parameters
+  (see [Site gateway](#gateway)).
 
-Sections:
+The hosting region, terms and price of the service are agreed in the
+contract.
 
-* [Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }})
-* [Licensing]({{ '/en/server/licensing/' | relative_url }})
-* [Upgrade and removal]({{ '/en/server/upgrade/' | relative_url }})
-* [Passwords and accounts]({{ '/en/server/security/' | relative_url }})
-* [OPC UA and integration]({{ '/en/server/opcua/' | relative_url }})
-* [Databases and files]({{ '/en/server/data/' | relative_url }})
-* [Logs and monitoring]({{ '/en/server/monitoring/' | relative_url }})
-* [Backup]({{ '/en/server/backup/' | relative_url }})
-* [server.json parameters]({{ '/en/server/parameters/' | relative_url }})
+## What the customer does {#customer}
 
-## Runtime modes
+* Creates users and assigns their roles in the Client (see
+  [Users]({{ '/en/dev/users/' | relative_url }})).
+* Builds the project — objects, devices, displays — in the Client (see
+  [Development]({{ '/en/development/' | relative_url }})).
+* Installs the Clients on the workstations (see
+  [Getting started]({{ '/en/getting-started/' | relative_url }})).
+* Installs the site gateway and opens one inbound port for it (see
+  [Site gateway](#gateway)).
 
-On Windows, each Server process is installed as its own service — `Telecontrol SCADA Config`, `Telecontrol SCADA Proxy`, `Telecontrol SCADA Historian`, `Telecontrol SCADA IEC 104`, and so on (the full list is in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers)) — and starts automatically during system boot.
+## Connecting Clients {#client-connection}
 
-It can also be started in console mode for diagnostics.
+* **Server type "OPC UA"**, with the address we give you. The "Telecontrol"
+  type (TCP port 2000) is not used with the hosted Server.
+* **Security mode "Sign and encrypt"** (or "Most secure available").
+* **Log in with a named account**, one per user.
+* **Server check.** On the first connection the Client shows the SHA-256
+  fingerprint of the Server certificate. Compare it with the fingerprint we
+  gave you, and only then confirm trust. If the Client warns that the Server
+  presented a *different* certificate, do not connect until we confirm the
+  replacement.
 
-### Windows services {#services}
+A limitation of the "OPC UA" type: the user profile — pages, settings (see
+[Operator workbench]({{ '/en/client/workbench/' | relative_url }})) and
+portfolios (see [Portfolio]({{ '/en/client/portfolio/' | relative_url }})) —
+is kept on this computer only and does not follow the account to another
+computer.
 
-The services are registered by [`scada-setup`]({{ '/en/server/setup/' | relative_url }}); they run as the
-SYSTEM account and start automatically with Windows. `scada-setup stop` and
-`scada-setup start` stop and start all of a computer's services in the right
-order (`start` with the [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options): it skips the processes whose services the computer does not have, and fails only when the computer has none of the requested services); a single service can be controlled through the standard Windows
-Services UI.
+The login steps are in
+[Client login]({{ '/en/getting-started/' | relative_url }}#client-start), and
+what happens when the connection is lost is in
+[Connection to the Server]({{ '/en/client/' | relative_url }}#connection).
 
-When a computer runs *Telecontrol SCADA Config*, its other services depend on
-it, and *Telecontrol SCADA Proxy* also depends on *Telecontrol SCADA
-Filesystem*: Windows starts the dependent services after them, and the
-Services UI offers to stop a service whose dependents are running only
-together with them.
+## Site gateway {#gateway}
 
-**Recovery after a failure.** `scada-setup` sets every service to restart
-after a failure: 5 seconds after the first failure, 10 seconds after the
-second, and 60 seconds after later ones; the failure count resets after one
-day. A process exiting with a non-zero code counts as a failure too. A
-process that stopped because it has no license exits normally and is not
-restarted — start it with `scada-setup start` and the
-[computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options).
+The site's devices are polled by the gateway: a Server protocol process on a
+Linux computer next to the devices — `scada-iec104` (IEC 60870-5-104),
+`scada-modbus` (MODBUS) and/or `scada-iec61850` (IEC 61850). Our cloud
+connects to the gateway over encrypted OPC UA. The gateway package is not
+published for download; we supply it with the service.
 
-#### After a protocol process restarts {#edge-restart}
+**Computer requirements:** Linux x86-64 with systemd, glibc 2.38 or later,
+libstdc++ 13 or later (for example Ubuntu 24.04, where installation was
+tested); network access to the devices, or a serial port for them.
 
-When the service of a protocol process restarts while `scada-proxy` keeps
-running — automatically after a failure included, or when the processes are
-stopped and started on a computer without `scada-proxy` — **nothing needs
-restarting**. While the process is unavailable, its objects in open Client
-windows are marked bad and no new values are archived. Usually within a
-minute of the process starting, `scada-proxy` connects to it again: the values in Client
-windows update again and archiving resumes by itself. Neither the
-*Telecontrol SCADA Historian* service nor the Client needs to be restarted
-for this.
+**What we supply:** the gateway package, the licence file and the computer
+parameters — the gateway's processes (`--tiers`), the address of our central
+computer (`--central`), the fingerprint of its certificate
+(`--central-fingerprint`) and the password of the `svc` service account. Keep
+the `svc` password secret: with it a computer connects to the Server as one of
+its processes. **Tell us the gateway's external address**, which our cloud
+will connect to.
 
-When the process starts, its objects take their latest values from history:
-until the devices report new values, an object shows the value, quality and
-time of its last archived sample. This applies to objects whose values are
-archived. If `scada-historian` is unavailable at that moment, the process
-waits for it for at most 10 seconds and starts without those values; the
-objects then stay bad until the devices report new values.
+### Gateway port {#gateway-port}
 
-When `scada-proxy` and `scada-historian` restarted with it (for example,
-`scada-setup stop` and `start` on a single-computer installation), the
-Historian starts afresh and the Clients reconnect by themselves (see
-[Connection to the Server]({{ '/en/client/' | relative_url }}#connection)). See also [Monitoring]({{ '/en/server/monitoring/' | relative_url }}#monitoring).
+Each gateway process accepts our cloud's connection on its own OPC UA port:
 
-### Console mode {#console}
+| Process | OPC UA port |
+|---|:-:|
+| `scada-modbus` | 4843 |
+| `scada-iec104` | 4844 |
+| `scada-iec61850` | 4845 |
 
-For diagnostics, a Server process can run in a console window: it works as
-the service does and prints its log to the screen. The installer creates no
-shortcut for this.
+Open that port **only to our cloud address**, which we give you. Also allow
+the gateway's outbound connections to our cloud: on start the gateway gets its
+certificate and configuration from the Server, and the last values of its
+objects from the archive. Do not open ports 2003–2005 (user logins of the
+gateway processes).
 
-1. Stop the process's service (for example *Telecontrol SCADA IEC 104*): the
-   process and its service cannot run at the same time — they use the same
-   ports and files.
-2. Open an elevated command prompt: without administrator rights the process
-   cannot read the [Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate)'s private key and
-   does not start.
-3. Set the `svc` password the service gets from `scada-setup`, and start the
-   process with its parameter file:
+If a gateway link accepts connections itself (its "Transport" is of type
+"TCP Server", for example
+[retransmission to a dispatch centre]({{ '/en/dev/devices/' | relative_url }}#retransmission)
+over IEC 60870-5-104, usually port 2404), open its port too, only to the
+addresses that must connect.
 
-   ```bat
-   set SCADA_SVC_PASSWORD=<svc password>
-   "C:\Program Files\Telecontrol SCADA\bin\scada-iec104.exe" --param "%ProgramData%\Telecontrol\SCADA Server\iec104\server.json"
+### Installation {#gateway-install}
+
+Run every command with `sudo`.
+
+1. Install the package we supplied. It installs into
+   `/opt/telecontrol-scada`:
+
+   ```sh
+   sudo apt install ./<package file>.deb
    ```
 
-   The executable is `scada-<process>.exe`; the parameter file's folder is
-   `config`, `proxy`, `historian`, `filestore` (for `scada-filesystem`),
-   `modbus`, `iec104`, `iec61850`, `opc` or `vidicon`.
-4. To finish, close the window or press *Ctrl+C*, then start the process's
-   service again (the Windows Services UI), or all of the computer's processes
-   with `scada-setup start` and the
-   [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options).
+2. Put the licence file at `/var/lib/scada/license.json`, readable by
+   everyone — the processes read it as the `scada` account:
 
-Without `SCADA_SVC_PASSWORD` the process cannot connect to the other
-processes. Console mode does not need `SCADA_ROOT_PASSWORD`: without it the
-process leaves the `root` password the service stored unchanged (see
-[Root password]({{ '/en/server/security/' | relative_url }}#root-password)).
+   ```sh
+   sudo mkdir -p /var/lib/scada
+   sudo install -m 0644 license.json /var/lib/scada/license.json
+   ```
 
-## Command-line options
+3. **Before the next step** enable the firewall and open the gateway port. An
+   example for Ubuntu and `scada-iec104` (replace `203.0.113.10` with the
+   cloud address we gave you):
 
-The most important server startup options are:
+   ```sh
+   sudo ufw allow OpenSSH
+   sudo ufw allow proto tcp from 203.0.113.10 to any port 4844
+   sudo ufw enable
+   sudo ufw status
+   ```
 
-| Option | Purpose |
-|---|---|
-| `--install` | Install the Server as a Windows service (hand-built setups without `scada-setup` only) |
-| `--uninstall` | Remove the Windows service (hand-built setups without `scada-setup` only) |
-| `--service` | Run in service mode (used by Windows) |
-| `--param <path>` | Use a specific parameter file. The default on Windows is `%ProgramData%\Telecontrol\SCADA <process>\<name>.json` (for example `%ProgramData%\Telecontrol\SCADA IEC 104\scada-iec104.json`); on Linux it is `<name>.json` in the `data` directory beside the executable's directory |
-| `--name <name>` | Override the Windows service name, so several services of one process can coexist on a machine |
-| `--display-name <name>` | Override the service display name and the console window title |
-| `--log-severity <level>` | Lowest level of the log messages, as the [`log.severity`]({{ '/en/server/monitoring/' | relative_url }}#logging) parameter; takes priority over it |
+   On Ubuntu ufw is off by default, and while it is off the process ports are
+   open to the whole network. If you are connected over SSH, the `OpenSSH`
+   rule must come before `ufw enable`, or you lose access to the computer.
 
-Processes installed by `scada-setup` are started with a `--param` naming
-`%ProgramData%\Telecontrol\SCADA Server\<process folder>\server.json`.
+4. Start the gateway with the parameters we supplied. Type the `svc` password
+   without echo, so that it stays out of the shell history:
 
-### Linux deployment {#linux}
+   ```sh
+   read -rs SCADA_SETUP_SVC_PASSWORD; export SCADA_SETUP_SVC_PASSWORD
+   sudo --preserve-env=SCADA_SETUP_SVC_PASSWORD \
+     /opt/telecontrol-scada/bin/scada-setup apply --tiers iec104 \
+     --central <address> --central-fingerprint <fingerprint> \
+     --advertise <gateway external address>
+   unset SCADA_SETUP_SVC_PASSWORD
+   ```
 
-On Linux the Server is installed from a `.deb` package or a `.tar.gz`
-archive into `/opt/telecontrol-scada` and set up with the same `scada-setup`
-program (run it with `sudo`): `apply` creates the parameter files in
-`/var/lib/scada/<process>/server.json`, the configuration databases, the
-[Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) in
-`/opt/telecontrol-scada/data/Certificates`, and one systemd service per
-process — `/etc/systemd/system/scada-<process>.service` — then enables them
-and starts them in the right order; `status`, `start`, `stop`, `remove` and
-`set-password` manage those services. The step-by-step installation is in
-[Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux).
+   `apply` first checks that our central computer's certificate has the
+   fingerprint you gave and, if not, stops without changing anything, so the
+   `svc` password never reaches a stranger's computer. It then obtains a
+   certificate for the gateway, creates a systemd service for each process —
+   `scada-iec104.service`, `scada-modbus.service`, `scada-iec61850.service` —
+   and starts it. The services run as the `scada` account, start at boot and
+   restart 10 seconds after a failure.
 
-* The services run as the system account `scada`, start at boot and are
-  restarted 10 seconds after a failure. As on Windows, on a computer with `scada-config` the other
-  services depend on `scada-config.service`, and `scada-proxy.service` also
-  on `scada-filesystem.service`: stopping a service stops the ones that
-  depend on it.
-* The package (or, after the archive, `apply`) creates the `scada` account
-  and adds it to the `dialout` group, which owns the serial ports, also when
-  the account already existed. When `apply` reports that it added the account
-  to `dialout`, restart the services (`stop`, then `start` with the
-  [computer's parameters]({{ '/en/getting-started/' | relative_url }}#host-parameters)): a process
-  already running gets the ports only after a restart. If an RS-485 adapter
-  belongs to another group, add `scada` to it
-  (`sudo usermod -aG <group> scada`) and restart the services. The protocol
-  processes may listen on ports below 1024 (for example port 502 for
-  MODBUS TCP retransmission).
-* The `svc` and `root` passwords are kept in the file
-  `/var/lib/scada/secrets/service-secrets.env`, which only `root` can read
-  (see [Where the passwords are stored]({{ '/en/server/setup/' | relative_url }}#stored-passwords)).
-* `scada-setup status` prints each service's state as systemd names it:
-  `active` — running, `inactive` — stopped, `failed` — stopped on an error.
-* `apply` rewrites the service file on every run: put your own changes not
-  in it but in the `server.override.json` parameter file (see
-  [Your own parameters]({{ '/en/server/setup/' | relative_url }}#server-override)) or in a systemd drop-in
-  (`systemctl edit scada-<process>`).
-* A service's state is `systemctl status scada-<process>`; the process's
-  messages are `journalctl -u scada-<process>` and the log in the
-  `/var/lib/scada/<process>/Logs` folder.
-* `migrate --execute` is not available on Linux: the version 2.5 Server ran
-  on Windows only.
+5. Check that the services run: `scada-setup status` shows them `active`.
+   Process messages are in `journalctl -u scada-iec104` and in the log folder
+   `/var/lib/scada/iec104/Logs`.
 
-#### Running without scada-setup
+If `apply` reports:
 
-The process executables can also be started by hand, for example in a
-Docker container. Each process reads its own parameter file
-`data/<name>.json`, where `data` is resolved from the executable's directory
-as `<program dir>/../data`, or the file passed with `--param`.
+* `presented a certificate with fingerprint …, not the … given` — the
+  fingerprint or the address is mistyped; check them against what we gave you.
+* `cannot sign in to scada-config … as svc` — the `svc` password is wrong.
+  **After five failed logins the Server refuses this computer for 15
+  minutes**, even with the right password.
 
-Environment variables can be substituted into the parameter file
-(`$ENV{NAME}`, see the [parameter reference]({{ '/en/server/parameters/' | relative_url }})), for example to
-keep the [root password]({{ '/en/server/security/' | relative_url }}#root-password) out of the file. Installation in
-Docker containers is available on request.
+**Serial ports.** The package adds the `scada` account to the `dialout` group,
+which owns the serial ports. If `apply` says it added it to `dialout`, restart
+the services (`scada-setup stop`, then `scada-setup start --tiers iec104`). If
+the RS-485 adapter belongs to another group, add `scada` to it
+(`sudo usermod -aG <group> scada`) and restart the services.
+
+**Restarting the gateway** needs nothing restarted in the cloud. While the
+gateway is unreachable, its objects are marked invalid in the Client and no new
+values are archived. Usually within a minute of the gateway starting, the
+Server reconnects to it, and value updates and archiving resume by
+themselves.
+
+## Unavailable features {#unavailable}
+
+Features that need a Windows Server are not available with the hosted Server:
+
+* the OPC DA (Classic OPC) client — connecting to external OPC servers;
+* the Vidicon SCADA integration.
+
+A site that needs them stays on Server 2.5.7 (see [Server 2.5.7](#legacy)).
+
+## Server 2.5.7 and on-site installations {#legacy}
+
+* A Server for installation on the customer's computers is no longer offered,
+  for Windows or for Linux.
+* Existing Server 2.5.7 installations keep working.
+* Moving a site from Server 2.5.7 to the hosted Server is arranged with us
+  (see [Getting the hosted Server]({{ '/en/getting-started/' | relative_url }}#buy-now)).
+
+The release history is in the
+[Change log]({{ '/en/changes/' | relative_url }}).

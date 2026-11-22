@@ -19,8 +19,11 @@ collected under
 in particular, the alarm tone is off for every new account. The limitations of the whole release are collected under
 [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations).
 
-Until the version 2.6 Server is published, the 2.6 Client is connected to a
-2.5.7 Server. The Client works this way from release 2.6.3: Clients of earlier releases
+The 2.6 Client connects to Telecontrol's hosted Server with the "OPC UA"
+server type (see [Connection to the Server](#connection)). At sites that stay
+on a 2.5.7 Server (see [Server 2.5.7 and on-site
+installations]({{ '/en/server/' | relative_url }}#legacy)), the 2.6 Client is
+connected to the 2.5.7 Server. The Client works this way from release 2.6.3: Clients of earlier releases
 cannot perform two-stage control with a 2.5.7 Server. The 2.6 Client has not
 yet been tried against a working 2.5.7 Server. What does not work with
 a 2.5.7 Server, and how it differs from what this page describes, is listed
@@ -152,6 +155,18 @@ tables also appear at the bottom of the corresponding `Graph` and
 
 ## Connection to the Server {#connection}
 
+The Client connects to Telecontrol's hosted Server with the "OPC UA" server
+type, in the security mode "Sign and encrypt" (or "Most secure available"),
+under a named account; the Client verifies the Server certificate by its
+SHA-256 fingerprint, which Telecontrol gives. The "Telecontrol" type
+(port 2000) is not used with the hosted Server. The Server address and the
+certificate fingerprint come with the service; how to sign in is described
+under [Client login]({{ '/en/getting-started/' | relative_url }}#client-start),
+and what connecting over OPC UA changes, under [Connecting
+Clients]({{ '/en/server/' | relative_url }}#client-connection). In
+particular, with the "OPC UA" type the profile is kept on this computer only
+(see [Shift handover](#shift-change)).
+
 The status bar shows the connection state, "Connected" or "Disconnected", with
 the round-trip time "Server: N ms" beside it. When an answer takes longer than
 3 seconds, the time gains a "no response" marker and the event panel gets the
@@ -198,10 +213,13 @@ announcement.
 Each operator works under their own account: the event journal records who
 acknowledged an event and whose action caused it, and the workstation's
 settings and pages are kept in the user's profile. The profile is saved on
-this computer; in addition, the client saves it on the Server when it closes
-and loads it from the Server at login, so pages and settings follow the
-account to another computer. This applies to the "Telecontrol" server type;
-with the "OPC UA" type the profile is kept on this computer only.
+this computer. **With the hosted Server, which the Client reaches with the
+"OPC UA" type, the profile is kept on this computer only**: pages and settings
+do not follow the account to another computer, and the steps below that save
+the profile "on the Server" save it on this computer only. With the
+"Telecontrol" server type the client also saves the profile on the Server when
+it closes and loads it from the Server at login, so pages and settings follow
+the account to another computer.
 
 The first time an account with no profile on the Server signs in, the client
 opens the default profile: the previous operator's pages, portfolios and

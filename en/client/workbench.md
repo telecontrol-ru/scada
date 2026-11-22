@@ -471,7 +471,7 @@ address reaches only one of the objects. The Server accepts and transmits such
 rules. A version 2.6 Server writes a "Duplicate destination address" warning
 for every further rule that takes an address already in use (not for the
 first one) to the
-[log]({{ '/en/server/monitoring/' | relative_url }}#logging) of the process that
+log of the process that
 serves the device; it does not warn about overlapping registers, and a 2.5.7
 Server does not warn at all. Correct the addresses yourself.
 
@@ -665,8 +665,7 @@ The command behaves differently depending on whose account it is:
 - **your own** — the current password must be entered;
 - **someone else's** (an administrator reset) — the current-password field is
   not shown: the server does not check it, so asking for it would be
-  misleading. In version 2.6 the server accepts such a reset only from `root`
-  or from an administrator account migrated from version 2.5 (see
+  misleading. An account holding the `ConfigureAdmin` role can reset it (see
   [User configuration]({{ '/en/dev/users/' | relative_url }})).
 
 ### Audit log {#audit-log}
@@ -694,9 +693,8 @@ not keeping up with the incoming data.
 *The Databases window with three archives; the first columns are in view, the rest are to the right.*
 
 Object and device parameters point at these databases: an object's value
-archive and a device's event archive are chosen from this list. Configuring the
-databases on the server side is described under
-[Databases and files]({{ '/en/server/data/' | relative_url }}#history).
+archive and a device's event archive are chosen from this list. Telecontrol
+looks after storing the databases themselves on the hosted Server.
 
 ### Formats {#ts-formats}
 

@@ -7,25 +7,28 @@ permalink: /en/
 # Overview
 
 {: .note }
-> **Today only a 2.5.7 Server can be bought and installed; for version 2.6
-> the Client is published, and the version 2.6 Server is not published yet**
-> ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)).
+> **The version 2.6 Server is offered only as a service: Telecontrol hosts it
+> in its cloud and maintains it** — installs, upgrades, backs up, monitors and
+> licenses it. A Server to install on your own computers is not offered
+> ([Server]({{ '/en/server/' | relative_url }})).
 >
 > * This manual describes version 2.6, published as releases
->   [2.6.0, 2.6.3, 2.6.4 and 2.6.8]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
->   have been published for it so far: the Windows Server installer and the
->   Linux Server packages will be added later
->   ([Download]({{ '/en/getting-started/' | relative_url }}#download)).
-> * So the 2.6 Client can today connect only to a 2.5.7 Server — from release
->   2.6.3 on, and without every version 2.6 capability; the 2.6 Client has not
->   yet been tried against a working 2.5.7 Server
->   ([Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade)).
+>   [2.6.0, 2.6.3, 2.6.4 and 2.6.8]({{ '/en/changes/' | relative_url }}#v2-6); they carry the Client
+>   packages ([Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
+> * Clients connect to the Server over encrypted OPC UA
+>   ([Connecting Clients]({{ '/en/server/' | relative_url }}#client-connection)).
+> * The site's devices are reached through a site gateway — a Server protocol
+>   process the customer installs on a Linux computer next to the devices
+>   ([Site gateway]({{ '/en/server/' | relative_url }}#gateway)).
+> * The OPC DA client and the Vidicon integration need a Windows Server and are
+>   not available with the hosted Server
+>   ([Unavailable features]({{ '/en/server/' | relative_url }}#unavailable)).
 > * The previous release, [2.5.7]({{ '/en/changes/' | relative_url }}#v2-5-7), is built
->   differently: its Server is a single service with a HASP or Guardant
->   hardware key, not a set of separate processes.
-> * The version 2.6 license is issued for a term: after it expires the Server
->   processes refuse requests ([Licensing]({{ '/en/server/licensing/' | relative_url }})).
-> * Before buying or upgrading, read the version 2.6
+>   differently: its Server is a single Windows service with a HASP or Guardant
+>   hardware key. Existing 2.5.7 installations keep working, and moving to the
+>   hosted Server is arranged with Telecontrol
+>   ([Server 2.5.7 and on-site installations]({{ '/en/server/' | relative_url }}#legacy)).
+> * Before buying the service or moving to it, read the version 2.6
 >   [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations) — in particular,
 >   the Client packages do not yet include the display module (it is supplied
 >   separately, and without it schematics are not shown), and an account
@@ -38,32 +41,25 @@ for collecting field data, presenting it to operators, issuing control
 commands, archiving telemetry, and displaying historical information.
 
 The system uses a client-server architecture. In version 2.6 the Server is a
-set of separate processes: protocol processes (MODBUS, IEC 60870-5-104, IEC 61850
-and others), the archive, the configuration, the file store, and a proxy
-that Clients connect to. The processes are purchased separately and the
-license lists the ones purchased; that is how the 2.6 Server will be sold once
-its installer is published, while today a 2.5.7 Server is bought (see
-[Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)). A protocol process on its own is not
-enough, even on a small site: the smallest set is `scada-config`, one or more protocol
-processes, `scada-filesystem` and `scada-proxy`, and the archive of values
-and events — and so any report or summary over the archive — also needs
-`scada-historian`. See
-[Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose)
-and [Server processes]({{ '/en/architecture/' | relative_url }}#tiers).
-Any number of Clients can connect over TCP/IP. When the connection is
-lost — including after the Server is restarted or stopped — the Client
-reconnects by itself (see
+set of separate processes: protocol processes (MODBUS, IEC 60870-5-104 and
+IEC 61850), the archive, the configuration, the file store, and a proxy that
+Clients connect to. The Server runs in Telecontrol's cloud; the protocol
+processes run there too or at the site, as the site gateway next to the
+devices. What the service includes is agreed in the contract (see
+[Getting the hosted Server]({{ '/en/getting-started/' | relative_url }}#buy-now) and
+[Server processes]({{ '/en/architecture/' | relative_url }}#tiers)).
+Any number of Clients can connect.
+
+Clients connect to the Server over encrypted OPC UA. When the connection is
+lost — including after the Server is restarted — the Client reconnects by
+itself (see
 [Connection to the Server]({{ '/en/client/' | relative_url }}#connection)).
 
-For operation, the system requires one computer for a single-machine
-deployment or multiple computers for a distributed deployment. The Server
-processes run on Windows 10 or newer and on x86-64 Linux (`.deb` and
-`.tar.gz` packages, systemd services; see
-[Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux));
-the version 2.6 Server installer and packages are not published yet.
-The Client runs on Windows 10 or newer and on macOS 26 or newer on computers with Apple
-silicon (see
+The Client runs on Windows 10 or newer and on macOS 26 or newer on computers
+with Apple silicon (see
 [Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
+The site gateway needs an x86-64 Linux computer with systemd (see
+[Site gateway]({{ '/en/server/' | relative_url }}#gateway)).
 The Client displays Modus diagrams and Vidicon schematics with live values
 with its own display module, without the ActiveXeme component; that module is
 not in the release packages — Telecontrol supplies it separately, on terms
@@ -76,24 +72,18 @@ used to edit diagrams.
 
 * **Evaluating and buying**: the version 2.6
   [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations), then
-  [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now). To try the
-  system today: a [2.5.7](https://github.com/alexsmn/scada-client/releases/tag/v2.5.7)
-  Server runs for two hours in demo mode without a hardware key, and the
-  [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8) Client is a
-  free download that works with it for evaluation. Terms and
-  prices, keys and licences: Telecontrol, mail@telecontrol.ru.
-* **Administrator**, who installs and maintains the Server: today, a 2.5.7
-  Server ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)); for version 2.6,
-  once its Server is published,
-  [Download]({{ '/en/getting-started/' | relative_url }}#download) and
-  [Choose the Server processes]({{ '/en/getting-started/' | relative_url }}#choose), then install
-  following [Getting started]({{ '/en/getting-started/' | relative_url }}) (on Linux,
-  [Installation on Linux]({{ '/en/getting-started/' | relative_url }}#linux));
-  [Setting up with scada-setup]({{ '/en/server/setup/' | relative_url }}),
-  [Licensing]({{ '/en/server/licensing/' | relative_url }}),
-  [Root password]({{ '/en/server/security/' | relative_url }}#root-password),
-  [Backup]({{ '/en/server/backup/' | relative_url }}),
-  [Upgrading from version 2.5]({{ '/en/server/upgrade/' | relative_url }}#upgrade-2-5).
+  [Server]({{ '/en/server/' | relative_url }}) — what Telecontrol does and what
+  the customer does — and [Getting the hosted Server]({{ '/en/getting-started/' | relative_url }}#buy-now).
+  The [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8) Client is a
+  free download. Terms and prices of the service: Telecontrol,
+  mail@telecontrol.ru.
+* **Administrator** on the customer's side, who manages users, Clients and the
+  site gateway:
+  [What the customer does]({{ '/en/server/' | relative_url }}#customer),
+  [Client installation]({{ '/en/getting-started/' | relative_url }}#client-install),
+  [Connecting Clients]({{ '/en/server/' | relative_url }}#client-connection),
+  [Users]({{ '/en/dev/users/' | relative_url }}) and
+  [Site gateway]({{ '/en/server/' | relative_url }}#gateway).
 * **Project engineer**, who builds the project:
   [Architecture]({{ '/en/architecture/' | relative_url }}), then the
   [Development]({{ '/en/development/' | relative_url }}) section —
@@ -124,13 +114,14 @@ The platform supports one or more operator workstations depending on the
 required user roles and access rights for the monitored automation
 system.
 
-Example of a distributed deployment:
+How working with the hosted Server is arranged (details on the
+[Server]({{ '/en/server/' | relative_url }}) page):
 
-![]({{ '/img/structure-en.svg' | relative_url }})
+![Clients connect to the Server in Telecontrol's cloud, and the Server connects to the gateway at the customer's site, which polls the devices]({{ '/img/hosted-deployment-en.svg' | relative_url }})
 
 ## Key features
 
-* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server on Windows and Linux (the version 2.6 Server is not published yet) and the Client on Windows and macOS
+* Distributed multi-user [Architecture]({{ '/en/architecture/' | relative_url }}), with the Server as a service in Telecontrol's cloud and the Client on Windows and macOS
 * Modus and Vidicon [displays]({{ '/en/client/display/' | relative_url }}) with live
   switch positions and values; for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
@@ -150,22 +141,20 @@ Example of a distributed deployment:
   [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870), and
   [IEC 61850]({{ '/en/protocols/' | relative_url }}#iec-61850), and from
   external OPC servers over [OPC DA]({{ '/en/protocols/' | relative_url }}#opc)
-  (Windows); for the limitations of version 2.6 see
+  (not available with the hosted Server); for the limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-protocols)
 * [Retransmission]({{ '/en/dev/devices/' | relative_url }}#retransmission)
   of selected data to upper-level systems and an OPC UA server; for the
   limitations of version 2.6 see
   [Known limitations]({{ '/en/changes/' | relative_url }}#limits-protocols)
 * [Vidicon integration]({{ '/en/protocols/' | relative_url }}#vidicon)
-  (Windows) for migrating existing projects
+  for migrating existing projects (not available with the hosted Server)
 * [Formulas]({{ '/en/formulas/' | relative_url }}),
   [manual input]({{ '/en/architecture/' | relative_url }}#manual-write),
   and [limit checks]({{ '/en/architecture/' | relative_url }}#limits)
 * Object emulation for testing without field hardware
-* [Historical archives]({{ '/en/server/data/' | relative_url }}#history)
+* [Historical archives]({{ '/en/dev/history/' | relative_url }})
   (the `scada-historian` process) with automatic removal of expired data
-  (set up as described under
-  [Archiving]({{ '/en/dev/history/' | relative_url }}))
 * [Event journal]({{ '/en/client/events/' | relative_url }}) with
   acknowledgement and importance-based highlighting
 * [Redundancy]({{ '/en/architecture/' | relative_url }}#data-items) support for information objects
