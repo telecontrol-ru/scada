@@ -119,6 +119,40 @@ permalink: /server/setup/
   `SCADA_SETUP_ROOT_PASSWORD`) — [пароль root]({{ '/server/security/' | relative_url }}#root-password), обязателен
   для `apply` и `migrate --execute` на компьютере с `scada-config` или
   `scada-filesystem`.
+
+  **Передавайте пароли в переменных окружения, а не в параметрах.** Пароль,
+  указанный в `--svc-password` или `--root-password`, остается в истории
+  команд (оболочки Linux записывают ее в файл, например `~/.bash_history`) и,
+  пока работает `scada-setup`, виден в списке процессов вместе с его
+  командной строкой (под Linux — любому пользователю компьютера).
+  Примеры на этой странице для краткости показывают параметры; вместо них в
+  командной строке Windows (cmd) задайте переменные перед командой и
+  очистите их после нее:
+
+  ```bat
+  set SCADA_SETUP_SVC_PASSWORD=<пароль>
+  set SCADA_SETUP_ROOT_PASSWORD=<пароль root>
+  "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <процессы этого компьютера> ...
+  set SCADA_SETUP_SVC_PASSWORD=
+  set SCADA_SETUP_ROOT_PASSWORD=
+  ```
+
+  **Под Linux** `sudo` по умолчанию не передает команде переменные окружения
+  пользователя, поэтому переменная, заданная в оболочке, до `scada-setup`
+  не дойдет. Прочитайте пароли без вывода на экран и передайте их через
+  `sudo --preserve-env=…` (или `sudo -E`, который передает все переменные):
+
+  ```sh
+  read -rs SCADA_SETUP_SVC_PASSWORD; export SCADA_SETUP_SVC_PASSWORD
+  read -rs SCADA_SETUP_ROOT_PASSWORD; export SCADA_SETUP_ROOT_PASSWORD
+  sudo --preserve-env=SCADA_SETUP_SVC_PASSWORD,SCADA_SETUP_ROOT_PASSWORD \
+    /opt/telecontrol-scada/bin/scada-setup apply --tiers <процессы этого компьютера> ...
+  unset SCADA_SETUP_SVC_PASSWORD SCADA_SETUP_ROOT_PASSWORD
+  ```
+
+  Форма `sudo SCADA_SETUP_SVC_PASSWORD=<пароль> …` тоже передает
+  переменную, но пароль, записанный в ней, снова попадает в историю команд и
+  в список процессов.
 * `--demo` — только для `apply`: создать конфигурационные БД, которых еще
   нет, из демонстрационного проекта, а не пустыми (смотрите
   [Демонстрационный проект]({{ '/getting-started/' | relative_url }}#demo)).

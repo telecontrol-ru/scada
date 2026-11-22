@@ -25,7 +25,7 @@ not support this. It requires Server version 2.6 or later." (on import,
 ## The file
 
 The configuration is saved as a standard OPC UA
-[NodeSet](https://reference.opcfoundation.org/Core/Part6/v105/docs/F.2): an XML
+[NodeSet](https://reference.opcfoundation.org/specs/OPC-10000-6/full#annex_f_normativeinformation-model-xml-schema): an XML
 file in [UTF-8](https://en.wikipedia.org/wiki/UTF-8) that any text or XML
 editor can open. A large configuration is saved compressed (`.xml.gz`);
 decompress such a file before editing it. Either form can be imported.

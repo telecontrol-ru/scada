@@ -25,7 +25,7 @@ permalink: /dev/excel/
 ## Формат файла
 
 Конфигурация сохраняется в стандартном формате OPC UA
-[NodeSet](https://reference.opcfoundation.org/Core/Part6/v105/docs/F.2) — это
+[NodeSet](https://reference.opcfoundation.org/specs/OPC-10000-6/full#annex_f_normativeinformation-model-xml-schema) — это
 XML-файл в [кодировке UTF-8](https://ru.wikipedia.org/wiki/UTF-8), который
 можно просматривать и редактировать любым текстовым или XML-редактором.
 Большая конфигурация сохраняется сжатой (`.xml.gz`); такой файл перед

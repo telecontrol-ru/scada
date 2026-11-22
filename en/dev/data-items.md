@@ -133,10 +133,14 @@ accept string identifiers (such as <code>ns=2;s=…</code>). The field is empty
 by default (it shows "Assigned by the Server" in grey): the Server then assigns
 free numbers itself, as it does for an ordinary create.
 
-A live preview is built below — a row-number / Name / NodeId / IOA / Status
-grid. Status
-marks each row "new", "exists" (such a node is already there) or "address out
-of range", and a "N new, M conflict" summary sits under the grid. A rule whose
+A live preview is built below — a row-number / Name / NodeId / Status grid;
+for transmission rules it also has an IOA column (Russian UI: «Адрес») before
+Status. The "IOA start" and "IOA step" fields and the IOA column are shown
+only when transmission rules are created; when data items are created they
+are absent. Status
+marks each row "new" or "exists" (such a node is already there), and a rule
+also "address out of range"; a "N new, M conflict" summary sits under the
+grid. A rule whose
 address is already taken by a rule of the receiving device or by another row
 is marked "duplicate address", and the summary adds their count. Such rows are
 created; the address can be corrected afterwards in the transmission table.</dd>
@@ -175,9 +179,38 @@ Once created, the objects' parameters can be edited in the usual way.
 
 ### Service objects
 
-Service objects can also be created for a specific device:
+A service object is a TS or TIT object whose channel is not a protocol
+address but a variable of the device or direction itself: for example,
+whether communication with it is up, or how many messages it has received.
+Such an object can be shown on displays, in tables and in graphs like any
+other.
+
+The `Create -> Service Items...` command (Russian UI: «Создать — Сервисные
+объекты...») in the selected group opens the Create Service Items window
+(«Создание сервисных объектов»). In the Device field («Устройство») choose a
+device or direction, in the list below it one or more of its variables, and
+press Create («Создать»): for each selected variable an object with its name
+is created in the group, and that device variable is written into its
+Channel field. A Boolean variable becomes a TS object, the others TIT objects
+(with a display format without a fractional part).
 
 ![]({{ '/img/menu-create-object-service.png' | relative_url }})
+
+The Client gets the list of variables from the Server. In version 2.6 every
+device and direction has Связь (Communication), Включено (Enabled), Принято
+сообщений (Messages received), Отправлено сообщений (Messages sent), Принято
+байт (Bytes received), Отправлено байт (Bytes sent), Захват кадров (Frame
+capture), Число синхронизаций времени (Clock synchronisations) and Число
+полных опросов (General interrogations); a direction also has `ConnectCount`
+and `ActiveConnections`, and an IEC 60870-5 direction Состояние связи (Link
+state), Номер отправки V(S) (Send sequence number V(S)), Номер приема V(R)
+(Receive sequence number V(R)), Подтверждено до (Acknowledged up to), Кадров
+без подтверждения (Unacknowledged frames), Повторов в окне (Retransmits in
+window), Таймаут передачи (t1) истек (Send timeout (t1) expired), Время
+оборота, мс (Round-trip time, ms) and Последнее подключение (Last connected).
+
+The same variable can also be chosen by hand: with a device selected, the
+Channel field's list offers its variables.
 
 ## Deleting, copying, and moving objects
 
@@ -199,9 +232,19 @@ window:
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
 {: .note }
-> The Properties window is split into tabs (the first is Атрибуты, Attributes) and
-> sections; the device and channel fields are grouped in three sections, and
-> are labelled differently from the names used below:
+> **Client 2.6.8:** the Properties window is split into tabs in Russian
+> alphabetical order (on a data item the first is Архивирование, Archiving,
+> then Атрибуты, Attributes), but the Каналы (Channels) tab has no device and
+> channel fields. In this version an object's device and channel are set in
+> the group's <a href="{{ '/en/development/' | relative_url }}">Element
+> Properties</a> table, in the columns Устройство (Device), Канал (Channel),
+> Устройство (резерв) (Device (backup)), Канал (резерв) (Channel (backup)),
+> Устройство (управление) (Device (control)) and Канал (управление)
+> (Channel (control)). The Properties screenshot above was taken in a later
+> Client build.
+>
+> In later Client builds these fields are on the Каналы (Channels) tab,
+> grouped in sections, and are labelled differently from the names used below:
 >
 > | Section in the window (Russian UI) | Field label in the window | Field in this manual |
 > |---|---|---|
@@ -235,16 +278,52 @@ the parent groups.</dd>
 
 <dt>Control channel</dt>
 <dd>The channel address used for a control command in the protocol
-format required by the selected device.</dd>
+format required by the selected device. In Client 2.6.8 it is set in the
+Канал (управление) (Channel (control)) column of the Element Properties table
+(see the note above).</dd>
 
 <dt>Control device</dt>
 <dd>Selects the device used as the control-data source for remote
-commands.</dd>
+commands. In Client 2.6.8 it is set in the Устройство (управление)
+(Device (control)) column of the Element Properties table.</dd>
 
 <dt id="two-stage-control">Two-stage control</dt>
-<dd>Enables the IEC 60870 two-stage control workflow
-<code>SELECT/EXECUTE</code>. If disabled, the command is executed in a single
-stage. Default: Yes. The Client creates a new object with the value its
+<dd>Enables two-stage control — select, then execute
+(<code>SELECT/EXECUTE</code>). If disabled, the command is executed in a single
+stage (<code>EXECUTE</code>). Default: Yes.
+The value an object needs depends on its protocol and command:
+<table>
+<thead><tr><th>Protocol and command</th><th>Two-stage control</th></tr></thead>
+<tbody>
+<tr><td>IEC 60870-5, single command <code>C_SC_NA_1</code> (a TS object without a type override, or the <code>BOOL:</code> override)</td><td>Yes</td></tr>
+<tr><td>IEC 60870-5, set-point <code>P_ME_NC_1</code> or <code>P_ME_NB_1</code> (a TIT object without a type override, or the <code>FLOAT:</code> or <code>INT16:</code> override)</td><td>No</td></tr>
+<tr><td>IEC 61850, select-before-operate control model (SBO)</td><td>Yes</td></tr>
+<tr><td>IEC 61850, direct control</td><td>No</td></tr>
+<tr><td>MODBUS</td><td>No</td></tr>
+<tr><td>OPC DA</td><td>No</td></tr>
+</tbody>
+</table>
+The SELECT stage is sent only with the IEC 60870-5
+command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
+SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
+control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
+to the device, and the command is not executed — set No on such objects if
+they have Yes.
+The Server learns an IEC 61850 object's control model from the device itself,
+and the configuration does not hold it, so the Client sets Yes on IEC 61850
+objects however they are created, dragging from an IEC 61850 device included.
+Set No if the device does not support select-before-operate.
+If the operator declines to execute after the select (answers no or closes
+the confirmation prompt), the Server releases the
+selection on the device: for IEC 60870-5 by deactivating the
+<code>C_SC_NA_1</code> command (cause of transmission 8), for IEC 61850 with
+the Cancel service. If the device refuses
+to release the selection, it stays in force until the device's own select
+timeout, and the Client says so in the current events panel (see
+<a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage control</a>).
+<br><br>
+<b>How the Client sets the value.</b>
+The Client creates a new object with the value its
 device calls for: No on objects that
 cannot be controlled in two stages (every object of a MODBUS device, OPC
 objects and IEC 60870-5 objects whose command is a set-point rather than
@@ -268,36 +347,24 @@ on an object with no channel becomes No when the object is bound to a MODBUS
 device, and No on a MODBUS object becomes Yes when it moves to an
 IEC 60870-5 single command. A move to an OPC device sets No, and on a move
 to an IEC 61850 device the value is kept: only the device knows whether the
-object selects. Objects created with a 2.5.7 or 2.6.0 Client are not changed
+object selects.
+<br><br>
+<b>Note: earlier versions.</b>
+Objects created with a 2.5.7 or 2.6.0 Client are not changed
 by themselves: check such MODBUS, OPC and IEC 60870-5 TIT objects, and
 IEC 60870-5 objects with an <code>INT16:</code> or <code>FLOAT:</code> override,
-and set No — now, before the Server is upgraded (see below how a 2.5.7
-Server behaves). Client 2.6.3 did not take the type override (see
+and set No — now, before the Server is upgraded. Client 2.6.3 did not take the type override (see
 <a href="{{ '/en/protocols/' | relative_url }}#iec-60870">IEC 60870-5</a>) into
 account: check the value on objects it created with <code>INT16:</code>,
-<code>FLOAT:</code> or <code>BOOL:</code>. The SELECT stage is sent only with the IEC 60870-5
-command <code>C_SC_NA_1</code> and to IEC 61850 objects whose control model is
-SBO; for other IEC 60870-5 commands, for IEC 61850 objects with direct
-control, for MODBUS devices and for OPC objects the Server refuses the select, sends nothing
-to the device, and the command is not executed — set No on such objects if
-they have Yes. That is a 2.6 Server's answer. A 2.5.7 Server confirms the
+<code>FLOAT:</code> or <code>BOOL:</code>; it also set No on objects the
+wizard created without a source (Clients from 2.6.4 on leave them Yes).
+The refused select described above is a 2.6 Server's answer. A 2.5.7 Server confirms the
 select of MODBUS and OPC objects and of IEC 60870-5 commands other than
 <code>C_SC_NA_1</code> without asking the device; on a declined command
 Clients from 2.6.4 on report no selection (Client 2.6.3 reported that the device
 stays selected although nothing was selected); controlling an IEC 61850 direct-control object through a 2.5.7
 Server fails, and the command is not executed (see <a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage
-control</a>). The Client sets Yes on IEC 61850 objects however they are created,
-dragging from an IEC 61850 device included: the Server learns the control
-model from the device itself, and the configuration does not hold it.
-Set No if the device does not support select-before-operate.
-If the operator declines to execute after the select (answers no or closes
-the confirmation prompt), the Server releases the
-selection on the device: for IEC 60870-5 by deactivating the
-<code>C_SC_NA_1</code> command (cause of transmission 8), for IEC 61850 with
-the Cancel service. If the device refuses
-to release the selection, it stays in force until the device's own select
-timeout, and the Client says so in the current events panel (see
-<a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage control</a>).</dd>
+control</a>).</dd>
 
 <dt>Lock</dt>
 <dd>Yes — the object ignores values from the device and keeps the value set by
@@ -315,10 +382,13 @@ channel field is interpreted as a formula.</dd>
 
 <dt>Backup channel</dt>
 <dd>Defines the information channel or service object for the backup data
-source.</dd>
+source. In Client 2.6.8 it is set in the Канал (резерв) (Channel (backup))
+column of the Element Properties table (see the note above).</dd>
 
 <dt>Backup device</dt>
-<dd>Selects the backup source device.</dd>
+<dd>Selects the backup source device. In Client 2.6.8 it is set in the
+Устройство (резерв) (Device (backup)) column of the Element Properties
+table.</dd>
 
 <dt>Control condition</dt>
 <dd>A logical expression that enables or blocks control. It usually
@@ -339,8 +409,10 @@ condition may refer to a device channel, inside an expression too, such as
 the same way.</dd>
 
 <dt>Stale timeout, s</dt>
-<dd>If the value is not updated within this interval, it is marked as
-stale.</dd>
+<dd>The staleness period in seconds. A value is marked stale when no new value has arrived for longer than this period; it
+is measured from the value's source timestamp, and a value without a
+timestamp is stale at once. A value set by manual input is never marked
+stale. 0 (the default) disables the check.</dd>
 
 <dt>Parameters</dt>
 <dd>The display format of a discrete object. For discrete objects, selects the display format used in the UI.

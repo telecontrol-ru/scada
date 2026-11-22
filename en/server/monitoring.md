@@ -105,3 +105,11 @@ connections. By default, the Server listens on all network interfaces
 
 Multiple connection endpoints can be configured if different interfaces
 or ports are required.
+
+**WARNING:** `sessions` connections are plain, unencrypted TCP: the Client's
+user name and password at a "Telecontrol" sign-in, and all the data, cross
+the network in clear text, and the Server neither limits nor delays failed
+sign-in attempts. Open port 2000 only to the operators' workstation subnet
+or to a VPN, and never make it reachable from outside the site network (see
+[Server certificate]({{ '/en/server/opcua/' | relative_url }}#opcua-certificate) and
+[Network preparation]({{ '/en/getting-started/' | relative_url }}#network)).

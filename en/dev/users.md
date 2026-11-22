@@ -15,6 +15,21 @@ The users window is opened from the main menu with `More -> Users`, or from the
 Users button at the foot of the section rail. It is available only to an
 account holding the Configure right (the `ConfigureAdmin` role).
 
+**A 2.6 limitation: only `root` or an administrator account migrated from
+version 2.5 can manage users.** The server allows creating, changing and
+deleting users, assigning roles and setting another user's password not by
+the session's roles but by the old Permissions level («Права»), which only
+`root` and accounts migrated from version 2.5 with level 1 or 3 have. So:
+
+* an administrator created in version 2.6 and given the `ConfigureAdmin` role
+  sees the Users window and changes the configuration, but the server refuses
+  to let them create or delete users, use `Roles...`, or set another user's
+  password;
+* removing `ConfigureAdmin` from an account migrated from version 2.5 does not
+  take these powers away from it on the server.
+
+Manage users as `root` or as a migrated administrator account.
+
 ![]({{ '/img/users.png' | relative_url }})
 
 Double-clicking a user row starts editing its properties: the name and the
@@ -32,13 +47,35 @@ already open is not closed. A disabled user who tries to sign in gets the
 same refusal as for a wrong password — "Wrong user name or password" — so it
 does not show that the account is disabled.
 
+### Cutting a user off at once {#cut-off}
+
+Neither disabling an account nor removing its roles closes a session that is
+already open: disabling only refuses the next sign-in, and a role change takes
+effect at the next sign-in. To stop a user working at once:
+
+* **delete the user** — the server closes all of their sessions at once; the
+  account's roles and profile go with it, so a user created again with the
+  same name starts with no roles;
+* or disable the account and **restart the `scada-proxy` process** (the
+  *Telecontrol SCADA Proxy* service): the restart closes every user's session,
+  and the disabled user cannot sign in again.
+
 To assign roles to a user, choose `Roles...` from the user context menu (see
 [Assigning roles](#assign-roles)).
 
-To change a password, choose `Set password` from the user context menu. Your
-own account requires the current password; someone else's (an administrator
-reset) does not. The server sets what a password must satisfy — see
-[Password policy]({{ '/en/client/workbench/#password-policy' | relative_url }}).
+To change a password, choose `Set Password...` (*Задать пароль…*) from the
+user context menu. The command is available only with the Configure right and
+only when a user is selected; the Users window, too, opens only with that
+right. Your own account requires the current password; someone else's (an
+administrator reset) does not, and in version 2.6 only `root` or an
+administrator account migrated from version 2.5 can set another user's
+password (see the limitation above). The server sets what a password must satisfy —
+see [Password policy]({{ '/en/client/workbench/#password-policy' | relative_url }}).
+
+A user without the Configure right — a Dispatcher (level 2) or a Manager
+(level 0), for example — cannot change even their own password in version
+2.6: they have no command for it. To get a new password, they ask the
+administrator, who sets one.
 
 **For the administrator:**
 
@@ -68,11 +105,16 @@ reset) does not. The server sets what a password must satisfy — see
   computer that runs `scada-config` or `scada-filesystem`; on the others the
   command only restarts every process for nothing (see
   [Root password]({{ '/en/getting-started/' | relative_url }}#root-password)).
-* **The built-in `root` account allows one session at a time.** When `root`
-  signs in a second time, from another workstation for example, the Client
-  says the user name is already in use and offers to disconnect the open
-  session; answering yes disconnects the first `root` session. Give each
-  administrator a user of their own rather than sharing `root`.
+* **Every account created in version 2.6, and the built-in `root`, allows
+  one session at a time.** Several sessions at once are allowed only to
+  accounts migrated from version 2.5 with that permission; a user's
+  «Множество сессий» (Multiple sessions) property has no effect in version
+  2.6. When the same name signs in a second time, from another workstation
+  for example, the Client says the user name is already in use and offers to
+  disconnect the open session; answering yes disconnects the first session.
+  «Да» (Yes) is the default button in that question, so *Enter* disconnects
+  the open session. Give each dispatcher and each administrator a user of their own rather than
+  having several people sign in under one name, `root` included.
 
 ## Access rights {#access-rights}
 
@@ -86,8 +128,10 @@ What an account may do after signing in is decided by the server from the
 limits.</dd>
 
 <dt>ConfigureAdmin — the Configure right</dt>
-<dd>Creating, changing and deleting objects, devices and accounts. It does
-not grant control commands, manual value entry or limit changes.</dd>
+<dd>Creating, changing and deleting objects and devices. It does not grant
+control commands, manual value entry or limit changes. In version 2.6 this
+role does not grant user management — see the limitation at the top of the
+page.</dd>
 
 </dl>
 
@@ -112,15 +156,17 @@ of service and back needs only the Control right.
 
 ### Assigning roles {#assign-roles}
 
-An administrator — an account with the Configure right — assigns an
-account's roles. In the Users window, select the user and choose `Roles...`
+An administrator assigns an account's roles. In version 2.6 the server
+accepts role assignments only from `root` or from an administrator account
+migrated from version 2.5 (see the limitation at the top of the page). In the
+Users window, select the user and choose `Roles...`
 from its context menu. The window that opens has the roles the user already
 holds checked; check the ones needed (for example `Operator` and
 `ConfigureAdmin` for level 3), clear the rest and press OK. The server
 records every change in the [audit log]({{ '/en/client/workbench/#audit-log' | relative_url }}).
 
 The change takes effect at the user's next sign-in: a session already open
-keeps its previous rights.
+keeps its previous rights (to end it at once, see [above](#cut-off)).
 
 Roles follow the account: when a user is renamed the server moves its roles
 to the new name, and when a user is deleted it removes them — an account
@@ -149,7 +195,9 @@ The roles the server grants a session:
 * `ConfigureAdmin` also gives the session `Engineer`, `Supervisor` and
   `SecurityAdmin` — changing the configuration, including adding and deleting
   nodes, but not writing object values or their limits and not issuing
-  control commands: the server allows those to the `Operator` role alone
+  control commands: the server allows those to the `Operator` role alone;
+  despite the `SecurityAdmin` role, it does not allow managing users in
+  version 2.6 (see the limitation at the top of the page)
 * an anonymous session gets the `Anonymous` role alone
 
 An account may hold several roles at once, and their permissions combine. It is

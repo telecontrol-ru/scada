@@ -53,6 +53,9 @@ to No on them. The Client sets No on new MODBUS objects by itself.
 See also the engineering reference for
 [MODBUS devices]({{ '/en/dev/devices/' | relative_url }}).
 
+See the [Modbus article](https://en.wikipedia.org/wiki/Modbus) for a
+description of the protocol.
+
 ## IEC 60870-5 {#iec-60870}
 
 IEC 60870-5 directions define data channels such as a network endpoint
@@ -147,7 +150,9 @@ being executed only stops the reply to the DC: the execution on the device
 cannot be undone.
 
 The ASDU type can be overridden in the Control channel with the format
-`type:address`, where `type` is one of:
+`type:address` (see
+[IEC 60870-5 channel-address format]({{ '/en/dev/devices/' | relative_url }}#iec-channel-address)),
+where `type` is one of:
 
 * `BOOL` to use `C_SC_NA_1`
 * `INT16` to use `P_ME_NB_1`
@@ -175,6 +180,9 @@ supports devices that send datagrams built from multiple IEC messages.
 
 See also the engineering reference for
 [IEC 60870-5 devices]({{ '/en/dev/devices/' | relative_url }}).
+
+See the [IEC 60870-5 article](https://en.wikipedia.org/wiki/IEC_60870-5) for a
+description of the protocols.
 
 ## IEC 61850 {#iec-61850}
 
@@ -306,7 +314,7 @@ Server's address space and are bound to objects. The Server refuses the
 select of two-stage control on an OPC object, so set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on such
 objects. The Client sets No on new OPC objects by itself; check objects
-created by earlier Client versions. See [OPC client on Windows]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
+created by earlier Client versions. How to bind an object to an OPC server's tag is described in [OPC DA objects]({{ '/en/dev/devices/' | relative_url }}#opc). See [OPC client on Windows]({{ '/en/server/opcua/' | relative_url }}#opc-classic).
 
 ## Vidicon integration (Windows) {#vidicon}
 

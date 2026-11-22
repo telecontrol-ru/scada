@@ -76,7 +76,11 @@ used to edit diagrams.
 
 * **Evaluating and buying**: the version 2.6
   [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations), then
-  [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now). Terms and
+  [Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now). To try the
+  system today: a [2.5.7](https://github.com/alexsmn/scada-client/releases/tag/v2.5.7)
+  Server runs for two hours in demo mode without a hardware key, and the
+  [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8) Client is a
+  free download that works with it for evaluation. Terms and
   prices, keys and licences: Telecontrol, mail@telecontrol.ru.
 * **Administrator**, who installs and maintains the Server: today, a 2.5.7
   Server ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)); for version 2.6,

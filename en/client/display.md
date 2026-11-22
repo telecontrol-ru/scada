@@ -160,6 +160,12 @@ schematic, clears the selection: the **Item** menu commands, the Inspector and
 acknowledgement then apply to no object — not to the one selected before
 either.
 
+A schematic has no context menu in version 2.6: right-clicking a shape opens
+no menu. To command
+an object from a schematic, click the shape, then choose the command in the
+**Item** menu («Сигнал») or press *Control…* («Управление…») in the
+Inspector.
+
 ## Open the display for a selected object {#goto-object}
 
 When an object is selected in the object panel or in a table, the user

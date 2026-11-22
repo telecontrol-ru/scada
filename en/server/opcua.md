@@ -270,6 +270,21 @@ you to confirm trust in it on the first connection (see
 every process; with `--allow-anonymous-opcua`, `"allow_none": true` and
 `"allow_anonymous": true` on `scada-proxy`.
 
+**WARNING: the Client's connection with the "Telecontrol" sign-in type (TCP
+port 2000) is not encrypted.** Everything sent over it, including the user
+name and password at sign-in, crosses the network in clear text, and anyone
+who can see that traffic can read it. The Server neither limits the number
+of failed sign-in attempts nor delays its answer to them, so a password can
+be guessed unhindered; each failed attempt is only written to the process
+log as an `Authorization error` warning with the user name. Therefore:
+
+* open port 2000 only to the operators' workstation subnet or to a VPN —
+  the firewall rule can be limited to their addresses with the `remoteip`
+  parameter (on Linux, `from` in the ufw rule; see [Network preparation]({{ '/en/getting-started/' | relative_url }}#network));
+* **never make port 2000 reachable from outside the site network** (from
+  the internet or from the company's general network); connect remote
+  workstations through a VPN only.
+
 **WARNING:** in an installation made with `--insecure-links`, the processes
 connect to each other unsecured and send the `svc` password unencrypted, so
 there **`"allow_none": false` and `"require_encryption_for_password": true`
@@ -293,8 +308,12 @@ their certificates: the site's own, kept on the central computer.
   ```
 
   **The `ca_key.pem` file is the key that issues every certificate of the
-  site.** On Windows only the SYSTEM account and administrators can read
-  it. On Linux it belongs to `root` and the `scada` group (mode 0640): any
+  site.** On Windows `apply` creates it so that only the SYSTEM account and
+  administrators can read it. A file copied into this folder (from a backup,
+  for example) takes the permissions of the `C:\Program Files` folder,
+  which let any user of the computer read it, and `apply` does not correct
+  them — after copying, restrict access to it with `icacls` (see
+  [Restore]({{ '/en/server/backup/' | relative_url }}#restore)). On Linux it belongs to `root` and the `scada` group (mode 0640): any
   Server process on the central computer can read it, so run nothing but the
   Server services as the `scada` account. Back it
   up with the configuration, and never copy it to another computer.

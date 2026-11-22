@@ -24,6 +24,11 @@ On each computer running Server processes, copy:
   [A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)). Keep the copy of the keys
   as safe as the passwords.
 
+A hot-standby Server is not supported in version 2.6, so the central computer
+is a single point of failure of the site, and if it breaks down only a
+restore from a backup brings the site back (see
+[Redundancy]({{ '/en/architecture/' | relative_url }}#redundancy)).
+
 **On Linux** copy the whole `/var/lib/scada` folder and the
 `/opt/telecontrol-scada/data/Certificates` folder, with the processes
 stopped by `sudo /opt/telecontrol-scada/bin/scada-setup stop`.
@@ -82,8 +87,8 @@ On the same computer:
 
 1. Stop the processes: `scada-setup stop`.
 2. Put the `%ProgramData%\Telecontrol\SCADA Server` folder (and the
-   `Certificates` folder, if it is gone, then restrict access to the key file
-   with the `icacls` command given below in step 3 for a new computer) back
+   `Certificates` folder, if it is gone, then restrict access to the key files
+   with the `icacls` commands given below in step 3 for a new computer) back
    from the backup.
 3. Start the processes: `scada-setup start` with the
    [computer's parameters]({{ '/en/server/setup/' | relative_url }}#scada-setup-options). The restored folder takes
@@ -98,11 +103,15 @@ On a new or rebuilt computer:
    backup.
 3. **If the computer's name is the same**, put the
    `C:\Program Files\Telecontrol SCADA\data\Certificates` folder back too,
-   then restrict access to the key file (a copied file takes the folder's
-   permissions):
+   then restrict access to the key files. A copied file takes the permissions
+   of the `C:\Program Files` folder, which let any user of the computer read
+   it, and neither `start` nor `apply` corrects the permissions of these
+   files. The second command is needed only on the central computer, which
+   has the `ca` subfolder:
 
    ```bat
    icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
+   icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ca\ca_key.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
    ```
 
    **If the computer's name is different**, do not put
@@ -112,7 +121,8 @@ On a new or rebuilt computer:
    the two files exists. **Put the central computer's `ca` subfolder back in
    any case** — otherwise `apply` creates a new certificate authority and
    the other computers have to join again (see
-   [A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)). On a computer without
+   [A new certificate authority]({{ '/en/server/opcua/' | relative_url }}#opcua-renewal)) — and restrict access to
+   its key with the second `icacls` command above. On a computer without
    `scada-config`, give `apply` in step 4 `--central-fingerprint` too, to get
    a new certificate from the certificate authority. Take the fingerprint
    from `scada-setup status` on the central computer now, not from the

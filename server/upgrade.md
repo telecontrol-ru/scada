@@ -295,11 +295,15 @@ installed`), а служба *Telecontrol SCADA Server* версии 2.5 уже 
 4. Верните из резервной копии, сделанной **перед обновлением**, папку
    данных (`%ProgramData%\Telecontrol\SCADA Server` или папку, заданную
    `--data-root`), заменив то, что в ней есть, а также папку
-   `C:\Program Files\Telecontrol SCADA\data\Certificates`. Возвращенный
-   файл ключа получает права папки, поэтому ограничьте доступ к нему:
+   `C:\Program Files\Telecontrol SCADA\data\Certificates`. Возвращенные
+   файлы ключей получают права папки `C:\Program Files`, которые позволяют
+   читать их любому пользователю компьютера, поэтому ограничьте доступ к ним
+   (вторая команда нужна только на центральном компьютере, где есть подпапка
+   `ca`):
 
    ```bat
    icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
+   icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ca\ca_key.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
    ```
 
    Если папки `Certificates` нет в

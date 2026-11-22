@@ -24,6 +24,11 @@ permalink: /server/backup/
   [Новый удостоверяющий центр]({{ '/server/opcua/' | relative_url }}#opcua-renewal)). Храните копию ключей так же
   надежно, как пароли.
 
+Горячий резервный Сервер в версии 2.6 не поддерживается, поэтому центральный
+компьютер — единственная точка отказа объекта, и если он выйдет из строя,
+вернуть объект к работе можно только восстановлением из резервной копии (смотрите
+[Резервирование]({{ '/architecture/' | relative_url }}#резервирование)).
+
 **Под Linux** копируйте папку `/var/lib/scada` целиком и папку
 `/opt/telecontrol-scada/data/Certificates`, остановив процессы командой
 `sudo /opt/telecontrol-scada/bin/scada-setup stop`. В `/var/lib/scada`
@@ -83,8 +88,8 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 
 1. Остановите процессы: `scada-setup stop`.
 2. Верните на место папку `%ProgramData%\Telecontrol\SCADA Server` (и, если
-   ее нет, папку `Certificates`, а затем ограничьте доступ к файлу ключа
-   командой `icacls`, приведенной ниже, в шаге 3 для нового компьютера) из
+   ее нет, папку `Certificates`, а затем ограничьте доступ к файлам ключей
+   командами `icacls`, приведенными ниже, в шаге 3 для нового компьютера) из
    резервной копии.
 3. Запустите процессы: `scada-setup start` с
    [параметрами компьютера]({{ '/server/setup/' | relative_url }}#scada-setup-options). Возвращенная папка получает права
@@ -99,10 +104,14 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
 2. Верните папку `%ProgramData%\Telecontrol\SCADA Server` из резервной копии.
 3. **Если имя компьютера то же**, верните и папку
    `C:\Program Files\Telecontrol SCADA\data\Certificates`, а затем ограничьте
-   доступ к файлу ключа (при копировании он получает права папки):
+   доступ к файлам ключей. Скопированный файл получает права папки
+   `C:\Program Files`, которые позволяют читать его любому пользователю
+   компьютера, а `start` и `apply` права на эти файлы не исправляют. Вторая
+   команда нужна только на центральном компьютере, где есть подпапка `ca`:
 
    ```bat
    icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
+   icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ca\ca_key.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
    ```
 
    **Если имя компьютера другое**, не возвращайте из папки `Certificates`
@@ -111,7 +120,8 @@ rem и C:\Program Files\Telecontrol SCADA\data\Certificates
    пару, только если ни одного из двух файлов нет. **Подпапку `ca`
    центрального компьютера верните в любом случае** — иначе `apply` создаст
    новый удостоверяющий центр, и остальные компьютеры придется подключать
-   заново (смотрите [Новый удостоверяющий центр]({{ '/server/opcua/' | relative_url }}#opcua-renewal)). На
+   заново (смотрите [Новый удостоверяющий центр]({{ '/server/opcua/' | relative_url }}#opcua-renewal)) — и
+   ограничьте доступ к ее ключу второй командой `icacls`, приведенной выше. На
    компьютере без `scada-config` выполните `apply` на шаге 4 вместе с
    `--central-fingerprint`, чтобы получить новый сертификат от
    удостоверяющего центра. Отпечаток возьмите из вывода `scada-setup status`

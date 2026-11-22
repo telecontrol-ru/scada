@@ -119,6 +119,40 @@ Client take effect in every process.
   environment variable) — the [root password]({{ '/en/server/security/' | relative_url }}#root-password), required by
   `apply` and `migrate --execute` on a computer running `scada-config` or
   `scada-filesystem`.
+
+  **Pass the passwords in the environment variables, not as options.** A
+  password given in `--svc-password` or `--root-password` stays in the
+  command history (Linux shells write it to a file, such as
+  `~/.bash_history`) and, while `scada-setup` runs, shows in the process list
+  with its command line (on Linux, to any user of the computer). The
+  examples on this page show the options for brevity; instead, at a Windows
+  command prompt (cmd), set the variables before the command and clear them
+  after it:
+
+  ```bat
+  set SCADA_SETUP_SVC_PASSWORD=<password>
+  set SCADA_SETUP_ROOT_PASSWORD=<root password>
+  "C:\Program Files\Telecontrol SCADA\bin\scada-setup.exe" apply --tiers <this computer's processes> ...
+  set SCADA_SETUP_SVC_PASSWORD=
+  set SCADA_SETUP_ROOT_PASSWORD=
+  ```
+
+  **On Linux** `sudo` does not pass the user's environment variables to the
+  command by default, so a variable set in the shell does not reach
+  `scada-setup`. Read the passwords without echoing them and pass them with
+  `sudo --preserve-env=…` (or `sudo -E`, which passes every variable):
+
+  ```sh
+  read -rs SCADA_SETUP_SVC_PASSWORD; export SCADA_SETUP_SVC_PASSWORD
+  read -rs SCADA_SETUP_ROOT_PASSWORD; export SCADA_SETUP_ROOT_PASSWORD
+  sudo --preserve-env=SCADA_SETUP_SVC_PASSWORD,SCADA_SETUP_ROOT_PASSWORD \
+    /opt/telecontrol-scada/bin/scada-setup apply --tiers <this computer's processes> ...
+  unset SCADA_SETUP_SVC_PASSWORD SCADA_SETUP_ROOT_PASSWORD
+  ```
+
+  The form `sudo SCADA_SETUP_SVC_PASSWORD=<password> …` passes the variable
+  too, but a password written into it again ends up in the command history
+  and the process list.
 * `--demo` — `apply` only: create the configuration databases that do not
   exist yet from the demo project rather than empty (see
   [Demo project]({{ '/en/getting-started/' | relative_url }}#demo)).

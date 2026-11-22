@@ -12,7 +12,7 @@ permalink: /en/dev/devices/
 {:toc}
 
 The equipment window can be opened from the main menu with
-`More -> Equipment`.
+`More -> Hardware`.
 
 ![]({{ '/img/hardware-tree.png' | relative_url }})
 
@@ -60,9 +60,10 @@ IEC 60870-5 direction's protocol is set by the command that creates it
 (`IEC 60870-104 Link` or `IEC 60870-101 Link`).
 
 {: .note }
-> In early builds of this version such lists could offer no choices at all,
-> and the field could not be changed from the Client. If the lists are empty
-> on your site, upgrade the Server processes.
+> If such a list offers no choices at all and the field cannot be changed
+> from the Client, the Server processes are not sending the choices in the
+> type description. The Client is not the cause: upgrade the Server
+> processes.
 
 ### Address map {#address-map}
 
@@ -397,9 +398,10 @@ Examples:
   (see the DOUBLE warning above)
 
 > **Client 2.6.8:** the Каналы (Channels) tab of the Properties window has no
-> Основной ввод, Резервный ввод and Вывод sections, so in this version an object's
+> Основной ввод (Primary input), Резервный ввод (Backup input) and Вывод (Output)
+> sections, so in this version an object's
 > device and channel are set in the group's [Element Properties]({{ '/en/development/' | relative_url }})
-> table (the Устройство and Канал columns). The Properties screenshots on this page
+> table (the Устройство (Device) and Канал (Channel) columns). The Properties screenshots on this page
 > come from a later Client build that has those sections.
 
 The two parameter screenshots below show where these MODBUS channel
@@ -586,6 +588,47 @@ An extra interrogation or clock synchronisation is requested with the Poll
 Device and Synchronize Clock commands, in the Device submenu of the
 device's own context menu — in the Equipment window, for example. Data
 objects do not offer them.
+
+### IEC 60870-5 channel-address format {#iec-channel-address}
+
+The channel address of an IEC 60870-5 device's object is the information
+object address (IOA): a decimal integer with no spaces or sign, for example
+`115`.
+
+In the Channel and Backup channel fields (Russian UI: «Канал», «Канал
+(резерв)») only this number is entered. The object receives a value when the
+information object address in the device's frame is exactly the number in the
+field.
+
+In the Control channel field («Канал (управление)») the address may be preceded
+by a command type and a colon: `TYPE:address`. The type is written in upper
+case; the Server does not accept an address such as `float:5`, and the
+command is not executed.
+
+| Type | Command |
+|:---|:---|
+| `BOOL` | `C_SC_NA_1` — single command |
+| `INT16` | `P_ME_NB_1` — parameter of measured value, scaled value (16-bit integer) |
+| `FLOAT` | `P_ME_NC_1` — parameter of measured value, short floating point |
+
+Without a type a TS object is controlled with `C_SC_NA_1` and a TIT object with
+`P_ME_NC_1`. Only `C_SC_NA_1` runs in two stages, so for `INT16:` and `FLOAT:`
+set the object's
+[Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control) to No.
+See also [IEC 60870-5]({{ '/en/protocols/' | relative_url }}#iec-60870).
+
+The address must fit the direction's Object address size: with 1 byte 0 to
+255, with 2 bytes 0 to 65535, with 3 bytes (the default) 0 to 16777215. The
+Server does not check a larger address: an object with one in its Channel
+field receives no values, and a command carries only the address's low-order
+bytes, so it goes to a different information object.
+
+Examples:
+
+* `115` in the Channel field — the object receives the values of information
+  object 115;
+* `FLOAT:2001` in the Control channel field — the TIT object is controlled with
+  `P_ME_NC_1` at address 2001.
 
 ### Retransmission to a dispatch centre {#retransmission}
 
@@ -854,3 +897,37 @@ Server objects can also be created by dragging IEC 61850 model objects
 into an object group. Dragging a full functional-constraint group
 creates all objects from that group. Dragging a model object onto an
 existing SCADA object updates the existing binding.
+
+## OPC DA objects (Windows) {#opc}
+
+The tags of the external OPC servers that the `scada-opc` process connects to
+(Windows only; see [OPC DA]({{ '/en/protocols/' | relative_url }}#opc)) are
+not devices of the Equipment window: an OPC server is not in the Device list,
+and in Client 2.6 a tag cannot be dragged onto an object. An object is bound
+to a tag by hand, with the tag's address in a channel field:
+
+1. Create a TS or TIT object
+   (see [Data items]({{ '/en/dev/data-items/' | relative_url }})).
+2. Open the [Element Properties]({{ '/en/development/' | relative_url }})
+   table of its group. In the Устройство (Device) column choose «&lt;Нет&gt;»
+   (&lt;None&gt;), and in the Канал (Channel) column enter the tag's address in
+   braces:
+
+   ```text
+   {OPC.ProgID\ItemID}
+   ```
+
+   where `ProgID` is the OPC server's programmatic identifier and `ItemID` the
+   tag's identifier on that server, separated by a backslash `\`. An OPC
+   server on another computer is given with the computer's name:
+   `{OPC.\\computer\ProgID\ItemID}`.
+3. If the object is to be controlled, enter the same address in the
+   Канал (управление) (Channel (control)) column, with
+   Устройство (управление) (Device (control)) set to «&lt;Нет&gt;», and set
+   [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}#two-stage-control)
+   to No: the Server refuses the select of an OPC object.
+
+For example, `{OPC.Vendor.OPCServer.1\Channel1.Device1.Tag1}` is the tag
+`Channel1.Device1.Tag1` of the OPC server `Vendor.OPCServer.1` on the same
+computer as the `scada-opc` process. Take the ProgID and ItemID from the OPC
+server's documentation or configuration and write them exactly as given there.

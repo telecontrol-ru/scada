@@ -20,6 +20,8 @@ The Server is the central runtime component of Telecontrol SCADA. It acquires da
 
 The Server is a set of separate processes: `scada-config`, `scada-proxy`, `scada-historian`, `scada-filesystem`, the protocol processes, and others. What each one does and the typical installations are described in [Server processes]({{ '/en/architecture/' | relative_url }}#tiers). Every process is started and configured the same way, so below "the Server" means any of them, and `server.json` means that process's parameter file.
 
+A hot-standby Server is not supported in version 2.6, so the central computer is a single point of failure of the site (see [Redundancy]({{ '/en/architecture/' | relative_url }}#redundancy)).
+
 
 Sections:
 

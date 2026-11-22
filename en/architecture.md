@@ -84,7 +84,9 @@ For user setup details, see
 
 ## Data objects {#data-items}
 
-The main information objects are discrete signals, measured values, and control channels. Objects can be identified by number and, optionally, by a unique alias. Their values can also be archived: the object is assigned an archive, and the retention depth in days is set on the archive, not on the object (see [Archiving]({{ '/en/dev/history/' | relative_url }})).
+The main information objects are discrete signals, measured values, and control channels. Objects can be identified by number and, optionally, by a text alias: a user-defined name unique within the system (no spaces; for the allowed characters, see [Binding objects]({{ '/en/dev/displays/' | relative_url }}#binding)). The identification is needed to bind objects to elements of graphic schematics and to use them in calculated-value expressions. Their values can also be archived: the object is assigned an archive, and the retention depth in days is set on the archive, not on the object (see [Archiving]({{ '/en/dev/history/' | relative_url }})).
+
+**WARNING: deleting an object deletes all of its history.**
 
 Objects may be grouped into hierarchical structures that reflect the monitored process layout, for example by plant, substation, or device group.
 
@@ -113,8 +115,8 @@ data.
 
 Incoming values can be:
 
-* inverted for discrete objects
-* scaled linearly for measured values
+* inverted (for discrete objects)
+* scaled linearly (for measured values)
 * calculated from a [formula]({{ '/en/formulas/' | relative_url }})
 
 This describes redundancy of an object's data sources. **Redundancy of the
@@ -182,7 +184,12 @@ retransmission functions.
 
 If a user edits the configuration of a direction or device, or adds or
 removes one, the scanner re-establishes or closes the communication
-channel automatically.
+channel automatically. Once communication with a device is established,
+the scanner runs the initialization commands (full poll, time
+synchronization) according to the device's configuration.
+
+The scanner passes control commands, and other commands received from
+users, on to the devices.
 
 When communication is lost or restored, the scanner logs system events.
 For operator-side communication monitoring, see
@@ -195,6 +202,15 @@ distributes it to system objects. It calculates quality, handles source
 redundancy, computes formulas and emulated values, and notifies clients
 about object updates. In the reverse direction, it routes user commands
 back to the scanner for execution.
+
+The real-time subsystem distributes the values of the devices' information
+channels between system objects according to the configuration. When an
+object has two data sources (primary and backup), it switches to the backup
+source and back automatically, depending on the quality of the primary one.
+
+The value of a discrete object can be inverted, according to its
+configuration. A measured object can define a linear transformation that
+converts the physical scale into the logical one.
 
 After a protocol process restarts, its archived objects take their latest
 values from history — with the quality and time they were archived with —
@@ -241,11 +257,28 @@ menu.
 Measured objects can define limit monitoring with alarm and pre-alarm
 threshold pairs. Each pair has an upper and lower boundary.
 
+Both pairs may be set, or only one of them. The upper and lower limits of a
+pair need not be set together: one bound may be set alone.
+
+Pre-alarm limits, if set, must lie inside the alarm limits.
+
 ![]({{ '/img/limits.png' | relative_url }})
 
 When a discrete object changes state, the real-time subsystem logs a
 system event. For measured objects, entering or leaving a limit range
-also generates events.
+also generates events:
+
+| Limit | Event when the value enters the band |
+|-------|--------------------------------------|
+|       | Alarm: Value > x                     |
+| Upper alarm |                                |
+|       | Value > x                            |
+| Upper pre-alarm |                            |
+|       | Value is normal                      |
+| Lower pre-alarm |                            |
+|       | Value < x                            |
+| Lower alarm |                                |
+|       | Alarm: Value < x                     |
 
 **WARNING: a limit event gets the object's severity** (the Severity
 field in its properties, 10 by default), not a severity of its own for
@@ -285,7 +318,8 @@ parameters).
 ### Aperture
 
 For measured objects, aperture filtering suppresses small value changes.
-Any deviation smaller than the configured aperture is ignored.
+The aperture is set in absolute units, the same as the object's value.
+Any deviation from the current value smaller than the aperture is ignored.
 
 ### Deadband
 

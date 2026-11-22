@@ -38,8 +38,13 @@ Displays — files with the `sde` and `xsde` extensions — are **created and
 edited in the Modus graphical editor**. The editor is not part of the SCADA
 delivery: it is a separate Windows program supplied by its maker, MODUS
 ([swman.ru](http://swman.ru/)). The SCADA Client **shows** the displays
-itself, with its built-in module; workstations do not need the ActiveXeme
-component for that.
+itself, with its display module; workstations do not need the ActiveXeme
+component for that. In version 2.6 the display module is not included in the
+Client packages and is supplied separately: without it the Client shows the
+message "No display runtime is installed." («Модуль отображения мнемосхем не
+установлен.») instead of the display (see
+[When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown)
+and [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 Elements bound to SCADA objects with the `ключ_привязки` property (see
 [below](#binding)) show the present positions and values in the Client; what
@@ -129,8 +134,12 @@ separator's rows (closed and open), not the breaker's, and also falls back to
 bright green and red; its symbol's lines take the position colour too. A
 separator given a voltage class on the schematic is drawn in that voltage's
 colour, as the Modus graphics editor draws it, and does not show its position
-by colour; read such a separator's position in a table or the Inspector. The
-separator's colouring needs the next build of the display module (see
+by colour; read such a separator's position in a table or the Inspector. Not
+every display module draws the separator's colouring: if, while a display is
+open, the Client's status bar shows the warning "Old display runtime: bad
+values may not be marked" («Устаревший модуль отображения мнемосхем:
+недостоверные значения могут не отмечаться»), the installed module does not
+draw it (see
 [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 ![]({{ '/img/modus-f11-bus.png' | relative_url }})
@@ -172,5 +181,11 @@ changes colour and a disconnector moves its blade. The Client subscribes to
 each address the way it does to a formula in a table, and re-evaluates the
 shape's formulas whenever the value changes. A value field whose formula is
 `Tag.<tag name>` shows the value as a table does, with its units.
+
+Vidicon displays are drawn by the same display module as Modus displays; in
+version 2.6 it is not included in the Client packages and is supplied
+separately (see
+[When a schematic is not shown]({{ '/en/client/display/' | relative_url }}#not-shown)
+and [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 See [Live values on a Vidicon schematic]({{ '/en/client/display/' | relative_url }}#live-values-vidicon).

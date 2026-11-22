@@ -46,7 +46,8 @@ The workbench regions:
   Transmission rule; they fill from the current selection.
 - **Status strip** (bottom) — the event summary, the minimum severity, the
   highest active severity, the user and role, the connection state, the server
-  round-trip time, and the server address and version. This is the only place
+  round-trip time, the server address and the Client's version (for example
+  "v2.6.8"; the strip does not show the server's version). This is the only place
   the user and the connection details are shown. When the installed display
   module cannot mark unreliable values, the strip also shows the warning "Old
   display runtime: bad values may not be marked" («Устаревший модуль
@@ -278,6 +279,15 @@ example) are not listed in the menu at all; for a selected object the
 The sign-in window has a "Server:" row (the server type and the address), a
 user name, a password and a "Sign in automatically next time" box. Signing in
 is described in [Getting started]({{ '/en/getting-started/' | relative_url }}#client-start).
+
+> **Caution.** When a session under this name is already open — the previous
+> dispatcher did not sign out at another workstation, say — the Client asks:
+> "The specified username is already in use by another session. Disconnect
+> the open session and continue?" («Указанное имя пользователя уже
+> используется другой сессией. Разорвать открытую сессию и продолжить?»).
+> «Да» (Yes) is the default button in that window: pressing *Enter*
+> disconnects the open session at once. Read the question before answering
+> (see [User configuration]({{ '/en/dev/users/' | relative_url }})).
 
 The server type is picked from the list left of the address; the list is shown
 only when the client supports more than one type. To work with the SCADA Server,
@@ -618,13 +628,20 @@ decision.
 
 ### Setting a password {#set-password}
 
-The *Set Password…* command behaves differently depending on whose account it
-is:
+The *Set Password…* (*Задать пароль…*) command is in a user's context menu.
+It is available only with the Configure right and only when a user is
+selected, and the Users window opens only with that right. So a Dispatcher or
+a Manager cannot change even their own password in version 2.6: they ask the
+administrator, who sets a new one.
+
+The command behaves differently depending on whose account it is:
 
 - **your own** — the current password must be entered;
 - **someone else's** (an administrator reset) — the current-password field is
   not shown: the server does not check it, so asking for it would be
-  misleading.
+  misleading. In version 2.6 the server accepts such a reset only from `root`
+  or from an administrator account migrated from version 2.5 (see
+  [User configuration]({{ '/en/dev/users/' | relative_url }})).
 
 ### Audit log {#audit-log}
 

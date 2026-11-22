@@ -221,10 +221,14 @@ so it leaves events below the threshold unacknowledged.
 > **Caution.** The threshold is kept in the profile and stays in force until
 > *All* is chosen. If the tiles or the count show an event the panel does not,
 > check "Severity: N" in the status bar first — it is the panel's threshold.
+> "Severity: 1" («Важность: 1») means there is no threshold and the panel
+> shows every event: the status bar reads so after *All* is chosen and before
+> any threshold has been set, because 1 is the lowest possible severity.
 
 To change it, right-click in the "Current Events" panel, choose
-**Severity → Custom...** and enter the minimum severity (0 means all events);
-**Severity → All** removes the threshold.
+**Severity → Custom...** and enter the minimum severity (0 means all events;
+the status bar then reads "Severity: 1"); **Severity → All** removes the
+threshold.
 
 ## Acknowledging
 

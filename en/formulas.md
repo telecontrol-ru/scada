@@ -155,9 +155,10 @@ value either.
 * `!(TS.1 = TS.2)` — true when the two TS objects differ.
 
 > **Client 2.6.8:** the Каналы (Channels) tab of the Properties window has no
-> Основной ввод, Резервный ввод and Вывод sections, so in this version an object's
+> Основной ввод (Primary input), Резервный ввод (Backup input) and Вывод (Output)
+> sections, so in this version an object's
 > device and channel are set in the group's [Element Properties]({{ '/en/development/' | relative_url }})
-> table (the Устройство and Канал columns). The Properties screenshots on this page
+> table (the Устройство (Device) and Канал (Channel) columns). The Properties screenshots on this page
 > come from a later Client build that has those sections.
 
 ![]({{ '/img/ti-formula.png' | relative_url }})

@@ -301,10 +301,14 @@ reached, from an elevated command prompt:
    (`%ProgramData%\Telecontrol\SCADA Server`, or the folder given as
    `--data-root`), replacing what is there, and the
    `C:\Program Files\Telecontrol SCADA\data\Certificates` folder. The
-   restored key file takes the folder's permissions, so restrict access to it:
+   restored key files take the permissions of the `C:\Program Files` folder,
+   which let any user of the computer read them, so restrict access to them
+   (the second command is needed only on the central computer, which has the
+   `ca` subfolder):
 
    ```bat
    icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ServerPrivateKey.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
+   icacls "C:\Program Files\Telecontrol SCADA\data\Certificates\ca\ca_key.pem" /inheritance:r /grant:r *S-1-5-18:F *S-1-5-32-544:F
    ```
 
    If the backup has no `Certificates` folder, `apply` creates a new certificate, and OPC UA

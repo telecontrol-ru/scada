@@ -17,10 +17,9 @@ by the chosen [aggregation function](#function). A summary is built from
 the Server's archive (see
 [Reports and analysis]({{ '/en/client/reports/' | relative_url }})).
 
-For one object or multiple objects, the client can open a `Summary`
-table:
-
-![]({{ '/img/menu-summary.png' | relative_url }})
+To open a summary, select one or more objects (in the object panel or a
+table, say) and choose *Summary* («Сводка») in the object's context menu
+or in the **Item** menu («Сигнал»).
 
 Columns can be added or removed through the object panel by toggling the
 selected objects.
@@ -94,7 +93,9 @@ midnight.
 ## Aggregation function {#function}
 
 The function is chosen in the *Function* submenu — in the summary's context
-menu or in the **Item** menu.
+menu or in the **Item** menu:
+
+![]({{ '/img/menu-summary.png' | relative_url }})
 
 The Server (its archive process) computes the functions from the **changes
 recorded in the archive** within the interval. **Invalid values are left

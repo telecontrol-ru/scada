@@ -44,14 +44,19 @@ typing an object alias directly into the last row of the table. In
 addition to aliases, formulas can be used instead of direct object
 references (see [Formulas](#formulas)).
 
-Deleting a selected row removes it from the table view. Double-clicking
-an object row opens that object's graph.
+The `Delete` key removes the selected row from the table. Rows can also be
+removed from the object panel: unchecking an object there removes every row
+of the table that names it. Double-clicking an object row opens that object's
+graph.
 
 If there are unacknowledged events for an object, the value cell starts
-blinking. In that state, double-clicking the row acknowledges the
-related events for the object. The `Event` column shows the most
-recent unacknowledged system event, and a tooltip can preview the first
-few events.
+blinking. In that state, double-clicking the row acknowledges all of the
+object's events. The `Event` («Событие») column shows the most recent
+unacknowledged system event for the object; when there are several, their
+count is shown first, in square brackets. Hovering the mouse over the «Имя» (Name)
+cell of a row with events shows, after a short delay, the first three events in a tooltip. All
+of the object's events can be seen in the event journal: select the row and
+choose the *Events* («События») command.
 
 **An account with neither the `Operator` nor the `ConfigureAdmin` role
 cannot acknowledge events** (see

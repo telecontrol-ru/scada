@@ -30,7 +30,7 @@ processes (see [Server processes]({{ '/en/architecture/' | relative_url }}#tiers
 
 Distributions are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases). The version 2.6
-Client packages are in release [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8), which replaces releases 2.6.4 and 2.6.3. The page marks
+Client packages are in release [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8), which replaces releases 2.6.0, 2.6.3 and 2.6.4. The page marks
 release 2.5.7 as the latest, because it is the last release that carries a
 Server installer.
 
@@ -44,8 +44,8 @@ So today the 2.6.8 Client can be installed, for evaluation, on workstations
 that work with a 2.5.7 Server (see [Buying now](#buy-now)). What works in
 that combination and what does not is listed under
 [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
-2.6 Clients before 2.6.3 lack the support for a 2.5.7 Server, and two-stage
-control of objects does not work with them. **Do not use the 2.6.0 Client**
+2.6 Clients before 2.6.3 connect to a 2.5.7 Server but cannot control
+objects in two stages through it. **Do not use the 2.6.0 Client**
 at all — it also stores the remembered automatic-login password
 unencrypted; use the 2.6.8 Client.
 
@@ -60,7 +60,8 @@ configuration in `%ProgramData%\Telecontrol\SCADA Server\Configuration`.
 Until the 2.6 Server packages are published, a new site can
 install only a 2.5.7 Server, with the installer `telecontrol-scada-2.5.7.msi`
 from release [2.5.7](https://github.com/alexsmn/scada-client/releases/tag/v2.5.7).
-It has no `scada-setup` command, and its installation is not described in
+In version 2.5.7 the file of that name installs both the Server and the
+Client, unlike the 2.6 Client package of the same name. It has no `scada-setup` command, and its installation is not described in
 this manual: ask Telecontrol (mail@telecontrol.ru) for it, and about keys
 and licenses. Without a hardware key a 2.5.7 Server runs for two hours in
 demo mode, which is enough for a trial. A 2.5.7 hardware key can later be
@@ -72,6 +73,12 @@ and exporting the configuration, which the 2.6 Client cannot do with a
 2.5.7 Server. The 2.6.8 Client with a 2.5.7 Server is, for now, for
 evaluation. The schematic display module is not part of the releases and is
 supplied separately; agree the terms of its supply with Telecontrol.
+
+**Securing a 2.5.7 Server.** After installation a 2.5.7 Server lets `root`
+sign in with an empty password: set a strong password at the first sign-in
+and create separate accounts. Clients connect to it on TCP port 2000
+unencrypted, passwords included, so open that port only to the Client
+workstations and never beyond the site network.
 
 
 ## Choose the Server processes {#choose}
@@ -327,7 +334,9 @@ version with every version 2.6 release:
   whether the app is signed and notarised by Apple; the release 2.6.8
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
   refusal, open *System Settings → Privacy & Security* and click *Open
-  Anyway*.
+  Anyway*. To avoid doing that on every computer, run
+  `xattr -dr com.apple.quarantine "/Applications/Telecontrol SCADA Client.app"`
+  once in Terminal after copying the app.
 
 **These packages do not include the display module yet** (see
 [Displaying schematics](#displays)).
@@ -486,7 +495,13 @@ machine; any other license is bound to no computer and needs no setting. See
 
 The built-in `root` account has all rights. Its password is set by the
 `--root-password` option of `scada-setup apply` (or the
-`SCADA_SETUP_ROOT_PASSWORD` environment variable). On a computer running
+`SCADA_SETUP_ROOT_PASSWORD` environment variable). A password given on the
+command line stays in the shell history and is visible in the process list,
+so on a permanent installation prefer setting both passwords through the
+`SCADA_SETUP_ROOT_PASSWORD` and `SCADA_SETUP_SVC_PASSWORD` environment
+variables (under Linux `sudo` does not pass the environment by default: use
+`sudo --preserve-env=SCADA_SETUP_SVC_PASSWORD,SCADA_SETUP_ROOT_PASSWORD` or
+`sudo -E`; see the example in [scada-setup options]({{ '/en/server/setup/' | relative_url }}#scada-setup-options)). On a computer running
 `scada-config` or `scada-filesystem`, `apply` refuses to run without it:
 those processes keep the configuration in databases of their own, each has
 its own `root` account, which would otherwise accept an empty password.
@@ -529,6 +544,11 @@ hand:
     `scada-proxy` connects to them.
 
 When every process runs on one computer, only port 2000 needs opening.
+
+**WARNING:** the Client connection on port 2000 (server type «Телеконтроль»,
+Telecontrol) is not encrypted: data and passwords cross the network in clear.
+Open port 2000 only to the Client workstations' subnet or through a VPN, and
+never expose it beyond the site network.
 
 The rules can be created from an elevated command prompt (replace the
 addresses in the example with your computers'; `remoteip` takes them
@@ -793,12 +813,12 @@ set up with `--demo`, you see the [demo project](#demo).
 
 After you sign in:
 
-1. Open the object panel with `More -> Objects`. The object tree
+1. Open the object panel with `More -> Items`. The object tree
    shows the current values. Double-clicking an object opens its
    [Graph]({{ '/en/client/graph/' | relative_url }}).
 1. Open available displays from the
    [Display]({{ '/en/client/display/' | relative_url }}) menu.
-1. Check equipment status with `More -> Equipment`. The icons to the left of
+1. Check equipment status with `More -> Hardware`. The icons to the left of
    the devices show the connection state.
 1. Create user accounts with `More -> Users`, and work under them rather
    than as `root`. See
@@ -1112,7 +1132,7 @@ Otherwise, check that the schematic file is in
 <dt>Object values are shown in gray</dt>
 <dd>Gray value text means the value is not valid, for example because the
 device is unreachable. Check the device state in the equipment panel
-(<code>More -> Equipment</code>). A blinking yellow row background means
+(<code>More -> Hardware</code>). A blinking yellow row background means
 something else — the object has an unacknowledged event.</dd>
 
 </dl>

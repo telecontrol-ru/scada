@@ -58,9 +58,9 @@ The menu bar provides these main groups of commands:
 
 * **Display**: open available schematic displays
 * **Table**: *New Table*, *New Custom Table*, *New Data Table* and *Group
-  Table*, followed by the tables saved to [Favourites](#pages-and-windows)
+  Table*, followed by the tables saved to [Favourites](#favorites)
 * **Graph**: *New Graph*, which opens a new graph window, followed by the
-  graphs saved to [Favourites](#pages-and-windows)
+  graphs saved to [Favourites](#favorites)
 * **Item**: the commands that apply to the selected object or device and to
   the active window — the same as the context menu
 * **More**: open the current-events panel (*Events*) and the *Event Journal*,
@@ -287,10 +287,14 @@ disconnect whose sign-in window was closed — the client opens the signed-in
 account's profile in the same way. When the same account signs in again
 after a dropped connection, the open windows stay as they were.
 
-If the account is not allowed several sessions at once and is already in use
+If the account is not allowed several sessions at once (an account created in
+version 2.6 allows only one; see
+[User configuration]({{ '/en/dev/users/' | relative_url }})) and is already in use
 on another computer, signing in asks "The specified username is already in use
 by another session. Disconnect the open session and continue?". Answering yes
 ends the session on the other computer, whose client then stays disconnected.
+Yes is the default button in this prompt: do not press *Enter* without reading
+it, or the session on the other workstation is ended.
 
 ### Automatic sign-in {#auto-login}
 
@@ -367,6 +371,9 @@ as:
   is blocked; see [Manual input](#manual-input))
 * *Control...* — a control command (see [Control](#control))
 * *Manual Input* (see [Manual input](#manual-input))
+* *Limits...* («Уставки»): opens the limits of a measured (ТИТ) object; offered
+  only on measured objects and only with the Control privilege (see
+  [Limits](#limits))
 
 If a matching window is already open for the same object, the client
 switches to it instead of opening a duplicate.
@@ -393,15 +400,21 @@ You can also:
 > (the "Dispatcher" level) is enough for it. While the device is disabled the
 > Server does not communicate with it, and all of its objects carry the [С]
 > (no connection) flag. Before confirming *Disable*, check the device name in
-> the prompt, and remember to enable it again.
+> the prompt, and remember to enable it again. Yes is the default button in the
+> prompt, so *Enter* disables the device.
 
 A forced poll and clock synchronization are offered on devices only, not on
 data objects: select the device itself, for example in the equipment panel.
 
 For retransmission projects, the client edits a destination device's
 retransmission table — the rules by which selected objects are forwarded to
-upper-level systems. See
-[Transmission rules]({{ '/en/client/workbench/#transmission' | relative_url }}).
+upper-level systems. Open it with *Transmission table* («Таблица
+ретрансляции») on the selected destination device. The table is filled by
+selecting objects in the object tree; the addresses of the retransmitted
+objects are then set in it. See
+[Transmission rules]({{ '/en/client/workbench/#transmission' | relative_url }}):
+
+![]({{ '/img/client-retransmission.png' | relative_url }})
 
 ### Common commands {#common-commands}
 
@@ -656,8 +669,14 @@ remove it, choose *Unlock* in the object's context menu (available only for a
 blocked object). After that, device telemetry is authoritative again, and the
 journal records a "Lock removed" event («Блокировка снята»).
 
-Limit values can also be edited from the client. Warning limits must
-stay within the configured alarm-limit range.
+### Limits {#limits}
+
+Setting limits («Уставки»):
+
+![]({{ '/img/limits.png' | relative_url }})
+
+The minimum/maximum range of the warning limits must not extend beyond the
+minimum/maximum range of the alarm limits.
 
 ## Object panel {#object-tree}
 
@@ -674,8 +693,10 @@ what the colours, dots and letters mean see
 [Reading values and colours](#quality-legend).
 
 Groups show the communication state of the device assigned to that
-group. In administration mode, objects can also be dragged between
-groups.
+group. The device is assigned in the group's parameters, in administration
+mode:
+
+![]({{ '/img/devices.png' | relative_url }})
 
 The toggle at the left side of each object or group controls whether the
 object is included in the current view. Clicking a group's toggle includes
@@ -696,6 +717,12 @@ opens: the objects go into the current view.
 * With *Ctrl* held, objects are added to the current view without removing
   anything, including a view of another kind (for example, an object into an
   open table).
+
+Right-clicking opens a context menu with the operations that apply to the
+selected object or group of objects.
+
+In administration mode, objects can be dragged between groups with the left
+mouse button held down.
 
 ## Reading values and colours {#quality-legend}
 
@@ -770,22 +797,36 @@ severity, in a table it is the "Uncertain" quality.
 
 The equipment panel is available from `More -> Hardware`.
 
-It shows the device hierarchy and communication-state indicators for
-each device, including disabled channels, enabled channels, and
-non-responding devices.
+### Device states
 
-The equipment panel is also the entry point to:
+The panel shows the device hierarchy, starting at the top-level items (no
+separate root row is drawn). To the left of each device is an indicator of the
+current state of its communication channel: *channel disabled*, *channel
+enabled* and *device not responding*:
 
-* [Device watch]({{ '/en/client/device-watch/' | relative_url }}) for
-  protocol traffic
-* [Device metrics]({{ '/en/client/device-metrics/' | relative_url }})
-  for service information
-* the IEC 61850 data model view for connected IEC 61850 devices
+![]({{ '/img/hardware-tree.png' | relative_url }})
+
+To see service information about a device's communication channel, select the
+device, right-click it and choose *Metrics* («Метрики»); see
+[Device metrics]({{ '/en/client/device-metrics/' | relative_url }}):
+
+![]({{ '/img/device-metrics.png' | relative_url }})
+
+### Watch
+
+To watch the live data-exchange traffic with a device, select the device,
+right-click it and choose *Watch* («Наблюдение») from the pop-up menu. See
+[Device watch]({{ '/en/client/device-watch/' | relative_url }}).
 
 ### IEC 61850 devices {#iec-61850}
 
-When communication with an IEC 61850 device is established, its data
-model appears as a `Model` subtree under the device node. See
+The equipment panel also shows the data model of IEC 61850 devices. When
+communication with an IEC 61850 device is established, its data
+model appears as a `Model` subtree under the device node:
+
+![]({{ '/img/iec-61850-model.png' | relative_url }})
+
+See
 [Protocols]({{ '/en/protocols/' | relative_url }}#iec-61850) and
 [Development]({{ '/en/development/' | relative_url }}) for the
 engineering details behind this view.
@@ -849,19 +890,13 @@ The main operator-facing views:
 
 ## Favorites {#favorites}
 
+A window is added with *Window → Add to Favourites* or from its title's
+context menu. A saved window opens from the *Favourites* panel, and graphs and
+tables also from the bottom of the *Graph* and *Table* menus.
+
 ![]({{ '/img/favorites.png' | relative_url }})
 
 ## Device watch {#device-watch}
 
 See [Device watch]({{ '/en/client/device-watch/' | relative_url }}).
 
-## Related views
-
-See the dedicated pages for:
-
-* [Summary]({{ '/en/client/summary/' | relative_url }})
-* [Data]({{ '/en/client/data/' | relative_url }})
-* [Device metrics]({{ '/en/client/device-metrics/' | relative_url }})
-* [Event journal]({{ '/en/client/events/' | relative_url }})
-* [Device watch]({{ '/en/client/device-watch/' | relative_url }})
-* [Debugger]({{ '/en/client/debugger/' | relative_url }})
