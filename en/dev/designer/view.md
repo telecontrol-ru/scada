@@ -16,7 +16,7 @@ permalink: /en/dev/designer/view/
 
 - **Scroll** — the mouse wheel or two fingers on a touchpad; with `Shift` the
   wheel scrolls sideways.
-- **Zoom** — `Ctrl` + wheel or a touchpad pinch (zooming around the pointer),
+- **Zoom** — `Ctrl` + wheel (`⌘` + scroll on macOS) or a touchpad pinch (zooming around the pointer),
   `Ctrl++` and `Ctrl+-`, *View — Zoom to Fit* (`Ctrl+0`), the zoom field in
   the status bar (which takes a typed value such as `150%`), or the context
   menu's *View* zoom entries (400, 200, 100, 50%).

@@ -159,7 +159,7 @@ main ones:
 | `Alt+Enter` | Properties panel |
 | `Ctrl++` / `Ctrl+-` / `Ctrl+0` | Zoom in / out / to fit |
 | `Alt+C` | Center the selection |
-| Mouse wheel / `Ctrl` + wheel | Scroll / zoom around the pointer |
+| Mouse wheel / `Ctrl` + wheel (`⌘` + scroll on macOS) | Scroll / zoom around the pointer |
 | Space + drag | Pan the schematic |
 | Arrows (`Ctrl`, `Alt`) | Move the selection by a ruler division (grid step, pixel) |
 | `Ctrl` + drag | Copy the selection |
