@@ -102,10 +102,11 @@ Below the tree, a **Mapped node** group resolves the object addresses found in
 the frame against the address space, giving each one the signal's name and its
 node identifier. An address that is not in the device's address map is marked
 "Not in the device's address map" — so it is visible that something arrived
-from the device and is bound to nothing. Only a retransmission device has an
-address map (it lists the device's retransmission rules), so on a polled
-device every address is marked this way and this group does not resolve
-anything yet.
+from the device and is bound to nothing. Since Client 2.6.8 the address map
+also holds the items the device polls (see
+[Address map]({{ '/en/dev/devices/' | relative_url }}#address-map)); in Clients
+2.6.0–2.6.4 only a retransmission device had a map, and on a polled device
+every address was marked this way.
 
 ## Pause, save and clear
 

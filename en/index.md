@@ -12,7 +12,7 @@ permalink: /en/
 > ([Buying now]({{ '/en/getting-started/' | relative_url }}#buy-now)).
 >
 > * This manual describes version 2.6, published as releases
->   [2.6.0, 2.6.3 and 2.6.4]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
+>   [2.6.0, 2.6.3, 2.6.4 and 2.6.8]({{ '/en/changes/' | relative_url }}#v2-6). Only Client packages
 >   have been published for it so far: the Windows Server installer and the
 >   Linux Server packages will be added later
 >   ([Download]({{ '/en/getting-started/' | relative_url }}#download)).

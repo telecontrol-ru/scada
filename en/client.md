@@ -212,17 +212,18 @@ To hand over a shift without closing the client:
 
 1. The outgoing operator reviews the client's own messages in the events
    panel and tells the incoming operator about anything still open — for
-   example, that a device may have been left in the selected state. These
-   messages are deleted on disconnection, and the incoming operator will not
-   see them.
+   example, that a device may have been left in the selected state. Since
+   Client 2.6.8 unacknowledged client messages stay in the events panel and the
+   journal after disconnection, for the incoming operator too; in Clients
+   2.6.0–2.6.4 they were deleted and the incoming operator did not see them.
 2. The outgoing operator makes sure the status bar reads "Connected" and
    chooses *More → Disconnect from Server*. The client saves their profile on
    the Server, ends the session and opens the sign-in window.
 3. The incoming operator enters their own name and password in the sign-in
    window.
 4. The client closes the outgoing operator's pages and opens the incoming
-   operator's profile: their pages, portfolios, alarm tone and severity
-   threshold. If the incoming account has no profile on the Server yet, the
+   operator's profile: their pages, portfolios, alarm tone, speech and
+   severity threshold. If the incoming account has no profile on the Server yet, the
    default profile opens. Whatever the incoming operator changes is saved into
    **their** profile. The "Control Confirmation" setting is not kept in the
    profile: it is on again at every sign-in.
@@ -262,7 +263,8 @@ A shift can also be handed over by closing the client:
    *Window → New*). When the last one is closed, the client saves the
    profile on the Server, ends the session and exits.
 3. The incoming operator starts the client again and enters their own name
-   and password in the sign-in window.
+   and password in the sign-in window. The client's own messages are lost when
+   it closes — pass anything open on by word of mouth.
 
 > **Caution.** Closing one of several main windows does **not** end the
 > session: the remaining windows keep working under the outgoing operator's
@@ -526,7 +528,7 @@ IEC 60870-5 (SELECT/EXECUTE):
    project (with the Configure right) sets its
    [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
    The Client sets No by itself on new MODBUS, OPC and IEC 60870-5
-   set-point objects; Client 2.6.4 takes an object with an `INT16:` or
+   set-point objects; Clients from 2.6.4 on take an object with an `INT16:` or
    `FLOAT:` type in its control channel, or a TIT object with no type given,
    for a set-point.
    If the device itself refuses the select, the error box starts with
@@ -580,7 +582,7 @@ is acknowledged. The message is also given when the control window was
 closed while the Client was still waiting for the answer to the select
 ("Preparing to control...") and the device then accepted the select; if the
 select was refused, there is no message. For the objects in the first
-point, where nothing is selected on the device, Client 2.6.4 gives no such
+point, where nothing is selected on the device, Clients from 2.6.4 on give no such
 message (Client 2.6.3 did — acknowledge it there; it has no effect).
 
 One-stage control is a single value write and uses neither stage; the

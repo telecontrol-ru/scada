@@ -64,18 +64,20 @@ IEC 60870-5 direction's protocol is set by the command that creates it
 > and the field could not be changed from the Client. If the lists are empty
 > on your site, upgrade the Server processes.
 
-### Address map
+### Address map {#address-map}
 
-A device the SCADA [retransmits](#retransmission) data to has, besides the
-tabs carrying its own parameters, an **Address map** tab: the list of its
-retransmission rules, with the columns Signal (the source object), Type
-(`TS` or `TI`), Address and NodeId. The tab is read-only and appears only when
-the device has rules; a device the SCADA polls has none — its signals'
-addresses are set in the data items' own Channel field (see
-[Data items]({{ '/en/dev/data-items/' | relative_url }})). The
+An IEC 60870-5 or MODBUS device has, besides the tabs carrying its own
+parameters, an **Address map** tab: a read-only list of addresses with the
+columns Signal, Type (`TS` or `TI`), Address and NodeId. It holds the device's
+[retransmission](#retransmission) rules and, since Client 2.6.8, the data items
+the device polls, with the address taken from the item's Channel field (see
+[Data items]({{ '/en/dev/data-items/' | relative_url }})). When a device has
+both, a Direction column says Polled or Retransmitted. The tab appears only
+when the list is not empty; IEC 61850 devices have none. The
 [frame decode]({{ '/en/client/device-watch/' | relative_url }}) in the device
-watch window uses the same map, so it does not decode addresses in a polled
-device's frames.
+watch window uses the same map. In Clients 2.6.0–2.6.4 the map held the
+retransmission rules only, so a polled device had no tab and its frames'
+addresses were not decoded.
 
 ### Checking the setup {#commissioning}
 

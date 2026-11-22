@@ -19,9 +19,9 @@ on and off on the settings screen: **Settings → Settings... → Events & alarm
 These preferences live in the user's profile, which is saved on this computer
 and, when the client exits or on *More → Disconnect from Server*, on the
 Server (see
-[Shift handover]({{ '/en/client/' | relative_url }}#shift-change)). The
-exception is **Speech**: the client does not save it, so it is on again at
-every sign-in, even if it was turned off last time.
+[Shift handover]({{ '/en/client/' | relative_url }}#shift-change)). Since
+Client 2.6.8 **Speech** is kept in the profile too; Clients 2.6.0–2.6.4 did not
+save it, so it was on again at every sign-in.
 
 ## Which events raise the alarm {#escalation}
 
@@ -177,8 +177,8 @@ to hold again — a new critical event after the previous one was acknowledged,
 say — it speaks again.
 
 Spoken announcements are switched on and off on the settings screen with
-**Speech** in **Events & alarms**, next to the tone. Turning it off lasts only
-until the next sign-in: at sign-in speech is on again. On a computer without a
+**Speech** in **Events & alarms**, next to the tone. The choice is kept in the
+profile (in Clients 2.6.0–2.6.4 only until the next sign-in). On a computer without a
 speech-synthesis voice the switch is shown disabled.
 
 ## What is always visible

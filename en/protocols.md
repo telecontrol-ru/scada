@@ -119,8 +119,8 @@ with such a command (usually TIT objects), set
 [Two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No.
 The Client sets No by itself, whether objects are created one at a time or
 with the [Multiple Create]({{ '/en/dev/data-items/' | relative_url }}#bulk-create)
-wizard: on TIT objects. On objects created one at a time, Client 2.6.4 also
-sets No for an `INT16:` or `FLOAT:` override in the Control channel; the
+wizard: on TIT objects. On objects created one at a time, Clients from 2.6.4 on also
+set No for an `INT16:` or `FLOAT:` override in the Control channel; the
 wizard does not fill that field and decides by the device and the object type
 only.
 
@@ -159,7 +159,7 @@ The type is written in upper case: the Server rejects an address such as
 This override is useful when a measured object must be controlled with
 `C_SC_NA_1` instead of the default measured-value command ASDU.
 
-Client 2.6.4 chooses "Two-stage control" by the override: `INT16:` and
+Clients from 2.6.4 on choose "Two-stage control" by the override: `INT16:` and
 `FLOAT:` give No (a version 2.6 Server does not carry out a set-point in two
 stages, and a 2.5.7 Server confirms the select without sending anything to
 the device), `BOOL:` gives Yes; without an override a TIT object gets No and

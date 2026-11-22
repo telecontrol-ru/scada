@@ -56,10 +56,12 @@ few events.
 **An account with neither the `Operator` nor the `ConfigureAdmin` role
 cannot acknowledge events** (see
 [Access rights]({{ '/en/dev/users/' | relative_url }}#access-rights)):
-acknowledgement needs the *Control* or *Configure* right. For such a user the
-command looks available, but the Server rejects it: the events stay
-unacknowledged and the cell keeps blinking. Double-clicking a blinking row
-then does not open the graph either — use the *Graph* command.
+acknowledgement needs the *Control* or *Configure* right. Since Client 2.6.8
+the acknowledge commands are unavailable to such a user, with the reason
+"Acknowledging requires the Control or Configure privilege", and
+double-clicking a blinking row opens the graph like any other row. In Clients
+2.6.0–2.6.4 the command looked available, the Server rejected it, and a
+double-click on a blinking row did not open the graph.
 
 Rows can be reordered with `Ctrl+Up` and `Ctrl+Down`, or with the
 context-menu commands.

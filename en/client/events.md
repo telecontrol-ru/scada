@@ -74,7 +74,10 @@ There is no keyboard shortcut for acknowledgement.
 
 When a command is unavailable its tooltip says why: "Select an event to
 acknowledge", "The selected events are already acknowledged", or "No event
-shown here is waiting to be acknowledged".
+shown here is waiting to be acknowledged", and since Client 2.6.8, for a user
+without the right to acknowledge, "Acknowledging requires the Control or
+Configure privilege" (such a user can still acknowledge the client's own
+messages).
 
 If the Server refuses an acknowledgement — for example because the user lacks
 the right to acknowledge — the event stays unacknowledged and the event panel
@@ -89,7 +92,12 @@ Time* columns keep the user and time; an unacknowledged event shows
 
 The client's own messages ("Local Event") are acknowledged **on this
 workstation only**: they are not sent to the Server, other workstations do not
-have them, and they are not kept across a restart of the client or a sign-out with *Disconnect from Server* — even if the same account signs in again.
+have them, and they are not kept across a restart of the client. Since Client
+2.6.8 unacknowledged client messages are kept across a sign-out with
+*Disconnect from Server*: the next operator, whichever account they sign in
+with, sees them in the event panel and the journal, and they still raise the
+alarm; only acknowledging removes one. In Clients 2.6.0–2.6.4 they were lost at
+every sign-out.
 
 When more than ten events are unacknowledged, repeats of the same message from
 the same source collapse into one row marked "×N". Acknowledging that row

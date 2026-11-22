@@ -47,8 +47,9 @@ Incoming values can be:
 
 Object configuration is edited through either `Properties` for a single
 object or `Element Properties` for an object group. In the Properties window
-changed values are written only by Apply; closing the window without it
-discards them (see [Properties]({{ '/en/development/' | relative_url }})).
+changed values are written only by Apply; closing the window, switching the page
+or signing out with unapplied changes asks whether to apply them in Client 2.6.8, while Clients 2.6.0–2.6.4
+discarded them without asking (see [Properties]({{ '/en/development/' | relative_url }})).
 
 ![]({{ '/img/menu-parameters.png' | relative_url }})
 
@@ -91,19 +92,25 @@ the name template (see below). Each object gets that address in its Channel
 field, exactly as if the device and channel had been chosen in its properties
 by hand. For an IEC 60870-5 device it is the information object address (for
 example <code>1{nn}</code>); for MODBUS it is a MODBUS channel address (for
-example <code>HOLDREG:INT16:{n}</code>). The Device list holds every device
-and direction of the Equipment window (IEC 61850 ones included), and one is
-always selected. The Source path template starts as <code>Signal{n}</code>,
-which is no protocol's address: replace it with the address pattern for the
-selected device, or clear it to create objects without a source (for
-example for objects with a <a href="{{ '/en/formulas/' | relative_url }}">formula</a>).
-The Name template starts as <code>TS{n} current</code> and Count as 12; set
-your own. On objects of a MODBUS device and on TIT objects of an IEC 60870-5
-device the wizard sets <a href="#two-stage-control">Two-stage control</a> to
-No, on TS objects of an IEC 60870-5 device to Yes; on objects of other devices
-and on objects created without a source it sets nothing, so they keep the
-default Yes (so does Client 2.6.4; Client 2.6.3 set No on objects without a
-source too).</dd>
+example <code>HOLDREG:INT16:{n}</code>). In Client 2.6.8 the Device list
+starts with "No device", followed by the IEC 60870-5 and MODBUS devices; the
+first device is selected. The Source path template fills in the selected
+device's address itself — <code>{n}</code> for IEC 60870-5,
+<code>HOLDREG:INT16:{n}</code> for a TIT and <code>DISCINPUT:{n}</code> for a
+TS on a MODBUS device — and follows a change of device or item type until the
+field is edited by hand. To create objects without a source (for example for
+objects with a <a href="{{ '/en/formulas/' | relative_url }}">formula</a>),
+choose "No device" or clear the field; it then reads "Empty: the objects are
+created without a source". The Name template starts as "Object {n}" and Count
+as 12; set your own. In Clients 2.6.0–2.6.4 the list held every device and
+direction (IEC 61850 ones included) with no "No device" entry, the Source path
+template was <code>Signal{n}</code>, which is no protocol's address, and the
+Name template was <code>TS{n} current</code>.
+On objects of a MODBUS device and on TIT objects of an IEC 60870-5 device the
+wizard sets <a href="#two-stage-control">Two-stage control</a> to No, on TS
+objects of an IEC 60870-5 device to Yes; on objects created without a source
+it sets nothing, so they keep the default Yes (so do Clients from 2.6.4 on;
+Client 2.6.3 set No on objects without a source too).</dd>
 
 <dt>Pattern: naming and addressing</dt>
 <dd>The "Name template", "NodeId template" and "Source path template" take
@@ -241,7 +248,7 @@ stage. Default: Yes. The Client creates a new object with the value its
 device calls for: No on objects that
 cannot be controlled in two stages (every object of a MODBUS device, OPC
 objects and IEC 60870-5 objects whose command is a set-point rather than
-<code>C_SC_NA_1</code>), Yes on the rest. Client 2.6.4 takes an IEC 60870-5
+<code>C_SC_NA_1</code>), Yes on the rest. Clients from 2.6.4 on take an IEC 60870-5
 object's command from the type override in its Control channel:
 <code>INT16:</code> and <code>FLOAT:</code> are set-points (No), <code>BOOL:</code>
 is <code>C_SC_NA_1</code> (Yes); without an override a TIT (analog) object
@@ -276,7 +283,7 @@ to the device, and the command is not executed — set No on such objects if
 they have Yes. That is a 2.6 Server's answer. A 2.5.7 Server confirms the
 select of MODBUS and OPC objects and of IEC 60870-5 commands other than
 <code>C_SC_NA_1</code> without asking the device; on a declined command
-Client 2.6.4 reports no selection (Client 2.6.3 reported that the device
+Clients from 2.6.4 on report no selection (Client 2.6.3 reported that the device
 stays selected although nothing was selected); controlling an IEC 61850 direct-control object through a 2.5.7
 Server fails, and the command is not executed (see <a href="{{ '/en/client/' | relative_url }}#two-stage">Two-stage
 control</a>). The Client sets Yes on IEC 61850 objects however they are created,

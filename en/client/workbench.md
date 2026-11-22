@@ -176,7 +176,9 @@ behind both, so the settings live in exactly one place.
 
 The settings screen opens over the main window: a search field along the top,
 the categories down the left with the number of settings in each, and scope
-tabs above the list — All, This client, Profile, This window.
+tabs above the list — All, This client, Profile, This window, and since Client
+2.6.8 This session: settings that last until you sign out and are back to
+their default at the next sign-in (that is Control Confirmation).
 
 From release 2.6.4 a setting whose value differs from its default is marked
 Modified, and the Modified filter beside the search field narrows the list to
@@ -518,11 +520,15 @@ selection:
   control is unavailable, the reason appears under the button: the object
   cannot be controlled (a computed expression or a folder, for example), the
   signal has no output channel, or the session lacks the Control privilege.
-  The caption under an available button ("Opens the two-stage command
-  confirm. Actions are logged.") is the same for every object: whether the command is
-  two-stage and whether the client asks for confirmation depends on the
-  object and on the *Control Confirmation* setting (see
-  [Control]({{ '/en/client/' | relative_url }}#control)).
+  Since Client 2.6.8 the caption under an available button says what this
+  object's command does — whether it is sent in two stages, select then
+  execute, and whether the client asks for confirmation — for example "Opens
+  the Control dialog. The command is sent in two stages, select then execute,
+  and you confirm it before it is executed." That depends on the object and on
+  the *Control Confirmation* setting (see
+  [Control]({{ '/en/client/' | relative_url }}#control)). In Clients
+  2.6.0–2.6.4 the caption was the same for every object ("Opens the two-stage
+  command confirm. Actions are logged.").
 
 Selecting a table row — including a formula row — fills the Inspector; the
 value keeps updating while the row stays selected. Clicking a shape bound to
