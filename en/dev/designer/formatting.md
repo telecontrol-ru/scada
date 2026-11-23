@@ -14,26 +14,23 @@ permalink: /en/dev/designer/formatting/
 
 ## The Format bar {#format-bar}
 
-![The Format toolbar]({{ '/img/designer-toolbar-format-en.png' | relative_url }}){: width="925"}
+![The Format toolbar]({{ '/img/designer-toolbar-format-en.png' | relative_url }}){: width="393"}
 
 The bar is unavailable until something is selected. From left to right:
 
 - **Fill colour, line colour, text colour** — a click opens the colour picker
   and applies the colour to every selected shape. The strip under the icon
   shows the selection's current colour (chequered when the shapes differ).
-- **Line width** (`0`–`9` pixels), **line pattern** (no line, solid, dash,
-  dot, dash-dot, short dash) and **arrow style** (no arrows, end, begin,
-  both). Clicking the button re-applies the value it shows; the arrow beside
-  it opens the list.
-- **Style** — applies one of the document's styles to the selected shapes, or
-  detaches them from a style (*(No Style)*). Unnamed styles are listed as
-  `Style <number>`.
-- **Font** and **size**.
+- **Line width** (`0`–`9` pixels). Clicking the button re-applies the value
+  it shows; the arrow beside it opens the list.
 - **Bold, italic, underline**.
 - **Text alignment** — left, center, right and top, middle, bottom — one
   button with a list; the button shows the current horizontal alignment.
 
-Every change is one undo step.
+Every change is one undo step. The bar holds only what is changed mid-drawing.
+The style, font and size, line pattern and arrows are set on the *Shape* tab
+of the [Properties panel]({{ '/en/dev/designer/properties/' | relative_url }}#shape-tab)
+(the style in its header) and in the *Format* menu's dialogs.
 
 ## The Format menu dialogs {#dialogs}
 
@@ -108,7 +105,7 @@ and colour.
 
 ## Arranging {#arrange}
 
-![The Arrange toolbar]({{ '/img/designer-toolbar-arrange-en.png' | relative_url }}){: width="147"}
+![The Arrange toolbar]({{ '/img/designer-toolbar-arrange-en.png' | relative_url }}){: width="174"}
 
 The *Arrange* bar has three buttons with lists of the same commands as the
 *Shape* menu:
