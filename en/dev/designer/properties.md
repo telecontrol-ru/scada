@@ -33,7 +33,7 @@ Below are three tabs:
 | Tab | What it holds |
 |---|---|
 | *Shape* | [position and size](#transform), [fill, line, text and behaviour](#shape-tab) |
-| *Data* | [custom properties](#custom-properties) |
+| *Data* | [tags, bound cells, custom properties, hint, actions and events](#data-tab) |
 | *Sheet* | every cell of the shape — described below |
 
 A section on a tab folds when you click its heading. The tab you used last
@@ -104,14 +104,38 @@ The table's context menu holds *Copy Value* for the selected row and *Copy
 All Properties* of the shape as text (for a selected shape only), and the
 formula toggle. Clicking a row opens its cell in the Formula bar.
 
-### Bound values {#bound-values}
+### The Data tab {#data-tab}
 
-The *Bound values* section above the table lists every cell of the shape set
-by a formula, with the formula: it shows what on the shape is computed and
-from what, without hunting for `ƒx` marks in a long table. Clicking an entry
-opens the cell in the Formula bar. Geometry vertices are left out: the drawing
-tools put a formula on each of them, and they would bury the bindings you
-made yourself. The section is absent when nothing is bound.
+![The Data tab]({{ '/img/designer-data-en.png' | relative_url }}){: width="360"}
+
+This is where a shape is bound to the plant: which tags it reads and which of
+its values depend on them.
+
+**Tags** — the selected shape's tags. A row has a *Name* — the shape's
+formulas read the tag as `Tag.<name>` (e.g. `IF(Tag.State,…)`) — a
+*Reference* to the server's tag, e.g. `{OPC1\PS12.T1.State}`, *Low* and
+*High*, and an *In hint* mark. Every field is edited right in the table; *Add
+tag* adds a row and *Remove* removes the selected one. Rows the shape takes
+from its master are dimmed; editing one gives the shape a row of its own.
+
+**Bound cells**{: #bound-values} — every cell of the shape set by a formula,
+with the formula: what on the shape is computed, and from what. Clicking an
+entry opens the cell in the Formula bar. Geometry vertices are left out: the
+drawing tools put a formula on each of them, and they would bury the bindings
+you made yourself. Tag references are not repeated either — they are in Tags.
+With nothing selected the section lists the page's formulas.
+
+**[Custom properties](#custom-properties)** — see below.
+
+**Hint** — the description, value format and time format of the shape's
+runtime hint.
+
+**Actions** and **Events** — the shape's context-menu commands and its event
+handlers (mouse down, load and others), as the schematic stores them. They are
+shown here, not edited; the sections appear when the shape has any.
+
+Tags, the hint, actions and events belong to one shape: with several shapes
+selected those sections are absent.
 
 ## The Formula bar {#formula-bar}
 
