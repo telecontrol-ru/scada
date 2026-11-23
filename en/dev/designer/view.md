@@ -73,6 +73,24 @@ Grid lines are never drawn closer than 8 pixels apart: zoomed out, every 2nd,
 5th, 10th, 20th… line is drawn, so the grid does not hide the schematic.
 Snapping still uses every step of the document's grid.
 
+## Preview {#preview}
+
+![The Preview window]({{ '/img/designer-preview-en.png' | relative_url }}){: width="640"}
+
+*View — Preview* (`F5`) shows the open schematic the way the Client will
+draw it, so its bindings can be checked before it reaches the operators.
+On the right are the schematic's data sources — the addresses in its shapes'
+*Tag* rows (the full address is in the tooltip). Type a value and pick a
+quality: the shapes bound to that source take the look they will have at
+that value at once — a breaker turns green at 1, for example. An empty value
+returns a shape to the look the schematic was saved with; *Reset Values*
+clears them all.
+
+The window only shows: the schematic cannot be changed in it, and the values
+typed are sent nowhere. It follows edits in the schematic window and
+switching between schematics, keeping the values typed. If no *Tag* row names
+a data source, the window says so.
+
 ## The View menu {#view-menu}
 
 | Command | Action |
@@ -84,6 +102,7 @@ Snapping still uses every step of the document's grid.
 | Snap to Grid | snap shape edges to the grid |
 | Snap to Guides | snap to guides |
 | Snap to Ruler Subdivisions | snap to the ruler's divisions (off by default) |
+| Preview (`F5`) | show the schematic with typed-in values, as the Client will draw it ([Preview](#preview)) |
 
 The same menu holds the zoom, the panels and the Formula bar, and the
 language, style and renderer (see
