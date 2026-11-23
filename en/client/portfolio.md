@@ -36,9 +36,9 @@ settings, not in the Server's configuration:
   login it loads the profile from there — so your portfolios are available on
   any computer where you log in under your account. This holds for any
   [access rights]({{ '/en/dev/users/' | relative_url }}#access-rights), an
-  account with no roles included, and for the
-  "Telecontrol" server type; with the "OPC UA" type the profile, and the
-  portfolios with it, is kept on this computer only. A 2.5.7 Server keeps no
+  account with no roles included. Client 2.6.8 keeps the profile, and the
+  portfolios with it, on this computer only with the "OPC UA" server type;
+  the next Client release fixes this. A 2.5.7 Server keeps no
   profiles: portfolios stay on this computer, one set per account, and after
   the Client upgrade every account starts afresh — earlier portfolios are not
   carried over (see

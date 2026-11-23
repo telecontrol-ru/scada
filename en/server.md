@@ -60,11 +60,12 @@ contract.
   presented a *different* certificate, do not connect until we confirm the
   replacement.
 
-A limitation of the "OPC UA" type: the user profile — pages, settings (see
+A limitation of Client 2.6.8 with the "OPC UA" type: the user profile —
+pages, settings (see
 [Operator workbench]({{ '/en/client/workbench/' | relative_url }})) and
 portfolios (see [Portfolio]({{ '/en/client/portfolio/' | relative_url }})) —
 is kept on this computer only and does not follow the account to another
-computer.
+computer. The next Client release fixes this.
 
 The login steps are in
 [Client login]({{ '/en/getting-started/' | relative_url }}#client-start), and

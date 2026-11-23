@@ -195,8 +195,9 @@ Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer only and which are in the user's profile,
 which the client also saves on the Server when it closes and on *More →
 Disconnect from Server*, and loads from there
-at login, so profile settings follow the account to another computer (with
-the "Telecontrol" server type; not with "OPC UA"). Settings apply **immediately**: there is nothing to confirm, and the
+at login, so profile settings follow the account to another computer (Client
+2.6.8 keeps the profile on this computer only with the "OPC UA" server type;
+the next Client release fixes this). Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
 scope are saved on this computer and, when the client exits or on *Disconnect
 from Server*, on the Server — not at the moment a setting changes. So close the

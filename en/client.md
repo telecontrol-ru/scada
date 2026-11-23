@@ -164,8 +164,9 @@ certificate fingerprint come with the service; how to sign in is described
 under [Client login]({{ '/en/getting-started/' | relative_url }}#client-start),
 and what connecting over OPC UA changes, under [Connecting
 Clients]({{ '/en/server/' | relative_url }}#client-connection). In
-particular, with the "OPC UA" type the profile is kept on this computer only
-(see [Shift handover](#shift-change)).
+particular, Client 2.6.8 keeps the profile on this computer only with the
+"OPC UA" type; the next Client release fixes this (see [Shift
+handover](#shift-change)).
 
 The status bar shows the connection state, "Connected" or "Disconnected", with
 the round-trip time "Server: N ms" beside it. When an answer takes longer than
@@ -213,13 +214,14 @@ announcement.
 Each operator works under their own account: the event journal records who
 acknowledged an event and whose action caused it, and the workstation's
 settings and pages are kept in the user's profile. The profile is saved on
-this computer. **With the hosted Server, which the Client reaches with the
-"OPC UA" type, the profile is kept on this computer only**: pages and settings
-do not follow the account to another computer, and the steps below that save
-the profile "on the Server" save it on this computer only. With the
-"Telecontrol" server type the client also saves the profile on the Server when
-it closes and loads it from the Server at login, so pages and settings follow
-the account to another computer.
+this computer, and the client also saves it on the Server when it closes and
+loads it from the Server at login, so pages and settings follow the account to
+another computer. **Client 2.6.8 keeps the profile on this computer only with
+the "OPC UA" type — which is how it reaches the hosted Server**: pages and
+settings do not follow the account to another computer, and the steps below
+that save the profile "on the Server" save it on this computer only. The next
+Client release fixes this: the profile is kept on the Server with both server
+types, "OPC UA" and "Telecontrol".
 
 The first time an account with no profile on the Server signs in, the client
 opens the default profile: the previous operator's pages, portfolios and
