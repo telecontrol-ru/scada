@@ -110,12 +110,17 @@ left out.
 **Modus schematics** (*sde*, *xsde*) open too, to convert them to the Vidicon
 format: such a schematic is saved with *Save As...* and only as *vds*; the
 original Modus file is left unchanged. Modus meters, switches and buttons are
-drawn with Modus's own pictures when the `SCADA_MODUS_STENCIL` environment
-variable names a Modus stencil (an administrator makes it once from the `dat`
-folder of a Modus installation); otherwise they are drawn in simplified form.
-The same stencil can be opened with *File — Open Stencil...* to place Modus
-pictures and elements on schematics. Check the schematic after converting it:
-elements with no Vidicon counterpart may look different.
+drawn with Modus's own pictures from the *Modus* stencil: the *Modus.vdc*
+library, holding the pictures of the Modus 6.30 element library, which is
+installed with the Designer in its stencil folder. If the file is not there,
+those elements are drawn in simplified form. To take the pictures from a
+different Modus stencil, set the `SCADA_MODUS_STENCIL` environment variable to
+the full path of its *vdc* file.
+
+The *Modus* stencil opens with the other default stencils
+(*File — Open Default Stencils*, `F3`) or through *File — Open Stencil...*;
+its pictures can be placed on schematics like any stencil. Check the schematic
+after converting it: elements with no Vidicon counterpart may look different.
 
 ## Tabs, unsaved changes and the Window menu {#tabs}
 
