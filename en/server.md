@@ -212,6 +212,27 @@ values are archived. Usually within a minute of the gateway starting, the
 gateway connects to the Server again, and value updates and archiving resume
 by themselves.
 
+### Gateway licence {#gateway-license}
+
+The gateway's licence is valid for a limited period. While the service is
+paid for, we send a new licence file in advance. Replace the old one with it
+using the same command as at installation:
+
+```sh
+sudo install -m 0644 license.json /var/lib/scada/license.json
+```
+
+The gateway processes pick up the new file within a few seconds; the services
+do not need restarting. `scada-setup status` shows the licence's expiry and
+number.
+
+If less than two weeks remain before expiry and you have not received a new
+file, tell us. **After
+expiry the gateway processes keep running but stop serving the cloud**: the
+gateway's objects become invalid in the Client, and `License
+expired` appears in the process log. The values come back by themselves a few
+seconds after the new file is installed.
+
 ## Unavailable features {#unavailable}
 
 Features that need a Windows Server are not available with the hosted Server:
