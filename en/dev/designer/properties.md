@@ -124,7 +124,12 @@ such as `TS.1379`; a Vidicon schematic keeps an address such as
 tag* adds a row and *Remove* removes the selected one. Rows the shape takes
 from its master are dimmed; editing one gives the shape a row of its own.
 The easiest way to fill in a reference is not to type it but to drag the
-object from the [Tags](#server-tags) panel.
+object from the [Tags](#server-tags) panel — onto the shape or straight into
+the table: onto a row to replace its reference, or below the rows to add one.
+While the Designer is connected to the Server, the *Object* column shows
+what the reference points at, e.g. `Substation / Breaker Q1`; if the Server
+has no such alias or id, it reads *Not on the Server* — the Client will not
+be able to show that tag.
 
 **Bound cells**{: #bound-values} — every cell of the shape set by a formula,
 with the formula: what on the shape is computed, and from what. Clicking an
