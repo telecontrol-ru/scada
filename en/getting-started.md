@@ -140,6 +140,8 @@ that way has not been verified.
 The version 2.6 Client renders Modus schematics (`.sde` and `.xsde` files)
 and Vidicon schematics (`.vds` files) with live values itself, through a
 display module that has to be in the Client's folder, beside its executable.
+The next build of the module comes with a `Stencils` folder (the Modus stencil,
+holding the pictures of instruments and controls); put it beside the module.
 The ActiveXeme component is not used by the version 2.6 Client.
 
 **The Client packages do not include the display module yet**: its licence
@@ -316,8 +318,9 @@ package. The display module is not part of the
 Client packages, and replacing the program deletes it with the old
 folder: **before** replacing it, copy the module somewhere safe
 (`display_runtime.dll` beside `client.exe`; on macOS
-`libdisplay_runtime.dylib` in the app's *Contents/Frameworks* folder), and
-afterwards put it in the same place in the new Client. Otherwise the
+`libdisplay_runtime.dylib` in the app's *Contents/Frameworks* folder),
+together with the `Stencils` folder beside it if there is one, and afterwards
+put them in the same place in the new Client. Otherwise the
 schematic windows show "No display runtime is installed".
 
 A workstation whose Client was installed with the

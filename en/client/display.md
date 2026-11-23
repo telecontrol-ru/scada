@@ -63,10 +63,18 @@ those objects' present state and update with it:
 
 Shapes that are not bound are drawn as the designer drew them.
 
-Some Modus shapes are drawn simplified or not drawn yet — for example, the
-instruments and controls that the Modus graphics editor draws as pictures.
-The list is under
-[Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
+The instruments and controls that the Modus graphics editor draws as pictures
+(*прибор_настраиваемый*, *прибор_реальный*, *РПН*, *орган_управления*,
+*орган_упр_самовозвр*, *кнопка*) are drawn by the next build of the display
+module with the same Modus pictures: an instrument's needle shows the bound
+object's value, and a switch shows its position. The module takes the
+pictures from the Modus stencil — the `Stencils` folder holding `Modus.vdc`,
+which is supplied with the module and has to stay beside it. A module from an
+earlier build (see [A display module from an earlier build](#old-runtime)),
+or one without that folder, draws these shapes simplified.
+
+Some other Modus shapes are drawn simplified or not drawn yet. The list is
+under [Known limitations]({{ '/en/changes/' | relative_url }}#limits-upgrade).
 
 > **Caution.** Compared with the 2.5.7 Client, a Modus schematic does **not**
 > show a binding of an arbitrary shape property (*property_name=alias* with a
