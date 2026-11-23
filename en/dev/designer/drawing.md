@@ -136,7 +136,8 @@ finishes.
 ## Undo and redo {#undo}
 
 `Ctrl+Z` / `Ctrl+Y`. Each schematic has its own history. Everything is
-undoable: drawing, moving and resizing (a drag is one step), deleting,
+undoable: drawing, moving and resizing (a drag is one step), editing text,
+deleting,
 grouping, order, pasting and dropping stencils, applying formatting dialogs
 and buttons, rotating, flipping and aligning. The *Edit* menu names the step
 it will undo or redo, e.g. *Undo Move*; so do the toolbar buttons' tooltips.
