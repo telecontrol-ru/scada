@@ -50,7 +50,7 @@ or style:
 | Fill | Pattern, Colour, for a hatch a Second colour, Transparency |
 | Line | Weight, Colour, Pattern, Begin and End arrow, Rounding, Transparency |
 | Text | Font, Size, style (bold, italic, underline), Colour, horizontal and vertical alignment |
-| Behaviour | Layers (*Edit...* opens the layer choice), Non-printing, Double-click (*Edit...* opens the Behavior dialog), Locks — buttons that lock width, height, horizontal and vertical move, rotation, deletion, text editing and formatting; for a group, Select and Display |
+| Behaviour | Layers — a button for each layer of the page: pressed means every selected shape is on that layer, a `◐` mark that only some are; a click puts all the selected shapes on the layer or takes them all off. Non-printing. Double-click — Default, None, Edit text, Open sheet; a help topic or a formula of your own is set in the Behavior dialog, which *Help topic...* and *Custom formula...* open. Locks — buttons that lock width, height, horizontal and vertical move, rotation, deletion, text editing and formatting; for a group, Select and Display |
 
 The Text section appears only when the shape has text; the text itself is
 edited on the schematic with a double-click. The sections show when at least
@@ -59,7 +59,8 @@ one shape is selected.
 Every field shows where its value comes from:
 
 - **A dot before the name** — the shape sets the value itself.
-- **A dimmed name** — the value comes from the master or the style.
+- **A dimmed name** — the value comes from the master, from the style, or
+  is the default (the name's tooltip says which).
   Changing it gives the shape a value of its own.
 - **An `ƒx` button** — a formula computes the value. The field cannot be
   edited here, so a binding cannot be erased by accident; the button opens
@@ -231,11 +232,12 @@ enough.
 | Resize | what happens to the shape when the group or page is resized: *Scale*, *Reposition* (without changing size) or the shape's *Formula* |
 | Loc Pin X, Loc Pin Y | where the pin sits within the shape; in the middle by default, which is what makes a shape rotate around its centre |
 
-Type a value and press `Enter`, or use the field's arrows. Every change is one
-undo step. The fields are enabled only when exactly one shape is selected;
-otherwise they are blank. In a narrow panel the fields fall into one column.
-The same values in the property table (*Object — XForm*) can
-be set by formulas.
+Type a value and press `Enter`. The fields behave as in the tab's other
+sections: they show where a value comes from, change every selected shape at
+once as one undo step, and show a dash where the shapes differ. A field set by
+a formula is not edited here — a drawn shape's Loc Pin X is usually
+`Width*0.5`. In a wide enough panel the fields sit in pairs (Pin X beside
+Pin Y), otherwise in one column.
 
 ## Custom properties {#custom-properties}
 
