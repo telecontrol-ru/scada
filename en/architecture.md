@@ -44,7 +44,7 @@ Retransmission to a dispatch centre is carried out by the protocol process of th
 
 The processes exchange data with each other over OPC UA; the links between them are encrypted.
 
-The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it; the site gateway works the same way. The cloud connects to the gateway: the customer opens the inbound encrypted OPC UA port on the gateway computer, only to the cloud address Telecontrol gives (see [Gateway port]({{ '/en/server/' | relative_url }}#gateway-port)). Only `scada-historian` stores the history of values and events, so without it there is no archive and no report or summary over the archive.
+The protocol processes receive their configuration from `scada-config` and keep none of their own, so they run only together with it; the site gateway works the same way. The gateway connects to the cloud itself over encrypted OPC UA, and the cloud works with the gateway over that connection, so no inbound port has to be opened on the gateway computer (see [Gateway port]({{ '/en/server/' | relative_url }}#gateway-port)). Only `scada-historian` stores the history of values and events, so without it there is no archive and no report or summary over the archive.
 
 The devices of one protocol may be served by different computers — for example, the cloud and a site gateway, or several gateways. A link's Computer property says which computer serves it (see [Equipment]({{ '/en/dev/devices/' | relative_url }})).
 

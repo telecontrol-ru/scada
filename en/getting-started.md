@@ -373,9 +373,9 @@ nothing helps, contact Telecontrol (mail@telecontrol.ru).</dd>
 
 <dt>Devices stay without a connection</dt>
 <dd>The Server reaches the devices through the site gateway. Check that the
-gateway is installed and running, that its inbound port is open to the
-address Telecontrol gave you, and that the devices are reachable from the
-gateway computer (see
+gateway is installed and running, that the gateway computer can connect to
+the cloud address Telecontrol gave you, and that the devices are reachable
+from the gateway computer (see
 <a href="{{ '/en/server/' | relative_url }}#gateway">Site gateway</a>).</dd>
 
 <dt>Schematics do not open</dt>
