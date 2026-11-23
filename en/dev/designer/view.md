@@ -110,6 +110,9 @@ language, style and renderer (see
 
 ## The Tools menu {#tools-menu}
 
+*Tools — Connect to Server...* and *Disconnect from Server* open and close
+the connection for the [Tags]({{ '/en/dev/designer/properties/' | relative_url }}#server-tags) panel.
+
 ### Ruler & Grid {#ruler-grid}
 
 *Tools — Ruler & Grid...* — settings of the current schematic; they are stored

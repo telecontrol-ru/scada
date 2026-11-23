@@ -117,10 +117,14 @@ its values depend on them.
 
 **Tags** — the selected shape's tags. A row has a *Name* — the shape's
 formulas read the tag as `Tag.<name>` (e.g. `IF(Tag.State,…)`) — a
-*Reference* to the server's tag, e.g. `{OPC1\PS12.T1.State}`, *Low* and
+*Reference* to the Server's object — its alias set on the Server, or its id
+such as `TS.1379`; a Vidicon schematic keeps an address such as
+`{OPC1\PS12.T1.State}` here — *Low* and
 *High*, and an *In hint* mark. Every field is edited right in the table; *Add
 tag* adds a row and *Remove* removes the selected one. Rows the shape takes
 from its master are dimmed; editing one gives the shape a row of its own.
+The easiest way to fill in a reference is not to type it but to drag the
+object from the [Tags](#server-tags) panel.
 
 **Bound cells**{: #bound-values} — every cell of the shape set by a formula,
 with the formula: what on the shape is computed, and from what. Clicking an
@@ -219,6 +223,31 @@ from 1), `UpperCase(s)`, `LowerCase(s)`, `Pos(substr, s)` (from 1, 0 if not
 found), `Replace(s, old, new)`, `IntToStr(n)`, `StrToInt(s)` and
 `StrToFloat(s)` (0 on error), `Format(fmt, …)` in printf style (`%d`, `%f`,
 `%e`, `%g`, `%s`).
+
+## Server tags {#server-tags}
+
+The *Tags* panel — the third tab beside *Stencils* and *Navigator* — shows
+the Server's objects, so shapes can be bound to them without typing
+references.
+
+1. *Tools — Connect to Server...*: the Server's address (`opc.tcp://…`), user
+   and password. The address and user are remembered, the password is not.
+2. On the first connection the Designer shows the SHA-256 fingerprint of the
+   Server's certificate. **Compare it with the fingerprint the Server's
+   administrator publishes** before trusting the certificate. The password is
+   not sent until the certificate is accepted. If the Server at the same
+   address presents a different certificate, the Designer warns about it and
+   by default refuses to connect: that is what an intercepted connection
+   would look like.
+3. In the *Tags* panel, open the folders and drag an object onto a shape. The
+   shape gets a tag row (`Tag1`, `Tag2`, …) referring to the object — by its
+   alias when one is set on the Server, otherwise by an id such as `TS.1379`.
+   It is one undo step; the row shows on the [Data](#data-tab) tab, where it
+   can be renamed so formulas read a meaningful name.
+
+The field above the tree filters the objects already opened. *Tools —
+Disconnect from Server* closes the connection. The schematic does not change:
+the bindings are stored in it, and the Server is needed only to pick objects.
 
 ## Position and size {#transform}
 
