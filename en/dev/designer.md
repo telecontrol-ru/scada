@@ -77,7 +77,7 @@ At the bottom is the **status bar**:
 
 - *View — Language* — the interface language: Russian, English or the
   system's. Takes effect after a restart.
-- *View — Style* — the widget style; *Fusion* by default.
+- *View — Style* — the widget style; by default the native *macOS* style on a Mac and *Fusion* on Windows and Linux.
 - *View — Renderer* — how the schematic is drawn: *Scene* or *QPainter*, and
   *GDI+* on Windows. The same submenu holds the *Anti-aliasing* toggle: off
   gives crisper thin lines, on gives smoother curves.
