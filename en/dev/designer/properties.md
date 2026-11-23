@@ -58,7 +58,10 @@ one shape is selected.
 
 Every field shows where its value comes from:
 
-- **A dot before the name** — the shape sets the value itself.
+- **A plain name** — the shape sets the value itself.
+- **A blue bar left of the name** — the shape sets the value over a
+  different one from its master or style. Only on these fields does
+  *Reset to Master* (or *to Style*) change what the schematic shows.
 - **A dimmed name** — the value comes from the master, from the style, or
   is the default (the name's tooltip says which).
   Changing it gives the shape a value of its own.
