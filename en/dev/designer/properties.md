@@ -118,7 +118,10 @@ its values depend on them.
 **Tags** — the selected shape's tags. A row has a *Name* — the shape's
 formulas read the tag as `Tag.<name>` (e.g. `IF(Tag.State,…)`) — a
 *Reference* to the Server's object — its alias set on the Server, or its id
-such as `TS.1379`; a Vidicon schematic keeps an address such as
+such as `TS.1379`, or, for an object of a namespace the SCADA model does not
+know (another vendor's OPC UA server), an id in braces that names the
+namespace by its URI, such as `{nsu=urn:plant;s=Plant.Temperature}`; a
+Vidicon schematic keeps an address such as
 `{OPC1\PS12.T1.State}` here — *Low* and
 *High*, and an *In hint* mark. Every field is edited right in the table; *Add
 tag* adds a row and *Remove* removes the selected one. Rows the shape takes
@@ -246,8 +249,10 @@ references.
    would look like.
 3. In the *Tags* panel, open the folders and drag an object onto a shape. The
    shape gets a tag row (`Tag1`, `Tag2`, …) referring to the object — by its
-   alias when one is set on the Server, otherwise by an id such as `TS.1379`.
-   It is one undo step; the row shows on the [Data](#data-tab) tab, where it
+   alias when one is set on the Server, otherwise by an id such as `TS.1379`,
+   or by the `{nsu=…}` form above for a namespace the SCADA model does not
+   know. An object whose id contains `}` cannot be dragged, since a reference
+   cannot hold that character; its tooltip says so. It is one undo step; the row shows on the [Data](#data-tab) tab, where it
    can be renamed so formulas read a meaningful name.
 
 The field above the tree filters the objects already opened. *Tools —
