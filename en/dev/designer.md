@@ -97,6 +97,7 @@ The choices are remembered per Windows user.
 | *File — Print...* | `Ctrl+P` |
 | *File — Print Preview...* | — |
 | *File — Export...* | — |
+| *File — Publish to Server...* | — |
 
 A schematic is stored in the binary *vds* format. The print preview lets you
 change the page orientation, zoom and printer before printing.
@@ -106,6 +107,17 @@ mail: *PNG* is a bitmap the size of the page (the schematic at 100%), *PDF* a
 document whose lines and text stay vector and stay sharp when enlarged. The
 schematic is exported the way it prints: shapes on non-printing layers are
 left out.
+
+*Publish to Server...* puts the schematic in the Server's files, where
+Clients load it from. It is available while the Designer is connected to a
+Server (*Tools — Connect to Server...*). What is published is the saved file:
+if the schematic has unsaved changes, the Designer offers to save it first.
+Then choose a folder under the Server's "Files" and the file name (the
+schematic's own file name by default). If the folder already has a file of
+that name, it is replaced in place, after you confirm — Clients load the new
+version; otherwise the file is added. The Designer never deletes files on the
+Server. Only an account with the right to change the configuration may
+publish; without it the Server refuses, and the Designer says so.
 
 **Modus schematics** (*sde*, *xsde*) open too, to convert them to the Vidicon
 format: such a schematic is saved with *Save As...* and only as *vds*; the
