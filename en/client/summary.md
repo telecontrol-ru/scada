@@ -151,6 +151,16 @@ value was in force. For measurements archived only on change, choose
 force. If, within an hour, the value was 10 for 15 minutes and then 30 for 45
 minutes, the time average is 25 while <i>Average</i> is 20.</dd>
 
+<dt>Consumption</dt>
+<dd>How much a cumulative counter (an energy meter in kWh, say) grew over the
+interval: the interval's last value minus the last value before it (Client
+2.6.10 and later). The first row is measured from the last value in the
+interval before the period. An interval with no recorded change shows 0 — the
+counter did not move. Rows before the first known value stay empty. If the
+counter was reset or replaced, that row's consumption is negative.
+Consumption is shown in the object's units. The Client computes it from
+<i>Last</i>, so it works with any Server, 2.5.7 included.</dd>
+
 <dt>Time Integral</dt>
 <dd>The area under the value's curve over the interval — the value times how
 long it held, in <b>seconds</b>. For power in kW that is kW·s: divide by 3600
@@ -192,6 +202,28 @@ change, and left an interval without changes empty.
 Cell values are shown in the object's display format and engineering units.
 *Count* and *Time Integral* are plain numbers, without the object's units or
 format: the integral's unit is the engineering unit times a second.
+
+## Comparing with an earlier period {#compare}
+
+The *Compare with* submenu in the summary's context menu (Client 2.6.10 and
+later) sets, beside each object's column, a column of the same object over an
+earlier span — same function, same interval, row for row:
+
+* *Day earlier* — one day earlier;
+* *Week earlier* — one week earlier;
+* *Previous period* — a span as long as the summary's rows, ending where they
+  start.
+
+The heading of such a column gives, after the object's name in brackets, the
+date and time it starts from ("from …"). Choosing the checked command again
+removes the comparison columns. They are not objects of their own: deleting
+one removes the object and its comparison column. The comparison is kept with
+the window and carried into printing and export.
+
+Comparing months this way is approximate: *Previous period* for a month takes
+as many days as the month has rows, not the previous calendar month. For "this
+month against last", open a second summary for
+[last month]({{ '/en/client/reports/' | relative_url }}#last-month).
 
 ## Printing and export {#print-export}
 

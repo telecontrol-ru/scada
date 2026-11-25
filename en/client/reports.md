@@ -181,7 +181,7 @@ over 7 days:
 5. Check the period, function and interval in the printout header: they
    are printed automatically.
 
-## A standing set of objects
+## A standing set of objects {#portfolio}
 
 If a report is built from the same objects every time, collect them in a
 [portfolio]({{ '/en/client/portfolio/' | relative_url }}) (*Portfolio* in
@@ -204,19 +204,34 @@ unavailable), the journal for the period stays empty **with no error
 message**. An empty journal for a period in which there certainly were events
 is a reason to tell the administrator, not proof that there were none.
 
+## Consumption, comparing periods and event statistics {#analysis}
+
+In Client 2.6.10 and later (the published 2.6.8 release does not have them):
+
+* **Consumption of a cumulative counter** — the *Consumption* function in the
+  summary's *Function* submenu: how much the counter grew in each interval.
+  See [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function).
+  Energy from a power measurement still comes from *Time Integral* (in kW·s —
+  divide by 3600 for kWh).
+* **Comparing two periods** — the *Compare with* submenu in the summary
+  ([Comparing with an earlier period]({{ '/en/client/summary/' | relative_url }}#compare))
+  and on the graph ([Context menu]({{ '/en/client/graph/' | relative_url }})):
+  beside each object, the same object a day, a week or a period earlier.
+* **Event statistics** — the *Statistics…* button in the event journal: how
+  many events the period held, by severity and by object
+  ([Statistics]({{ '/en/client/events/' | relative_url }}#statistics)).
+* **Text search in event messages** — the *Search…* box in the event
+  journal's filter bar
+  ([Filters]({{ '/en/client/events/' | relative_url }}#filters)).
+
+In Client 2.6.8 the consumption per interval is taken as the difference of the
+*Last* values of neighbouring rows; an empty cell then means that the counter
+did not change in that interval — use the last non-empty value above it.
+
 ## What the Client does not have {#not-available}
 
-So that you do not look for them, the Client has no
-
-* report templates or scheduled reports — a summary is opened and set up by
-  hand each time (the window keeps its period, interval and function);
-* comparison of two periods in one summary or on one graph;
-* consumption of a cumulative counter per interval. Energy from a power
-  measurement comes from *Time Integral* (in kW·s — divide by 3600 for kWh;
-  see [Aggregation function]({{ '/en/client/summary/' | relative_url }}#function)).
-  If the object is a cumulative counter, the consumption per interval is
-  taken as the difference of the *Last* (or *First*) values of neighbouring
-  rows. An empty cell then means that the counter did not change in that
-  interval, not a zero reading: use the last non-empty value above it;
-* event statistics (event counts per period, object or severity);
-* text search in event messages in the event journal.
+So that you do not look for them, the Client has no report templates or
+scheduled reports — a summary is opened and set up by hand each time (the
+window keeps its period, interval, function and comparison). If a report is
+built regularly from the same objects, collect them in a portfolio — see
+[A standing set of objects](#portfolio).

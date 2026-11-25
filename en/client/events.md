@@ -133,10 +133,35 @@ The chosen period is kept with the window.
   groups, each with its count of unacknowledged events. Choosing a group keeps
   the events of that group and everything inside it.
 * **Objects** — a journal opened for selected objects shows only their events.
+* **Search messages** — the *Search…* box at the right of the filter bar
+  (Client 2.6.10 and later). It keeps the events whose message contains the text you typed,
+  ignoring upper and lower case. The journal is filtered once you stop typing,
+  or at once when you press Enter; clear the box to see every event again.
 
-There is no search by message text and no filter by event type. The period,
-the object list and the column layout are kept with the window; the minimum
-severity and *Unacknowledged Only* are not.
+There is no filter by event type. The period, the search text, the object list
+and the column layout are kept with the window; the minimum severity and
+*Unacknowledged Only* are not.
+
+## Statistics {#statistics}
+
+The **Statistics…** button at the right of the filter bar (Client 2.6.10 and
+later) opens *Event Statistics* — how many events the journal shows:
+
+![Event Statistics]({{ '/img/event-statistics.png' | relative_url }})
+
+* by severity — *Critical*, *Warning*, *Routine* and *Total*;
+* by object — the objects with the most events first.
+
+Beside each count is how many of those events are unacknowledged. The counts
+are of what the journal shows now, with every filter applied: set the
+[period](#period), severity, area or search text before you open the window.
+Repeats of one alarm that the journal folds into one row are each counted.
+The window is a snapshot taken when it opens: events that arrive later are not
+in it.
+
+**Copy** puts both tables on the clipboard with tabs between the columns —
+paste them into Excel and every number lands in a cell of its own. The audit
+log has no *Statistics…* button.
 
 ## Columns
 
