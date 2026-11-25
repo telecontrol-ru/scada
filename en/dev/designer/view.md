@@ -86,8 +86,16 @@ that value at once — a breaker turns green at 1, for example. An empty value
 returns a shape to the look the schematic was saved with; *Reset Values*
 clears them all.
 
+While the Designer is connected to a Server (*Tools — Connect to
+Server...*), the window shows the schematic with the Server's current
+values: the *Server* column shows each source's value, and the shapes take
+the look it gives them. A typed value replaces the Server's until it is
+cleared — a way to check how the schematic will show an alarm without
+touching the plant. A source the Server does not have is marked "Not on the
+Server".
+
 The window only shows: the schematic cannot be changed in it, and the values
-typed are sent nowhere. It follows edits in the schematic window and
+typed are sent nowhere — the Designer writes nothing to the Server. It follows edits in the schematic window and
 switching between schematics, keeping the values typed. If no *Tag* row names
 a data source, the window says so.
 
@@ -102,7 +110,7 @@ a data source, the window says so.
 | Snap to Grid | snap shape edges to the grid |
 | Snap to Guides | snap to guides |
 | Snap to Ruler Subdivisions | snap to the ruler's divisions (off by default) |
-| Preview (`F5`) | show the schematic with typed-in values, as the Client will draw it ([Preview](#preview)) |
+| Preview (`F5`) | show the schematic with the Server's or typed-in values, as the Client will draw it ([Preview](#preview)) |
 
 The same menu holds the zoom, the panels and the Formula bar, and the
 language, style and renderer (see
@@ -111,7 +119,8 @@ language, style and renderer (see
 ## The Tools menu {#tools-menu}
 
 *Tools — Connect to Server...* and *Disconnect from Server* open and close
-the connection for the [Tags]({{ '/en/dev/designer/properties/' | relative_url }}#server-tags) panel.
+the connection for the [Tags]({{ '/en/dev/designer/properties/' | relative_url }}#server-tags) panel
+and for the Server's values in the [Preview](#preview) window.
 
 ### Ruler & Grid {#ruler-grid}
 
