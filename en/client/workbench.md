@@ -342,6 +342,12 @@ palette: an input line filtering as you type, every registered command and
 window-open action, plus signal search by name — a chosen signal opens in a
 table. *Enter* runs the selected entry.
 
+From Client 2.6.12 the commands and signals found are shown in two groups,
+"Commands" and "Signals", and the typed text is shown in bold in each name.
+To the right of a signal is the folder it lives in, so same-named signals of
+different objects ("Frequency") can be told apart. Before, signals were mixed
+in with the commands and marked only with the word "tag".
+
 ![The search field in the context strip]({{ '/img/command-field.png' | relative_url }})
 
 *The search field in the context strip. On the right is the shortcut hint: ⌘K
@@ -553,10 +559,15 @@ selection:
   "Bad" is shown not only for a value carrying the bad flag but also when the
   device connection is lost ([С]), on a connection failure ([Н]) or a
   configuration error ([К]), and when the value is stale ([У]);
-- the time of the last update;
+- under the value, the last hour's trend: a small chart scaled to the value's
+  own range, which shows whether the value is heading for a limit or has sat
+  where it is for a while (Client 2.6.12 and later);
+- the time the value last changed and how long ago that was, for example
+  "14:59:20 · 2 min ago"; the age updates by itself;
 - the signal's limits — every configured band ("HiHi", "Hi", "Lo", "LoLo").
   The band the current value has crossed is coloured and labelled, so it is
-  clear which limit tripped. The section is hidden for signals that configure
+  clear which limit tripped. The badge under the value names the limit too,
+  for example "▲ Above limit 10.8". The section is hidden for signals that configure
   no limits;
 - a *Control…* button that opens the
   [control dialog]({{ '/en/client/' | relative_url }}#control). When
@@ -602,9 +613,14 @@ pending event the last row — "Awaiting acknowledgement" — carries no time.
 When a chart series is selected, a **Series** section appears below the
 element card — how that line is drawn:
 
-* the colour palette, one swatch per colour; the series' current colour is
-  ringed, and clicking another swatch recolours the line. It is the one field
-  in the section that writes.
+* the line colours — the same six colours the graph gives new lines itself;
+  the series' current colour is ringed, and clicking another swatch recolours
+  the line. A line in a colour outside that set (for example in a window saved
+  by an older Client) has its colour shown as a swatch of its own after the
+  others. It is the one field in the section that writes. Before Client 2.6.12
+  this offered the general palette, with black, white, red, yellow and green —
+  colours that mean an alarm or a state on displays and in the journal — and
+  marked no current colour.
 * "Own pane" — whether the series has a graph pane to itself
 * "Show dots" and "Stepped" — how the line is drawn
 

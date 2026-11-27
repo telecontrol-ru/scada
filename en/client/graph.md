@@ -61,7 +61,7 @@ Right-clicking the graph area opens a context menu with these commands:
 
 Selecting a trend line fills the
 [inspector]({{ '/en/client/workbench/#inspector-series' | relative_url }}):
-a "Series" section appears below the element card, carrying the colour palette
+a "Series" section appears below the element card, carrying the line colours
 and the line's current display modes — "Own pane", "Show dots" and "Stepped".
 The colour is set by clicking a palette swatch; the display modes are shown
 there but toggled from the graph's context menu, described above.
@@ -108,9 +108,20 @@ The legend can be hidden or restored from the context menu.
 The vertical scale boundaries are taken from the object scale defined in
 its configuration.
 
+Value-scale labels carry as many decimals as the grid step needs: a frequency
+with the "0.00" format on a 0.005 grid is labelled 50.005, 50.010 and so on.
+Before Client 2.6.12 neighbouring ticks could get the same label ("50.01,
+50.01, 50.00").
+
 ## Time scale
 
 The visible time range is controlled by the user.
+
+Time-scale ticks are labelled with the time of day ("17:00"), and the tick a
+day starts at with the date ("16.04"). The grid is aligned to local time, so
+hour ticks fall on whole hours and on midnight. A cursor is labelled with the
+date and the time ("16.04 07:02"). Before Client 2.6.12 ticks read like
+"15-17:00" (day and time), which looked like a range.
 
 To scroll through history, press and hold the left mouse button in the
 graph area and drag left or right. Scrolling to the right is limited by

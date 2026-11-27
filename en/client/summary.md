@@ -19,6 +19,14 @@ the Server's archive (see
 
 ![Summary]({{ '/img/summary.png' | relative_url }})
 
+The top-left corner of the table, above the time column, names the chosen
+aggregation function — "Last" or "Average", say — so it is clear what the
+cells hold. A value beyond one of the object's limits is marked with an arrow
+and the severity colour: "▲ 142 MW" is above the high limit (amber) or the high
+alarm limit (red), "▼" below a low one. Only values in the object's own units
+are marked; *Count*, *Time Integral* and *Consumption* are not compared with
+the limits. Both arrived in Client 2.6.12.
+
 *A summary of four objects with a 1-hour interval.*
 
 To open a summary, select one or more objects (in the object panel or a
