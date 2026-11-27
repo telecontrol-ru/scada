@@ -170,9 +170,10 @@ log has no *Statistics…* button.
 | ● | Marks an unacknowledged event |
 | Time | Date and time of the event, with milliseconds |
 | Item | The object or device the event came from; "Local Event" for the Client's own messages |
-| Severity | The number and its range name: "Critical 800", "Warning 600" |
-| Value | The object's value at the time of the event |
 | Message | The event text |
+| Severity | The number and its range name: "Critical 800", "Warning 600" |
+| State | The alarm state in words: "Active, unacknowledged", "Returned to normal", "Event, acknowledged" and so on |
+| Value | The object's value at the time of the event |
 | User | The user whose action caused the event |
 | Acknowledged By | The user who acknowledged the event |
 | Acknowledge Time | When it was acknowledged |
@@ -182,8 +183,10 @@ Events are sorted by time, newest first, by default.
 ## Severity {#severity}
 
 Severity is a number from 1 to 1000. Rows of severity 800 and above are red
-("Critical"), 600 to 799 yellow ("Warning"), and the rest have no fill.
-Acknowledging does not change the row colour. The summary line below the
+("Critical"), 600 to 799 yellow ("Warning"), and the rest are in the ordinary
+colour. Only a row that is waiting to be acknowledged and still active is
+filled; once acknowledged, and in archive records, the severity colour stays
+on the row's text. The summary line below the
 journal shows the number of unacknowledged events and the highest severity
 among them.
 

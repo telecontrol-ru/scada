@@ -779,7 +779,8 @@ entered value does not show the backup-channel flag); then Б blocked,
 <dd>The value's quality in words (the Russian client shows the Russian
 labels):
 <ul>
-<li>"Good" («Достоверно», green) — the value is good;</li>
+<li>an empty cell — the value is good: the column is filled in only when
+something is wrong with the value;</li>
 <li>"Uncertain" («Неопределённо», amber) — the value is stale, the
 <code>[У]</code> flag; the row's cell text is amber too;</li>
 <li>"Bad" («Недостоверно», red) — the bad flag, or no connection
@@ -793,24 +794,25 @@ letters С, Н, К, У in the brackets before the value, and the Inspector as "B
 <a href="#control-checklist">Before a control command</a>).</dd>
 
 <dt>The dot beside a value in the object tree</dt>
-<dd>Green — the value is good; red — bad; <b>blinking yellow</b> — the object
-has an unacknowledged event (the row's background blinks yellow with it).
-There is no separate dot colour for "uncertain" quality — the table's
-"Quality" column shows it. No dot is drawn until a
-value has arrived, and groups have none — a group shows its device's
-connection state instead.</dd>
+<dd>A dot is drawn only beside a value that is not good: amber — the value is
+stale (uncertain), red — bad. A good value has no dot. An unacknowledged event
+on the object is marked not by the dot but by the value cell's blinking
+background. No dot is drawn until a value has arrived, and groups have none —
+a group shows its device's connection state instead.</dd>
 
 <dt>The quality label in the Inspector</dt>
-<dd>"Good" or "Bad" beside the current value. "Bad" is shown for a value
+<dd>"Good" (in the ordinary text colour) or "Bad" (red) beside the current value. "Bad" is shown for a value
 carrying the bad flag, and also with a lost device connection ([С]), a
 connection failure ([Н]), a configuration error ([К]) or a stale value
 ([У]).</dd>
 
 <dt>Row colour in the journal and the event panel</dt>
-<dd>The event's severity: a red fill is "Critical" (800 and above), a yellow
-fill "Warning" (600–799), and other rows have no fill. Acknowledging does not
-change the row colour; an unacknowledged event is marked with "●" in the first
-column. See <a href="{{ '/en/client/events/' | relative_url }}#severity">Severity</a>.</dd>
+<dd>The event's severity: red is "Critical" (800 and above), yellow "Warning"
+(600–799), and other rows are in the ordinary colour. Only an alarm that is
+waiting to be acknowledged and still active is filled; once acknowledged, and
+in archive records, the row has no fill and its text carries the severity
+colour. An unacknowledged event is marked with "●" in the first column, and
+the "State" column names its state in words. See <a href="{{ '/en/client/events/' | relative_url }}#severity">Severity</a>.</dd>
 
 </dl>
 

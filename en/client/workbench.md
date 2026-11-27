@@ -35,8 +35,9 @@ The workbench regions:
   The user, the connection state and the server address are not shown here —
   they appear in the status strip only.
 - **Object explorer** — the object tree with a "Filter" field and quality
-  dots: green — good, red — bad, blinking yellow — the object has an
-  unacknowledged event. See
+  dots beside values that are not good: amber — uncertain, red — bad; a good
+  value has no dot. An unacknowledged event on the object blinks the value
+  cell's background. See
   [Reading values and colours]({{ '/en/client/' | relative_url }}#quality-legend). The tree starts at its
   content: the pane's own title already names it, so no separate root row is
   drawn. The same holds for the Devices, Files and Nodes panes.
@@ -390,9 +391,12 @@ mini-graph of the value over the last hour, updating live.
 The [event journal]({{ '/en/client/events/' | relative_url }}) reads as an
 alarm panel:
 
-- **Row colour is severity.** An alarm row is coloured by its severity (red —
-  critical, amber — warning); routine events stay unfilled so the eye is drawn
-  only to alarms. Acknowledging does not change the row's colour.
+- **Row colour is severity; a fill means action is needed.** An alarm that is
+  waiting to be acknowledged and still active is filled in its severity colour
+  (red — critical, amber — warning). An acknowledged alarm and archive records
+  have no fill and carry the severity in their text colour, so the eye is drawn
+  only to alarms waiting for the operator. Routine events are in the ordinary
+  colour.
 - **Pending dot** — the leading column marks every unacknowledged row with a
   dot, and such a row's "Acknowledge Time" cell reads "— pending —". The dot
   carries the acknowledgement state and the row colour carries the severity,
