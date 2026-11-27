@@ -153,9 +153,9 @@ answers another system's requests.</dd>
 <dd>The communication channel: a serial port or a TCP/UDP network, set in the
 Transport window opened by the button in the field. A new MODBUS direction
 is created without a transport, so always set one: for polling over a network
-(Protocol = TCP), Type = TCP Client, Host = the device's IP address, Port =
-502 (or the device's port); for a serial line (RTU or ASCII), Type = Serial
-Port, Port = the computer's port (for example COM1 or <code>/dev/ttyS0</code>),
+(Protocol = TCP), Type = "TCP client", Host = the device's IP address, Port =
+502 (or the device's port); for a serial line (RTU or ASCII), Type = "Serial
+port", Port = the computer's port (for example COM1 or <code>/dev/ttyS0</code>),
 and Baud Rate, Bit Count, Parity, Stop Bits and Flow Control as set in the
 device. For retransmission see
 <a href="#modbus-retransmission">Retransmission over MODBUS</a>.</dd>
@@ -449,7 +449,8 @@ No — it sends neither and answers another system's requests; this is how
 
 <dt>Transport</dt>
 <dd>The communication channel. The button in the field opens the Transport
-window: Type (TCP Client, TCP Server, UDP Client, UDP Server, Serial Port),
+window: Type ("TCP client", "TCP server", "UDP client", "UDP server",
+"Serial port"),
 Host and Port for a network, or the serial-port settings.</dd>
 
 ![]({{ '/img/iec-60870-5-transport.png' | relative_url }})

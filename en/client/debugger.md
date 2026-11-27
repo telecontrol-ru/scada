@@ -52,13 +52,13 @@ The table has these columns:
 | Column | Description |
 |---|---|
 | ID | Request identifier |
-| Phase | Request state |
-| Start Time | Time when the request was sent |
+| Phase | Request state: "In progress", "Succeeded" or "Failed" |
+| Start time | Time when the request was sent |
 | Duration | Execution time in milliseconds (`ms`) |
-| Title | Request description |
+| Request | Request description |
 
 When a request row is selected, the full contents of the request and
-response are shown on the right, also in English.
+response are shown on the right, in English as the protocol carries them.
 
 The table keeps at most the 1,000 most recent requests; older ones are
 dropped. While paused, new requests are not recorded.
