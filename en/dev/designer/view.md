@@ -92,7 +92,8 @@ values: the *Server* column shows each source's value, and the shapes take
 the look it gives them. A typed value replaces the Server's until it is
 cleared — a way to check how the schematic will show an alarm without
 touching the plant. A source the Server does not have is marked "Not on the
-Server".
+Server"; one it has but has had no value for yet — a signal whose device has
+not reported since the Server started — reads "No value yet".
 
 The window only shows: the schematic cannot be changed in it, and the values
 typed are sent nowhere — the Designer writes nothing to the Server. It follows edits in the schematic window and
