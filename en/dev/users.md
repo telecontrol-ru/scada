@@ -54,25 +54,31 @@ effect at the next sign-in. To stop a user working at once:
 To assign roles to a user, choose `Roles...` from the user context menu (see
 [Assigning roles](#assign-roles)).
 
-To change a password, choose `Set Password...` (*Задать пароль…*) from the
-user context menu. The command is available only with the Configure right and
+Any user signed in with their own account (not anonymously) changes their
+own password with *Change Password...* (*Сменить пароль…*) in the *Settings*
+menu or in the command palette (*Ctrl+K*), whatever their rights; the window
+asks for the current password (see
+[Changing a password]({{ '/en/client/workbench/#set-password' | relative_url }})).
+
+![The Change Password window: the current password, the server's password-policy rules, one rule not met]({{ '/img/change-password.png' | relative_url }})
+
+*Changing your own password: the current password, the new password and its repeat. The upper-case rule is not met, so OK is unavailable. When an administrator resets another user's password, the Current field is not shown.*
+
+To set another user's password, choose `Set Password...` (*Задать пароль…*)
+from the user context menu. The command is available only with the Configure right and
 only when a user is selected; the Users window, too, opens only with that
 right. Your own account requires the current password; someone else's (an
 administrator reset) does not. The server sets what a password must satisfy —
 see [Password policy]({{ '/en/client/workbench/#password-policy' | relative_url }}).
 
-![The Set Password window for another user]({{ '/img/change-password.png' | relative_url }})
-
-*Resetting another user's password: the new password and its repeat; the current password is not asked for.*
-
 ![Password policy window]({{ '/img/password-policy.png' | relative_url }})
 
-*The Password policy window: this installation sets no length limit and requires no character classes.*
+*The Password policy window: this installation allows 8 to 64 characters, requires an upper-case letter, a lower-case letter and a digit, and adds its own rule in words.*
 
 A user without the Configure right — a Dispatcher (level 2) or a Manager
-(level 0), for example — cannot change even their own password in version
-2.6: they have no command for it. To get a new password, they ask the
-administrator, who sets one.
+(level 0), for example — changes their own password with *Change Password...*.
+If they have forgotten the current password, they ask the administrator, who
+sets a new one with `Set Password...`.
 
 **For the administrator:**
 
@@ -99,8 +105,8 @@ administrator, who sets one.
   2.6. When the same name signs in a second time, from another workstation
   for example, the Client says the user name is already in use and offers to
   disconnect the open session; answering yes disconnects the first session.
-  «Да» (Yes) is the default button in that question, so *Enter* disconnects
-  the open session. Give each dispatcher and each administrator a user of their own rather than
+  «Нет» (No) is the default button in that question, so *Enter* leaves the
+  open session alone and does not sign in. Give each dispatcher and each administrator a user of their own rather than
   having several people sign in under one name, `root` included.
 
 ## Access rights {#access-rights}
@@ -211,4 +217,4 @@ successful or refused — are recorded in the
 
 ![Audit log window]({{ '/img/audit-log.png' | relative_url }})
 
-*The Audit log window: sign-ins and account actions; a refused action is highlighted.*
+*The Audit log window: sign-ins and account actions; a refused action is marked in the "Result" column.*

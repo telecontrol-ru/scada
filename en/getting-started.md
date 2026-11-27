@@ -41,12 +41,12 @@ project — objects, devices, schematics, users and roles — in the Client.
 
 The Client packages are published on the
 [Telecontrol SCADA releases page on GitHub](https://github.com/alexsmn/scada-client/releases). The version 2.6
-Client packages are in release [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8), which replaces releases 2.6.0, 2.6.3 and 2.6.4. The page marks
+Client packages are in release [2.6.11](https://github.com/alexsmn/scada-client/releases/tag/v2.6.11), which replaces releases 2.6.0, 2.6.3, 2.6.4 and 2.6.8. The page marks
 release 2.5.7 as the latest, because it is the last release that carries a
 Server installer; that Server is no longer offered (see
 [Server 2.5.7]({{ '/en/server/' | relative_url }}#legacy)).
 
-Releases 2.6.0, 2.6.3, 2.6.4 and 2.6.8 carry only the Client packages (see
+Releases 2.6.0, 2.6.3, 2.6.4, 2.6.8 and 2.6.11 carry only the Client packages (see
 [Installing the Client](#client-install)). The Windows Client package
 `telecontrol-scada-<version>.msi` (the Client, the Designer and the
 documentation) will be added later. The display module is not part of the
@@ -56,8 +56,8 @@ packages to download: Telecontrol supplies the gateway package with the
 service.
 
 **Do not use the 2.6.0 Client** — it also stores the remembered
-automatic-login password unencrypted; use the 2.6.8 Client. At sites still
-running a 2.5.7 Server, the 2.6.8 Client can be installed for evaluation;
+automatic-login password unencrypted; use the 2.6.11 Client. At sites still
+running a 2.5.7 Server, the 2.6.11 Client can be installed for evaluation;
 what works in that combination and what does not is listed under
 [Before upgrading from 2.5.7]({{ '/en/changes/' | relative_url }}#limits-upgrade).
 
@@ -101,7 +101,7 @@ version with every version 2.6 release:
   computer with Apple silicon, macOS 26 or later (the release notes name the
   exact minimum). Open the disk image and
   drag *Telecontrol SCADA Client* to *Applications*. The release notes say
-  whether the app is signed and notarised by Apple; the release 2.6.8
+  whether the app is signed and notarised by Apple; the release 2.6.11
   package is neither. If it is not notarised, macOS refuses to open it the first time: after the
   refusal, open *System Settings → Privacy & Security* and click *Open
   Anyway*. To avoid doing that on every computer, run
@@ -251,7 +251,7 @@ the Server's identity by its certificate:
   trusts the certificate and connects.
 * If the server at the same address presents a *different* certificate, the
   Client warns: "WARNING: the server at this address presented a DIFFERENT
-  certificate…". That is what an intercepted connection would look like: trust
+  certificate…", with No as the default button. That is what an intercepted connection would look like: trust
   the new certificate only if Telecontrol confirms it was replaced and gives
   you the new fingerprint.
 

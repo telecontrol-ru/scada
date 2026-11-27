@@ -48,7 +48,7 @@ Incoming values can be:
 Object configuration is edited through either `Properties` for a single
 object or `Element Properties` for an object group. In the Properties window
 changed values are written only by Apply; closing the window, switching the page
-or signing out with unapplied changes asks whether to apply them in Client 2.6.8, while Clients 2.6.0–2.6.4
+or signing out with unapplied changes asks whether to apply them since Client 2.6.8, while Clients 2.6.0–2.6.4
 discarded them without asking (see [Properties]({{ '/en/development/' | relative_url }})).
 
 ![]({{ '/img/menu-parameters.png' | relative_url }})
@@ -92,7 +92,7 @@ the name template (see below). Each object gets that address in its Channel
 field, exactly as if the device and channel had been chosen in its properties
 by hand. For an IEC 60870-5 device it is the information object address (for
 example <code>1{nn}</code>); for MODBUS it is a MODBUS channel address (for
-example <code>HOLDREG:INT16:{n}</code>). In Client 2.6.8 the Device list
+example <code>HOLDREG:INT16:{n}</code>). Since Client 2.6.8 the Device list
 starts with "No device", followed by the IEC 60870-5 and MODBUS devices; the
 first device is selected. The Source path template fills in the selected
 device's address itself — <code>{n}</code> for IEC 60870-5,
@@ -232,19 +232,11 @@ window:
 ![]({{ '/img/ti-parameters.png' | relative_url }})
 
 {: .note }
-> **Client 2.6.8:** the Properties window is split into tabs in Russian
-> alphabetical order (on a data item the first is Архивирование, Archiving,
-> then Атрибуты, Attributes), but the Каналы (Channels) tab has no device and
-> channel fields. In this version an object's device and channel are set in
-> the group's <a href="{{ '/en/development/' | relative_url }}">Element
-> Properties</a> table, in the columns Устройство (Device), Канал (Channel),
-> Устройство (резерв) (Device (backup)), Канал (резерв) (Channel (backup)),
-> Устройство (управление) (Device (control)) and Канал (управление)
-> (Channel (control)). The Properties screenshot above was taken in a later
-> Client build.
->
-> In later Client builds these fields are on the Каналы (Channels) tab,
-> grouped in sections, and are labelled differently from the names used below:
+> The Properties window is split into tabs in Russian alphabetical order (on
+> a data item the first is Архивирование, Archiving, then Атрибуты,
+> Attributes). The device and channel fields are on the Каналы (Channels)
+> tab, grouped in sections, and are labelled differently from the names used
+> below:
 >
 > | Section in the window (Russian UI) | Field label in the window | Field in this manual |
 > |---|---|---|
@@ -254,6 +246,12 @@ window:
 > | Backup input («Резервный ввод») | Channel (backup) («Канал (резерв)») | Backup channel |
 > | Output («Вывод») | Device (control) («Устройство (управление)») | Control device |
 > | Output («Вывод») | Channel (control) («Канал (управление)») | Control channel |
+>
+> The same fields can also be set in the group's
+> <a href="{{ '/en/development/' | relative_url }}">Element Properties</a>
+> table, in the columns of the same names. Client 2.6.8 has no such sections
+> on the Каналы (Channels) tab and sets these fields only in the Element
+> Properties table.
 
 The main parameter groups are:
 
@@ -278,14 +276,11 @@ the parent groups.</dd>
 
 <dt>Control channel</dt>
 <dd>The channel address used for a control command in the protocol
-format required by the selected device. In Client 2.6.8 it is set in the
-Канал (управление) (Channel (control)) column of the Element Properties table
-(see the note above).</dd>
+format required by the selected device.</dd>
 
 <dt>Control device</dt>
 <dd>Selects the device used as the control-data source for remote
-commands. In Client 2.6.8 it is set in the Устройство (управление)
-(Device (control)) column of the Element Properties table.</dd>
+commands.</dd>
 
 <dt id="two-stage-control">Two-stage control</dt>
 <dd>Enables two-stage control — select, then execute
@@ -382,13 +377,10 @@ channel field is interpreted as a formula.</dd>
 
 <dt>Backup channel</dt>
 <dd>Defines the information channel or service object for the backup data
-source. In Client 2.6.8 it is set in the Канал (резерв) (Channel (backup))
-column of the Element Properties table (see the note above).</dd>
+source.</dd>
 
 <dt>Backup device</dt>
-<dd>Selects the backup source device. In Client 2.6.8 it is set in the
-Устройство (резерв) (Device (backup)) column of the Element Properties
-table.</dd>
+<dd>Selects the backup source device.</dd>
 
 <dt>Control condition</dt>
 <dd>A logical expression that enables or blocks control. It usually

@@ -77,7 +77,9 @@ The menu bar provides these main groups of commands:
   Closing one of several main windows does not end the session: the client
   ends it only when the last main window is closed (see
   [Shift handover](#shift-change))
-* **Settings**: one item, *Settings...*, which opens the settings screen
+* **Settings**: *Settings...*, which opens the settings screen, and *Change
+  Password...*, with which a user changes their own password (see
+  [Changing a password]({{ '/en/client/workbench/#set-password' | relative_url }}))
 * **Help**: open online documentation or show client version. A client
   started with the command-line option `--debug` also has *Debugger* and
   *Debug Information* here; see
@@ -89,8 +91,8 @@ The settings screen groups the settings into categories:
 * **Events & alarms** — *Sound Alarm on Event*, *Speech*, *Show Events on Arrival*,
   *Hide Events on Acknowledge*, *Flash Main Window on Event*. See
   [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}).
-* **Control** — *Control Confirmation* (on by default) and *Control Success
-  Message*. See [Control](#control).
+* **Control** — *Control Confirmation* (on by default; only an administrator
+  can switch it off) and *Control Success Message*. See [Control](#control).
 * **Workspace** — *Status Bar*, per client window.
 
 > **Caution.** The status bar is the only place that shows whether the client
@@ -107,14 +109,14 @@ search for commands and signals by name.
 
 ## Status bar
 
-The status bar shows:
+The status bar carries no alarm count: unacknowledged events by severity are
+shown by the severity tiles "Critical N", "Warning N" and "Unacknowledged N"
+in the context strip along the top (see
+[Workbench]({{ '/en/client/workbench/' | relative_url }})). The status bar shows:
 
-* the number of unacknowledged events, "Events: N" (the client's own messages
-  are included in it; "No events" when there are none), and the highest
-  severity among the Server's unacknowledged events — "Critical" or
-  "Warning" in the severity's colour, empty when there is neither
-* the current-events panel's severity threshold ("Severity: N"). It hides
-  events from that panel only: the count, the tiles, the tone, the spoken
+* the current-events panel's severity threshold, "Panel filter: severity ≥ N"
+  («Фильтр панели: важность ≥ N»), shown only while the panel is filtered. It
+  hides events from that panel only: the severity tiles, the tone, the spoken
   announcement, window flashing and *More → Acknowledge All* take every event
   into account. It is changed from the current-events panel's context menu,
   *Severity → Custom...*; see
@@ -138,7 +140,7 @@ The `Page` menu holds its commands in this order:
 3. `Rename` — rename the page;
 4. `Delete` — delete the current page, kept last behind a separator.
 
-*Page → Delete* asks for confirmation first. The deleted page's windows go
+*Page → Delete* asks for confirmation first (No is the default button). The deleted page's windows go
 to the recycle list of closed windows and can be restored from the `Window`
 menu. The recycle list keeps the 10 most recently closed windows, so a page
 with more windows than that cannot be restored in full.
@@ -163,9 +165,8 @@ SHA-256 fingerprint, which Telecontrol gives. The "Telecontrol" type
 certificate fingerprint come with the service; how to sign in is described
 under [Client login]({{ '/en/getting-started/' | relative_url }}#client-start),
 and what connecting over OPC UA changes, under [Connecting
-Clients]({{ '/en/server/' | relative_url }}#client-connection). In
-particular, Client 2.6.8 keeps the profile on this computer only with the
-"OPC UA" type; the next Client release fixes this (see [Shift
+Clients]({{ '/en/server/' | relative_url }}#client-connection). The user
+profile is kept on the Server with the "OPC UA" type too (see [Shift
 handover](#shift-change)).
 
 The status bar shows the connection state, "Connected" or "Disconnected", with
@@ -216,12 +217,9 @@ acknowledged an event and whose action caused it, and the workstation's
 settings and pages are kept in the user's profile. The profile is saved on
 this computer, and the client also saves it on the Server when it closes and
 loads it from the Server at login, so pages and settings follow the account to
-another computer. **Client 2.6.8 keeps the profile on this computer only with
-the "OPC UA" type — which is how it reaches the hosted Server**: pages and
-settings do not follow the account to another computer, and the steps below
-that save the profile "on the Server" save it on this computer only. The next
-Client release fixes this: the profile is kept on the Server with both server
-types, "OPC UA" and "Telecontrol".
+another computer. The profile is kept this way with both server types,
+"OPC UA" and "Telecontrol"; Client 2.6.8 kept it on this computer only with
+the "OPC UA" type.
 
 The first time an account with no profile on the Server signs in, the client
 opens the default profile: the previous operator's pages, portfolios and
@@ -313,8 +311,8 @@ version 2.6 allows only one; see
 on another computer, signing in asks "The specified username is already in use
 by another session. Disconnect the open session and continue?". Answering yes
 ends the session on the other computer, whose client then stays disconnected.
-Yes is the default button in this prompt: do not press *Enter* without reading
-it, or the session on the other workstation is ended.
+No is the default button in this prompt: *Enter* leaves the session on the
+other workstation alone and does not sign in.
 
 ### Automatic sign-in {#auto-login}
 
@@ -364,7 +362,7 @@ the selection is greyed out, and hovering it shows why.
 
 *Copy*, *Paste* and *Delete* also run from the keyboard: *Ctrl+C*, *Ctrl+V*
 and *Delete* (*⌘C* and *⌘V* on macOS). *Delete* asks for confirmation from the
-keyboard too. A key acts only when its command applies to the selection; in a
+keyboard too, with No as the default button. A key acts only when its command applies to the selection; in a
 text field or a table, *Ctrl+C* still copies the text of the cells.
 
 **Keys on macOS.** This manual names keys as on Windows. On macOS press *⌘*
@@ -420,8 +418,8 @@ You can also:
 > (the "Dispatcher" level) is enough for it. While the device is disabled the
 > Server does not communicate with it, and all of its objects carry the [С]
 > (no connection) flag. Before confirming *Disable*, check the device name in
-> the prompt, and remember to enable it again. Yes is the default button in the
-> prompt, so *Enter* disables the device.
+> the prompt, and remember to enable it again. No is the default button in the
+> prompt, so *Enter* does not disable the device.
 
 ![A confirmation prompt]({{ '/img/message-box.png' | relative_url }})
 
@@ -494,8 +492,8 @@ after a bad value, and the flag letters in square brackets before the value —
 Р manual input and the rest, the same letters as in the object tree and
 tables, all inside one pair of brackets, for example `[СУ]` (see [Reading values and colours](#quality-legend)). The Inspector
 labels a value "Bad" when it is bad, and also when the device connection is
-lost, the value is stale, or there is a connection failure or a
-configuration error. If the brackets before the value hold С, Н, К or У, the equipment's present
+lost or there is a connection failure or a configuration error, and labels a
+stale value "Uncertain" — the same words as the table's "Quality" column. If the brackets before the value hold С, Н, К or У, the equipment's present
 state is unknown.
 
 If the object has a control permission condition, the dialog has a
@@ -520,7 +518,9 @@ while the dialog is open, the client reports that the command failed.
 2. Make sure the "Current value:" line has no brackets holding С, Н, К or У
    before the value (for example `[С]` or `[СУ]`) and no "?" after it (see [Reading values and colours](#quality-legend)).
 3. Make sure the status bar reads "Connected".
-4. If the command ended in an error, check the object's present state before
+4. In the [command review](#control-confirmation), check "Object:",
+   "Present:" and "Command:" once more before pressing "Send command".
+5. If the command ended in an error, check the object's present state before
    retrying (see [Command result](#control-result)).
 
 ### Command confirmation {#control-confirmation}
@@ -555,18 +555,19 @@ IEC 60870-5 (SELECT/EXECUTE):
 1. **Select.** On "Execute" the client sends a select command at once, without
    a prompt. The device reserves its output for the requested value but
    switches nothing yet.
-2. **Operator confirmation.** The prompt is shown only after the select
-   succeeds, which is why it opens with "The remote device is ready to execute
-   the command." It then reviews the present and commanded values and warns
-   that the action cannot be undone remotely, as in one-stage control.
+2. **Operator confirmation.** The [command review](#control-confirmation)
+   is shown only after the select succeeds, which is why its "Stage:" row reads
+   "Stage 2 of 2: the device has accepted the selection and is waiting for the
+   command." Its other rows and the warning that the action cannot be undone
+   remotely are as in one-stage control.
 
    Not every device can select. For IEC 60870-5 only a single command
    (<code>C_SC_NA_1</code>) is selected; for other IEC 60870-5 commands, such
    as set-point commands, for IEC 61850 objects with direct control or with
    none (`status-only`), for **every** MODBUS object and for OPC objects a
    2.6 Server refuses the select and sends nothing to the device (a 2.5.7
-   Server behaves differently, see below). Instead of the confirmation
-   prompt the Client then shows an error box: "Two-stage control is not
+   Server behaves differently, see below). Instead of the command
+   review the Client then shows an error box: "Two-stage control is not
    available for this object: its device cannot select a command. Nothing was
    sent to the device. Ask the engineer who configures the project to turn off
    two-stage control for this object." The control window stays open, and nothing is left selected.
@@ -581,10 +582,10 @@ IEC 60870-5 (SELECT/EXECUTE):
    "Preparation for control failed" and ends with "The command was not
    executed."
 
-3. **Execute.** Answering yes sends the execute command, and the device
+3. **Execute.** "Send command" sends the execute command, and the device
    switches the circuit it already reserved.
 
-Any answer other than yes — no, or closing the confirmation prompt — sends
+"Cancel", or closing the command review, sends
 no execute command and releases the selection on the device (for IEC 60870-5
 by deactivating the command, for IEC 61850 with the Cancel service). The
 selection is also released when the control window is closed (with *Esc* or
@@ -603,15 +604,17 @@ there is nothing to release, and no message is given.
 
 * For MODBUS and OPC objects and IEC 60870-5 commands other than a single
   command, a 2.5.7 Server confirms the select without sending anything to
-  the device: there is no error box from step 2, the confirmation prompt
+  the device: there is no error box from step 2, the command review
   appears although the device selected nothing, and the select stage is a
-  formality. The engineer sets
+  formality. The review's "Stage:" row then reads "Stage 2 of 2: the command
+  goes to the device as soon as you send it." The engineer sets
   [two-stage control]({{ '/en/dev/data-items/' | relative_url }}) to No on
   such objects.
 * Control of IEC 61850 objects through a 2.5.7 Server is not carried out:
   the Server answers it with an error (or the device refuses the select),
   and no command reaches the device.
-* On any answer other than yes, and when the control window is closed, the
+* On "Cancel", when the command review is closed, and when the control
+  window is closed, the
   Client does **not** release the selection — a 2.5.7 Server cannot. On a
   device that really selects, the selection stays armed until the device's
   selection timeout expires, and until then the device refuses a new select
@@ -632,7 +635,7 @@ point, where nothing is selected on the device, Clients from 2.6.4 on give no su
 message (Client 2.6.3 did — acknowledge it there; it has no effect).
 
 One-stage control is a single value write and uses neither stage; the
-confirmation box is shown before that write.
+command review ("Stage:" — "One stage: …") is shown before that write.
 
 ### Command result {#control-result}
 
@@ -669,8 +672,8 @@ configuration edits, object creation, password changes, unblocking. A failure
 is always reported, whatever the setting.
 
 Success messages are client information messages ("Local Event"): they stay
-unacknowledged in the event panel until the operator acknowledges them and
-are in the "Events: N" count, but the severity tiles do not show them and they
+unacknowledged in the event panel until the operator acknowledges them, but
+the severity tiles do not show them and they
 sound neither the tone nor the spoken announcement. Acknowledge them like any
 other event — otherwise they hold the event panel open.
 
@@ -723,8 +726,8 @@ The tree starts at the top-level objects and groups: no separate root row
 is drawn, because the panel's own title already names what it contains.
 
 The panel shows objects grouped by hierarchy. Values and quality flags
-appear to the right of object names, with a quality dot beside the value. For
-what the colours, dots and letters mean see
+appear to the right of object names, with a quality badge to the left of the
+object's name. For what the colours, badges and letters mean see
 [Reading values and colours](#quality-legend).
 
 Groups show the communication state of the device assigned to that
@@ -767,7 +770,7 @@ event journal.
 <dl>
 
 <dt>Grey value text</dt>
-<dd>The value is bad. Normal text colour means the value is good.</dd>
+<dd>In the object tree: the value is bad. Normal text colour means the value is good.</dd>
 
 <dt>A "?" after the value</dt>
 <dd>The value is bad, for example <code>41 °C?</code>. It does not mark a lost
@@ -799,8 +802,9 @@ error <code>[К]</code>; the row's cell text is red too;</li>
 <li>"No data" («Нет данных») — no value has arrived yet.</li>
 </ul>
 Unlike the "?", this column does take a lost connection and staleness into
-account. The "Control" dialog and the confirmation box show them as the
-letters С, Н, К, У in the brackets before the value, and the Inspector as "Bad" (see
+account. The "Control" dialog and the command review show them as the
+letters С, Н, К, У in the brackets before the value, and the Inspector in the
+same words as this column (see
 <a href="#control-checklist">Before a control command</a>).</dd>
 
 <dt>The dot beside a value in the object tree</dt>
@@ -826,9 +830,10 @@ the "State" column names its state in words. See <a href="{{ '/en/client/events/
 
 </dl>
 
-Yellow means different things in different places: in the object tree it is an
-unacknowledged event on the object, in the journal it is the "Warning"
-severity, in a table it is the "Uncertain" quality.
+Yellow means different things in different places: a blinking background on
+the value cell in the object tree is an unacknowledged event on the object, a
+row fill in the journal is the "Warning" severity, and amber value text or
+quality badge is the "Uncertain" quality.
 
 ## Equipment panel
 
@@ -837,9 +842,11 @@ The equipment panel is available from `More -> Hardware`.
 ### Device states
 
 The panel shows the device hierarchy, starting at the top-level items (no
-separate root row is drawn). To the left of each device is an indicator of the
-current state of its communication channel: *channel disabled*, *channel
-enabled* and *device not responding*:
+separate root row is drawn). To the left of each device is a link-state mark that
+differs in shape as well as colour: a filled disc for "Online", a half-filled
+disc for "Disabled", and a ring with "?" inside for "Offline". Hover over the
+device's name to see the state in a tooltip. While a device's state is unknown,
+it has no mark:
 
 ![]({{ '/img/hardware-tree.png' | relative_url }})
 
@@ -933,8 +940,8 @@ tables also from the bottom of the *Graph* and *Table* menus.
 
 In the Add to Favourites window the «Имя» (Name) field holds the window's
 title, which you can change. Type the folder the window goes into in the
-«Группа» (Folder) field: the list below it shows the existing folders, but in
-version 2.6.8 choosing one there does not fill the field — type the name.
+«Группа» (Folder) field, or pick it in the list below it: the list shows the
+existing folders, and the one you pick fills the field.
 With «Группа» empty the window is added without a folder; a new folder name
 creates the folder.
 

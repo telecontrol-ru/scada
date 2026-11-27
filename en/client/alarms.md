@@ -11,9 +11,9 @@ permalink: /en/client/alarms/
 * TOC
 {:toc}
 
-The client announces unacknowledged events in several ways: a count and
-severity tiles, opening the event panel, flashing the window, a tone and a
-spoken message. The count and the tiles are always on; the rest are switched
+The client announces unacknowledged events in several ways: tiles in the
+context strip, opening the event panel, flashing the window, a tone and a
+spoken message. The tiles are always on; the rest are switched
 on and off on the settings screen: **Settings → Settings... → Events & alarms**.
 
 These preferences live in the user's profile, which is saved on this computer
@@ -27,8 +27,8 @@ save it, so it was on again at every sign-in.
 
 Not every unacknowledged event sounds. The annunciators fall into two groups.
 
-**Unacknowledged events** are announced by the status-bar count, the severity
-tiles in the context strip, the event panel and the window flash.
+**Unacknowledged events** are announced by the tiles in the context strip, the
+event panel and the window flash.
 
 **The tone and the spoken message** are on only while at least one of these
 holds:
@@ -38,9 +38,9 @@ holds:
   their severity.
 
 > **Caution.** Warnings (severity 600 to 799) and routine events do not sound
-> on their own: only the count, the tiles, the event panel and the window flash
-> announce them. A silent client does **not** mean nothing is unacknowledged —
-> check the count in the status bar and the event panel.
+> on their own: only the tiles, the event panel and the window flash announce
+> them. A silent client does **not** mean nothing is unacknowledged — check the
+> "Unacknowledged" tile in the context strip and the event panel.
 
 The client's own messages ("Local Event") are events too: reports of a
 successful command, of the connection to the Server being lost and restored,
@@ -60,13 +60,13 @@ of errors. They count according to their severity:
   connection being restored, for example — are not in the tiles and sound
   neither the tone nor the spoken message.
 
-Every client message is in the status bar's "Events: N" count; none is in the
-status bar's highest severity. The tiles and the tone count the same events,
-so the tone does not sound while the tiles read zero. Acknowledge client
+The client's information messages are visible only in the event panel and the
+journal until they are acknowledged. The tiles and the tone count the same
+events, so the tone does not sound while the "Unacknowledged" tile reads zero. Acknowledge client
 messages in the event panel just like the Server's events.
 
-The event panel's [severity threshold](#threshold) does not affect the count,
-the tiles or annunciation: an event below it is hidden from the panel only.
+The event panel's [severity threshold](#threshold) does not affect the tiles
+or annunciation: an event below it is hidden from the panel only.
 
 ## The event panel opens by itself
 
@@ -78,14 +78,17 @@ the operator keeps working in the current window while the list appears beside
 it. An event that arrives already acknowledged does not open the panel.
 
 With the option off, the panel opens only with **More → Events**. The
-unacknowledged count in the status bar keeps counting either way, so nothing is
+"Unacknowledged" tile in the context strip keeps counting either way, so nothing is
 lost — the events simply stop asking for attention on their own.
 
 ## And closes by itself
 
 **Hide Events on Acknowledge** (on by default).
 
-The panel closes once the last event is acknowledged. **All** events count, not
+The panel closes once the last event is acknowledged, even if acknowledged
+alarms that still stand ("Active, acknowledged"; see
+[Alarm states]({{ '/en/client/events/' | relative_url }}#alarm-states)) remain
+in it. **All** events count, not
 only those from the server: the client's own local messages — "Connection to
 server established. Login successful.", for one — are unacknowledged until the
 operator acknowledges them, and they hold the panel open.
@@ -94,21 +97,25 @@ With the option off, the panel stays on screen until the operator closes it.
 
 ## The alarm tone {#tone}
 
-**Sound Alarm on Event** (off by default).
+**Sound Alarm on Event** (on by default since Client 2.6.11).
 
-> **Caution.** The tone is off for **every new** account: the setting is kept
-> in the user's profile, so it has to be turned on under each operator account
-> — **Settings → Settings... → Events & alarms → Sound Alarm on Event**. Spoken
-> announcements exist on Windows only, so on macOS this tone is the only
-> audible alarm: while it is off, the client on macOS raises alarms silently.
+The setting is kept in the user's profile. For an account whose profile has
+never been saved, the tone is on. Once a profile is saved, the client takes
+the setting from it: a tone switched off under that account stays off.
+
+> **Caution.** Clients before 2.6.11 had the tone off by default, and a
+> profile saved by such a client keeps it off even if nobody switched it off.
+> So after upgrading the Client, check under each operator account that the
+> tone is on: **Settings → Settings... → Events & alarms → Sound Alarm on
+> Event**. Spoken announcements exist on Windows only, so on macOS this tone
+> is the only audible alarm: while it is off, the client on macOS raises
+> alarms silently.
 >
 > With a 2.5.7 Server the profile is kept on the computer, one per account,
-> so the tone is off the first time each account signs in **on each
-> computer**, including right after the Client upgrade: switch it on. This is
-> needed once — at the account's first sign-in on that computer, not at every
-> shift handover. An operator has no safe way to raise a critical event, so
-> the engineer who configures the project raises a test alarm (see the check
-> [below](#tone-check)).
+> so check the tone under each account **on each computer** it has already
+> been used on. This is needed once, not at every shift handover. An operator
+> has no safe way to raise a critical event, so the engineer who configures
+> the project raises a test alarm (see the check [below](#tone-check)).
 
 The tone sounds only under the conditions listed [above](#escalation).
 
@@ -126,7 +133,7 @@ volume is muted or the wrong output device is selected, the client stays
 silent on an alarm without saying so.
 
 > **Caution.** When commissioning an operator workstation, test the tone:
-> turn on *Sound Alarm on Event*, raise a critical event (severity 800 or
+> make sure *Sound Alarm on Event* is on, raise a critical event (severity 800 or
 > above) and make sure the tone is heard. A convenient way is a test object
 > not bound to equipment: the engineer sets its
 > [Severity]({{ '/en/dev/data-items/' | relative_url }}) to 800 (a 2.5.7
@@ -157,8 +164,8 @@ the front. An event that arrives while the client's window is active does not
 flash it; the next event to arrive after the operator has switched to another
 program does.
 
-The window flash is only an extra cue; the status-bar count and the event panel
-are what reliably show unacknowledged events.
+The window flash is only an extra cue; the tiles in the context strip and the
+event panel are what reliably show unacknowledged events.
 
 ## Spoken announcement {#speech}
 
@@ -181,13 +188,13 @@ Spoken announcements are switched on and off on the settings screen with
 profile (in Clients 2.6.0–2.6.4 only until the next sign-in). On a computer without a
 speech-synthesis voice the switch is shown disabled.
 
-## What is always visible
+## What is always visible {#always-visible}
 
-The status bar shows the number of unacknowledged events ("Events: N",
-client messages included; "No events" when there are none), the event panel's
-severity threshold ("Severity: N") and the highest severity among the Server's
-unacknowledged events — the word "Critical" or "Warning" in the severity's
-colour; with no unacknowledged critical event or warning, that place is empty.
+The alarm counts live only in the context strip at the top; since Client
+2.6.11 the status bar at the bottom of the window does not repeat them. The
+only alarm-related text in the status bar is "Panel filter: severity ≥ N"
+(«Фильтр панели: важность ≥ N»), shown while the event panel has a
+[severity threshold](#threshold) set.
 
 ![Severity tiles]({{ '/img/severity-tiles.png' | relative_url }})
 
@@ -195,11 +202,25 @@ colour; with no unacknowledged critical event or warning, that place is empty.
 
 The context strip at the top shows the "Critical N", "Warning N" and
 "Unacknowledged N" tiles — for the Server's events and the client's own
-warnings and errors. Beside the tiles appear:
+warnings and errors. The tiles answer different questions:
+
+* **"Critical N" and "Warning N"** — how many alarms of that severity
+  **stand** right now: unacknowledged ones and acknowledged ones whose value is
+  still outside the limit ("Active, acknowledged"). An alarm back to normal is
+  not in them, even if nobody has acknowledged it yet;
+* **"Unacknowledged N"** — how many events of any severity **nobody has
+  acknowledged** yet, alarms already back to normal ("Returned to normal,
+  unacknowledged") included.
+
+So acknowledging an alarm that still stands lowers the "Unacknowledged" tile
+but not the tile of its severity; see
+[Alarm states]({{ '/en/client/events/' | relative_url }}#alarm-states). Beside
+the tiles appear:
 
 * **"Unacknowledged critical"** — a flashing indicator while at least one
-  critical event (severity 800 and above) is unacknowledged. It stops flashing
-  once every critical event is acknowledged;
+  critical event (severity 800 and above) is unacknowledged, one already back
+  to normal included. It stops flashing once every critical event is
+  acknowledged;
 * **"Alarm flood (N)"** — while more than ten events are unacknowledged.
 
 The tiles stay in place either way.
@@ -210,7 +231,7 @@ The severity threshold of the "Current Events" panel hides events below it
 from that panel. It acts **on the panel only**: the client still receives every
 event, and an event below the threshold
 
-* is in the "Events: N" count and in the context strip's tiles and indicators;
+* is in the context strip's tiles and indicators;
 * sounds the tone and the spoken announcement and flashes the window under the
   usual rules;
 * makes the object's dot in the object tree blink;
@@ -223,26 +244,28 @@ The panel's own *Acknowledge All* acknowledges only the events the panel shows,
 so it leaves events below the threshold unacknowledged.
 
 > **Caution.** The threshold is kept in the profile and stays in force until
-> *All* is chosen. If the tiles or the count show an event the panel does not,
-> check "Severity: N" in the status bar first — it is the panel's threshold.
-> "Severity: 1" («Важность: 1») means there is no threshold and the panel
-> shows every event: the status bar reads so after *All* is chosen and before
-> any threshold has been set, because 1 is the lowest possible severity.
+> *All* is chosen. If the tiles show an event the panel does not, look at the
+> status bar first: while a threshold is set, it shows "Panel filter:
+> severity ≥ N", where N is the threshold. With no such text there is no
+> threshold and the panel shows every event.
 
 To change it, right-click in the "Current Events" panel, choose
-**Severity → Custom...** and enter the minimum severity (0 means all events;
-the status bar then reads "Severity: 1"); **Severity → All** removes the
+**Severity → Custom...** and enter the minimum severity (0 or 1 means all
+events, and the status-bar text goes away); **Severity → All** removes the
 threshold.
 
 ## Acknowledging
 
-Acknowledge an event by double-clicking its row or with *Acknowledge* in the
-row's context menu; hold *Shift* or *Ctrl* to select and acknowledge several
-rows at once. There is no keyboard shortcut for acknowledgement.
+Acknowledge an event with *Acknowledge* in the row's context menu or the
+*Acknowledge* button on the event's card in the inspector; hold *Shift* or
+*Ctrl* to select and acknowledge several rows at once. Since Client 2.6.11 a
+double-click on a row acknowledges nothing: it brings the inspector forward
+with that event. There is no keyboard shortcut for acknowledgement.
 
 *Acknowledge All* in the event journal and the event panel acknowledges only
 the events shown: events hidden by an area, severity or object filter stay
-unacknowledged. *More → Acknowledge All* in the main menu works differently —
+unacknowledged. When more than one such event is shown, it asks for
+confirmation first, with "No" as the default button. *More → Acknowledge All* in the main menu works differently —
 across the whole system and for every workstation, including events below the
 panel's [severity threshold](#threshold); see
 [Common commands]({{ '/en/client/' | relative_url }}#common-commands).

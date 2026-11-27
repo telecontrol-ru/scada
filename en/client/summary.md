@@ -162,7 +162,7 @@ minutes, the time average is 25 while <i>Average</i> is 20.</dd>
 <dt>Consumption</dt>
 <dd>How much a cumulative counter (an energy meter in kWh, say) grew over the
 interval: the interval's last value minus the last value before it (Client
-2.6.10 and later). The first row is measured from the last value in the
+2.6.11 and later). The first row is measured from the last value in the
 interval before the period. An interval with no recorded change shows 0 — the
 counter did not move. Rows before the first known value stay empty. If the
 counter was reset or replaced, that row's consumption is negative.
@@ -213,7 +213,7 @@ format: the integral's unit is the engineering unit times a second.
 
 ## Comparing with an earlier period {#compare}
 
-The *Compare with* submenu in the summary's context menu (Client 2.6.10 and
+The *Compare with* submenu in the summary's context menu (Client 2.6.11 and
 later) sets, beside each object's column, a column of the same object over an
 earlier span — same function, same interval, row for row:
 

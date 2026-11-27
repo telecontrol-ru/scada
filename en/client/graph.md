@@ -47,7 +47,7 @@ Right-clicking the graph area opens a context menu with these commands:
 * **Background Color...** — change the graph background color.
 * **Add Pane** — add a new graph pane.
 * **Delete Pane** — remove the selected pane.
-* **Compare with** — a submenu (Client 2.6.10 and later): *Day earlier*,
+* **Compare with** — a submenu (Client 2.6.11 and later): *Day earlier*,
   *Week earlier* or *Previous period*. Over every line the same quantity over
   an earlier span is drawn dashed in the same colour, moved onto the shown
   time; the legend adds "(a day earlier)", "(a week earlier)" or "(previous

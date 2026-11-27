@@ -36,9 +36,7 @@ settings, not in the Server's configuration:
   login it loads the profile from there — so your portfolios are available on
   any computer where you log in under your account. This holds for any
   [access rights]({{ '/en/dev/users/' | relative_url }}#access-rights), an
-  account with no roles included. Client 2.6.8 keeps the profile, and the
-  portfolios with it, on this computer only with the "OPC UA" server type;
-  the next Client release fixes this. A 2.5.7 Server keeps no
+  account with no roles included. A 2.5.7 Server keeps no
   profiles: portfolios stay on this computer, one set per account, and after
   the Client upgrade every account starts afresh — earlier portfolios are not
   carried over (see
@@ -81,7 +79,8 @@ removed from all portfolios.
 
 The Client asks for confirmation first — for a portfolio, "Delete the
 portfolio "…" with its list of objects? This cannot be undone.", for an
-object, "Remove "…" from the portfolio "…"?" — and deletes only on yes.
+object, "Remove "…" from the portfolio "…"?" — and deletes only on yes; No is
+the default button.
 
 **WARNING:** a deletion cannot be undone — the only way back to a deleted
 portfolio is to build it again.

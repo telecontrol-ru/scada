@@ -13,7 +13,7 @@ permalink: /en/
 > ([Server]({{ '/en/server/' | relative_url }})).
 >
 > * This manual describes version 2.6, published as releases
->   [2.6.0, 2.6.3, 2.6.4 and 2.6.8]({{ '/en/changes/' | relative_url }}#v2-6); they carry the Client
+>   [2.6.0, 2.6.3, 2.6.4, 2.6.8 and 2.6.11]({{ '/en/changes/' | relative_url }}#v2-6); they carry the Client
 >   packages ([Client installation]({{ '/en/getting-started/' | relative_url }}#client-install)).
 > * Clients connect to the Server over encrypted OPC UA
 >   ([Connecting Clients]({{ '/en/server/' | relative_url }}#client-connection)).
@@ -74,7 +74,7 @@ used to edit diagrams.
   [Known limitations]({{ '/en/changes/' | relative_url }}#known-limitations), then
   [Server]({{ '/en/server/' | relative_url }}) — what Telecontrol does and what
   the customer does — and [Getting the hosted Server]({{ '/en/getting-started/' | relative_url }}#buy-now).
-  The [2.6.8](https://github.com/alexsmn/scada-client/releases/tag/v2.6.8) Client is a
+  The [2.6.11](https://github.com/alexsmn/scada-client/releases/tag/v2.6.11) Client is a
   free download. Terms and prices of the service: Telecontrol,
   mail@telecontrol.ru.
 * **Administrator** on the customer's side, who manages users, Clients and the

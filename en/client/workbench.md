@@ -30,7 +30,7 @@ The workbench regions:
   unacknowledged and an "Alarm flood (N)" indicator while more than ten events
   are unacknowledged. The tiles and indicators count the Server's events and
   the client's own warnings and errors; the client's information messages are
-  counted only by "Events: N" in the status strip (see
+  not counted (see
   [Alarm annunciation]({{ '/en/client/alarms/' | relative_url }}#escalation)).
   The user, the connection state and the server address are not shown here —
   they appear in the status strip only.
@@ -48,7 +48,7 @@ The workbench regions:
 - **Status strip** (bottom) — the event summary, the minimum severity, the
   highest active severity, the user and role, the connection state, the server
   round-trip time, the server address and the Client's version (for example
-  "v2.6.8"; the strip does not show the server's version). This is the only place
+  "v2.6.11"; the strip does not show the server's version). This is the only place
   the user and the connection details are shown. When the installed display
   module cannot mark unreliable values, the strip also shows the warning "Old
   display runtime: bad values may not be marked" («Устаревший модуль
@@ -149,8 +149,8 @@ last.</dd>
 <dt>Delete page</dt>
 <dd>Delete the page and its layout. It comes last and is kept apart from the
 other items — in this menu and in the main <i>Page</i> menu — so it is not
-reached by habit. The client asks for confirmation before deleting. The
-deleted page's windows go to the recycle list of closed windows and can be
+reached by habit. The client asks for confirmation before deleting, with
+No as the default button. The deleted page's windows go to the recycle list of closed windows and can be
 restored from the <i>Window</i> menu; the list keeps the 10 most recently
 closed windows.</dd>
 
@@ -200,9 +200,8 @@ Every setting carries a description and a scope label, so it is visible which
 ones are kept on this computer only and which are in the user's profile,
 which the client also saves on the Server when it closes and on *More →
 Disconnect from Server*, and loads from there
-at login, so profile settings follow the account to another computer (Client
-2.6.8 keeps the profile on this computer only with the "OPC UA" server type;
-the next Client release fixes this). Settings apply **immediately**: there is nothing to confirm, and the
+at login, so profile settings follow the account to another computer, with
+either server type. Settings apply **immediately**: there is nothing to confirm, and the
 screen closes from the close button in its header. Settings in the Profile
 scope are saved on this computer and, when the client exits or on *Disconnect
 from Server*, on the Server — not at the moment a setting changes. So close the
@@ -243,9 +242,10 @@ system. Dark is the recommended control-room setting.</dd>
 
 The choice is saved when the client exits and restored on the next start.
 
-Alarm severity, data quality and switchgear state keep their colours whatever
-the appearance: those are safety signals, and their values are the same in
-every scheme.
+Alarm severity, data quality and switchgear state keep their meaning and hue
+in every scheme, only lightened or darkened to stay legible on its background,
+and never take the system accent colour: those are safety signals, not
+styling.
 
 ### Presetting the appearance
 
@@ -298,8 +298,8 @@ is described in [Getting started]({{ '/en/getting-started/' | relative_url }}#cl
 > "The specified username is already in use by another session. Disconnect
 > the open session and continue?" («Указанное имя пользователя уже
 > используется другой сессией. Разорвать открытую сессию и продолжить?»).
-> «Да» (Yes) is the default button in that window: pressing *Enter*
-> disconnects the open session at once. Read the question before answering
+> «Нет» (No) is the default button in that window: pressing *Enter*
+> leaves the open session alone and does not sign in. Read the question before answering
 > (see [User configuration]({{ '/en/dev/users/' | relative_url }})).
 
 The server type is picked from the list left of the address; the list is shown
@@ -340,7 +340,8 @@ regular page.
 *Ctrl+K* (or clicking the search field in the context strip) opens the command
 palette: an input line filtering as you type, every registered command and
 window-open action, plus signal search by name — a chosen signal opens in a
-table. *Enter* runs the selected entry.
+table. The right-hand side of an entry's row says what kind of entry it is
+(for example, "tag"). *Enter* runs the selected entry.
 
 From Client 2.6.12 the commands and signals found are shown in two groups,
 "Commands" and "Signals", and the typed text is shown in bold in each name.
@@ -555,10 +556,16 @@ The Inspector panel (on the right) reflects the active window's current
 selection:
 
 - the object's name and its address — a node identifier or a formula;
-- the current value in large type with its quality flag ("Good" / "Bad").
-  "Bad" is shown not only for a value carrying the bad flag but also when the
-  device connection is lost ([С]), on a connection failure ([Н]) or a
-  configuration error ([К]), and when the value is stale ([У]);
+- the current value in large type with its quality flag ("Good", "Uncertain"
+  or "Bad"; "No data" until a value has been received). "Bad" is shown not
+  only for a value carrying the bad flag but also when the device connection
+  is lost ([С]), on a connection failure ([Н]) or a configuration error ([К]);
+  a stale value ([У]) reads "Uncertain". A value outside a limit is shown in
+  that limit's severity colour, with a badge under it naming the breached
+  limit: amber (warning) "▲ Above limit" or "▼ Below limit" for the "Hi" and
+  "Lo" bands, red (critical) "▲ Above alarm limit" or "▼ Below alarm limit"
+  for the alarm bands. The quality flag does not change: a value outside its
+  limits can be perfectly good data;
 - under the value, the last hour's trend: a small chart scaled to the value's
   own range, which shows whether the value is heading for a limit or has sat
   where it is for a while (Client 2.6.12 and later);
@@ -676,17 +683,25 @@ the permitted length, the required character classes, and the written
 description of the rule configured in this installation. These are not client
 settings — they are the rules the server itself validates against.
 
-The same rules apply when changing a password: the dialog warns about a
-mismatch before sending the request, but the server always makes the final
-decision.
+The same rules apply when changing a password. The change-password window
+lists them — the length range, the required character classes and the rule
+in the server's own wording — and, as you type, marks each rule with a sign
+and words saying whether the new password meets it; OK stays disabled while
+any rule is broken. If the policy cannot be read, no rules are shown and only
+the server checks the password. The server always makes the final decision.
 
-### Setting a password {#set-password}
+### Changing a password {#set-password}
 
-The *Set Password…* (*Задать пароль…*) command is in a user's context menu.
-It is available only with the Configure right and only when a user is
-selected, and the Users window opens only with that right. So a Dispatcher or
-a Manager cannot change even their own password in version 2.6: they ask the
-administrator, who sets a new one.
+You change your own password with *Change Password...* (*Сменить пароль…*) —
+in the *Settings* menu right after *Settings...*, or in the
+[command palette](#palette). Every user signed in with their own account (not
+anonymously) has it, whatever their rights, a Dispatcher and a Manager
+included. The window asks for the current password, the new password and its
+repeat, and shows the [password policy](#password-policy).
+
+The *Set Password…* (*Задать пароль…*) command is in a user's context menu in
+the Users window. It is available only with the Configure right and only when
+a user is selected, and the Users window opens only with that right.
 
 The command behaves differently depending on whose account it is:
 
@@ -704,9 +719,21 @@ membership. Both successful and refused
 operations are recorded — a log showing only what succeeded cannot answer who
 *tried*.
 
+Each entry reads across the columns "Time", "Who", "Action", "Object" and
+"Result". "Who" is the account that acted; "Action" says what was done, for
+example "Adding to a role" or "Changing a password"; "Object" is the account
+or role acted on (for adding to and removing from a role, the account and the
+role); "Result" is the outcome with a mark: "✓ Applied", or "✕ Denied" with
+the server's status code, for example "✕ Denied: Bad_UserAccessDenied". Audit
+entries carry no severity colour, and the window has no area list on the
+left as the event journal does: an entry is about an account or a role, not a
+part of the plant.
+
 The window is available to administrators only. It carries no acknowledgement
 controls: an audit entry records what happened, and there is nothing in it to
-acknowledge.
+acknowledge. These entries do not appear in the event journal, the events
+panel or the Overview page's active-alarm table; records of control commands
+stay in the event journal.
 
 ### Databases {#historical-db}
 
@@ -730,8 +757,7 @@ The Formats window defines how two-state (discrete) signals look on screen.
 Each format is a pair of states: "Label 0" and "Label 1" — the texts the states
 are captioned with — and "Colour 0" and "Colour 1" — the colours they are drawn
 in. A colour is chosen from the client's palette by name, not entered as RGB
-components. In version 2.6.8 the colour names are shown in English even in the
-Russian interface.
+components; the colour names are shown in the interface language.
 
 ![The Formats window]({{ '/img/admin-formats.png' | relative_url }})
 
@@ -748,7 +774,6 @@ with no device involved. Each carries a Type — the waveform — a Period (ms),
 Phase (ms) and an Update interval (ms) saying how often a new value is
 produced. Simulated signals are used for commissioning and training: they let
 displays, graphs and alarms be exercised before any equipment is connected.
-In version 2.6.8 the Type column of this window may be missing.
 
 ![The Simulated signals window]({{ '/img/admin-simulation.png' | relative_url }})
 

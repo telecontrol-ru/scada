@@ -206,7 +206,7 @@ is a reason to tell the administrator, not proof that there were none.
 
 ## Consumption, comparing periods and event statistics {#analysis}
 
-In Client 2.6.10 and later (the published 2.6.8 release does not have them):
+In Client 2.6.11 and later (the published 2.6.8 release does not have them):
 
 * **Consumption of a cumulative counter** — the *Consumption* function in the
   summary's *Function* submenu: how much the counter grew in each interval.
