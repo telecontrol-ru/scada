@@ -57,11 +57,15 @@ The workbench regions:
   [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
 For an IEC 60870-5 device the Device diagnostics panel also shows the state
-of its link and a "Reconnect now" («Переподключить сейчас») button, which
+of the connection it is polled over ("Connection state", «Состояние
+соединения») and a "Reconnect now" («Переподключить сейчас») button, which
 drops and re-establishes the connection. The link is shared by every device
 on it, so reconnecting interrupts the exchange with all of them. The button is
 available to an account with the control right; with a version 2.5.7 Server
-neither the link rows nor the button are shown.
+neither the link rows nor the button are shown. The "Link down" («Нет связи») banner at
+the top of the panel is about the device itself, and the line under it says
+where the break is: "link is up; the device does not answer" or "the link is
+down". An expired t1 timeout is shown in red.
 
 > **Caution.** The status bar can be hidden (*Settings → Settings... →
 > Workspace → Status Bar*, separately for each main window), and then nothing

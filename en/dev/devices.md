@@ -77,7 +77,10 @@ columns Signal, Type (`TS` or `TI`), Address and NodeId. It holds the device's
 [retransmission](#retransmission) rules and, since Client 2.6.8, the data items
 the device polls, with the address taken from the item's Channel field (see
 [Data items]({{ '/en/dev/data-items/' | relative_url }})). When a device has
-both, a Direction column says Polled or Retransmitted. The tab appears only
+both, a Direction column says Polled or Retransmitted. When two signals of
+the same direction share an address, a Status column appears and each of them
+reads "⚠ Duplicate address" («Повтор адреса») — change one of the
+addresses. The tab appears only
 when the list is not empty; IEC 61850 devices have none. The
 [frame decode]({{ '/en/client/device-watch/' | relative_url }}) in the device
 watch window uses the same map. In Clients 2.6.0–2.6.4 the map held the
