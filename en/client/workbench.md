@@ -283,7 +283,10 @@ example) are not listed in the menu at all; for a selected object the
 ![]({{ '/img/workbench-login.png' | relative_url }})
 
 The sign-in window has a "Server:" row (the server type and the address), a
-user name, a password and a "Sign in automatically next time" box. Signing in
+user name, a password and a "Sign in automatically next time" box. The user
+name offered is the one last used to sign in on this computer, and the
+drop-down lists the names typed here (it does not list the Server's
+accounts). Press *Delete* on a highlighted name to remove it from the list. Signing in
 is described in [Getting started]({{ '/en/getting-started/' | relative_url }}#client-start).
 
 > **Caution.** When a session under this name is already open — the previous
