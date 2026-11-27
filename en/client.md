@@ -475,6 +475,10 @@ The command opens the "Control" dialog: the object's name, "Current value:"
 and "New value:". For a discrete (TS) object the new value is picked from the
 list of states (the state opposite the current one is proposed); for an analog
 (TI) object it is typed as a number. The "Execute" button sends the command.
+The *Enter* key does not send it: the dialog's default button is "Cancel".
+
+The dialog's first line names the object together with the groups and device
+it belongs to, for example «ПС Северная : Q1 : Силовой выключатель».
 
 Until the operator changes the "New value:" field, the proposed value follows
 the object's present state: if the state changes while the dialog is open, the
@@ -495,7 +499,9 @@ configuration error. If the brackets before the value hold С, Н, К or У, the
 state is unknown.
 
 If the object has a control permission condition, the dialog has a
-"Condition:" row. It reads "Satisfied" or "Unsatisfied" and updates live.
+"Condition:" row. It reads "Satisfied" or, when the condition is not met,
+what is required and what the inputs read now, for example "Required:
+TIT.211 > 70; now: Temperature T1 (TIT.211) = 58 °C", and updates live.
 While the condition is unsatisfied (or its value is bad), "Execute" is
 disabled.
 
@@ -509,8 +515,8 @@ while the dialog is open, the client reports that the command failed.
 
 ### Before a control command {#control-checklist}
 
-1. Check the object's name on the first line of the "Control" dialog (the
-   window title just says "Control" and does not name the object).
+1. Check the object and its path on the first line of the "Control" dialog
+   (the window title just says "Control" and does not name the object).
 2. Make sure the "Current value:" line has no brackets holding С, Н, К or У
    before the value (for example `[С]` or `[СУ]`) and no "?" after it (see [Reading values and colours](#quality-legend)).
 3. Make sure the status bar reads "Connected".
@@ -521,19 +527,21 @@ while the dialog is open, the client reports that the command failed.
 
 The *Control Confirmation* setting (*Settings → Settings... → Control*) is on by
 default and is on again at every sign-in. While it is on, before a command goes to the equipment the client
-shows a confirmation box: the object's name, "Present:" and "Command:" — the
-present and the commanded values — and the warning "This control command is
-sent to physical equipment and cannot be undone remotely. Send it?".
+shows a confirmation box: the object with its path, "Present:" and
+"Command:" — the present and the commanded values —, the operator, the time,
+the command's stage and the warning "This control command is sent to physical
+equipment and cannot be undone remotely.".
 
-The "Present:" value in the confirmation box carries the same quality marks
+The present value in the confirmation box carries the same quality marks
 as in the "Control" dialog: flag letters in square brackets before the value
 and "?" after a bad value. Check them before confirming.
 
-The box's default button is "No": pressing *Enter* **cancels** the command. To
-send it, choose "Yes".
+The box's default button is "Cancel": pressing *Enter* **cancels** the
+command. To send it, choose "Send command". Only an administrator can turn
+confirmation off.
 
 > **Caution.** With *Control Confirmation* off, the command goes to the
-> equipment as soon as "Execute" is pressed, with no prompt at all, and in
+> equipment as soon as "Execute" is pressed (not on *Enter*), with no prompt at all, and in
 > two-stage control the execute stage follows the select stage automatically,
 > with no pause for the operator. Do not turn this setting off at an operator
 > workstation.
@@ -670,7 +678,9 @@ other event — otherwise they hold the event panel open.
 
 *Manual Input...* (in a data item's context menu and the **Item** menu) opens
 the "Manual Input" dialog: "Current value:", "New value:" and a "Lock:"
-checkbox. The "Write" button writes the value. No confirmation box is shown
+checkbox labelled "Ignore values from the device". A line under the object's
+name reminds the operator: "The value is entered into the system by hand; no
+command is sent to the equipment." The "Write" button writes the value. No confirmation box is shown
 for manual input, whatever the *Control Confirmation* setting. As for control,
 it needs the Control privilege: without it neither *Manual Input...* nor
 *Unlock* appears in the menu.
