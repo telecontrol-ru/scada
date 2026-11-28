@@ -18,7 +18,7 @@ its data source. Formulas are used in
 in [tables]({{ '/en/client/table/' | relative_url }}) and in
 [user tables]({{ '/en/client/sheet/' | relative_url }}).
 
-## Object references
+## Object references {#references}
 
 A formula refers to an object in one of three ways.
 
@@ -62,6 +62,25 @@ field, and it may contain <code>:</code>, <code>;</code>, <code>/</code> and <co
 <code>{MODBUS_DEVICES.1!INT16:40001;swapbytes}</code> or
 <code>{IEC61850_DEV.1!LD0/GGIO1$ST$Ind1}</code>. The reference ends at the first
 closing brace <code>}</code>, so the address itself cannot contain one.</dd>
+
+<dt>An object on another vendor's OPC UA server</dt>
+<dd>For example, <code>{nsu=urn:plant;s=Plant.Temperature}</code>. This is how an
+object from a namespace the SCADA model does not know is written: after
+<code>nsu=</code> comes the namespace URI, a <code>;</code> and the object's identifier on
+that server — <code>i=</code> and a number, <code>s=</code> and a string, <code>g=</code> and a
+GUID, or <code>b=</code> and a Base64 value. The reference names the namespace by its
+URI, not by its number, so it finds the same object even if the server numbers
+its namespaces differently. An object in the standard OPC UA namespace is
+written without <code>nsu=</code>, for example <code>{i=2258}</code>. A <code>;</code> inside
+the URI is written as <code>%3B</code>. The reference ends at the first closing
+brace <code>}</code>, so an object whose string identifier contains one cannot be
+named this way. The Client understands this reference from release 2.6.11 —
+in tables, user sheets and Vidicon schematic bindings (see
+<a href="{{ '/en/client/display/' | relative_url }}#foreign-server">Schematics on
+another vendor's OPC UA server</a>); rather than typing it, get it in the
+Designer by dragging the object from the Tags panel. The Server resolves it in
+an object's formula only if the other vendor's server is connected to the
+SCADA Server; Telecontrol sets up that connection.</dd>
 
 </dl>
 

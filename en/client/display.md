@@ -169,6 +169,26 @@ an object from a schematic, click the shape, then choose the command in the
 **Item** menu («Сигнал») or press *Control…* («Управление…») in the
 Inspector.
 
+## Schematics on another vendor's OPC UA server {#foreign-server}
+
+From release 2.6.11 the Client also opens Vidicon schematics (`.vds`) when it
+is connected to another vendor's OPC UA server. Such a server has no SCADA
+Server file store, so the schematic is not uploaded to it but copied into the
+workstation's displays folder. The *Settings → Open Displays Folder* command
+opens that folder; on Windows it is `C:\ProgramData\Telecontrol\SCADA Client`,
+on macOS `~/Library/Application Support/Telecontrol/SCADA Client` in the user's
+home folder. Put the file directly in that folder, not in a subfolder. The
+schematic appears in the **Display** menu at the next sign-in to the Client.
+
+Bind the schematic's elements to that server's objects in the Designer,
+connected to the same server: drag the object from the Tags panel and the
+Designer writes a reference such as `{nsu=urn:plant;s=Plant.Temperature}` (see
+[The Data tab]({{ '/en/dev/designer/properties/' | relative_url }}#data-tab)).
+The reference names the namespace by its URI, not by its number, so the
+schematic shows the same object even if the server numbers its namespaces
+differently. How such a reference is written in a formula is described in
+[Object references]({{ '/en/formulas/' | relative_url }}#references).
+
 ## Open the display for a selected object {#goto-object}
 
 When an object is selected in the object panel or in a table, the user
