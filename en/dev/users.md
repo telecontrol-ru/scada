@@ -196,7 +196,7 @@ The roles the server grants a session:
 An account may hold several roles at once, and their permissions combine. It is
 the roles that the
 [Users]({{ '/en/client/workbench/#users' | relative_url }}) window and the
-workbench's Access rights panel show; the panel derives from them what the
+Inspector's Access rights section show; the section derives from them what the
 account may view, control and configure.
 
 ![Access rights panel]({{ '/img/users-rbac.png' | relative_url }})

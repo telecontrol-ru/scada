@@ -43,8 +43,11 @@ The workbench regions:
   drawn. The same holds for the Devices, Files and Nodes panes.
 - **Workspace tabs** — the open windows (journal, tables, graphs, schematic
   displays) as editor-style tabs.
-- **Right-hand panels** — Inspector, Device diagnostics, Access rights,
-  Transmission rule; they fill from the current selection.
+- **Inspector** (right) — fills from the current selection. For a device, a
+  user or a transmission rule, a Device diagnostics, Access rights or
+  Transmission rule section appears under the object's card. From Client
+  2.6.12 these are sections of the Inspector, not separate tabbed panels
+  beside it.
 - **Status strip** (bottom) — the event summary, the minimum severity, the
   highest active severity, the user and role, the connection state, the server
   round-trip time, the server address and the Client's version (for example
@@ -56,7 +59,7 @@ The workbench regions:
   schematic is open (see
   [A display module from an earlier build]({{ '/en/client/display/' | relative_url }}#old-runtime)).
 
-For an IEC 60870-5 device the Device diagnostics panel also shows the state
+For an IEC 60870-5 device the Device diagnostics section also shows the state
 of the connection it is polled over ("Connection state", «Состояние
 соединения») and a "Reconnect now" («Переподключить сейчас») button, which
 drops and re-establishes the connection. The link is shared by every device
@@ -510,7 +513,7 @@ delete-node permission.
 
 ### The Transmission-rule panel
 
-Selecting a rule fills the Transmission-rule panel on the right:
+Selecting a rule fills the Inspector's Transmission rule section:
 
 ![]({{ '/img/transmission-rule.png' | relative_url }})
 
