@@ -354,6 +354,22 @@ How to sign in under another account, or clear the box:
   ticked**: clear it before signing in, or the client stores the password of
   whoever signs in and goes on signing that account in automatically.
 
+#### Forbidding automatic sign-in on a workstation {#auto-login-policy}
+
+From Client 2.6.12 an administrator can forbid automatic sign-in on a shared
+operator workstation, for every user of the computer. The sign-in window then
+does not show the "Sign in automatically next time" box, always waits for
+input at start, and deletes a password stored earlier. The setting is a
+computer-wide value that a user without administrator rights cannot change:
+
+* **Windows** — a `REG_DWORD` value `DisableAutoLogin` set to `1` under
+  `HKEY_LOCAL_MACHINE\Software\Telecontrol\Workplace`;
+* **macOS** — the file
+  `/Library/Application Support/Telecontrol/SCADA Client/policy.json`
+  containing `{"DisableAutoLogin": true}`.
+
+To allow automatic sign-in again, delete the value or the file.
+
 ## Commands {#commands}
 
 The commands for the selected object or device are in its context menu (right
@@ -715,6 +731,11 @@ Setting limits («Уставки»):
 
 The minimum/maximum range of the warning limits must not extend beyond the
 minimum/maximum range of the alarm limits.
+
+A limit can be typed with a comma or a point ("10,8" or "10.8"). An empty
+field clears the limit. If a field is not a number, the client says «Уставка
+задана не числом.» (a limit is not a number), writes nothing and keeps the
+window open. Before Client 2.6.12 such a limit was silently written as 0.
 
 ## Object panel {#object-tree}
 

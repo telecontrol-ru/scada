@@ -218,6 +218,11 @@ on the Server is described under
 | Workspace | Status Bar |
 | Displays | Show Modus topology; the Open Displays Folder action |
 
+*Language* also decides the decimal separator: from Client 2.6.12 the
+Russian interface writes values, limits and graph axis labels with a comma
+("12,5"), the English one with a point. Value and limit fields accept either a
+comma or a point.
+
 *Speech* switches the spoken announcement on and off; on a computer without a
 speech-synthesis voice it is shown disabled — see
 [Spoken announcement]({{ '/en/client/alarms/' | relative_url }}#speech).
